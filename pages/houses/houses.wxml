@@ -1,0 +1,38 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold">房屋详情</view>
+  </view>
+</cu-custom>
+
+<view class="cu-bar bg-white solid-bottom">
+  <view class="action">
+    <text class="cuIcon-titles text-orange"></text> {{pName}}
+  </view>
+</view>
+
+<scroll-view
+  scroll-y
+  class="cu-list menu"
+  scroll-with-animation
+  style="height:calc(100vh - {{CustomBar}}px - 90rpx)"
+>
+  <view class="cu-list menu">
+    <block
+      wx:for="{{houses}}"
+      wx:for-item="house"
+      wx:key="house"
+    >
+      <view class="cu-item">
+        <view class="content">
+          <text class="cuIcon-title text-green text-bold"></text> {{house.name}}
+          <view class="padding">
+            <view>租金（月）：{{house.rent}}</view>
+            <view>面积：{{house.size}}</view>
+            <view>户型：{{house.type}}</view>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+</scroll-view>

@@ -1,0 +1,55 @@
+<view class="page-container">
+  <cu-custom bgColor="bg-black">
+    <view slot="content">
+      <view class="text-white text-bold">今日可选房源</view>
+    </view>
+  </cu-custom>
+  
+  <button style="height: 90rpx" class="bg-blue" bindtap="openMap">在地图上查看</button>
+
+  <!-- 列表 -->
+  <scroll-view
+    scroll-y
+    class="cu-list menu"
+    scroll-with-animation
+    style="height:calc(100vh - {{CustomBar}}px - 90rpx - calc(100rpx + env(safe-area-inset-bottom) / 2))"
+  >
+    <view class="cu-list menu">
+      <block
+        wx:for="{{list}}"
+        wx:for-item="group"
+        wx:key="group"
+      >
+        <!-- 此处有一个巨坑，id不能purely从js传过来，不能开头为数字/汉字 -->
+        <view class="cu-bar bg-white solid-bottom margin-top">
+          <view class="action">
+            <text class="cuIcon-title text-green text-bold"></text> {{group.areaName}}
+          </view>
+        </view>
+
+        <block
+          wx:for="{{group.projects}}"
+          wx:for-item="project"
+          wx:key="project"
+        >
+          <view class="cu-item">
+            <view class="content">
+              <view style="display: flex; flex-direction: row;" class="padding-left">
+                <text style="flex-grow: 4" class="text-black">{{project.pName}}</text>
+                <button bindtap="navToHouses" style="width: 200rpx" class="bg-blue cu-btn shadow-blur" data-pId="{{project.pId}}">
+                  房屋详情
+                </button>
+              </view>
+              <view class="desc padding">
+                <view class="text-content text-grey">可选房源数量：{{project.rentableCount}}</view>
+              </view>
+            </view>
+          </view>
+       </block>
+      </block>
+    </view>
+  </scroll-view>
+
+  <!-- tabBar -->
+  <tabBar bindswitchtab="redirect" tab="houses"></tabBar>
+</view>

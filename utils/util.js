@@ -14,6 +14,19 @@ const formatNumber = n => {
   return n[1] ? n : `0${n}`
 }
 
+const groupBy = function( array , f ) {
+  let groups = {};
+  array.forEach( function( o ) {
+      let group = JSON.stringify( f(o) );
+      groups[group] = groups[group] || [];
+      groups[group].push( o );
+  });
+  return Object.keys(groups).map( function( group ) {
+      return groups[group];
+  });
+}
+
 module.exports = {
-  formatTime
+  formatTime,
+  groupBy
 }

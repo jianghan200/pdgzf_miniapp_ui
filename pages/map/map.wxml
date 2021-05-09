@@ -1,0 +1,17 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold">今日房源分布</view>
+  </view>
+</cu-custom>
+<view style="height: 100vh">
+  <map 
+    id="map" 
+    subkey="7X5BZ-FNCRW-PB5R6-OXKRO-HBCCH-ZVBEA"
+    latitude="{{selfLatitude}}"
+    longitude="{{selfLongitude}}"
+    markers="{{markers}}"
+    scale="10"
+    show-location
+  ></map>
+</view>

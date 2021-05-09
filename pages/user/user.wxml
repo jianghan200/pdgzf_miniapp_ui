@@ -1,0 +1,12 @@
+<view class="page-container">
+  <cu-custom bgColor="bg-black">
+    <view slot="content">
+      <view class="text-white text-bold">我的</view>
+    </view>
+  </cu-custom>
+
+  <view style="display: flex; flex-direction: row; justify-content: center;">功能暂未开放，敬请期待</view>
+
+  <!-- tabBar -->
+  <tabBar bindswitchtab="redirect" tab="user"></tabBar>
+</view>

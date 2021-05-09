@@ -1,0 +1,11 @@
+<view class="cu-bar tabbar bg-white shadow foot">
+  <view class="action" bindtap="switchTab" data-tabname="projects">
+    <view class="cuIcon-{{tab == 'projects' ? 'homefill' : 'home'}} text-{{tab == 'projects' ? 'black' : 'gray'}}"></view>
+    <view class="text-{{tab == 'projects' ? 'black' : 'gray'}}">今日可选房源</view>
+  </view>
+
+  <view class="action" bindtap="switchTab" data-tabname="user">
+    <view class="cuIcon-{{tab == 'user' ? 'peoplefill' : 'people'}} text-{{tab == 'user' ? 'black' : 'gray'}}"></view>
+    <view class="text-{{tab == 'user' ? 'black' : 'gray'}}">我的</view>
+  </view>
+</view>
