@@ -5,14 +5,16 @@
     </view>
   </cu-custom>
   
-  <button style="height: 90rpx" class="bg-blue" bindtap="openMap">在地图上查看</button>
+  <view style="padding: 10rpx;">
+    <button style="height: 90rpx;" class="bg-blue" bindtap="openMap">在地图上查看</button>
+  </view>
 
   <!-- 列表 -->
   <scroll-view
     scroll-y
     class="cu-list menu"
     scroll-with-animation
-    style="height:calc(100vh - {{CustomBar}}px - 90rpx - calc(100rpx + env(safe-area-inset-bottom) / 2))"
+    style="height:calc(100vh - {{CustomBar}}px - 110rpx - calc(100rpx + env(safe-area-inset-bottom) / 2))"
   >
     <view class="cu-list menu">
       <block

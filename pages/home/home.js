@@ -1,4 +1,5 @@
 // pages/home/home.js
+const app = getApp()
 Page({
   data: {
   },
@@ -7,7 +8,10 @@ Page({
     wx.login({
       success: function(res) {
         console.log(res)
-        wx.navigateTo({
+
+        app.globalData.jscode = res.code
+
+        wx.redirectTo({
           url: '/pages/projects/projects',
         })
       }

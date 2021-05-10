@@ -30,6 +30,5 @@ App({
     })
   },
   globalData: {
-    projects: []
   }
 })

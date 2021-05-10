@@ -39,10 +39,9 @@ Page({
         let marker = {
           id: i,
           title: entry.name,
-          iconPath: '/assets/coordinate.jpeg',
           latitude: entry.latitude,
           longitude: entry.longitude,
-          width: 28,
+          width: 22,
           height: 32
         }
         newMarkers.push(marker)

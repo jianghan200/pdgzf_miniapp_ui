@@ -62,42 +62,60 @@ Page({
       url: url,
       header: header,
       success: function(res) {
-        console.log(`成功从后台fetch到小区的信息，共${res.data.length}条`)
-  
-        let rawData = res.data
-        const groups = util.groupBy(rawData, function(item) {
-          return item.township
-        })
+        if (res.statusCode != 200) {
+          console.log('project请求出现异常')
+          console.log(res)
 
-        if (rawData) {
-          // 缓存request的结果
-          wx.setStorageSync('projects', rawData)
-        }
-
-        let list = groups.map(group => {
-          let sampleElem = group[0]
-          let areaName = sampleElem.townshipName
-          
-          let projects = group.map(elem => {
-            let project = {
-              pId: elem.id,
-              pName: elem.name,
-              updateTime: elem.updateTime,
-              rentableCount: elem.rentableCount
-            }
-            return project
+          wx.redirectTo({
+            url: '/pages/error/error',
           })
-    
-          return {
-            areaName: areaName,
-            projects: projects
+        } else {
+          console.log(`成功从后台fetch到小区的信息，共${res.data.length}条`)
+  
+          let rawData = res.data
+          const groups = util.groupBy(rawData, function(item) {
+            return item.township
+          })
+  
+          if (rawData) {
+            // 缓存request的结果
+            wx.setStorageSync('projects', rawData)
           }
-        })
+  
+          let list = groups.map(group => {
+            let sampleElem = group[0]
+            let areaName = sampleElem.townshipName
+            
+            let projects = group.map(elem => {
+              let project = {
+                pId: elem.id,
+                pName: elem.name,
+                updateTime: elem.updateTime,
+                rentableCount: elem.rentableCount
+              }
+              return project
+            })
+      
+            return {
+              areaName: areaName,
+              projects: projects
+            }
+          })
+  
+          self.setData({
+            list: list
+          })
+        }
+      },
+      fail: function(res) {
+        console.log(res)
+        console.log('project请求失败！')
 
-        self.setData({
-          list: list
+        wx.redirectTo({
+          url: '/pages/error/error',
         })
-      }
+      },
+      timeout: 5000 // ms
     })
   },
 
@@ -120,28 +138,46 @@ Page({
       url: url,
       header: header,
       success: function(res) {
-        console.log(`成功从后台fetch到小区的信息，共${res.data.length}条`)
+        if (res.statusCode != 200) {
+          console.log('house请求出现异常')
+          console.log(res)
+
+          wx.redirectTo({
+            url: '/pages/error/error',
+          })
+        } else {
+          console.log(`成功从后台fetch到小区的信息，共${res.data.length}条`)        
   
-        let rawData = res.data
-        const groups = util.groupBy(rawData, function(item) {
-          return item.projectId
-        })
-        const list = groups.map(group => {
-          const sample = group[0]
-          let projectAndHouses = {
-            pId: sample.projectId,
-            pName: sample.propertyName,
-            houses: group
+          let rawData = res.data
+          const groups = util.groupBy(rawData, function(item) {
+            return item.projectId
+          })
+          const list = groups.map(group => {
+            const sample = group[0]
+            let projectAndHouses = {
+              pId: sample.projectId,
+              pName: sample.propertyName,
+              houses: group
+            }
+            return projectAndHouses
+          })
+  
+          console.log(list)
+  
+          if (list) {
+            wx.setStorageSync('houses', list)
           }
-          return projectAndHouses
-        })
-
-        console.log(list)
-
-        if (list) {
-          wx.setStorageSync('houses', list)
         }
-      }
+      },
+      fail: function(res) {
+        console.log(res)
+        console.log('house请求失败！')
+        
+        wx.redirectTo({
+          url: '/pages/error/error',
+        })
+      },
+      timeout: 5000 // ms
     })
   },
 
@@ -155,6 +191,7 @@ Page({
   // 用户点击【房屋详情】
   navToHouses(e) {
     console.log(e)
+
     let pId = e.target.dataset.pid
     let url = '../houses/houses?pid=' + pId
     wx.navigateTo({

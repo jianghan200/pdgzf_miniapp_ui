@@ -1,0 +1,7 @@
+<view style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh">
+  <view style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <icon class="icon-box-img" type="warn" size="93"></icon>
+    <view style="font-size: 30px; padding-top: 40rpx;">网络请求异常</view>
+    <view style="font-size: 24px" class="text-grey">请重启小程序</view>
+  </view>
+</view>

@@ -4,7 +4,8 @@
     "pages/projects/projects",
     "pages/user/user",
     "pages/map/map",
-    "pages/houses/houses"
+    "pages/houses/houses",
+    "pages/error/error"
   ],
   "window":{
     "navigationStyle": "custom"
