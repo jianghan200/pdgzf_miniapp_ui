@@ -1,4 +1,4 @@
-const server = 'http://jp.han.pm:9908'
+const server = 'https://pdgzf.vencloud.cn'
 const ROOM_TYPE = ["未知", "一室", "一室一厅", "两室", "两室一厅", "三室", "三室一厅", "四室", "五室"]
 const id2Type = id => {
   let res = ''

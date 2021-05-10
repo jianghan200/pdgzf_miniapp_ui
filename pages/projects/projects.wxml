@@ -53,5 +53,5 @@
   </scroll-view>
 
   <!-- tabBar -->
-  <tabBar bindswitchtab="redirect" tab="houses"></tabBar>
+  <tabBar bindswitchtab="redirect" tab="projects"></tabBar>
 </view>
