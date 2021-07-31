@@ -1,0 +1,79 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-bold" style="color: gold;">成为VIP</view>
+  </view>
+</cu-custom>
+
+<!-- 头像，微信名 -->
+<view class="userinfo">
+  <view class="avatar"><open-data type="userAvatarUrl"></open-data></view>
+  <open-data type="userNickName" lang="zh_CN" class="nickname"></open-data>
+</view>
+
+<!-- 表单 -->
+<form>
+  <view class="cu-form-group margin-top">
+		<view class="title">姓名</view>
+		<input placeholder="必填" bindinput="fillName"></input>
+	</view>
+
+  <view class="cu-form-group">
+		<view class="title">邮箱</view>
+		<input placeholder="我们将定时推送您的订阅" bindinput="fillEmail"></input>
+	</view>
+
+  <view class="cu-form-group">
+		<view class="title">您的官网账号</view>
+		<input placeholder="浦东公租房官网的账户" bindinput="fillAccount"></input>
+	</view>
+
+  <view class="cu-form-group">
+		<view class="title">您的官网密码</view>
+		<input placeholder="浦东公租房官网的密码" bindinput="fillPassword"></input>
+	</view>
+
+  <!-- 递交信息按钮 -->
+  <view style="padding: 10rpx;">
+    <button style="height: 90rpx;" class="bg-black" bindtap="submit">
+      <text class="cuIcon-vip" style="color: gold; text-weight: 500"></text> 升级！
+    </button>
+  </view>
+</form>
+
+<!-- Error Modal -->
+<view class="cu-modal {{showErrorModal ? 'show' : ''}}">
+  <view class="cu-dialog">
+    <!-- Dialog header -->
+    <view class="cu-bar bg-white justify-end">
+      <!-- 标题 -->
+      <view class="content">填写信息有误</view>
+      <!-- 关闭弹窗按钮 -->
+      <view class="action" bindtap="hideModal"><text class="cuIcon-close text-red"></text></view>
+    </view>
+    <!-- 内容 -->
+    <view class="padding-xl text-red text-bold">{{errorMessage}}</view>
+  </view>
+</view>
+
+<!-- 确认付款弹窗 -->
+<view class="cu-modal {{showModal ? 'show' : ''}}">
+  <view class="cu-dialog">
+    <!-- Dialog Header -->
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">升级为VIP</view>
+      <view class="action" bindtap="hideModal"><text class="cuIcon-close text-red"></text></view>
+    </view>
+    <view class="padding-xl">^ __ ^离公租房就差一步啦～</view>
+    <!-- 按钮们 -->
+    <view class="cu-bar bg-white">
+      <view class="action margin-0 flex-sub text-green " bindtap="hideModal">
+        <text class="cuIcon-moneybag"></text> 微信支付
+      </view>
+      <view class="action margin-0 flex-sub solid-left text-orange text-bold" bindtap="postUserInfo">
+        给我升级
+      </view>
+      <view class="action margin-0 flex-sub solid-left" bindtap="hideModal">残忍拒绝</view>
+    </view>
+  </view>
+</view>

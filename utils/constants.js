@@ -1,4 +1,7 @@
 const server = 'https://pdgzf.vencloud.cn'
+const hkServer = 'http://hk.han.pm:9908'
+const userinfoTestServer = 'http://localhost:9000'
+const userinfoProdServer = 'https://api.pdgzf.vencloud.cn'
 const ROOM_TYPE = ["未知", "一室", "一室一厅", "两室", "两室一厅", "三室", "三室一厅", "四室", "五室"]
 const id2Type = id => {
   let res = ''
@@ -37,7 +40,15 @@ const id2Type = id => {
   return res
 }
 
+const emailRegex = /[a-z0-9-.]{1,30}@[a-z0-9-]{1,65}.(com|net|org|info|biz|([a-z]{2,3}.[a-z]{2}))/;
+const isEmail = str => {
+  return emailRegex.test(str)
+}
+
 module.exports = {
-  server,
-  id2Type
+  server: server,
+  userinfoServer: userinfoProdServer,
+  allRoomTypes : [1,2,3,4,5,6,7,8],
+  id2Type,
+  isEmail: isEmail
 }

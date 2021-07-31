@@ -1,12 +1,39 @@
-<view class="page-container">
-  <cu-custom bgColor="bg-black">
-    <view slot="content">
-      <view class="text-white text-bold">我的</view>
-    </view>
-  </cu-custom>
+<view style="height: 50px;"></view>
 
-  <view style="display: flex; flex-direction: row; justify-content: center;">功能暂未开放，敬请期待</view>
-
-  <!-- tabBar -->
-  <tabBar bindswitchtab="redirect" tab="user"></tabBar>
+<!-- 微信用户信息 -->
+<view class="userinfo">
+  <view class="avatar"><open-data type="userAvatarUrl"></open-data></view>
+  <open-data type="userNickName" lang="zh_CN" class="nickname"></open-data>
+  <button 
+    class="cu-btn round line-{{userinfo.type == 0 ? 'grey' : 'purple'}} button-hover text-bold"
+  >{{userinfo.type == 0 ? '普通用户' : 'VIP'}}</button>
 </view>
+
+<!-- 内容 -->
+<view class="cu-list menu sm-border card-menu margin-top">
+  <!-- VIP -->
+  <view class="cu-item arrow" wx:if="{{userinfo.type == 0}}" bindtap="gotoVipPage">
+    <view class="content">
+      <text class="cuIcon-vip text-orange text-bold"></text>
+      <text class="text-orange text-bold">成为VIP</text>
+    </view>
+  </view>
+
+  <view class="cu-item arrow" wx:if="{{userinfo.type == 1}}">
+    <view class="content">
+      <text class="cuIcon-vip text-orange text-bold"></text>
+      <text class="text-orange text-bold">编辑个人资料</text>
+    </view>
+  </view>
+
+  <!-- 邮件订阅 -->
+  <view class="cu-item arrow" bindtap="gotoEmailPage">
+    <view class="content">
+      <text class="cuIcon-mail text-bold text-cyan"></text>
+      <text class="text-cyan text-bold">邮件订阅</text>
+    </view>
+  </view>
+</view>
+
+<!-- tabBar -->
+<tabBar bindswitchtab="redirect" tab="user"></tabBar>

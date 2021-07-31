@@ -1,11 +1,16 @@
 {
   "pages":[
-    "pages/home/home",
-    "pages/projects/projects",
+    "pages/login/login",
+    "pages/all/all",
     "pages/user/user",
     "pages/map/map",
     "pages/houses/houses",
-    "pages/error/error"
+    "pages/error/error",
+    "pages/today/today",
+    "pages/subscribe/subscribe",
+    "pages/vip/vip",
+    "pages/email/email",
+    "pages/subdetail/subdetail"
   ],
   "window":{
     "navigationStyle": "custom"

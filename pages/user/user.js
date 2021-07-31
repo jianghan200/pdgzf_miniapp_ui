@@ -1,20 +1,22 @@
-// pages/user/user.js
-Page({
+const app = getApp()
+const constants = require('../../utils/constants')
 
+Page({
   /**
    * 页面的初始数据
    */
   data: {
-
+    CustomBar: app.globalData.CustomBar,
+    userinfo: null
   },
+  
   onLoad: function (options) {
-    console.log('user on load')
+    this.setData({
+      userinfo: app.globalData.userinfo
+    })
   },
 
-  onShow: function () {
-    console.log('user on show')
-  },
-
+  // Bottom Bar的方法
   redirect: function(e) {
     const newTab = e.detail
     if (newTab != 'user') {
@@ -24,5 +26,18 @@ Page({
         url: url
       })
     }
+  },
+
+  // Go to VIP页
+  gotoVipPage(e) {
+    wx.navigateTo({
+      url: `/pages/vip/vip`,
+    })
+  },
+
+  gotoEmailPage(e) {
+    wx.navigateTo({
+      url: '/pages/email/email',
+    })
   }
 })

@@ -4,3 +4,25 @@
   height: 100%;
   width: 100%;
 }
+
+.customCallout {
+  box-sizing: border-box;
+  background-color: #fff; 
+  border: 1px solid #ccc;
+  border-radius: 30px;
+  width: 250px;
+  height: 100%;
+  padding: 20px;
+  justify-content: center;
+  align-items: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.notice {
+  white-space: pre-line;
+  word-wrap: break-word;
+  word-break: break-all;
+  color: green;
+  font-weight: 500;
+}

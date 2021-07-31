@@ -1,0 +1,110 @@
+<view style="height: 2.5rem;"></view>
+<view class="title text-orange">全部房源</view>
+
+<view style="padding: 10rpx;">
+  <button style="height: 90rpx;" class="line-blue" bindtap="openMap">
+    <text class="cuIcon-locationfill text-red"></text> 地图
+  </button>
+</view>
+
+<view class="VerticalBox">
+  <!-- navBar -->
+  <scroll-view
+    scroll-y 
+    scroll-with-animation
+    scroll-top="{{VerticalNavTop}}"
+    class="VerticalNav nav"
+    style="height:calc(100vh - 5.8rem - 110rpx - calc(100rpx + env(safe-area-inset-bottom) / 2))"
+  >
+    <view
+      class="cu-item {{index==TabCur?'text-green cur':''}}"
+      wx:for="{{list}}"
+      wx:for-item="area"
+      wx:key="*this"
+      data-id="{{index}}"
+      bindtap="tabSelect"
+    >
+      {{area.areaName == null ? '未知街道' : area.areaName}}
+    </view>
+  </scroll-view>
+
+  <scroll-view
+    scroll-y 
+    scroll-with-animation
+    class="VerticalMain"
+    style="height:calc(100vh - 5.8rem - 110rpx - calc(100rpx + env(safe-area-inset-bottom) / 2))"
+    scroll-into-view="main-{{MainCur}}"
+    bindscroll="VerticalMain"
+  >
+    <!-- 遍历社区 -->
+    <view
+      wx:for="{{list}}"
+      wx:for-item="area"
+      wx:key="*this"
+      id="main-{{index}}"
+      class="padding-top padding-lr"
+    >
+      <!-- 社区名称 -->
+      <view class='cu-bar solid-bottom bg-white'>
+        <view class='action'>
+          <text class='cuIcon-title text-green'></text> {{area.areaName == null ? '未知街道' : area.areaName}} 
+        </view>
+      </view>
+
+      <!-- 遍历社区的小区 -->
+      <view 
+        class="cu-list menu"
+      >
+      <block
+        wx:for="{{area.projects}}"
+        wx:for-item="project"
+        wx:key="*this"
+      >
+        <view class="cu-item">
+          <view class="content">
+
+            <!-- 小区名称 -->
+            <view class="padding">
+              <text class="cuIcon-homefill text-cyan text-bold" style="margin-right: 5px"></text>
+              <text class="text-black">{{project.pName}}</text>
+            </view>
+
+            <!-- 房源数量 -->
+            <view class="desc padding-left padding-bottom" style="display: flex; flex-direction: row; align-items: center;">
+              <view class="text-content text-grey">房源数量：{{project.rentableCount}}</view>
+            </view>
+
+            <!-- 在地图上查看 -->
+            <view 
+              class="padding-left" 
+              bindtap="seePointOnMap" 
+              data-id="{{area.id}}"
+              data-aid="{{area.areaId}}" 
+              data-pid="{{project.pId}}"
+            >
+              <text class="cuIcon-locationfill text-red"></text><text class="text-blue">在地图上查看</text>
+            </view>
+
+            <!-- 订阅按钮 -->
+            <view style="display: flex; flex-direction: row;" class="padding">
+              <switch
+                checked="{{project.isSubscribed}}" 
+                bindchange="subscribe" 
+                data-pid="{{project.pId}}"
+                data-pname="{{project.pName}}"
+                data-aid="{{area.id}}"
+              ></switch>
+              <view class="text-{{project.isSubscribed ? 'green' : 'gray'}} text-bold padding-left">
+                {{project.isSubscribed ? '已订阅' : '未订阅'}}
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+      </view>
+    </view>
+  </scroll-view>
+</view>
+
+<!-- tabBar -->
+<tabBar bindswitchtab="redirect" tab="all"></tabBar>

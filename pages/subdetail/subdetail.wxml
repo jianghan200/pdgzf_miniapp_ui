@@ -1,0 +1,111 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold">订阅规则</view>
+  </view>
+</cu-custom>
+
+<scroll-view scroll-y style="height:calc(100vh - {{CustomBar}}px)">
+  <view class="p-title">{{subscription.info.name}}</view>
+  <view class="text-gray padding-bottom" style="font-size: small; padding-left: 1rem;">{{subscription.info.townshipName}}</view>
+  <view style="color: cadetblue; padding-left: 1rem;">{{subscription.info.houseCount}}套房源</view>
+  
+  <form>
+    <!-- 价格上限 -->
+    <view class="cu-form-group margin-top">
+      <view class="title">
+        <text class="cuIcon-title text-orange"></text> 价格上限
+      </view>
+      <input placeholder="不设置" type="number" value="{{priceCap}}" bindinput="setPriceCap"></input>
+    </view>
+
+    <!-- 面积上限 -->
+    <view class="cu-form-group margin-top">
+      <view class="title">
+        <text class="cuIcon-title text-orange"></text> 面积上限
+      </view>
+      <input placeholder="不设置" type="number" value="{{areaCap}}" bindinput="setAreaCap"></input>
+    </view>
+
+    <!-- 最小面积 -->
+    <view class="cu-form-group">
+      <view class="title">
+        <text class="cuIcon-title text-orange"></text> 最小面积
+      </view>
+      <input placeholder="不设置" type="number" value="{{minArea}}" bindinput="setMinArea"></input>
+    </view>
+
+    <!-- 排除楼层 -->
+    <view class="cu-form-group margin-top">
+      <view class="title">
+        <text class="cuIcon-title text-orange"></text> 排除楼层
+      </view>
+      <input placeholder="不设置" model:value="{{excludeFloor}}" bindinput="setExcludedFloors"></input>
+    </view>
+    <view class="text-orange padding-left margin-top">“排除楼层”用逗号隔断. 例如输入：1,4</view>
+
+    <!-- 户型偏好 -->
+    <view class="cu-bar bg-white solid-bottom margin-top">
+      <view class="action">
+        <text class="cuIcon-title text-orange"></text> 偏好户型
+      </view>
+    </view>
+
+    <checkbox-group bindchange="huXingSelection">
+      <block
+        wx:for="{{huXings}}"
+        wx:for-item="huXing"
+        wx:key="*this"
+      >
+        <view class="cu-form-group">
+          <view class="title">{{huXing.displayName}}</view>
+          <checkbox value="{{huXing.value}}" checked="{{huXing.checked}}"></checkbox>
+        </view>
+      </block>
+    </checkbox-group>
+  </form>
+
+  <!-- 确认按钮 -->
+  <view style="padding: 10rpx;">
+    <button style="height: 90rpx;" class="bg-green" bindtap="openModal">
+      <text class="cuIcon-roundcheck"></text> 确认修改
+    </button>
+  </view>
+
+  <!-- 真placeholder -->
+  <view style="height : 50px"></view>
+</scroll-view>
+
+<!-- 确认修改弹窗 -->
+<view class="cu-modal {{showModal ? 'show' : ''}}">
+  <view class="cu-dialog">
+    <!-- Dialog Header -->
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">确认保存订阅规则？</view>
+      <view class="action" bindtap="hideModal"><text class="cuIcon-close text-red"></text></view>
+    </view>
+    <scroll-view scroll-y>
+      <view style="display: flex; flex-direction: column; align-items: baseline; padding: 30rpx;">
+        <view class="padding-top padding-left text-bold text-blue">{{subscription.info.name}}</view>
+        <view class="padding-top padding-left text-bold">价格上限：{{priceCap == '' ? '不设置' : priceCap}}</view>
+        <view class="padding-top padding-left text-bold">面积上限：{{areaCap == '' ? '不设置' : areaCap}}</view>
+        <view class="padding-top padding-left text-bold">最小面积：{{minArea == '' ? '不设置' : minArea}}</view>
+        <view class="padding-top padding-left text-bold">
+          排除楼层：{{excludeFloor.trim() == '' ? '无' : excludeFloor}}
+        </view>
+        <view class="padding-top padding-left text-bold">
+          偏好户型：{{newHuXingStr}}
+        </view>
+      </view>
+    </scroll-view>
+    <!-- 按钮们 -->
+    <view class="cu-bar bg-white">
+      <view class="action margin-0 flex-sub solid-left text-orange text-bold" bindtap="saveChanges">
+        确认保存
+      </view>
+      <view class="action margin-0 flex-sub solid-left" bindtap="hideModal">
+        再想想
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,17 +1,37 @@
 <cu-custom bgColor="bg-black" isBack="{{true}}">
   <view slot="backText">返回</view>
   <view slot="content">
-    <view class="text-white text-bold">今日房源分布</view>
+    <view class="text-white text-bold">{{title}}</view>
   </view>
 </cu-custom>
 <view style="height: 100vh">
   <map 
     id="map" 
-    subkey="7X5BZ-FNCRW-PB5R6-OXKRO-HBCCH-ZVBEA"
+    subkey="2QUBZ-IJVWW-K6RRU-R7ANO-WSRSJ-PTBMG"
     latitude="{{selfLatitude}}"
     longitude="{{selfLongitude}}"
     markers="{{markers}}"
     scale="10"
     show-location
-  ></map>
+  >
+    <cover-view slot="callout">
+      <block wx:for="{{markers}}" wx:key="*this">
+        <cover-view marker-id="{{item.id}}" class="customCallout">
+          <cover-view class="text-bold" style="font-size: larger;">{{item.pname}}</cover-view>
+          <cover-view class="text-blue text-bold">{{item.todayCountDesc}}</cover-view>
+          <cover-view>{{item.countDesc}}</cover-view>
+          <cover-view>{{item.appearCounts}}</cover-view>
+          <cover-view>{{item.houseCounts}}</cover-view>
+          <!-- 关于全部房源每个小区的房型和价格信息 -->
+          <block wx:for="{{item.houseInfo}}" wx:for-item="info" wx:key="*this">
+            <cover-view class="notice">{{info.houseType}}: {{info.size}}平 {{info.rent}}元</cover-view>
+          </block>
+          <!-- 关于今日每个房源的排队形势描述 -->
+          <block wx:for="{{item.queueNotice}}" wx:for-item="notice" wx:key="*this">
+            <cover-view class="notice">{{notice}}</cover-view>
+          </block>
+        </cover-view>
+      </block>
+    </cover-view>
+  </map>
 </view>

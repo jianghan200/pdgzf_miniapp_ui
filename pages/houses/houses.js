@@ -16,27 +16,33 @@ Page({
   onLoad: function (options) {
     let self = this
 
-    let projects = wx.getStorageSync('houses')
-    if (projects) {
-      console.log(projects)
-
+    let todayProjects = wx.getStorageSync('todayProjects')
+    if (todayProjects) {
       let pId = options.pid
-      let project = projects.find(elem => elem.pId == pId)
-      let housesInfo = project.houses.map(house => {
-        let pieces = house.fullName.split('/')
-        pieces.splice(0, 1)
-        let betterName = pieces.join('/')
-        let houseInfo = {
-          name: betterName,
-          rent: house.rent,
-          size: house.area,
-          type: constants.id2Type(house.typeName)
-        }
-        return houseInfo
+      // flatMap
+      let projects = []
+      todayProjects.forEach(area => {
+        projects = projects.concat(area.projects)
       })
 
+      let theProject = projects.find(p => p.pId == pId)
+      // 此小区的所有房屋的信息
+      let housesInfo = 
+        theProject.houses.map(house => {
+          let pieces = house.fullName.split('/')
+          pieces.splice(0, 1)
+          let betterName = pieces.join('/')
+          let houseInfo = {
+            name: betterName,
+            rent: house.rent,
+            size: house.area,
+            type: constants.id2Type(house.typeName)
+          }
+          return houseInfo
+        })
+
       self.setData({
-        pName: project.pName,
+        pName: theProject.pName,
         houses: housesInfo
       })
     }

@@ -1,5 +1,4 @@
-/* pages/user/user.wxss */
-
+/* pages/vip/vip.wxss */
 .userinfo {
   display: flex; 
   flex-direction: column; 
@@ -19,4 +18,8 @@
   font-size: x-large; 
   font-family: serif;
   padding: .5rem;
+}
+
+.cu-form-group .title {
+  min-width: calc(6em + 30rpx);
 }

@@ -15,6 +15,7 @@ page {
 	/* 标准色 */
 	--red: #e54d42;
 	--orange: #f37b1d;
+	--gold: #ffd700;
 	--yellow: #fbbd08;
 	--olive: #8dc63f;
 	--green: #39b54a;

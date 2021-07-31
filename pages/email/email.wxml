@@ -1,0 +1,8 @@
+<!--pages/email/email.wxml-->
+<cu-custom bgColor="bg-cyan" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-bold" style="color: white;">开通邮件订阅</view>
+  </view>
+</cu-custom>
+
