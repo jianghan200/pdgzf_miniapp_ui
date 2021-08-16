@@ -6,3 +6,98 @@
   </view>
 </cu-custom>
 
+<!-- 普通用户看到的界面 -->
+<view 
+  style="height: calc(80vh - {{CustomBar}}px); display: flex; flex-direction: column; justify-content: center; align-items: center;"
+  wx:if="{{type == 0}}"
+>
+  <view class="padding" bindtap="register">
+    <text class="cuIcon-notice text-grey" style="font-size: 50px;"></text>
+  </view>
+
+  <view class="text-bold text-xl text-orange">
+    点击小铃铛开启邮件订阅
+  </view>
+  <view class="text-bold text-xl padding-top">
+    早、中、晚提供“今日房源”简报
+  </view>
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    跟进“关注房源”的排队情况
+  </view>
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    成为VIP终身免费获得邮件订阅
+  </view>
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    每月2.99, 一瓶快乐水即可开始懒人选房～
+  </view>
+</view>
+
+<!-- 付款窗口 -->
+<view class="cu-modal {{showRegisterModal ? 'show' : ''}}">
+  <view class="cu-dialog">
+    <!-- Modal的heading -->
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">{{modalTitle}}</view>
+      <view class="action" bindtap="hideModal"><text class="cuIcon-close text-red"></text></view>
+    </view>
+    <!-- Modal的内容 -->
+    <form>
+      <view class="cu-form-group">
+        <view class="title">电邮：</view>
+        <input bindinput="handleEmail" placeholder="范例：xxx@email.com" model:value="{{email}}"></input>
+      </view>
+    </form>
+
+    <!-- Modal上的按钮组 -->
+    <view class="cu-bar bg-white">
+      <!-- 支付按钮 -->
+      <view class="action margin-0 flex-sub text-green " bindtap="pay">
+        <text class="cuIcon-moneybag"></text>微信支付
+      </view>
+      <!-- 取消按钮 -->
+      <view class="action margin-0 flex-sub text-grey solid-left" bindtap="hideModal">取消</view>
+    </view>
+  </view>
+</view>
+
+<!-- 已经开启订阅的用户看到的界面 -->
+<view
+  style="height: calc(80vh - {{CustomBar}}px); display: flex; flex-direction: column; justify-content: center; align-items: center;"
+  wx:if="{{type == 1}}"
+>
+  <view class="padding" bindtap="register">
+    <text style="font-size: 50px;">{{daysToExpire >= 3 ? '😎' : '🥺'}}</text>
+  </view>
+
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    已开启邮件订阅
+  </view>
+
+  <view class="text-bold text-xl text-{{daysToExpire >= 3 ? 'black' : 'orange'}}" style="padding-top: 0.5rem;">
+    您还有 {{daysToExpire}} 天到期
+  </view>
+
+  <view class="text-bold text-xl text-{{daysToExpire >= 3 ? 'black' : 'orange'}}" style="padding-top: 0.5rem;">
+    点击表情开启续费
+  </view>
+</view>
+
+<!-- VIP尊享界面 -->
+<view
+  style="height: calc(80vh - {{CustomBar}}px); display: flex; flex-direction: column; justify-content: center; align-items: center;"
+  wx:if="{{type == 2}}"
+>
+  <view class="userinfo">
+    <view class="avatar"><open-data type="userAvatarUrl"></open-data></view>
+    <open-data type="userNickName" lang="zh_CN" class="nickname"></open-data>
+  </view>
+
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    给会员大人请{{dayTime}}安啦～
+  </view>
+
+  <image class="worker-avatar" src="/assets/avatar.jpg" mode="aspectFill"></image>
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    小的这就给您写研报去～
+  </view>
+</view>

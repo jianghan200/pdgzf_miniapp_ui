@@ -1,6 +1,6 @@
 <view class="cu-bar tabbar bg-white shadow foot">
   <view class="action" bindtap="switchTab" data-tabname="today">
-    <view class="cuIcon-{{tab == 'today' ? 'homefill' : 'home'}} text-{{tab == 'today' ? 'purple' : 'gray'}}"></view>
+    <view class="cuIcon-{{tab == 'today' ? 'homefill' : 'home'}} text-{{tab == 'today' ? 'orange' : 'gray'}}"></view>
     <view class="text-{{tab == 'today' ? 'black' : 'gray'}}">今日可选房源</view>
   </view>
 
@@ -10,12 +10,12 @@
   </view>
 
   <view class="action" bindtap="switchTab" data-tabname="subscribe">
-    <view class="cuIcon-{{tab == 'subscribe' ? 'favorfill' : 'favor'}} text-{{tab == 'subscribe' ? 'pink' : 'gray'}}"></view>
+    <view class="cuIcon-{{tab == 'subscribe' ? 'favorfill' : 'favor'}} text-{{tab == 'subscribe' ? 'orange' : 'gray'}}"></view>
     <view class="text-{{tab == 'subscribe' ? 'black' : 'gray'}}">关注房源</view>
   </view>
 
   <view class="action" bindtap="switchTab" data-tabname="user">
-    <view class="cuIcon-{{tab == 'user' ? 'peoplefill' : 'people'}} text-{{tab == 'user' ? 'black' : 'gray'}}"></view>
+    <view class="cuIcon-{{tab == 'user' ? 'peoplefill' : 'people'}} text-{{tab == 'user' ? 'orange' : 'gray'}}"></view>
     <view class="text-{{tab == 'user' ? 'black' : 'gray'}}">我的</view>
   </view>
 </view>

@@ -52,7 +52,7 @@ Page({
 
   // 设置偏好户型
   huXingSelection(e) {
-    let selections = e.detail.value
+    let selections = e.detail.value // e.g. ["2", "3", "4"]
     this.setData({
       newHuXings : selections,
       newHuXingStr : selections.map(s => {
@@ -107,10 +107,12 @@ Page({
     let pid = self.data.subscription.pid
     let pname = self.data.subscription.subInfo.name
     let payload = {}
-    payload['targetType'] = JSON.stringify(self.data.newHuXings)
+    // 不能保存["1", "2"]，而是[1, 2]
+    payload['targetType'] = JSON.stringify(self.data.newHuXings.map(str => Number(str)))
     if (self.data.excludeFloor.trim() != '') {
       let exFloorStr = self.data.excludeFloor.replaceAll('，', ',')
-      payload['excludeFloor'] = JSON.stringify(exFloorStr.split(','))
+      // 不能保存["1", "2"]，而是[1, 2]
+      payload['excludeFloor'] = JSON.stringify(exFloorStr.split(',').map(str => Number(str)))
     }
     if (self.data.priceCap != null) {
       payload['maxPrice'] = self.data.priceCap

@@ -2,29 +2,30 @@
 
 <!-- 微信用户信息 -->
 <view class="userinfo">
-  <view class="avatar"><open-data type="userAvatarUrl"></open-data></view>
-  <open-data type="userNickName" lang="zh_CN" class="nickname"></open-data>
-  <button 
-    class="cu-btn round line-{{userinfo.type == 0 ? 'grey' : 'purple'}} button-hover text-bold"
-  >{{userinfo.type == 0 ? '普通用户' : 'VIP'}}</button>
+  <view class="{{vipInfo.type == 2 ? 'vip-' : ''}}avatar"><open-data type="userAvatarUrl"></open-data></view>
+  <open-data type="userNickName" lang="zh_CN" class="{{vipInfo.type == 2 ? 'vip-' : ''}}nickname"></open-data>
+  <button wx:if="{{vipInfo.type == 0}}" class="cu-btn round line-grey button-hover shadow text-bold">普通用户</button>
+  <button wx:if="{{vipInfo.type == 1}}" class="cu-btn round line-purple button-hover shadow text-bold">邮件订阅用户</button>
+  <button wx:if="{{vipInfo.type == 2}}" class="cu-btn round line-yellow button-hover shadow text-bold">VIP</button>
 </view>
 
 <!-- 内容 -->
 <view class="cu-list menu sm-border card-menu margin-top">
   <!-- VIP -->
-  <view class="cu-item arrow" wx:if="{{userinfo.type == 0}}" bindtap="gotoVipPage">
+  <view class="cu-item arrow" wx:if="{{vipInfo.type != 2}}" bindtap="gotoVipPage">
     <view class="content">
-      <text class="cuIcon-vip text-orange text-bold"></text>
-      <text class="text-orange text-bold">成为VIP</text>
+      <text class="cuIcon-vip text-bold" style="color: goldenrod;"></text>
+      <text class="text-bold" style="color: goldenrod;">成为自动选房VIP</text>
     </view>
   </view>
-
-  <view class="cu-item arrow" wx:if="{{userinfo.type == 1}}">
+  <!-- 如果已经是VIP了，可以修改自己的信息 -->
+  <view class="cu-item arrow" wx:if="{{vipInfo.type == 2}}" bindtap="goEditInfo">
     <view class="content">
-      <text class="cuIcon-vip text-orange text-bold"></text>
-      <text class="text-orange text-bold">编辑个人资料</text>
+      <text class="cuIcon-peoplefill text-bold" style="color: goldenrod;"></text>
+      <text class="text-bold" style="color: goldenrod;">修改个人信息</text>
     </view>
   </view>
+  
 
   <!-- 邮件订阅 -->
   <view class="cu-item arrow" bindtap="gotoEmailPage">

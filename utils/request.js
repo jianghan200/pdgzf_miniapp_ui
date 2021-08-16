@@ -284,6 +284,103 @@ const updateSubscription = function(pid, name, payload) {
   })
 }
 
+// 获取用户的vip信息
+const getVipInfo = function() {
+  let token = app.globalData.userinfo.tokenStr
+  const url = constants.userinfoServer + '/api/user/vip'
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      header: { 'token' : token },
+      success: function(res) {
+        if (res.data.status == 0) {
+          // 成功
+          resolve(res.data.data)
+        } else {
+          // 失败
+          console.log(res)
+          resolve(res.data.data)
+        }
+      },
+      fail: function(err) {
+        console.log(err)
+        console.log('未能加载到用户的会员信息')
+        resolve(err)
+      }
+    })
+  })
+}
+
+// 获取预支付信息
+const getPaymentInfo = function(payType) {
+  let token = app.globalData.userinfo.tokenStr
+  const url = constants.userinfoServer + '/api/pay?type=' + payType
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      header: { 'token' : token },
+      success: function(res) {
+        if (res.data.status == 0) {
+          // 成功
+          resolve(res.data.data)
+        } else {
+          // 失败
+          console.log(res)
+          reject(res.data.data)
+        }
+      },
+      fail: function(err) {
+        console.log(err)
+        reject(err)
+      }
+    })
+  })
+}
+
+// 上传 / 更新用户的信息
+const updateUserInfo = function(name, email, account, password) {
+  const url = constants.userinfoServer + '/api/user/update'
+  let token = app.globalData.userinfo.tokenStr
+  let payload = {}
+  if (name && name.trim() != '') {
+    payload['name'] = name.trim()
+  }
+  if (email && email.trim() != '') {
+    payload['email'] = email.trim()
+  }
+  if (account && account.trim() != '') {
+    payload['account'] = account.trim()
+  }
+  if (password && password.trim() != '') {
+    payload['password'] = password.trim()
+  }
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      header: {
+        'token' : token,
+        'content-type' : 'application/x-www-form-urlencoded'
+      },
+      method: 'POST',
+      data: payload,
+      success: function(res) {
+        if (res.data.status == 0) {
+          // 成功
+          resolve(true)
+        } else {
+          // 失败
+          console.log(res.data.data)
+          reject(res.data.data)
+        }
+      },
+      fail: function(err) {
+        console.log(err)
+        reject(false)
+      }
+    })
+  })
+}
+
 module.exports = {
   login : login,
   getSubscriptions : getSubscriptions,
@@ -294,5 +391,8 @@ module.exports = {
   updateSubscription : updateSubscription,
   getTodayProjects : getTodayProjects,
   getTodayHouses : getTodayHouses,
-  getTodayStats : getTodayStats
+  getTodayStats : getTodayStats,
+  getVipInfo : getVipInfo,
+  getPaymentInfo : getPaymentInfo,
+  updateUserInfo : updateUserInfo
 }

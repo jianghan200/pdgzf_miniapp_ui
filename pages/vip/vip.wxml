@@ -1,7 +1,7 @@
 <cu-custom bgColor="bg-black" isBack="{{true}}">
   <view slot="backText">返回</view>
   <view slot="content">
-    <view class="text-bold" style="color: gold;">成为VIP</view>
+    <view class="text-bold" style="color: gold;">{{ isVip ? 'VIP个人信息' : '成为VIP' }}</view>
   </view>
 </cu-custom>
 
@@ -9,34 +9,41 @@
 <view class="userinfo">
   <view class="avatar"><open-data type="userAvatarUrl"></open-data></view>
   <open-data type="userNickName" lang="zh_CN" class="nickname"></open-data>
+  <button 
+    class="cuIcon-vip bg-black text-yellow cu-btn round button-hover text-bold" 
+    bindtap="goToRights"
+  > 查看会员权益</button>
 </view>
 
 <!-- 表单 -->
 <form>
   <view class="cu-form-group margin-top">
 		<view class="title">姓名</view>
-		<input placeholder="必填" bindinput="fillName"></input>
+		<input placeholder="必填" bindinput="fillName" model:value="{{username}}"></input>
 	</view>
 
   <view class="cu-form-group">
 		<view class="title">邮箱</view>
-		<input placeholder="我们将定时推送您的订阅" bindinput="fillEmail"></input>
+		<input placeholder="将定时推送您订阅房源的信息" bindinput="fillEmail" model:value="{{email}}"></input>
 	</view>
 
   <view class="cu-form-group">
 		<view class="title">您的官网账号</view>
-		<input placeholder="浦东公租房官网的账户" bindinput="fillAccount"></input>
+		<input placeholder="浦东公租房官网的账户" bindinput="fillAccount" model:value="{{account}}"></input>
 	</view>
 
   <view class="cu-form-group">
 		<view class="title">您的官网密码</view>
-		<input placeholder="浦东公租房官网的密码" bindinput="fillPassword"></input>
+		<input placeholder="浦东公租房官网的密码" bindinput="fillPassword" model:value="{{password}}"></input>
 	</view>
 
   <!-- 递交信息按钮 -->
   <view style="padding: 10rpx;">
     <button style="height: 90rpx;" class="bg-black" bindtap="submit">
-      <text class="cuIcon-vip" style="color: gold; text-weight: 500"></text> 升级！
+      <text 
+        class="cuIcon-{{ isVip ? 'edit' : 'vip' }}" 
+        style="color: gold; font-weight: 500"
+      ></text> {{ isVip ? '更新信息' : '升级！' }}
     </button>
   </view>
 </form>
@@ -61,19 +68,18 @@
   <view class="cu-dialog">
     <!-- Dialog Header -->
     <view class="cu-bar bg-white justify-end">
-      <view class="content">升级为VIP</view>
+      <view class="content">{{ isVip ? '更改VIP资料' : '升级为VIP' }}</view>
       <view class="action" bindtap="hideModal"><text class="cuIcon-close text-red"></text></view>
     </view>
-    <view class="padding-xl">^ __ ^离公租房就差一步啦～</view>
+    <view class="padding-xl">{{ isVip ? '确定更改个人数据' : '^ __ ^离公租房就差一步啦～' }}</view>
     <!-- 按钮们 -->
     <view class="cu-bar bg-white">
-      <view class="action margin-0 flex-sub text-green " bindtap="hideModal">
-        <text class="cuIcon-moneybag"></text> 微信支付
+      <view class="action margin-0 flex-sub text-green " bindtap="pay">
+        <text class="cuIcon-{{ isVip ? 'appreciatefill' : 'moneybag' }}"></text> {{ isVip ? '确认' : '给我升级' }}
       </view>
-      <view class="action margin-0 flex-sub solid-left text-orange text-bold" bindtap="postUserInfo">
-        给我升级
+      <view class="action margin-0 flex-sub solid-left" bindtap="hideModal">
+        {{ isVip ? '取消' : '残忍拒绝' }}
       </view>
-      <view class="action margin-0 flex-sub solid-left" bindtap="hideModal">残忍拒绝</view>
     </view>
   </view>
 </view>

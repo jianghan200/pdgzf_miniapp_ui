@@ -1,7 +1,7 @@
 <cu-custom bgColor="bg-black" isBack="{{true}}">
   <view slot="backText">返回</view>
   <view slot="content">
-    <view class="text-white text-bold">房屋详情</view>
+    <view class="text-white text-bold">小区详情</view>
   </view>
 </cu-custom>
 

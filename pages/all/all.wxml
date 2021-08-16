@@ -92,7 +92,7 @@
                 bindchange="subscribe" 
                 data-pid="{{project.pId}}"
                 data-pname="{{project.pName}}"
-                data-aid="{{area.id}}"
+                data-aid="{{area.areaId}}"
               ></switch>
               <view class="text-{{project.isSubscribed ? 'green' : 'gray'}} text-bold padding-left">
                 {{project.isSubscribed ? '已订阅' : '未订阅'}}

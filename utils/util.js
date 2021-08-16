@@ -9,6 +9,19 @@ const formatTime = date => {
   return `${[year, month, day].map(formatNumber).join('/')} ${[hour, minute, second].map(formatNumber).join(':')}`
 }
 
+const formatDate = date => {
+  const year = date.getFullYear()
+  const month = date.getMonth() + 1
+  const day = date.getDate()
+
+  return `${[year, month, day].map(formatNumber).join('/')}`
+}
+
+const yesterday = function() {
+  const now = new Date().getTime()
+  return new Date(now - 24 * 60 * 60 * 1000)
+}
+
 const formatNumber = n => {
   n = n.toString()
   return n[1] ? n : `0${n}`
@@ -26,7 +39,15 @@ const groupBy = function( array , f ) {
   });
 }
 
+const validateEmail = function(email) {
+  const emailRegex = /^(?:\w+\.?)*\w+@(?:\w+\.?)*\w+$/
+  return emailRegex.test(email)
+}
+
 module.exports = {
   formatTime,
-  groupBy
+  formatDate,
+  groupBy,
+  yesterday,
+  validateEmail : validateEmail
 }

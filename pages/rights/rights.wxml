@@ -1,0 +1,44 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-bold" style="color: gold;">VIP权益</view>
+  </view>
+</cu-custom>
+
+<view style="height: 50px;"></view>
+
+<!-- 微信用户信息 -->
+<view class="userinfo">
+  <view class="vip-avatar"><open-data type="userAvatarUrl"></open-data></view>
+  <open-data type="userNickName" lang="zh_CN" class="vip-nickname"></open-data>
+</view>
+
+<scroll-view 
+  scroll-y 
+  class="padding" 
+  style="display: flex; flex-direction: column; align-items: center; justify-content: center;"
+>
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    1. 无需登陆官网, 自动排队, 省心选房
+  </view>
+
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    2. 永久免费获得邮件订阅, 每日早晚看到排队情况
+  </view>
+
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    3. 获取各个公租房小区的户型图、看房视频（持续更新中～）
+  </view>
+
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    4. 可以向真人咨询，排坑答疑
+  </view>
+
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    5. 在后续推出的功能中（社区类）, 您永远是VIP
+  </view>
+
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    6. 仅需99，永久VIP
+  </view>
+</scroll-view>

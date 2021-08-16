@@ -2,6 +2,7 @@
 const util = require('../../utils/util')
 const constants = require('../../utils/constants')
 const requests = require('../../utils/request')
+const subHelper = require('../../utils/subscripton')
 let app = getApp()
 
 Page({
@@ -52,11 +53,17 @@ Page({
     let pid = e.currentTarget.dataset.pid
     let pname = e.currentTarget.dataset.pname
     let aid = e.currentTarget.dataset.aid
+
     let afterChangeValue = e.detail.value
 
     let self = this
     // 找所属到街道
-    let area = self.data.list.find(elem => elem.id == aid)
+    let area = 
+      self.data.list.find(area => {
+        // 数据可能出现areaId为空的情况或者小区Id为空的情况
+        let projectOpt = area.projects.find(p => p.pId == pid)
+        return projectOpt && area.areaId == aid
+      })
     let indexOfThisArea = self.data.list.indexOf(area)
 
     // 找到小区
@@ -66,55 +73,48 @@ Page({
     
     if (afterChangeValue) {
       // 开启订阅
-      requests
-        .subscribeProject(pid, pname)
-        .then((res) => {
+      subHelper
+        .subscribeThenSyncUp(aid, pid, pname)
+        .then((rid) => {
           // 替换
           projectOnChange.isSubscribed = true
+          projectOnChange.ruleId = rid
           projectsOfThisArea[indexOfProjectOnChange] = projectOnChange
           let updatedArea = {
-            id: aid,
+            id: area.id,
+            areaId: aid,
             areaName: area.areaName,
             projects: projectsOfThisArea
           }
-
-          // 更新缓存
-          let oldAllProjects = self.data.list
-          oldAllProjects[indexOfThisArea] = updatedArea
-          wx.setStorageSync('allProjects', oldAllProjects)
-
+          // 更新list
           self.setData({
             ['list[' + indexOfThisArea + ']'] : updatedArea
           })
-        }).catch((err) => {
-          // 请求失败，不能update data
+        })
+        .catch((err) => {
+          console.log(err)
         })
     } else {
       // 关闭订阅
-      requests
-        .unsubscribe(projectOnChange.ruleId)
+      subHelper
+        .unsubscribeThenSyncUp(projectOnChange.ruleId, aid, pid)
         .then((res) => {
           // 替换
           projectOnChange.isSubscribed = false
           projectOnChange.ruleId = ''
           projectsOfThisArea[indexOfProjectOnChange] = projectOnChange
           let updatedArea = {
-            id: aid,
+            id: area.id,
+            areaId: aid,
             areaName: area.areaName,
             projects: projectsOfThisArea
           }
-
-          // 更新缓存
-          let oldAllProjects = self.data.list
-          oldAllProjects[indexOfThisArea] = updatedArea
-          wx.setStorageSync('allProjects', oldAllProjects)
-          
+          // 更新list
           self.setData({
             ['list[' + indexOfThisArea + ']'] : updatedArea
           })
         })
         .catch((err) => {
-          // 请求失败，不能update data
           console.log(err)
         })
     }
@@ -171,6 +171,35 @@ Page({
       wx.redirectTo({
         url: url
       })
+    }
+  },
+
+  // 转发
+  onShareAppMessage: function(options) {
+    return {
+      title : 'PD公租房',
+      path : '/pages/login/login',
+      imageUrl : '',
+      success : function(res) {
+        if (res.errMsg == 'shareAppMessage:ok') {
+          // 用户转发成功
+          wx.showToast({
+            title: '转发成功',
+            icon: 'success'
+          })
+        }
+      },
+      fail : function(err) {
+        if (err.errMsg == 'shareAppMessage:fail cancel') {
+          wx.showToast({
+            title: '转发已取消',
+          })
+        } else {
+          wx.showToast({
+            title: '转发失败',
+          })
+        }
+      }
     }
   }
 })

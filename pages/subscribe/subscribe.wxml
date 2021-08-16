@@ -4,7 +4,7 @@
 <scroll-view
   scroll-y
   scroll-with-animation
-  style="height:calc(100vh - calc(100rpx + env(safe-area-inset-bottom) / 2))"
+  style="height:calc(100vh - 100px - calc(100rpx + env(safe-area-inset-bottom) / 2))"
 >
   <block
     wx:for="{{list}}"

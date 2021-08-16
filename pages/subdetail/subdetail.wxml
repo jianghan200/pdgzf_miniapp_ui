@@ -6,9 +6,13 @@
 </cu-custom>
 
 <scroll-view scroll-y style="height:calc(100vh - {{CustomBar}}px)">
-  <view class="p-title">{{subscription.info.name}}</view>
-  <view class="text-gray padding-bottom" style="font-size: small; padding-left: 1rem;">{{subscription.info.townshipName}}</view>
-  <view style="color: cadetblue; padding-left: 1rem;">{{subscription.info.houseCount}}套房源</view>
+  <view class="p-title">{{subscription.info.pName}}</view>
+  <view 
+    class="text-gray padding-bottom" 
+    style="font-size: small; padding-left: 1rem;"
+  >
+    {{subscription.info.raw.townshipName}}</view>
+  <view style="color: cadetblue; padding-left: 1rem;">{{subscription.info.raw.houseCount}}套房源</view>
   
   <form>
     <!-- 价格上限 -->
@@ -16,7 +20,7 @@
       <view class="title">
         <text class="cuIcon-title text-orange"></text> 价格上限
       </view>
-      <input placeholder="不设置" type="number" value="{{priceCap}}" bindinput="setPriceCap"></input>
+      <input placeholder="不设限" type="number" value="{{priceCap}}" bindinput="setPriceCap"></input>
     </view>
 
     <!-- 面积上限 -->
@@ -24,7 +28,7 @@
       <view class="title">
         <text class="cuIcon-title text-orange"></text> 面积上限
       </view>
-      <input placeholder="不设置" type="number" value="{{areaCap}}" bindinput="setAreaCap"></input>
+      <input placeholder="不设限" type="number" value="{{areaCap}}" bindinput="setAreaCap"></input>
     </view>
 
     <!-- 最小面积 -->
@@ -32,7 +36,7 @@
       <view class="title">
         <text class="cuIcon-title text-orange"></text> 最小面积
       </view>
-      <input placeholder="不设置" type="number" value="{{minArea}}" bindinput="setMinArea"></input>
+      <input placeholder="不设限" type="number" value="{{minArea}}" bindinput="setMinArea"></input>
     </view>
 
     <!-- 排除楼层 -->
@@ -40,7 +44,7 @@
       <view class="title">
         <text class="cuIcon-title text-orange"></text> 排除楼层
       </view>
-      <input placeholder="不设置" model:value="{{excludeFloor}}" bindinput="setExcludedFloors"></input>
+      <input placeholder="不设限" model:value="{{excludeFloor}}" bindinput="setExcludedFloors"></input>
     </view>
     <view class="text-orange padding-left margin-top">“排除楼层”用逗号隔断. 例如输入：1,4</view>
 
@@ -87,9 +91,9 @@
     <scroll-view scroll-y>
       <view style="display: flex; flex-direction: column; align-items: baseline; padding: 30rpx;">
         <view class="padding-top padding-left text-bold text-blue">{{subscription.info.name}}</view>
-        <view class="padding-top padding-left text-bold">价格上限：{{priceCap == '' ? '不设置' : priceCap}}</view>
-        <view class="padding-top padding-left text-bold">面积上限：{{areaCap == '' ? '不设置' : areaCap}}</view>
-        <view class="padding-top padding-left text-bold">最小面积：{{minArea == '' ? '不设置' : minArea}}</view>
+        <view class="padding-top padding-left text-bold">价格上限：{{priceCap == '' ? '不设限' : priceCap}}</view>
+        <view class="padding-top padding-left text-bold">面积上限：{{areaCap == '' ? '不设限' : areaCap}}</view>
+        <view class="padding-top padding-left text-bold">最小面积：{{minArea == '' ? '不设限' : minArea}}</view>
         <view class="padding-top padding-left text-bold">
           排除楼层：{{excludeFloor.trim() == '' ? '无' : excludeFloor}}
         </view>

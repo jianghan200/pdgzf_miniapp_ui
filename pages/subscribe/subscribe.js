@@ -2,6 +2,7 @@
 const app = getApp()
 const constants = require('../../utils/constants')
 const requests = require('../../utils/request')
+const subHelper = require('../../utils/subscripton')
 Page({
   data: {
     list: [],
@@ -72,31 +73,17 @@ Page({
   // 解除订阅
   removeSubscription() {
     let ruleId = this.data.selectedRule.subInfo.id
+    let areaId = this.data.selectedRule.aid
+    let projectId = this.data.selectedRule.pid
+
     let self = this
-    requests
-      .unsubscribe(ruleId)
+    subHelper
+      .unsubscribeThenSyncUp(ruleId, areaId, projectId)
       .then((res) => {
-        // 手动更新缓存中
-        let oldAllProjects = wx.getStorageSync('allProjects')
-        let toBeUpdatedProjectId = self.data.selectedRule.pid
-        // 锁定要更新的社区
-        let areaToBeUpdated = oldAllProjects.find(area => area.areaId == self.data.selectedRule.aid)
-        let indexOfAreaToBeUpdated = oldAllProjects.indexOf(areaToBeUpdated)
-        // 锁定要更新的小区
-        let projectToBeUpdated = areaToBeUpdated.projects.find(p => p.pId == toBeUpdatedProjectId)
-        let indexOfProjectToBeUpdated = areaToBeUpdated.projects.indexOf(projectToBeUpdated)
-        // 开始更新缓存
-        projectToBeUpdated.isSubscribed = false
-        areaToBeUpdated.projects[indexOfProjectToBeUpdated] = projectToBeUpdated
-        oldAllProjects[indexOfAreaToBeUpdated] = areaToBeUpdated
-
-        wx.setStorageSync('allProjects', oldAllProjects)
-
         self.loadRules()
         self.hideModal()
       })
       .catch((err) => {
-        // 请求失败，不能update data
         console.log(err)
       })
   },
@@ -139,6 +126,35 @@ Page({
       wx.redirectTo({
         url: url
       })
+    }
+  },
+
+  // 转发
+  onShareAppMessage: function(options) {
+    return {
+      title : 'PD公租房',
+      path : '/pages/login/login',
+      imageUrl : '',
+      success : function(res) {
+        if (res.errMsg == 'shareAppMessage:ok') {
+          // 用户转发成功
+          wx.showToast({
+            title: '转发成功',
+            icon: 'success'
+          })
+        }
+      },
+      fail : function(err) {
+        if (err.errMsg == 'shareAppMessage:fail cancel') {
+          wx.showToast({
+            title: '转发已取消',
+          })
+        } else {
+          wx.showToast({
+            title: '转发失败',
+          })
+        }
+      }
     }
   }
 })

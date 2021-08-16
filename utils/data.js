@@ -2,7 +2,7 @@ const requests = require('./request')
 const util = require('./util')
 
 // 处理今日小区的rawData
-const handleTodayProjects = function(projectsRawData, housesRawData, stats) {
+const handleTodayProjects = function(projectsRawData, housesRawData, stats, subscriptionsRawData) {
   const projectInGroups = 
     util.groupBy(projectsRawData, function(item) {
       // 小区信息用社区id划分组别
@@ -29,12 +29,16 @@ const handleTodayProjects = function(projectsRawData, housesRawData, stats) {
       let projects = 
         group.map(elem => {
           let hosuesOfThisProject = houseInGroups.find(g => g.pId == elem.id)
+          // 判断该小区是否已经被订阅
+          let subscriptionOpt = subscriptionsRawData.find(sub => sub.projectId == elem.id)
           let project = {
             pId: elem.id,
             pName: elem.name,
             updateTime: elem.updateTime,
             rentableCount: elem.rentableCount,
-            raw: elem
+            raw: elem,
+            isSubscribed: subscriptionOpt == undefined ? false : true,
+            ruleId: subscriptionOpt == undefined ? '' : subscriptionOpt.id,
           }
           if (stats && stats[elem.id]) {
             project['appearCounts'] = stats[elem.id]['project']
@@ -103,8 +107,8 @@ const handleAllProjects = function(projects, info, subscriptionsRawData) {
         })
 
       return {
-        id: areas.indexOf(group),
-        areaId: sampleElem.township,
+        id: areas.indexOf(group), // 这个社区的相对位置, 有的社区是找不到id的
+        areaId: sampleElem.township, // 社区的id
         areaName: areaName,
         projects: projects
       }
@@ -132,7 +136,8 @@ const loadAllData = function() {
       let subscriptions = rs[5]
       wx.setStorageSync('subscriptions', subscriptions)
 
-      handleTodayProjects(todayProjectsRawData, todayHousesRawData, todayStats)
+      // 处理数据
+      handleTodayProjects(todayProjectsRawData, todayHousesRawData, todayStats, subscriptions)
       handleAllProjects(allProjectsRawData, allProjectsHouseInfoRawData, subscriptions)
 
       wx.redirectTo({
@@ -147,13 +152,14 @@ const loadAllData = function() {
 // 读取今日房源需要的所有数据
 const loadTodayData = function() {
   return Promise
-    .all([requests.getTodayProjects(), requests.getTodayHouses(), requests.getTodayStats()])
+    .all([requests.getTodayProjects(), requests.getTodayHouses(), requests.getTodayStats(), requests.getSubscriptions()])
     .then((rs) => {
       let todayProjectsRawData = rs[0]
       let todayHousesRawData = rs[1]
       let todayStats = rs[2]
+      let subscriptions = rs[3]
 
-      handleTodayProjects(todayProjectsRawData, todayHousesRawData, todayStats)
+      handleTodayProjects(todayProjectsRawData, todayHousesRawData, todayStats, subscriptions)
       return Promise.resolve(true)
     })
 }
@@ -164,10 +170,10 @@ const loadAllProjectsData = function() {
     .all([requests.loadAllProjects(), requests.loadProjectHouseInfo(), requests.getSubscriptions()])
     .then((rs) => {
       // 全部的数据
-      let allProjectsRawData = rs[3]
-      let allProjectsHouseInfoRawData = rs[4]
+      let allProjectsRawData = rs[0]
+      let allProjectsHouseInfoRawData = rs[1]
       // 订阅信息
-      let subscriptions = rs[5]
+      let subscriptions = rs[2]
       wx.setStorageSync('subscriptions', subscriptions)
 
       handleAllProjects(allProjectsRawData, allProjectsHouseInfoRawData, subscriptions)
