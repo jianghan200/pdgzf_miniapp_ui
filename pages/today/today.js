@@ -110,7 +110,6 @@ Page({
 
   // 用户点击【房屋详情】
   navToHouses(e) {
-    console.log(e)
     let pId = e.currentTarget.dataset.pid
     let url = '../project/project?pid=' + pId
     wx.navigateTo({

@@ -1,34 +1,64 @@
 <cu-custom bgColor="bg-black" isBack="{{true}}">
   <view slot="backText">返回</view>
   <view slot="content">
-    <view class="text-white text-bold">小区详情</view>
+    <view class="text-white text-bold">{{pName}}</view>
   </view>
 </cu-custom>
-
-<view class="cu-bar bg-white solid-bottom">
-  <view class="action">
-    <text class="cuIcon-titles text-orange"></text> {{pName}}
-  </view>
-</view>
 
 <scroll-view
   scroll-y
   class="cu-list menu"
   scroll-with-animation
   style="height:calc(100vh - {{CustomBar}}px - 90rpx)"
->
+> 
+  <!-- 在地图上查看 -->
+  <view style="margin: 10px;" bindtap="seePointOnMap">
+    <text class="cuIcon-locationfill text-red"></text>
+    <text class="text-blue text-bold" style="margin-left: 5px;">在地图上查看</text>
+  </view>
+  <!-- 小区详情 -->
   <view class="cu-list menu">
+    <!-- 此部分的标题 -->
+    <view style="margin: 10px;">
+      <text class="cuIcon-infofill text-cyan"></text>
+      <text style="margin-left: 5px;" class="text-bold">所有户型的近期数据</text>  
+    </view>
+    <block 
+      wx:for="{{project.latestHouseInfo}}"
+      wx:for-item="hInfo"
+      wx:key="hInfo"
+    >
+      <view class="cu-item">
+        <view class="content" style="margin-top: 5px; margin-bottom: 5px;">
+          <text class="cuIcon-homefill text-cyan text-bold"></text> {{hInfo.type}}（共出现过：{{hInfo.tCount}}套）
+          <view style="margin-left: 5px;">
+            <view>最近出现日期：{{hInfo.updateTime}}</view>
+            <view>租金（月）：{{hInfo.rent == 0 ? '[不详]' : hInfo.rent + '元'}}</view>
+            <view>面积：{{hInfo.area}}平</view>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 今日房源，if any -->
+  <view class="cu-list menu" style="margin-top: 0px;" wx:if="{{houses.length > 0}}">
+    <!-- 此部分的标题 -->
+    <view style="margin: 10px;">
+      <text class="cuIcon-infofill text-orange"></text>
+      <text style="margin-left: 5px;" class="text-bold">今日房源</text>
+    </view>
     <block
       wx:for="{{houses}}"
       wx:for-item="house"
       wx:key="house"
     >
       <view class="cu-item">
-        <view class="content">
-          <text class="cuIcon-title text-green text-bold"></text> {{house.name}}
-          <view class="padding">
-            <view>租金（月）：{{house.rent}}</view>
-            <view>面积：{{house.size}}</view>
+        <view class="content" style="margin-top: 5px; margin-bottom: 5px;">
+          <text class="cuIcon-homefill text-orange text-bold"></text> {{house.name}}
+          <view style="margin-left: 5px;">
+            <view>租金（月）：{{house.rent}}元</view>
+            <view>面积：{{house.size}}平</view>
             <view>户型：{{house.type}}</view>
           </view>
         </view>

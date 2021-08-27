@@ -12,40 +12,27 @@
     wx:key="*this"
   >
     <view class="cu-card case">
-      <view class="cu-item padding" style="display: flex;">
+      <view class="cu-item padding" style="display: flex; margin: 20rpx;" data-rid="{{subscription.subInfo.id}}" bindtap="editSubscription">
         <!-- 描述区 -->
         <view style="flex-grow: 2">
           <view class="padding-bottom" style="font-size: larger; font-weight: 500;">
             {{subscription.info.pName}}
           </view>
-          <view class="text-gray padding-bottom" style="font-size: small">
-            {{subscription.info.raw.townshipName}}
-          </view>
-          <view style="color: cadetblue">
-            {{subscription.info.rentableCount}}套房源
+          <view class="text-gray" style="font-size: small">
+            {{subscription.info.raw.townshipName}} {{subscription.info.rentableCount}}套房源
           </view>
           <!-- 在地图上查看 -->
-          <view 
-            class="padding-top" 
+          <!-- <view 
             bindtap="seePointOnMap"
             data-id="{{subscription.id}}"
             data-aid="{{subscription.aid}}" 
             data-pid="{{subscription.pid}}"
           >
             <text class="cuIcon-locationfill text-red"></text><text class="text-blue">在地图上查看</text>
-          </view>
+          </view> -->
         </view>
         <!-- 按钮区 -->
         <view style="display: flex; flex-direction: column">
-          <!-- 修改订阅规则 -->
-          <button 
-            class="cu-btn shadow" 
-            style="margin-bottom: 5px" 
-            data-rid="{{subscription.subInfo.id}}"
-            bindtap="editSubscription"
-          >
-            <text class="cuIcon-settings"></text>
-          </button>
           <!-- 删除订阅 -->
           <button 
             class="cu-btn shadow bg-red" 

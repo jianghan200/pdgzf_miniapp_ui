@@ -7,12 +7,12 @@
 
 <scroll-view scroll-y style="height:calc(100vh - {{CustomBar}}px)">
   <view class="p-title">{{subscription.info.pName}}</view>
-  <view 
-    class="text-gray padding-bottom" 
-    style="font-size: small; padding-left: 1rem;"
-  >
-    {{subscription.info.raw.townshipName}}</view>
-  <view style="color: cadetblue; padding-left: 1rem;">{{subscription.info.raw.houseCount}}套房源</view>
+
+  <!-- 导航至详情页 -->
+  <view style="padding-left: 1rem;" bindtap="navToHouses">
+    <text class="cuIcon-explorefill text-cyan"></text>
+    <text class="text-bold text-cyan"> 点击查看小区详情</text>
+  </view>
   
   <form>
     <!-- 价格上限 -->

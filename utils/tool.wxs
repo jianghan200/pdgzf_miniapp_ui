@@ -1,0 +1,11 @@
+function indexOf(arr, value) {
+  return arr.indexOf(value)
+}
+
+function sliceOf(arr) {
+  return arr.slice(arr.indexOf('（') + 1, arr.indexOf('）'))
+}
+module.exports = {
+  indexOf : indexOf,
+  sliceOf : sliceOf
+}

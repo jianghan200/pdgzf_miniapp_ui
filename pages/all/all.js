@@ -54,8 +54,6 @@ Page({
     let pname = e.currentTarget.dataset.pname
     let aid = e.currentTarget.dataset.aid
 
-    let afterChangeValue = e.detail.value
-
     let self = this
     // 找所属到街道
     let area = 
@@ -71,7 +69,7 @@ Page({
     let projectOnChange = projectsOfThisArea.find(p => p.pId == pid)
     let indexOfProjectOnChange = projectsOfThisArea.indexOf(projectOnChange)
     
-    if (afterChangeValue) {
+    if (!projectOnChange.isSubscribed) {
       // 开启订阅
       subHelper
         .subscribeThenSyncUp(aid, pid, pname)
@@ -162,16 +160,12 @@ Page({
     }
   },
 
-  // Bottom Bar的功能
-  redirect: function(e) {
-    const newTab = e.detail
-    if (newTab != 'all') {
-      const url = `/pages/${newTab}/${newTab}`
-
-      wx.redirectTo({
-        url: url
-      })
-    }
+  navToHouses(e) {
+    let pId = e.currentTarget.dataset.pid
+    let url = '../project/project?pid=' + pId
+    wx.navigateTo({
+      url: url,
+    })
   },
 
   // 转发
@@ -200,6 +194,18 @@ Page({
           })
         }
       }
+    }
+  },
+
+  // Bottom Bar的功能
+  redirect: function(e) {
+    const newTab = e.detail
+    if (newTab != 'all') {
+      const url = `/pages/${newTab}/${newTab}`
+
+      wx.redirectTo({
+        url: url
+      })
     }
   }
 })
