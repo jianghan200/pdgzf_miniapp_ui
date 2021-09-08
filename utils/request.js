@@ -381,6 +381,34 @@ const updateUserInfo = function(name, email, account, password) {
   })
 }
 
+// 获取某个小区的详情
+const getProjectInfo = function(pid) {
+  const url = constants.userinfoServer + '/api/project_detail/' + pid
+  const header = {
+    'content-type': 'application/json'
+  }
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      header: header,
+      success: (res) => {
+        if (res.data.status == 0) {
+          // 成功
+          resolve(res.data.data)
+        } else {
+          // 失败
+          console.log(res.data.data)
+          resolve(res.data.data)
+        }
+      },
+      fail: (err) => {
+        console.log(err)
+        resolve('请求失败，未能获得详情')
+      }
+    })
+  })
+}
+
 module.exports = {
   login : login,
   getSubscriptions : getSubscriptions,
@@ -394,5 +422,6 @@ module.exports = {
   getTodayStats : getTodayStats,
   getVipInfo : getVipInfo,
   getPaymentInfo : getPaymentInfo,
-  updateUserInfo : updateUserInfo
+  updateUserInfo : updateUserInfo,
+  getProjectInfo : getProjectInfo
 }

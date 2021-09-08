@@ -1,5 +1,6 @@
 const constants = require('../../utils/constants')
 const utils = require('../../utils/util')
+const requestSender = require('../../utils/request')
 
 Page({
   data: {
@@ -8,7 +9,12 @@ Page({
     project : {},
     areaIdx : -1,
     areaId : -1,
-    pId : -1
+    pId : -1,
+    // 小区详情
+    descriptions : [],
+    imageUrls : [],
+    videoUrl : '',
+    equipment: ''
   },
 
   onLoad: function (options) {
@@ -72,6 +78,7 @@ Page({
           })
         projectInfo['totalCount'] = theProject.rentableCount
 
+        // 集体setData
         self.setData({
           pName: theProject.pName,
           houses: housesInfo,
@@ -79,6 +86,24 @@ Page({
           areaIdx : areaOpt.id,
           areaId : areaOpt.areaId,
           pId : pId
+        }, () => {
+          // 从后端获取小区的详情
+          requestSender
+            .getProjectInfo(pId)
+            .then((info) => {
+              if (info != null && info) {
+                self.setData({
+                  // 如果有结果，设置小区的详情
+                  descriptions : info.description.split('；'),
+                  imageUrls : JSON.parse(info.imageUrls),
+                  videoUrl : info.videoUrl,
+                  equipment : info.equipment
+                })
+              }
+            })
+            .catch((err) => {
+              console.log(err)
+            })
         })
       }
     }
@@ -89,5 +114,18 @@ Page({
     wx.navigateTo({
       url: `/pages/map/map?mode=single&id=${this.data.areaIdx}&pid=${this.data.pId}&aid=${this.data.areaId}&pname=${this.data.pName}`,
     })
+  },
+
+  // 预览某个照片
+  preview(e) {
+    console.log(e)
+    let url = e.target.dataset.url
+    let src = url + '?Content-Type=application/octet-stream'
+
+    let gallery = this.data.imageUrls.map(url => url + '?Content-Type=application/octet-stream')
+    wx.previewImage({
+      current: src, // 当前显示图片的http链接
+      urls: gallery // 需要预览的图片http链接列表
+    })  
   }
 })

@@ -9,12 +9,49 @@
   scroll-y
   class="cu-list menu"
   scroll-with-animation
-  style="height:calc(100vh - {{CustomBar}}px - 90rpx)"
+  style="height:calc(100vh - {{CustomBar}}px - 90rpx); background: white;"
 > 
+  <!-- 图片 -->
+  <swiper 
+    class="screen-swiper square-dot" 
+    indicator-dots="true" 
+    circular="true" 
+    autoplay="true" 
+    interval="5000" 
+    duration="500"
+    wx:if="{{imageUrls.length > 0}}"
+  >
+    <swiper-item wx:for="{{imageUrls}}" wx:for-item="url" wx:key="url">
+      <image 
+        src="{{url}}" 
+        mode="aspectFit" 
+        show-menu-by-longpress="true" 
+        data-url="{{url}}" 
+        bindtap="preview"
+      ></image>
+    </swiper-item>
+  </swiper>
   <!-- 在地图上查看 -->
   <view style="margin: 10px;" bindtap="seePointOnMap">
     <text class="cuIcon-locationfill text-red"></text>
     <text class="text-blue text-bold" style="margin-left: 5px;">在地图上查看</text>
+  </view>
+  <!-- 房屋概况 -->
+  <view class="text-bold" style="margin: 10px;" wx:if="{{equipment.length > 0}}">
+    配套设施
+  </view>
+  <view style="margin: 10px">
+    {{equipment}}
+  </view>
+
+  <!-- 小区概况 -->
+  <view class="text-bold" style="margin: 10px; font-size: medium;" wx:if="{{descriptions.length > 0}}">
+    小区概况
+  </view>
+  <view style="margin: 10px;">
+    <view wx:for="{{descriptions}}" wx:for-item="desc_item" wx:key="desc_item">
+      <text class="cuIcon-title"></text> {{desc_item}}
+    </view>
   </view>
   <!-- 小区详情 -->
   <view class="cu-list menu">
@@ -28,7 +65,7 @@
       wx:for-item="hInfo"
       wx:key="hInfo"
     >
-      <view class="cu-item">
+      <view class="cu-item" style="padding: 0 10rpx;">
         <view class="content" style="margin-top: 5px; margin-bottom: 5px;">
           <text class="cuIcon-homefill text-cyan text-bold"></text> {{hInfo.type}}（共出现过：{{hInfo.tCount}}套）
           <view style="margin-left: 5px;">
@@ -53,7 +90,7 @@
       wx:for-item="house"
       wx:key="house"
     >
-      <view class="cu-item">
+      <view class="cu-item" style="padding: 0 10rpx;">
         <view class="content" style="margin-top: 5px; margin-bottom: 5px;">
           <text class="cuIcon-homefill text-orange text-bold"></text> {{house.name}}
           <view style="margin-left: 5px;">

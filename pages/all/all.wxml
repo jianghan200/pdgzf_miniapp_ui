@@ -1,11 +1,10 @@
 <wxs src="../../utils/tool.wxs" module="tools" />
 
 <view style="height: 2.5rem;"></view>
-<view class="title text-orange">全部房源</view>
-
-<view style="padding: 10rpx;">
-  <button style="height: 90rpx;" class="line-blue" bindtap="openMap">
-    <text class="cuIcon-locationfill text-red"></text> 地图
+<view style="display: flex; flex-direction: row; align-items: center;">
+  <view class="title">全部房源</view>
+  <button class="bg-black cu-btn icon shadow" bindtap="openMap">
+    <text class="cuIcon-locationfill text-white"></text>
   </button>
 </view>
 
@@ -16,7 +15,7 @@
     scroll-with-animation
     scroll-top="{{VerticalNavTop}}"
     class="VerticalNav nav"
-    style="height:calc(100vh - 5.8rem - 110rpx - calc(100rpx + env(safe-area-inset-bottom) / 2))"
+    style="height:calc(100vh - 5.8rem - calc(100rpx + env(safe-area-inset-bottom) / 2))"
   >
     <view
       class="cu-item {{index==TabCur?'text-green cur':''}}"
@@ -34,7 +33,7 @@
     scroll-y 
     scroll-with-animation
     class="VerticalMain"
-    style="height:calc(100vh - 5.8rem - 110rpx - calc(100rpx + env(safe-area-inset-bottom) / 2))"
+    style="height:calc(100vh - 5.8rem - calc(100rpx + env(safe-area-inset-bottom) / 2))"
     scroll-into-view="main-{{MainCur}}"
     bindscroll="VerticalMain"
   >

@@ -18,10 +18,10 @@
   height: 50px;
   position: relative;
 }
-
+/* 
 .VerticalNav.nav .cu-item.cur {
   background-color: #f1f1f1;
-}
+} */
 .VerticalNav.nav .cu-item.cur::after {
   content: "";
   width: 8rpx;

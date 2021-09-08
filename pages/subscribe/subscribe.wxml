@@ -21,21 +21,12 @@
           <view class="text-gray" style="font-size: small">
             {{subscription.info.raw.townshipName}} {{subscription.info.rentableCount}}套房源
           </view>
-          <!-- 在地图上查看 -->
-          <!-- <view 
-            bindtap="seePointOnMap"
-            data-id="{{subscription.id}}"
-            data-aid="{{subscription.aid}}" 
-            data-pid="{{subscription.pid}}"
-          >
-            <text class="cuIcon-locationfill text-red"></text><text class="text-blue">在地图上查看</text>
-          </view> -->
         </view>
         <!-- 按钮区 -->
         <view style="display: flex; flex-direction: column">
           <!-- 删除订阅 -->
           <button 
-            class="cu-btn shadow bg-red" 
+            class="cu-btn icon shadow bg-red" 
             bindtap="openWarningDialog" 
             data-rid="{{subscription.subInfo.id}}"
           >
