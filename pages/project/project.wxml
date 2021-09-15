@@ -38,7 +38,7 @@
 
       <!-- 视频展示 -->
       <video 
-        wx:if="{{item.type == 'video'}}"
+        wx:if="{{item.type == 'video' && isVip}}"
         src="{{item.url}}" 
         autoplay 
         loop="{{false}}"

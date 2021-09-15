@@ -112,10 +112,14 @@ Page({
                 })
                 // 只有vip能看到视频
                 if (app.globalData.userinfo.type == 2) {
-                  medias.push({
-                    'url' : info.videoUrl,
-                    'type' : 'video'
-                  })
+                  if (info.videoUrl) {
+                    info.videoUrl.split(';').forEach(urlStr => {
+                      medias.push({
+                        'url' : urlStr,
+                        'type' : 'video'
+                      })
+                    })
+                  }
                 }
 
                 self.setData({
