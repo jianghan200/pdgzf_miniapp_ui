@@ -3,12 +3,21 @@
 <view style="height: 2.5rem;"></view>
 <view style="display: flex; flex-direction: row; align-items: center;">
   <view class="title">全部房源</view>
-  <button class="bg-black cu-btn icon shadow" bindtap="openMap">
+  <!-- 请求成功展示地图按钮 -->
+  <button class="bg-black cu-btn icon shadow" bindtap="openMap" wx:if="{{reqSuccessful}}">
     <text class="cuIcon-locationfill text-white"></text>
+  </button>
+  <!-- 请求失败展示刷新按钮 -->
+  <button class="bg-green cu-btn icon shadow" bindtap="refresh" wx:if="{{!reqSuccessful}}">
+    <text class="cuIcon-refresh text-white"></text>
   </button>
 </view>
 
-<view class="VerticalBox">
+<view wx:if="{{!reqSuccessful}}" class="text-bold text-xl padding">
+  请求失败，请检查网络连接。或者点击上面的按钮重新请求数据。
+</view>
+
+<view class="VerticalBox" wx:if="{{reqSuccessful}}">
   <!-- navBar -->
   <scroll-view
     scroll-y 

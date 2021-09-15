@@ -1,10 +1,21 @@
 <view style="height: 50px;"></view>
-<view class="title text-pink">我的订阅</view>
+<view style="display: flex; flex-direction: row; align-items: center;">
+  <view class="title text-pink">我的订阅</view>
+  <!-- 请求失败展示刷新按钮 -->
+  <button class="bg-green cu-btn icon shadow" bindtap="refresh" wx:if="{{!reqSuccessful}}">
+    <text class="cuIcon-refresh text-white"></text>
+  </button>
+</view>
+
+<view wx:if="{{!reqSuccessful}}" class="text-bold text-xl padding">
+  请求失败，请检查网络连接。或者点击上面的按钮重新请求数据。
+</view>
 
 <scroll-view
   scroll-y
   scroll-with-animation
   style="height:calc(100vh - 100px - calc(100rpx + env(safe-area-inset-bottom) / 2))"
+  wx:if="{{reqSuccessful}}"
 >
   <block
     wx:for="{{list}}"

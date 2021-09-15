@@ -35,10 +35,6 @@
   </view>
 
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
-    5. 在后续推出的功能中（社区类）, 您永远是VIP
-  </view>
-
-  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
-    6. 仅需99，永久VIP
+    5. 当前优惠价格99元，我们正快速迭代，将上线更多新功能！
   </view>
 </scroll-view>

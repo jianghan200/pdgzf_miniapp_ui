@@ -1,5 +1,6 @@
 const requests = require('./request')
 const util = require('./util')
+const app = getApp()
 
 // 处理今日小区的rawData
 const handleTodayProjects = function(projectsRawData, housesRawData, stats, subscriptionsRawData) {
@@ -21,6 +22,12 @@ const handleTodayProjects = function(projectsRawData, housesRawData, stats, subs
       }
     })
 
+  // 是不是vip
+  let isVip = app.globalData.userinfo.type == 2
+  // 是vip，但是也要保证一定有startDate
+  let needToCalculateRank = 
+    isVip && (app.globalData.userinfo.startDate) && (app.globalData.userinfo.startDate != '')
+
   let list = 
     projectInGroups.map(group => {
       let sampleElem = group[0]
@@ -28,7 +35,7 @@ const handleTodayProjects = function(projectsRawData, housesRawData, stats, subs
       
       let projects = 
         group.map(elem => {
-          let hosuesOfThisProject = houseInGroups.find(g => g.pId == elem.id)
+          let housesOfThisProject = houseInGroups.find(g => g.pId == elem.id)
           // 判断该小区是否已经被订阅
           let subscriptionOpt = subscriptionsRawData.find(sub => sub.projectId == elem.id)
           let project = {
@@ -44,8 +51,36 @@ const handleTodayProjects = function(projectsRawData, housesRawData, stats, subs
             project['appearCounts'] = stats[elem.id]['project']
             project['houseCounts'] = stats[elem.id]['house']
           }
-          if (hosuesOfThisProject) {
-            project['houses'] = hosuesOfThisProject.houses
+          if (housesOfThisProject) {
+            if (needToCalculateRank) {
+              // 如果是VIP，每个house里面要有用户的预计排名
+              housesOfThisProject.houses.forEach(house => {
+                let sortedQueue = []
+                
+                // 先对queue的position进行排序
+                sortedQueue = util.sortByProperty(house.queue, 'position', util.numberComparator)
+
+                // 后端传过来的时间不能直接使用
+                let userStartDate = app.globalData.userinfo.startDate.split(' ')[0]
+
+                // 找到第一个比用户startDate.getTime()更新的
+                let rank = 1
+                for (let i = 0; i < sortedQueue.length; i++) {
+                  let item = sortedQueue[i]
+                  let itemStartDateTime = new Date(item.startDate).getTime()
+                  let userStartDateTime = new Date(userStartDate).getTime()
+                  // 直到有个人的资格比用户的资格新，这个人的position就该是用户的
+                  if (itemStartDateTime > userStartDateTime) {
+                    rank = item.position
+                    break
+                  }
+                }
+                house['rank'] = rank
+              })
+              // 把一个小区houses的最高（最小数字）排名输入
+              project['bestRank'] = Math.min.apply(Math, housesOfThisProject.houses.map(house => house.rank))
+            }
+            project['houses'] = housesOfThisProject.houses
           }
           return project
         })

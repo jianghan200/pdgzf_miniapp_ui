@@ -2,6 +2,7 @@
 const util = require('../../utils/util')
 const constants = require('../../utils/constants')
 const requests = require('../../utils/request')
+const dataHelper = require('../../utils/data')
 const subHelper = require('../../utils/subscripton')
 let app = getApp()
 
@@ -18,13 +19,23 @@ Page({
       areaName: '',
       projects: [{ pId: 0, pName: '', updateTime: '', rentableCount: '', isSubscribed: false }]
     }],
+    // 跟请求是否成功相关的flag
+    reqSuccessful : false
   },
 
   onLoad: function (options) {
     let allProjects = wx.getStorageSync('allProjects')
-    if (allProjects) {
+    if (allProjects && allProjects.length > 0) {
+      // 说明请求成功了
       this.setData({
-        list : allProjects
+        list : allProjects,
+        reqSuccessful : true
+      })
+    } else {
+      // 请求失败了，需要特殊处理，立一个flag
+      console.log('all 失败')
+      this.setData({
+        reqSuccessful : false
       })
     }
   },
@@ -34,6 +45,34 @@ Page({
     wx.navigateTo({
       url: '/pages/map/map?mode=all',
     })
+  },
+
+  // 重新请求全部房源的数据。
+  refresh() {
+    let self = this
+    dataHelper
+      .loadAllProjectsData()
+      .then((res) => {
+        wx.showToast({
+          title: '数据读取成功！',
+          icon: 'success'
+        })
+        // 跟onload一样
+        let allProjects = wx.getStorageSync('allProjects')
+        if (allProjects && allProjects.length > 0) {
+          self.setData({
+            list : allProjects,
+            reqSuccessful : true
+          })
+        }
+      })
+      .catch((err) => {
+        console.log(err) 
+        wx.showToast({
+          title: '数据获取失败',
+          icon: 'error'
+        })
+      })
   },
 
   // 在地图上查看某个小区

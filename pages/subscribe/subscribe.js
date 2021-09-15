@@ -1,13 +1,16 @@
 // pages/subscribe/subscribe.js
 const app = getApp()
 const constants = require('../../utils/constants')
+const dataHelper = require('../../utils/data')
 const requests = require('../../utils/request')
 const subHelper = require('../../utils/subscripton')
 Page({
   data: {
     list: [],
     showModal: false,
-    selectedRule: null
+    selectedRule: null,
+    // 跟请求是否成功相关的flag
+    reqSuccessful : false
   },
 
   onLoad: function (options) {
@@ -19,42 +22,127 @@ Page({
   loadRules() {
     let self = this
     let allProjects = wx.getStorageSync('allProjects')
-    // flatMap
-    let projects = []
-    allProjects.forEach(area => {
-      let enrichedProjects = area.projects.map(p => {
-        return {
-          id : area.id,
-          aid : area.areaId,
-          project : p
+    if (allProjects && allProjects.length > 0) {
+      // flatMap将社区这一层“摊平”
+      let projects = []
+      allProjects.forEach(area => {
+        let enrichedProjects = area.projects.map(p => {
+          return {
+            id : area.id,
+            aid : area.areaId,
+            project : p
+          }
+        })
+        projects = projects.concat(enrichedProjects)
+      })
+
+      // 请求订阅信息
+      requests
+        .getSubscriptions()
+        .then((res) => {
+          let list = 
+            res.map(s => {
+              let pid = s.projectId
+              let projectInfo = projects.find(p => p.project.pId == pid)
+              return {
+                id : projectInfo.id,
+                aid : projectInfo.aid,
+                pid : pid,
+                info : projectInfo.project,
+                subInfo : s
+              }
+            })
+          // 成功
+          self.setData({
+            list : list,
+            reqSuccessful : true
+          })
+        })
+        .catch((err) => {
+          // 请求失败
+          console.log(err)
+
+          wx.showToast({
+            title: '订阅数据获取失败',
+            icon: 'error'
+          })
+
+          self.setData({
+            reqSuccessful : false
+          })
+        })
+    } else {
+      // 说明allProjects请求失败
+      wx.showToast({
+        title: '数据获取失败',
+        icon: 'error'
+      })
+
+      self.setData({
+        reqSuccessful : false
+      })
+    }
+  },
+
+  // 重试请求
+  refresh() {
+    let self = this
+    dataHelper
+      .loadAllProjectsData()
+      .then((res) => {
+        wx.showToast({
+          title: '数据读取成功！',
+          icon: 'success'
+        })
+        // 跟onload一样
+        let allProjects = wx.getStorageSync('allProjects')
+        if (allProjects && allProjects.length > 0) {
+          // flatMap将社区这一层“摊平”
+          let projects = []
+          allProjects.forEach(area => {
+            let enrichedProjects = area.projects.map(p => {
+              return {
+                id : area.id,
+                aid : area.areaId,
+                project : p
+              }
+            })
+            projects = projects.concat(enrichedProjects)
+          })
+
+          // 请求订阅信息
+          requests
+          .getSubscriptions()
+          .then((res) => {
+            let list = 
+              res.map(s => {
+                let pid = s.projectId
+                let projectInfo = projects.find(p => p.project.pId == pid)
+                return {
+                  id : projectInfo.id,
+                  aid : projectInfo.aid,
+                  pid : pid,
+                  info : projectInfo.project,
+                  subInfo : s
+                }
+              })
+            // 成功
+            self.setData({
+              list : list,
+              reqSuccessful : true
+            })
+          })
         }
       })
-      projects = projects.concat(enrichedProjects)
-    })
-
-    requests
-      .getSubscriptions()
-      .then((res) => {
-        let list = 
-          res.map(s => {
-            let pid = s.projectId
-            let projectInfo = projects.find(p => p.project.pId == pid)
-            return {
-              id : projectInfo.id,
-              aid : projectInfo.aid,
-              pid : pid,
-              info : projectInfo.project,
-              subInfo : s
-            }
-          })
-        // 成功
-        self.setData({
-          list : list
-        })
-      })
       .catch((err) => {
-        // 请求失败
-        console.log(err)
+        console.log(err) 
+        wx.showToast({
+          title: '数据获取失败',
+          icon: 'error'
+        })
+        self.setData({
+          reqSuccessful : false
+        })
       })
   },
 

@@ -44,10 +44,58 @@ const validateEmail = function(email) {
   return emailRegex.test(email)
 }
 
+const compareDates = function(date, comparison) {
+  let date1 = new Date(date)
+  let date2 = new Date(comparison)
+  
+  if (date1.getTime() > date2.getTime()) {
+    // date比comparison更新
+    return true
+  } else {
+    // date比comparison更旧
+    return false
+  }
+}
+
+const sortByProperty = function(arr, property, comparator) {
+  if (arr.length > 0 && arr && property && comparator) {
+    arr.sort(function(o1, o2) {
+      let po1 = o1[property]
+      let po2 = o2[property]
+      return comparator(po1, po2)
+    })
+    return arr
+  } else {
+    return []
+  }
+}
+
+const numberComparator = function(num1, num2) {
+  let res = true
+  if (typeof(num1) != Number && typeof(num2) != Number) {
+      res = Number(num1) > Number(num2)
+  } else if (typeof(num1) != Number) {
+      res = Number(num1) > num2
+  } else if (typeof(num2) != Number) {
+      res = num1 > Number(num2)
+  } else {
+      res = num1 > num2
+  }
+  // 不能return true/false
+  if (res) {
+      return 1
+  } else {
+      return -1
+  }
+}
+
 module.exports = {
   formatTime,
   formatDate,
   groupBy,
   yesterday,
-  validateEmail : validateEmail
+  validateEmail : validateEmail,
+  compareDates : compareDates,
+  sortByProperty : sortByProperty,
+  numberComparator : numberComparator
 }

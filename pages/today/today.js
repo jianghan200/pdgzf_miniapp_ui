@@ -18,7 +18,9 @@ Page({
     // Modal相关
     showModal: false,
     // 每天早9:30 ～ 10:03之间要关闭选房
-    disable: false
+    disable: false,
+    // vip的身份flag
+    isVip: false
   },
 
   onLoad: function (options) {
@@ -26,12 +28,13 @@ Page({
     // 9:30 am ~ 10:03 am期间禁选
     if ((date.getHours() == 9 && date.getMinutes() >= 30) || (date.getHours() == 10 && date.getMinutes() <= 3)) {
       this.setData({
-        disable : true
+        disable : true,
+        isVip : app.globalData.userinfo.type == 2
       })
     } else {
       // 正常情况
       this.setData({
-        disable: false
+        disable : false
       }, () => {
         this.useTodayProjectsInStorage()
       })
@@ -84,7 +87,8 @@ Page({
         milestone : milestone,
         timeStamp : util.formatTime(new Date()),
         projectCount : allProjects.length,
-        houseCount : allHouses.length
+        houseCount : allHouses.length,
+        isVip : app.globalData.userinfo.type == 2
       })
     }
   },

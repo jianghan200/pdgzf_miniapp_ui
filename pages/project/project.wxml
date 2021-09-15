@@ -17,25 +17,48 @@
     indicator-dots="true" 
     circular="true" 
     autoplay="true" 
-    interval="5000" 
-    duration="500"
-    wx:if="{{imageUrls.length > 0}}"
+    interval="10000" 
+    duration="1000"
+    wx:if="{{medias.length > 0}}"
   >
-    <swiper-item wx:for="{{imageUrls}}" wx:for-item="url" wx:key="url">
+    <swiper-item 
+      wx:for="{{medias}}"
+      wx:for-item="item" 
+      wx:key="item" 
+      data-item="{{item}}" 
+      bindtap="preview"
+    >
+      <!-- 照片展示 -->
       <image 
-        src="{{url}}" 
+        wx:if="{{item.type == 'image'}}"
+        src="{{item.url}}" 
         mode="aspectFit" 
-        show-menu-by-longpress="true" 
-        data-url="{{url}}" 
-        bindtap="preview"
+        show-menu-by-longpress="false"
       ></image>
+
+      <!-- 视频展示 -->
+      <video 
+        wx:if="{{item.type == 'video'}}"
+        src="{{item.url}}" 
+        autoplay 
+        loop="{{false}}"
+        muted 
+        show-play-btn="{{true}}" 
+        controls="{{true}}" 
+        object-fit="cover"
+        direction="90"
+      ></video>
     </swiper-item>
   </swiper>
+
+  <view wx:if="{{!isVip}}" class="text-bold" style="margin: 10px; color: goldenrod;">升级为VIP，观看看房视频～</view>
+
   <!-- 在地图上查看 -->
   <view style="margin: 10px;" bindtap="seePointOnMap">
     <text class="cuIcon-locationfill text-red"></text>
     <text class="text-blue text-bold" style="margin-left: 5px;">在地图上查看</text>
   </view>
+
   <!-- 房屋概况 -->
   <view class="text-bold" style="margin: 10px;" wx:if="{{equipment.length > 0}}">
     配套设施
@@ -45,37 +68,13 @@
   </view>
 
   <!-- 小区概况 -->
-  <view class="text-bold" style="margin: 10px; font-size: medium;" wx:if="{{descriptions.length > 0}}">
+  <view class="text-bold" style="margin: 10px;" wx:if="{{descriptions.length > 0}}">
     小区概况
   </view>
   <view style="margin: 10px;">
     <view wx:for="{{descriptions}}" wx:for-item="desc_item" wx:key="desc_item">
       <text class="cuIcon-title"></text> {{desc_item}}
     </view>
-  </view>
-  <!-- 小区详情 -->
-  <view class="cu-list menu">
-    <!-- 此部分的标题 -->
-    <view style="margin: 10px;">
-      <text class="cuIcon-infofill text-cyan"></text>
-      <text style="margin-left: 5px;" class="text-bold">所有户型的近期数据</text>  
-    </view>
-    <block 
-      wx:for="{{project.latestHouseInfo}}"
-      wx:for-item="hInfo"
-      wx:key="hInfo"
-    >
-      <view class="cu-item" style="padding: 0 10rpx;">
-        <view class="content" style="margin-top: 5px; margin-bottom: 5px;">
-          <text class="cuIcon-homefill text-cyan text-bold"></text> {{hInfo.type}}（共出现过：{{hInfo.tCount}}套）
-          <view style="margin-left: 5px;">
-            <view>最近出现日期：{{hInfo.updateTime}}</view>
-            <view>租金（月）：{{hInfo.rent == 0 ? '[不详]' : hInfo.rent + '元'}}</view>
-            <view>面积：{{hInfo.area}}平</view>
-          </view>
-        </view>
-      </view>
-    </block>
   </view>
 
   <!-- 今日房源，if any -->
@@ -97,6 +96,32 @@
             <view>租金（月）：{{house.rent}}元</view>
             <view>面积：{{house.size}}平</view>
             <view>户型：{{house.type}}</view>
+            <view wx:if="{{isVip}}" class="text-bold">预计排名：{{house.rank}}</view>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 小区户型详情 -->
+  <view class="cu-list menu">
+    <!-- 此部分的标题 -->
+    <view style="margin: 10px;">
+      <text class="cuIcon-infofill text-cyan"></text>
+      <text style="margin-left: 5px;" class="text-bold">所有户型的近期数据</text>  
+    </view>
+    <block 
+      wx:for="{{project.latestHouseInfo}}"
+      wx:for-item="hInfo"
+      wx:key="hInfo"
+    >
+      <view class="cu-item" style="padding: 0 10rpx;">
+        <view class="content" style="margin-top: 5px; margin-bottom: 5px;">
+          <text class="cuIcon-homefill text-cyan text-bold"></text> {{hInfo.type}}（共出现过：{{hInfo.tCount}}套）
+          <view style="margin-left: 5px;">
+            <view>最近出现日期：{{hInfo.updateTime}}</view>
+            <view>租金（月）：{{hInfo.rent == 0 ? '[不详]' : hInfo.rent + '元'}}</view>
+            <view>面积：{{hInfo.area}}平</view>
           </view>
         </view>
       </view>

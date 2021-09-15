@@ -39,7 +39,7 @@ Page({
       this.setData({
         subscription : subscription,
         huXings : huXings,
-        newHuXings : huXings,
+        newHuXings : huXings.filter(obj => obj.checked).map(obj => obj.value),
         newHuXingStr : huXingSelections.map(s => constants.id2Type(s)).join(', '),
         priceCap : subscription.subInfo.maxPrice == null ? '' : subscription.subInfo.maxPrice,
         areaCap : subscription.subInfo.maxArea == null ? '' : subscription.subInfo.maxArea,

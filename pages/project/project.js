@@ -1,7 +1,7 @@
 const constants = require('../../utils/constants')
 const utils = require('../../utils/util')
 const requestSender = require('../../utils/request')
-
+const app = getApp()
 Page({
   data: {
     pName: '',
@@ -12,14 +12,14 @@ Page({
     pId : -1,
     // 小区详情
     descriptions : [],
-    imageUrls : [],
-    videoUrl : '',
-    equipment: ''
+    medias : [],
+    equipment: '',
+    // 是不是VIP？
+    isVip: false
   },
 
   onLoad: function (options) {
     let self = this
-
     // 需要在allProjects中找
     let allProjects = wx.getStorageSync('allProjects')
     if (allProjects) {
@@ -49,14 +49,23 @@ Page({
             // 此小区的所有房屋的信息
             housesInfo = 
               thePOpt.houses.map(house => {
+                // 房间的名称需要精简
                 let pieces = house.fullName.split('/')
                 pieces.splice(0, 1)
                 let betterName = pieces.join('/')
+
+                // 只有vip能看到预计排名
+                let rank = '升级为VIP解锁'
+                if (app.globalData.userinfo.type == 2) {
+                  rank = house.rank
+                }
+
                 let houseInfo = {
                   name: betterName,
                   rent: house.rent,
                   size: house.area,
-                  type: constants.id2Type(house.typeName)
+                  type: constants.id2Type(house.typeName),
+                  rank: rank
                 }
                 return houseInfo
               })
@@ -85,18 +94,34 @@ Page({
           project: projectInfo,
           areaIdx : areaOpt.id,
           areaId : areaOpt.areaId,
-          pId : pId
+          pId : pId,
+          isVip : app.globalData.userinfo.type == 2
         }, () => {
           // 从后端获取小区的详情
           requestSender
             .getProjectInfo(pId)
             .then((info) => {
               if (info != null && info) {
+                // 照片和视频合并称为media
+                let medias = []
+                JSON.parse(info.imageUrls).forEach(url => {
+                  medias.push({
+                    'url' : url,
+                    'type' : 'image'
+                  })
+                })
+                // 只有vip能看到视频
+                if (app.globalData.userinfo.type == 2) {
+                  medias.push({
+                    'url' : info.videoUrl,
+                    'type' : 'video'
+                  })
+                }
+
                 self.setData({
                   // 如果有结果，设置小区的详情
                   descriptions : info.description.split('；'),
-                  imageUrls : JSON.parse(info.imageUrls),
-                  videoUrl : info.videoUrl,
+                  medias: medias,
                   equipment : info.equipment
                 })
               }
@@ -118,14 +143,12 @@ Page({
 
   // 预览某个照片
   preview(e) {
-    console.log(e)
-    let url = e.target.dataset.url
-    let src = url + '?Content-Type=application/octet-stream'
-
-    let gallery = this.data.imageUrls.map(url => url + '?Content-Type=application/octet-stream')
-    wx.previewImage({
-      current: src, // 当前显示图片的http链接
-      urls: gallery // 需要预览的图片http链接列表
-    })  
+    let item = e.target.dataset.item
+    let idx = this.data.medias.indexOf(item)
+    wx.previewMedia({
+      sources : this.data.medias,
+      current : idx,
+      showmenu : false
+    })
   }
 })
