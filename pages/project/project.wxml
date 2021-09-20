@@ -64,7 +64,9 @@
     配套设施
   </view>
   <view style="margin: 10px">
-    {{equipment}}
+    <view wx:for="{{equipments}}" wx:for-item="equipment" wx:key="equipment">
+      <text class="cuIcon-title"></text> {{equipment}}
+    </view>
   </view>
 
   <!-- 小区概况 -->
@@ -91,12 +93,12 @@
     >
       <view class="cu-item" style="padding: 0 10rpx;">
         <view class="content" style="margin-top: 5px; margin-bottom: 5px;">
-          <text class="cuIcon-homefill text-orange text-bold"></text> {{house.name}}
+          <text class="cuIcon-homefill text-orange text-bold"></text> {{house.name}} 
+          <text wx:if="{{isVip}}" class="text-bold" style="color: goldenrod;"> 预计排名: {{house.rank}}</text>
           <view style="margin-left: 5px;">
             <view>租金（月）：{{house.rent}}元</view>
             <view>面积：{{house.size}}平</view>
             <view>户型：{{house.type}}</view>
-            <view wx:if="{{isVip}}" class="text-bold">预计排名：{{house.rank}}</view>
           </view>
         </view>
       </view>

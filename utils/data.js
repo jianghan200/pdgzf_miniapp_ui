@@ -60,19 +60,23 @@ const handleTodayProjects = function(projectsRawData, housesRawData, stats, subs
                 // 先对queue的position进行排序
                 sortedQueue = util.sortByProperty(house.queue, 'position', util.numberComparator)
 
-                // 后端传过来的时间不能直接使用
+                // 后端传过来的时间不能直接使用 "yyyy-MM-dd hh:mm:ss"
                 let userStartDate = app.globalData.userinfo.startDate.split(' ')[0]
-
+                // 用户的资格日
+                let userStartDateTime = new Date(userStartDate).getTime()
                 // 找到第一个比用户startDate.getTime()更新的
                 let rank = 1
                 for (let i = 0; i < sortedQueue.length; i++) {
                   let item = sortedQueue[i]
+                  // 队伍中某人的资格日
                   let itemStartDateTime = new Date(item.startDate).getTime()
-                  let userStartDateTime = new Date(userStartDate).getTime()
-                  // 直到有个人的资格比用户的资格新，这个人的position就该是用户的
+                  // 直到有个人的资格比用户的新，这个人的position就该是用户的
                   if (itemStartDateTime > userStartDateTime) {
                     rank = item.position
                     break
+                  } else if (i == sortedQueue.length - 1) {
+                    // 已经遍历过整个queue，用户是倒数第一
+                    rank = sortedQueue.length + 1
                   }
                 }
                 house['rank'] = rank

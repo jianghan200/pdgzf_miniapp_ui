@@ -72,8 +72,10 @@ Page({
   // 支付成功后需要更新用户信息
   postPayment() {
     let self = this
+    // 用户可能已经用昵称作为自己的用户名
+    let oldUsername = app.globalData.userinfo.name == null ? '' : app.globalData.userinfo.name
     requests
-      .updateUserInfo('', self.data.email, '', '')
+      .updateUserInfo(oldUsername, self.data.email, '', '')
       .then((res) => {
         // 微信支付成功
         wx.showToast({

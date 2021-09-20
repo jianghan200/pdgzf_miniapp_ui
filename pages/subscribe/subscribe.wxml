@@ -38,7 +38,7 @@
           <!-- 删除订阅 -->
           <button 
             class="cu-btn icon shadow bg-red" 
-            bindtap="openWarningDialog" 
+            catchtap="openWarningDialog" 
             data-rid="{{subscription.subInfo.id}}"
           >
             <text class="cuIcon-deletefill text-white"></text>

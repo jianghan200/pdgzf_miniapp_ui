@@ -13,7 +13,7 @@ Page({
     // 小区详情
     descriptions : [],
     medias : [],
-    equipment: '',
+    equipments: [],
     // 是不是VIP？
     isVip: false
   },
@@ -126,7 +126,7 @@ Page({
                   // 如果有结果，设置小区的详情
                   descriptions : info.description.split('；'),
                   medias: medias,
-                  equipment : info.equipment
+                  equipments : info.equipment.split('；')
                 })
               }
             })

@@ -25,7 +25,7 @@ App({
           在小程序中需要使用大量图片，为了加速图片的加载，在非IOS的环境中将使用webp格式的图片。
         */
         if (result.system.indexOf('iOS') != -1) {
-          this.globalData.iOS = true
+          this.globalData.IOS = true
         }
       },
       fail: (result) => {}

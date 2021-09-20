@@ -87,12 +87,58 @@ Page({
     })
   },
 
+  // 判断这个用户是否需要授权我们获得ta的昵称
+  // 这个用户是一般用户，我们后端没有这个用户的name信息
+  needToGetUserProfile() {
+    return app.globalData.userinfo.type == 0 && app.globalData.userinfo.name == null
+  },
+
   // 处理用户订阅 / 取消订阅的操作
   subscribe(e) {
+    // 从event中获取定位数据
     let pid = e.currentTarget.dataset.pid
     let pname = e.currentTarget.dataset.pname
     let aid = e.currentTarget.dataset.aid
+    // 如果这个用户是初次使用【订阅】功能的普通用户，需要授权我们使用他的昵称
+    let self = this
+    if (self.needToGetUserProfile()) {
+      wx.getUserProfile({
+        desc: '需要您的昵称，才能使用订阅功能',
+        success: (res) => {
+          // 从微信的接口中获得用户的昵称作为标识，主要是为了后端管理方便
+          let newUsername = res.userInfo.nickName
+          requests
+            .updateUserInfo(newUsername, '', '', '')
+            .then((r) => {
+              // 本地更新一下用户名
+              app.globalData.userinfo.name = newUsername
+              self.doSubscribe(pid, pname, aid)
+            }).catch((err) => {
+              console.log(err)
 
+              wx.showToast({
+                title: '未能成功录入昵称',
+                icon: 'error'
+              })
+            })
+        },
+        fail: (err) => {
+          console.log(err)
+          
+          wx.showToast({
+            title: '没有昵称，无法收藏',
+            icon: 'error'
+          })
+        }
+      })
+    } else {
+      // 无需授权昵称，执行订阅的业务逻辑
+      self.doSubscribe(pid, pname, aid)
+    }
+  },
+
+  // 专注于订阅的业务逻辑代码
+  doSubscribe(pid, pname, aid) {
     let self = this
     // 找所属到街道
     let area = 
