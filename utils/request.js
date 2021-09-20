@@ -1,6 +1,7 @@
 // 读取用户的订阅信息
 const app = getApp()
 const constants = require('../utils/constants')
+const utils = require('../utils/util')
 
 // 用户login
 const login = function(jscode) {
@@ -393,17 +394,129 @@ const getProjectInfo = function(pid) {
       header: header,
       success: (res) => {
         if (res.data.status == 0) {
-          // 成功
-          resolve(res.data.data)
+          let info = res.data.data
+          if (info != null && info) {
+            // 照片和视频合并称为media
+            let medias = []
+            JSON.parse(info.imageUrls).forEach(url => {
+              medias.push({
+                'url' : url,
+                'type' : 'image'
+              })
+            })
+            // 只有vip能看到视频
+            if (app.globalData.userinfo.type == 2) {
+              if (info.videoUrl) {
+                info.videoUrl.split(';').forEach(urlStr => {
+                  medias.push({
+                    'url' : urlStr,
+                    'type' : 'video'
+                  })
+                })
+              }
+            }
+            // 将处理好的info生产出来
+            resolve({
+              descriptions: info.description.split('；'),
+              medias : medias,
+              equipments : info.equipment.split('；')
+            })
+          } else {
+            // 此小区就没有详情
+            resolve(res.data.data)
+          }
         } else {
           // 失败
           console.log(res.data.data)
+
           resolve(res.data.data)
         }
       },
       fail: (err) => {
         console.log(err)
+
         resolve('请求失败，未能获得详情')
+      }
+    })
+  })
+}
+
+// 获取某个小区的热度
+const heatOfTheProject = function(pid) {
+  const url = constants.server + '/daily_hot_index_for_project/' + pid
+  const header = {
+    'content-type': 'application/json'
+  }
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      header: header,
+      success: (res) => {
+        if (res.statusCode != 200) {
+          // 请求出现异常
+          console.log(res)
+
+          resolve([])
+        } else {
+          // 成功
+          resolve(res.data)
+        }
+      },
+      fail: (err) => {
+        console.log(err)
+
+        resolve([])
+      }
+    })
+  })
+}
+
+const queuesOfHouses = function(houses) {
+  const url = constants.server + '/top_rank_for_house/' + houses.join(',')
+  const header = {
+    'content-type': 'application/json'
+  }
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      header: header,
+      success: (res) => {
+        if (res.statusCode != 200) {
+          // 请求有误
+          console.log(res)
+
+          resolve([])
+        } else {
+          if (res.data && res.data != null) {
+            // 整理一下数据返回 { houseId: 111, queue: [...], hotIndex: 10 }
+            let queues = 
+              houses.map((hid) => {
+                // topRank并没有排序
+                let rawRanks = res.data[hid].topRank
+                let sortedRanks = []
+                if (rawRanks.length > 0) {
+                  sortedRanks = utils.sortByProperty(rawRanks, 'userStartDate', utils.dateStrComparator)
+                }
+                return {
+                  houseId : hid,
+                  queue : sortedRanks,
+                  hotIndex : res.data[hid].hotIndex
+                }
+              })
+            // 成功
+            resolve(queues)
+          } else {
+            // 也算失败
+            console.log(res)
+
+            resolve([])
+          }
+        }
+      },
+      fail: (err) => {
+        console.log(err)
+        
+        resolve([])
       }
     })
   })
@@ -423,5 +536,7 @@ module.exports = {
   getVipInfo : getVipInfo,
   getPaymentInfo : getPaymentInfo,
   updateUserInfo : updateUserInfo,
-  getProjectInfo : getProjectInfo
+  getProjectInfo : getProjectInfo,
+  heatOfTheProject : heatOfTheProject,
+  queuesOfHouses : queuesOfHouses
 }

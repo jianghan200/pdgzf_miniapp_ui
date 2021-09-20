@@ -80,32 +80,40 @@
   </view>
 
   <!-- 今日房源，if any -->
-  <view class="cu-list menu" style="margin-top: 0px;" wx:if="{{houses.length > 0}}">
+  <view class="cu-list menu" style="margin-top: 0px;" wx:if="{{todayHouses.length > 0}}">
     <!-- 此部分的标题 -->
     <view style="margin: 10px;">
       <text class="cuIcon-infofill text-orange"></text>
       <text style="margin-left: 5px;" class="text-bold">今日房源</text>
     </view>
     <block
-      wx:for="{{houses}}"
+      wx:for="{{todayHouses}}"
       wx:for-item="house"
       wx:key="house"
     >
       <view class="cu-item" style="padding: 0 10rpx;">
         <view class="content" style="margin-top: 5px; margin-bottom: 5px;">
           <text class="cuIcon-homefill text-orange text-bold"></text> {{house.name}} 
-          <text wx:if="{{isVip}}" class="text-bold" style="color: goldenrod;"> 预计排名: {{house.rank}}</text>
+          <text wx:if="{{isVip}}" class="text-bold" style="color: goldenrod;"> （预计排名: {{house.rank}}）</text>
+          <text wx:if="{{!isVip}}" class="text-bold" style="color: goldenrod;"> （预计排名: VIP信息）</text>
           <view style="margin-left: 5px;">
-            <view>租金（月）：{{house.rent}}元</view>
-            <view>面积：{{house.size}}平</view>
-            <view>户型：{{house.type}}</view>
+            <view wx:if="{{isVip}}" style="color: goldenrod;" class="text-bold">
+              <text class="cuIcon-title"></text> 当前队列：{{house.displayedQueue}}
+            </view>
+            <view wx:if="{{!isVip}}" style="color: goldenrod;" class="text-bold">
+              <text class="cuIcon-title"></text> 当前队列：VIP信息
+            </view>
+            <view><text class="cuIcon-title"></text> 排队人数：{{house.queueLength}}</view>
+            <view><text class="cuIcon-title"></text> 租金（月）：{{house.rent}}元</view>
+            <view><text class="cuIcon-title"></text> 面积：{{house.size}}平</view>
+            <view><text class="cuIcon-title"></text> 户型：{{house.type}}</view>
           </view>
         </view>
       </view>
     </block>
   </view>
 
-  <!-- 小区户型详情 -->
+  <!-- 近期出现的小区户型详情 -->
   <view class="cu-list menu">
     <!-- 此部分的标题 -->
     <view style="margin: 10px;">
@@ -121,9 +129,16 @@
         <view class="content" style="margin-top: 5px; margin-bottom: 5px;">
           <text class="cuIcon-homefill text-cyan text-bold"></text> {{hInfo.type}}（共出现过：{{hInfo.tCount}}套）
           <view style="margin-left: 5px;">
-            <view>最近出现日期：{{hInfo.updateTime}}</view>
-            <view>租金（月）：{{hInfo.rent == 0 ? '[不详]' : hInfo.rent + '元'}}</view>
-            <view>面积：{{hInfo.area}}平</view>
+            <view wx:if="{{isVip}}" class="text-bold" style="color: goldenrod;">
+              <text class="cuIcon-title"></text> 选中人的资格日期：{{hInfo.ownerStartDate}}
+            </view>
+            <view wx:if="{{!isVip}}" class="text-bold" style="color: goldenrod;">
+              <text class="cuIcon-title"></text> 选中人的资格日期：VIP信息
+            </view>
+            <view><text class="cuIcon-title"></text> 最近出现日期：{{hInfo.updateTime}}</view>
+            <view><text class="cuIcon-title"></text> 签约当日队列长度：{{hInfo.hotIndexOnPickedDate}}</view>
+            <view><text class="cuIcon-title"></text> 租金（月）：{{hInfo.rent == 0 ? '[不详]' : hInfo.rent + '元'}}</view>
+            <view><text class="cuIcon-title"></text> 面积：{{hInfo.area}}平</view>
           </view>
         </view>
       </view>

@@ -14,7 +14,7 @@ const formatDate = date => {
   const month = date.getMonth() + 1
   const day = date.getDate()
 
-  return `${[year, month, day].map(formatNumber).join('/')}`
+  return `${[year, month, day].map(formatNumber).join('-')}`
 }
 
 const yesterday = function() {
@@ -89,6 +89,18 @@ const numberComparator = function(num1, num2) {
   }
 }
 
+// 如果date比pivot新，排在pivot后面
+const dateStrComparator = function(dStr1, pivotDateStr) {
+  let date1 = new Date(dStr1)
+  let pivot = new Date(pivotDateStr)
+
+  if (date1.getTime() > pivot.getTime()) {
+    return 1
+  } else {
+    return -1
+  }
+}
+
 module.exports = {
   formatTime,
   formatDate,
@@ -97,5 +109,6 @@ module.exports = {
   validateEmail : validateEmail,
   compareDates : compareDates,
   sortByProperty : sortByProperty,
-  numberComparator : numberComparator
+  numberComparator : numberComparator,
+  dateStrComparator : dateStrComparator
 }
