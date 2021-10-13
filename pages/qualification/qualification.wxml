@@ -1,0 +1,151 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content" class="text-bold">申请资格</view>
+</cu-custom>
+
+<view class="padding text-bold" style="display: flex; align-items: center; justify-content: center; font-size: larger;">
+  资格自测
+</view>
+
+<scroll-view scroll-y>
+  <form>
+    <!-- 问题1 -->
+    <view class="cu-bar bg-white solid-bottom">
+      <view class="action">
+        <text class="cuIcon-{{showTip1 ? 'roundclosefill' : 'title'}} text-{{showTip1 ? 'red' : 'green'}}"></text> 1.是否享受过本市廉租住房、经济适用房、共有产权保障住房政策？
+      </view>
+    </view>
+    <view class="cu-bar bg-white solid-bottom" wx:if="{{showTip1}}">
+      <view class="action"><text class="text-red text-bold">{{tip1}}</text></view>
+    </view>
+    <radio-group class="block" bindchange="answer" data-question="q1">
+		  <view class="cu-form-group">
+        <view class="title">是</view>
+        <radio value="a1"></radio>
+      </view>
+      <view class="cu-form-group">
+        <view class="title">否</view>
+        <radio value="a2"></radio>
+      </view>
+    </radio-group>
+    <!-- 问题2 -->
+    <view class="cu-bar bg-white solid-bottom margin-top">
+      <view class="action">
+        <text class="cuIcon-{{showTip2 ? 'roundclosefill' : 'title'}} text-{{showTip2 ? 'red' : 'green'}}"></text> 2.是否在本市有房？
+      </view>
+    </view>
+    <view class="cu-bar bg-white solid-bottom" wx:if="{{showTip2}}">
+      <view class="action"><text class="text-red text-bold">{{tip2}}</text></view>
+    </view>
+    <radio-group class="block" bindchange="answer" data-question="q2">
+		  <view class="cu-form-group">
+        <view class="title">没房</view>
+        <radio value="a1"></radio>
+      </view>
+      <view class="cu-form-group">
+        <view class="title">房子最近5年内刚卖，现在手里没房</view>
+        <radio value="a2"></radio>
+      </view>
+      <view class="cu-form-group">
+        <view class="title">有房，但家庭人均建筑面积低于15平方米</view>
+        <radio value="a3"></radio>
+      </view>
+      <view class="cu-form-group">
+        <view class="title">有房，而且够大</view>
+        <radio value="a4"></radio>
+      </view>
+    </radio-group>
+    <!-- 问题3 -->
+    <view class="cu-bar bg-white solid-bottom margin-top">
+      <view class="action">
+        <text class="cuIcon-{{showTip3 ? 'roundclosefill' : 'title'}} text-{{showTip3 ? 'red' : 'green'}}"></text> 3.户籍情况
+      </view>
+    </view>
+    <view class="cu-bar bg-white solid-bottom" wx:if="{{showTip3}}">
+      <view class="action"><text class="text-red text-bold">{{tip3}}</text></view>
+    </view>
+    <radio-group class="block" bindchange="answer" data-question="q3">
+		  <view class="cu-form-group">
+        <view class="title">上海户籍</view>
+        <radio value="a1"></radio>
+      </view>
+      <view class="cu-form-group">
+        <view class="title">外地户籍，有居住证</view>
+        <radio value="a2"></radio>
+      </view>
+      <view class="cu-form-group">
+        <view class="title">外地户籍，没居住证</view>
+        <radio value="a3"></radio>
+      </view>
+    </radio-group>
+    <!-- 问题4 -->
+    <view class="cu-bar bg-white solid-bottom margin-top">
+      <view class="action">
+        <text class="cuIcon-{{showTip4 ? 'roundclosefill' : 'title'}} text-{{showTip4 ? 'red' : 'green'}}"></text> 4.劳动合同
+      </view>
+    </view>
+    <view class="cu-bar bg-white solid-bottom" wx:if="{{showTip4}}">
+      <view class="action"><text class="text-red text-bold">{{tip4}}</text></view>
+    </view>
+    <radio-group class="block" bindchange="answer" data-question="q4">
+		  <view class="cu-form-group">
+        <view class="title">有合同，且合同有效期在一年以上</view>
+        <radio value="a1"></radio>
+      </view>
+      <view class="cu-form-group">
+        <view class="title">有合同，但合同有效期不到一年</view>
+        <radio value="a2"></radio>
+      </view>
+      <view class="cu-form-group">
+        <view class="title">没合同，打工是不可能打工的！</view>
+        <radio value="a3"></radio>
+      </view>
+    </radio-group>
+    <!-- 问题5 -->
+    <view class="cu-bar bg-white solid-bottom margin-top">
+      <view class="action">
+        <text class="cuIcon-{{showTip5 ? 'roundclosefill' : 'title'}} text-{{showTip5 ? 'red' : 'green'}}"></text> 5.所在公司【注册地】在浦东新区吗？
+      </view>
+    </view>
+    <view class="cu-bar bg-white solid-bottom" wx:if="{{showTip5}}">
+      <view class="action"><text class="text-red text-bold">{{tip5}}</text></view>
+    </view>
+    <radio-group class="block" bindchange="answer" data-question="q5">
+		  <view class="cu-form-group">
+        <view class="title">在</view>
+        <radio value="a1"></radio>
+      </view>
+      <view class="cu-form-group">
+        <view class="title">不在</view>
+        <radio value="a2"></radio>
+      </view>
+    </radio-group>
+    <!-- 问题6 -->
+    <view class="cu-bar bg-white solid-bottom margin-top">
+      <view class="action">
+        <text class="cuIcon-{{showTip6 ? 'roundclosefill' : 'title'}} text-{{showTip6 ? 'red' : 'green'}}"></text> 6.是否正常缴纳社保？
+      </view>
+    </view>
+    <view class="cu-bar bg-white solid-bottom" wx:if="{{showTip6}}">
+      <view class="action"><text class="text-red text-bold">{{tip6}}</text></view>
+    </view>
+    <radio-group class="block" bindchange="answer" data-question="q6">
+		  <view class="cu-form-group">
+        <view class="title">是</view>
+        <radio value="a1"></radio>
+      </view>
+      <view class="cu-form-group">
+        <view class="title">否</view>
+        <radio value="a2"></radio>
+      </view>
+      <view class="cu-form-group">
+        <view class="title">虽有中断，但有合理解释</view>
+        <radio value="a3"></radio>
+      </view>
+    </radio-group>
+  </form>
+  <!-- 交卷按钮 -->
+  <view class="padding-xl">
+    <button class="cu-btn block bg-green lg" bindtap="checkAns">交卷</button>
+  </view>
+</scroll-view>

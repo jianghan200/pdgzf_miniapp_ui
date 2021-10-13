@@ -1,6 +1,7 @@
 const requests = require('./request')
 const util = require('./util')
 const app = getApp()
+const constants = require('./constants')
 
 // 处理今日小区的rawData
 const handleTodayProjects = function(projectsRawData, housesRawData, stats, subscriptionsRawData) {
@@ -21,12 +22,6 @@ const handleTodayProjects = function(projectsRawData, housesRawData, stats, subs
         houses : group
       }
     })
-
-  // 是不是vip
-  let isVip = app.globalData.userinfo.type == 2
-  // 是vip，但是也要保证一定有startDate
-  let needToCalculateRank = 
-    isVip && (app.globalData.userinfo.startDate) && (app.globalData.userinfo.startDate != '')
 
   let list = 
     projectInGroups.map(group => {
@@ -51,39 +46,38 @@ const handleTodayProjects = function(projectsRawData, housesRawData, stats, subs
             project['appearCounts'] = stats[elem.id]['project']
             project['houseCounts'] = stats[elem.id]['house']
           }
+          // 是不是VIP范例小区？
           if (housesOfThisProject) {
-            if (needToCalculateRank) {
-              // 如果是VIP，每个house里面要有用户的预计排名
-              housesOfThisProject.houses.forEach(house => {
-                let sortedQueue = []
-                
-                // 先对queue的position进行排序
-                sortedQueue = util.sortByProperty(house.queue, 'position', util.numberComparator)
+            // 如果是VIP，每个house里面要有用户的预计排名
+            housesOfThisProject.houses.forEach(house => {
+              let sortedQueue = []
+              
+              // 先对queue的position进行排序
+              sortedQueue = util.sortByProperty(house.queue, 'position', util.numberComparator)
 
-                // 后端传过来的时间不能直接使用 "yyyy-MM-dd hh:mm:ss"
-                let userStartDate = app.globalData.userinfo.startDate.split(' ')[0]
-                // 用户的资格日
-                let userStartDateTime = new Date(userStartDate).getTime()
-                // 找到第一个比用户startDate.getTime()更新的
-                let rank = 1
-                for (let i = 0; i < sortedQueue.length; i++) {
-                  let item = sortedQueue[i]
-                  // 队伍中某人的资格日
-                  let itemStartDateTime = new Date(item.startDate).getTime()
-                  // 直到有个人的资格比用户的新，这个人的position就该是用户的
-                  if (itemStartDateTime > userStartDateTime) {
-                    rank = item.position
-                    break
-                  } else if (i == sortedQueue.length - 1) {
-                    // 已经遍历过整个queue，用户是倒数第一
-                    rank = sortedQueue.length + 1
-                  }
+              // 后端传过来的时间不能直接使用 "yyyy-MM-dd hh:mm:ss"
+              // 用户有可能没有资格日，则使用mockStartDate
+              let userStartDateTime = 
+                (app.globalData.userinfo.startDate == null || !app.globalData.userinfo.startDate) ? constants.mockStartDate.getTime() : new Date(app.globalData.userinfo.startDate.split(' ')[0])
+              // 找到第一个比用户startDate.getTime()更新的
+              let rank = 1
+              for (let i = 0; i < sortedQueue.length; i++) {
+                let item = sortedQueue[i]
+                // 队伍中某人的资格日
+                let itemStartDateTime = new Date(item.startDate).getTime()
+                // 直到有个人的资格比用户的新，这个人的position就该是用户的
+                if (itemStartDateTime > userStartDateTime) {
+                  rank = item.position
+                  break
+                } else if (i == sortedQueue.length - 1) {
+                  // 已经遍历过整个queue，用户是倒数第一
+                  rank = sortedQueue.length + 1
                 }
-                house['rank'] = rank
-              })
-              // 把一个小区houses的最高（最小数字）排名输入
-              project['bestRank'] = Math.min.apply(Math, housesOfThisProject.houses.map(house => house.rank))
-            }
+              }
+              house['rank'] = rank
+            })
+            // 把一个小区houses的最高（最小数字）排名输入
+            project['bestRank'] = Math.min.apply(Math, housesOfThisProject.houses.map(house => house.rank))
             project['houses'] = housesOfThisProject.houses
           }
           return project
@@ -179,9 +173,18 @@ const loadAllData = function() {
       handleTodayProjects(todayProjectsRawData, todayHousesRawData, todayStats, subscriptions)
       handleAllProjects(allProjectsRawData, allProjectsHouseInfoRawData, subscriptions)
 
-      wx.redirectTo({
-        url: '/pages/today/today',
-      })
+      // 对于不同的用户，“首页”是不同的.
+      // 新用户（userinfo中没有startDate也没有email）
+      if (app.globalData.userinfo.type == 0 && app.globalData.userinfo.email == null && app.globalData.userinfo.startDate == null) {
+        wx.redirectTo({
+          url: '/pages/newbee/newbee',
+        })
+      } else {
+        // 老用户
+        wx.redirectTo({
+          url: '/pages/today/today',
+        })
+      }
     })
     .catch((err) => {
       console.log(err)

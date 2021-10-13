@@ -1,0 +1,111 @@
+<!--pages/timeline/timeline.wxml-->
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content" class="text-bold">流程时间线</view>
+</cu-custom>
+
+<view class="cu-timeline">
+  <view class="cu-time" style="text-align: start; width: auto;">2021年上海房租暴涨，小黑决定申请公租房</view>
+  <view class="cu-item text-grey">
+    <view class="content shadow-blur bg-grey">
+      在查询了
+      <text bindtap="goTo" data-page="policy" class="text-yellow">【政策】</text>、
+      <text bindtap="goTo" data-page="qualification" class="text-yellow">【申请资格】</text>以及
+      <text bindtap="goTo" data-page="advantages" class="text-yellow">【公租房的优势】</text>后火速开始准备材料
+    </view>
+  </view>
+  <view class="cu-time" style="text-align: start; width: auto;">小黑资格申请，开始准备材料</view>
+
+  <view class="cu-item text-grey">
+    <view class="content shadow-blur bg-grey">
+      准备好<text bindtap="goTo" data-page="materials" class="text-yellow">【申请材料】</text>
+      <view>
+        <text class="cuIcon-creativefill text-yellow"></text> 先准备好材料是为了在【网申通过】或【初审通过】后能立马递交材料。
+      </view>
+      <view><text class="text-bold">【网申通过】到【递交材料】之间只有5个工作日的窗口，切记！</text></view>
+    </view>
+  </view>
+
+  <view class="cu-time">开始网签</view>
+
+  <view class="cu-item text-cyan">
+    <view class="content shadow-blur bg-cyan">
+      【天眼查】上找公司的【注册区域】、【企业类型】和【统一社会信用代码】
+    </view>
+  </view>
+  <view class="cu-item text-cyan">
+    <view class="content shadow-blur bg-cyan">
+      <text>来到【上海浦东新区公租房网上业务平台】</text>
+      <view><text class="cuIcon-creativefill text-yellow"></text> 百度：“浦东公租房”</view>
+      <view><text>1. 注册【账号】</text></view>
+      <view><text>2. 选择【区筹】</text></view>
+      <view><text>3. 在【个人中心】下的【我的申请】中，填写递交《公租房申请》</text></view>
+      <view>
+        <text class="cuIcon-creativefill text-yellow"></text>
+        《公租房申请》要求上传【居住证】，有户口的可以无视。“共同申请人”和“申请人现有住房”没有就不填
+      </view>
+    </view>
+  </view>
+  <view class="cu-time">几个工作日后</view>
+
+  <view class="cu-item text-green">
+    <view class="content shadow-blur bg-green">
+      <view>来到浦东公租房受理中心，递交<text bindtap="goTo" data-page="materials" class="text-yellow">【申请材料】</text></view>
+      <view><text class="cuIcon-creativefill text-yellow"></text> 浦三路930弄</view>
+      <view><text class="cuIcon-creativefill text-yellow"></text> 工作时间：9:00-11:30；13:00-16:00 周末上班（法定节假日除外）</view>
+      <view><text class="cuIcon-creativefill text-yellow"></text>咨询电话：021-50591069</view>
+    </view>
+  </view>
+  <view class="cu-time">几个工作日之后</view>
+  <view class="cu-item text-green">
+    <view class="content shadow-blur bg-green">
+      收到了“您的资格申请单XXX，已通过材料审核，进入面积审核阶段！”
+    </view>
+  </view>
+  <view class="cu-time">近10天后</view>
+  <view class="cu-item text-green">
+    <view class="content shadow-blur bg-green">
+      收到了“您的资格申请单XXX已通过面积审核，进入复审审核阶段！”
+    </view>
+  </view>
+  <view class="cu-time">又过了2天</view>
+  <view class="cu-item text-green">
+    <view class="content shadow-blur bg-green">
+      收到了“您的资格申请单XXX已通过复审审核，请尽快完成网上选房！”
+    </view>
+  </view>
+
+  <view class="cu-time" style="text-align: start; width: auto; ">
+    小黑高兴坏了，殊不知万里长征才走了一公里...
+  </view>
+  <view class="cu-item text-grey">
+    <view class="content shadow-blur bg-grey">
+      没想到排队选房这么卷！小黑看了
+      <text bindtap="goTo" data-page="stats" class="text-yellow">【统计数据】</text>后找不到“快乐星球”了
+    </view>
+  </view>
+  <view class="cu-item text-grey">
+    <view class="content shadow-blur bg-grey">
+      借助【PD公租房】锁定了几个合理的目标
+    </view>
+  </view>
+  <view class="cu-time">5个月后</view>
+  <view class="cu-item text-grey">
+    <view class="content shadow-blur bg-grey">
+      在“自动选房”、“房源信息邮件”以及，“加速器”的加持下，总算及时选中了一套很抢手的房子。
+    </view>
+  </view>
+
+  <view class="cu-item text-grey">
+    <view class="content shadow-blur bg-grey">
+      在官网预约【看房】
+      <view><text class="cuIcon-creativefill text-yellow"></text> 要在三个自然日内预约看房，五个自然日内进行网签，逾期将视为自动放弃所选记录</view>
+    </view>
+  </view>
+  <view class="cu-time" style="text-align: start; width: auto; ">小黑除了觉得家具太多，其他都挺满意</view>
+  <view class="cu-item text-grey">
+    <view class="content shadow-blur bg-grey">
+      签约。押一付三，单子合同，全程线上。
+    </view>
+  </view>
+</view>

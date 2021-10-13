@@ -1,0 +1,104 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">政策介绍</view>
+</cu-custom>
+
+<scroll-view scroll-x class="nav bg-white">
+  <view class="cu-item {{ 0 == curTab ? 'text-cyan cur' : '' }}" bindtap="tabSelect" data-id="0">
+    <text class="cuIcon-infofill"></text> 官方信息
+  </view>
+  <view class="cu-item {{ 1 == curTab ? 'text-orange cur' : '' }}" bindtap="tabSelect" data-id="1">
+    <text class="cuIcon-warnfill"></text> 注意事项
+  </view>
+</scroll-view>
+
+<scroll-view scroll-y>
+  <view class="cu-list menu" wx:if="{{ 0 == curTab }}">
+    <view class="cu-bar bg-white solid-bottom">
+      <view class="action"><text class="cuIcon-homefill text-grey"></text><text>运营方</text></view>
+      <view class="action">上海市浦东新区公共租赁住房投资运营有限公司</view>
+    </view>
+    <view class="cu-bar bg-white solid-bottom">
+      <view class="action"><text class="cuIcon-locationfill text-grey"></text><text>办事处地址</text></view>
+      <view class="action">浦东新区浦三路930弄1号（近杨高南路）</view>
+    </view>
+    <view class="cu-bar bg-white solid-bottom">
+      <view class="action"><text class="cuIcon-servicefill text-grey"></text><text>咨询电话</text></view>
+      <view class="action">021-50591069</view>
+    </view>
+    <view class="cu-bar bg-white solid-bottom">
+      <view class="action"><text class="cuIcon-timefill text-grey"></text><text>工作时间</text></view>
+      <view class="action">每日9:00-16:00（法定假日除外）</view>
+    </view>
+    <view class="cu-bar bg-white solid-bottom">
+      <view class="action"><text class="cuIcon-discover text-grey"></text><text>官网</text></view>
+      <view class="action">https://select.pdgzf.com</view>
+    </view>
+    <view class="cu-bar bg-white solid-bottom">
+      <view class="action"><text class="cuIcon-repairfill text-grey"></text><text>报修热线</text></view>
+      <view class="action">021-68389100</view>
+    </view>
+  </view>
+  <!-- 注意事项 -->
+  <view wx:if="{{1 == curTab}}">
+    <view class="margin-xl bg-white padding-xl radius shadow-lg">
+      <view class='text-center margin-bottom text-lg text-grey text-bold'>可选户型</view>
+      <view class='text-content'>
+        <view><text class="cuIcon-title"></text> 一室（合租）、一室、一室一厅</view>
+        <view><text class="cuIcon-title"></text> 两室一厅</view>
+        <view><text class="cuIcon-title"></text> 三室一厅</view>
+        <view class='margin-top-sm'>一室（合租）只存在于别小区，如”上南路3880弄“和“绿茵苑”。</view>
+        <view class='margin-top-sm'>"房间名带字母（“888-A”）为合租房源。</view>
+        <view class='margin-top-sm'>不会出现异性合租的情况。</view>
+      </view>
+
+      <view class='text-center margin-bottom margin-top text-lg text-grey text-bold'>户型选择限制</view>
+      <view class="text-content">
+        <view class='margin-top-sm'>递交材料之日男性年满24周岁、女性年满22周岁可申请一、二居室。</view>
+        <view class='margin-top-sm'>“幼年单身”只能申请一居室。</view>
+        <view class='margin-top-sm'>已婚可申请全部户型（官方催一波婚～）。</view>
+      </view>
+
+      <view class='text-center margin-bottom margin-top text-lg text-grey text-bold'>配套设施</view>
+      <view class="text-content">
+        <view class="margin-top-sm">民水民电。</view>
+        <view class='margin-top-sm'>家具、家电比较齐全，除个别“豪宅”或“新加入的”小区，经常因家具过多导致房间拥挤（参见看房视频）。</view>
+        <view class="margin-top-sm">床垫、纱窗、窗帘大概率都要自备，除非前任租客留下来了。看房时要留心。</view>
+        <view class="margin-top-sm">保修可以打电话，【官方信息】中有写，或者到官网的“个人中心”报修（仅限家具家电，不包括门禁）。</view>
+        <view class='margin-top-sm'>地理位置“正常”的公租房几乎是不停“流转”的，所以“公租房龄”越长的房源的配套设施会越差（我们日后会整理发布“公租房龄”）。</view>
+        <view class='margin-top-sm'>除“艾东苑”这种全公租房小区，很多小区会将公租房区域隔离出去且互不相通，不提供车位等等 ╮(╯▽╰)╭ 。设置收货地址时要注意（我们会逐步更新这些情报）。</view>
+      </view>
+
+      <view class='text-center margin-bottom margin-top text-lg text-grey text-bold'>准入资格有“保质期”</view>
+      <view class="text-content">
+        <view class='margin-top-sm'>自获得资格之日起有效期为2年。</view>
+        <view class="margin-top-sm">所以持有资格达到1年以上基本就是“卷王”了，想不想看看有多少“卷王”◉‿◉。</view>
+      </view>
+
+      <view class="text-center margin-bottom margin-top text-lg text-grey text-bold">提取公积金</view>
+      <view class="text-content">
+        <view class="margin-top-sm">提取公积金的前提是租住房屋已完成“租赁备案”</view>
+        <view class="margin-top-sm">备案至【管理处】发起纸质申请，公租房提供相关备案材料（再也不需要跟房东扯皮了(*^o^*)）</view>
+        <view class="margin-top-sm">凭【租金发票】及【租赁合同】至【公积金中心】办理公积金提取，网点咨询电话：12329</view>
+      </view>
+
+      <view class="text-center margin-bottom margin-top text-lg text-grey text-bold">租金、合同</view>
+      <view class="text-content">
+        <view class="margin-top-sm">租金远低于市场。尤其是2021年上海租金暴涨之后，这些地主(~_~;)。。。</view>
+        <view class="margin-top-sm">最多可以住6年（市筹、区筹累计）。</view>
+        <view class="margin-top-sm">每2年需要续签，续签时会重新审查准入资格。</view>
+        <view class="margin-top-sm">合同期内租金不变，押1付3。</view>
+        <view class="margin-top-sm text-bold">续租申请要在租期前3个月发起，还是在官网办理！！！（此处敲黑板）</view>
+        <view class="margin-top-sm">合同到期后可免排队续签，但要按照新租金标准执行（相比市场，这个浮动量很小了）。</view>
+        <view class="margin-top-sm">住满6年后，可以申请“再住1年”，但要“按市场化租金”。且1年之后还可以再申请延期1年，所以最长可租8年（政府还是很惯孩子的）</view>
+      </view>
+
+      <view class="text-center margin-bottom margin-top text-lg text-grey text-bold">退租跑路</view>
+      <view class="text-content">
+        <view class="margin-top-sm">任何时间都能退租，但要提前【1个多月】在官网提申请。</view>
+        <view class="margin-top-sm">设施（包括墙），家具遗失、损坏、大件家具遗留都需要赔钱的。</view>
+        <view class="margin-top-sm">押金会在1-2个月后回到你的账户。</view>
+      </view>
+    </view>
+  </view>
+</scroll-view>

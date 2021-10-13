@@ -18,6 +18,19 @@
     <button style="height: 90rpx; width: 30%;" class="cu-btn bg-green text-bold" bindtap="refresh">
       <text class="cuIcon-refresh text-white"></text> 刷新房源
     </button>
+    <button 
+      wx:if="{{!isVip}}"
+      style="height: 90rpx; width: 30%;" 
+      class="cu-btn text-bold cuIcon-vip bg-black text-yellow" 
+      bindtap="vipSample"
+    >
+      VIP范例
+    </button>
+  </view>
+
+  <!-- 对于初次登陆用户的提示 -->
+  <view wx:if="{{!hasStartDate}}" class="text-bold text-grey flex" style="justify-content: center; align-items: center;">
+    缺少资格日期，排名依照模拟资格日：2021-04-26
   </view>
 
   <view>
@@ -57,7 +70,7 @@
                   <view style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
                     <text class="text-{{project.isSubscribed ? 'orange' : 'black'}} padding-left {{project.isSubscribed ? 'text-bold' : ''}}">{{tools.indexOf(project.pName, '（') == -1 ? project.pName : tools.sliceOf(project.pName)}} ({{project.houses.length}}套)
                     </text>
-                    <text wx:if="{{isVip}}" style="font-size: smaller; color: grey; padding-left: 10px;">预计最靠前排名：{{project.bestRank}}</text>
+                    <text style="font-size: smaller; color: grey; padding-left: 10px;">预计最靠前排名：{{project.bestRank}}</text>
                   </view>
                 </view>
               </view>
@@ -75,8 +88,8 @@
 <!-- 9:30 am ~ 10:03am 期间禁止选房 -->
 <view wx:if="{{disable}}" style="height: 100vh; ">
   <view style="height: calc(100vh - calc(100rpx + env(safe-area-inset-bottom) / 2)); display: flex; flex-direction: column; align-items: center; justify-content: center;">
-    <text class="cuIcon-flashbuyfill text-blue" style="font-size: 40px;"></text>
-    <text class="text-bold text-xl padding">每天上午9:30 ~ 10:00关闭选房通道。请于上午10:03后打开此页～</text>
+    <image class="worker-avatar" src="/assets/kid.jpeg" mode="aspectFill"></image>
+    <text class="text-bold text-xl padding">每天上午9:30 ~ 10:00关闭选房通道。请于上午10:03后打开此页～（搬砖的手，微微颤抖）</text>
   </view>
 
   <!-- tabBar -->

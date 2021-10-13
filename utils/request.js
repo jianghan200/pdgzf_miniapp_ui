@@ -398,15 +398,19 @@ const getProjectInfo = function(pid) {
           if (info != null && info) {
             // 照片和视频合并称为media
             let medias = []
-            JSON.parse(info.imageUrls).forEach(url => {
-              medias.push({
-                'url' : url,
-                'type' : 'image'
+            if (info.imageUrls && info.imageUrls != null) {
+              JSON.parse(info.imageUrls).forEach(url => {
+                medias.push({
+                  'url' : url,
+                  'type' : 'image'
+                })
               })
-            })
+            }
             // 只有vip能看到视频
-            if (app.globalData.userinfo.type == 2) {
-              if (info.videoUrl) {
+            // 或者这个小区是三湘名邸
+            let isSampleProject = pid == constants.vipPid
+            if (isSampleProject || app.globalData.userinfo.type == 2) {
+              if (info.videoUrl && info.videoUrl != null) {
                 info.videoUrl.split(';').forEach(urlStr => {
                   medias.push({
                     'url' : urlStr,
@@ -415,11 +419,19 @@ const getProjectInfo = function(pid) {
                 })
               }
             }
+            let descriptions = []
+            if (info.description && info.description != null) {
+              descriptions = info.description.split('；')
+            }
+            let equipments = []
+            if (info.equipment && info.equipment != null) {
+              equipments = info.equipment.split('；')
+            }
             // 将处理好的info生产出来
             resolve({
-              descriptions: info.description.split('；'),
+              descriptions: descriptions,
               medias : medias,
-              equipments : info.equipment.split('；')
+              equipments : equipments
             })
           } else {
             // 此小区就没有详情
@@ -459,7 +471,21 @@ const heatOfTheProject = function(pid) {
           resolve([])
         } else {
           // 成功
-          resolve(res.data)
+          // 做一下简单的处理，将时间戳变成强类型Date，使用cnt制造出hex值用于热力图的显示.
+          let list = 
+            res.data.map(item => {
+              let date = new Date(item.periodStartTime)
+              return {
+                date : date,
+                year : date.getFullYear(),
+                month : date.getMonth() + 1,
+                date : date.getDate(),
+                count : item.cnt,
+                hex : utils.number2Hex(item.cnt)
+              }
+            })
+
+          resolve(list)
         }
       },
       fail: (err) => {
@@ -522,6 +548,108 @@ const queuesOfHouses = function(houses) {
   })
 }
 
+// 每个月有多少人获得资格
+const getCandidatesCounts = function() {
+  const url = constants.server + '/user_apply_number'
+  const header = {
+    'content-type': 'application/json'
+  }
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      header: header,
+      success: (res) => {
+        if (res.statusCode != 200) {
+          console.log(res)
+
+          resolve([])
+        } else {
+          if (res.data && res.data != null) {
+            resolve(res.data)
+          } else {
+            console.log(res)
+
+            resolve([])
+          }
+        }
+      },
+      fail: (err) => {
+        console.log(err)
+
+        resolve([])
+      }
+    })
+  })
+}
+
+// 现存的参与排队的人数（per month）
+const getValidCandidatesCounts = function() {
+  const url = constants.server + '/user_qualification_distribution'
+  const header = {
+    'content-type': 'application/json'
+  }
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      header: header,
+      success: (res) => {
+        if (res.statusCode != 200) {
+          console.log(res)
+
+          resolve([])
+        } else {
+          if (res.data && res.data != null) {
+            resolve(res.data)
+          } else {
+            console.log(res)
+
+            resolve([])
+          }
+        }
+      },
+      fail: (err) => {
+        console.log(err)
+
+        resolve([])
+      }
+    })
+  })
+}
+
+// 每个月有多少房源
+const getMonthlyHouseCount = function() {
+  const url = constants.server + '/house_cnt_per_month'
+  const header = {
+    'content-type': 'application/json'
+  }
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      header: header,
+      success: (res) => {
+        if (res.statusCode != 200) {
+          console.log(res)
+
+          resolve([])
+        } else {
+          if (res.data && res.data != null) {
+            resolve(res.data)
+          } else {
+            console.log(res)
+
+            resolve([])
+          }
+        }
+      },
+      fail: (err) => {
+        console.log(err)
+
+        resolve([])
+      }
+    })
+  })
+}
+
 module.exports = {
   login : login,
   getSubscriptions : getSubscriptions,
@@ -538,5 +666,8 @@ module.exports = {
   updateUserInfo : updateUserInfo,
   getProjectInfo : getProjectInfo,
   heatOfTheProject : heatOfTheProject,
-  queuesOfHouses : queuesOfHouses
+  queuesOfHouses : queuesOfHouses,
+  getCandidatesCounts : getCandidatesCounts,
+  getValidCandidatesCounts : getValidCandidatesCounts,
+  getMonthlyHouseCount : getMonthlyHouseCount
 }

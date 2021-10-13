@@ -1,6 +1,7 @@
 const app = getApp()
 const constants = require('../../utils/constants')
 const requests = require('../../utils/request')
+const utils = require('../../utils/util')
 
 Page({
   /**
@@ -9,13 +10,17 @@ Page({
   data: {
     CustomBar: app.globalData.CustomBar,
     userinfo: null,
-    vipInfo: null
+    vipInfo: null,
+    startDate: ''
   },
   
   onLoad: function (options) {
     this.getVipInfo()
+    let userinfo = app.globalData.userinfo
+    let startDate = utils.getOrElse(userinfo.startDate, '').split(' ')[0]
     this.setData({
-      userinfo: app.globalData.userinfo
+      userinfo: userinfo,
+      startDate: userinfo.type == 2 ? startDate : ''
     })
   },
 

@@ -1,0 +1,44 @@
+<!--pages/newbee/newbee.wxml-->
+<view style="height: 50px;"></view>
+
+<view class="userinfo">
+  <view class="{{vipInfo.type == 2 ? 'vip-' : ''}}avatar"><open-data type="userAvatarUrl"></open-data></view>
+  <open-data type="userNickName" lang="zh_CN" class="{{vipInfo.type == 2 ? 'vip-' : ''}}nickname"></open-data>
+  <view class="text-bold">欢迎来到公租房快乐星球</view>
+</view>
+
+<view style="height: 50px;"></view>
+
+<view class="cu-list grid col-2 no-border">
+  <view class="cu-item" bindtap="goTo" data-page="timeline">
+    <view class="cuIcon-time"></view>
+    <text>流程时间线</text>
+  </view>
+  <view class="cu-item" bindtap="goTo" data-page="policy">
+    <view class="cuIcon-read"></view>
+    <text>政策介绍</text>
+  </view>
+
+  <view class="cu-item" bindtap="goTo" data-page="qualification">
+    <view class="cuIcon-ticket"></view>
+    <text>申请资格</text>
+  </view>
+
+  <view class="cu-item" bindtap="goTo" data-page="materials">
+    <view class="cuIcon-form"></view>
+    <text>申请材料</text>
+  </view>
+
+  <view class="cu-item" bindtap="goTo" data-page="stats">
+    <view class="cuIcon-rank"></view>
+    <text>公租房统计数据</text>
+  </view>
+
+  <view class="cu-item" bindtap="goTo" data-page="advantages">
+    <view class="cuIcon-appreciate"></view>
+    <text>公租房的优势</text>
+  </view>
+</view>
+
+<!-- tabBar -->
+<tabBar bindswitchtab="redirect" tab="newbee"></tabBar>

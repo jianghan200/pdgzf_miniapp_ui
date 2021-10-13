@@ -111,7 +111,7 @@ Page({
         // 微信支付失败
         wx.showToast({
           title: '支付失败',
-          icon: 'cancel'
+          icon: 'error'
         })
         self.hideModal()
       })
@@ -119,7 +119,7 @@ Page({
       // 检查未通过
       wx.showToast({
         title: '电邮填写有误',
-        icon: 'cancel'
+        icon: 'error'
       })
     }
   }

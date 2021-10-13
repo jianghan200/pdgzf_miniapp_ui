@@ -11,7 +11,14 @@
     "pages/vip/vip",
     "pages/rights/rights",
     "pages/email/email",
-    "pages/subdetail/subdetail"
+    "pages/subdetail/subdetail",
+    "pages/newbee/newbee",
+    "pages/timeline/timeline",
+    "pages/policy/policy",
+    "pages/qualification/qualification",
+    "pages/stats/stats",
+    "pages/advantages/advantages",
+    "pages/materials/materials"
   ],
   "window":{
     "navigationStyle": "custom"
@@ -23,6 +30,12 @@
   "permission": {
     "scope.userLocation": {
       "desc": "您的位置将会被小程序使用"
+    }
+  },
+  "plugins": {
+    "calendar": {
+        "version": "1.1.3",
+        "provider": "wx92c68dae5a8bb046"
     }
   }
 }

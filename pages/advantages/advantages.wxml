@@ -1,0 +1,6 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">公租房的优势</view>
+</cu-custom>
+
+<view class="text-center">优势很大，显示不下（会尽快发布～^_^）</view>

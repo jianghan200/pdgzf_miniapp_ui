@@ -1,0 +1,13 @@
+/* pages/materials/materials.wxss */
+.cu-form-group .title {
+  min-width: calc(4em + 30rpx);
+}
+
+.modal-content {
+  display: flex; 
+  flex-direction: column; 
+  align-items: baseline; 
+  padding: 30rpx; 
+  justify-content: center;
+  text-align: initial;
+}

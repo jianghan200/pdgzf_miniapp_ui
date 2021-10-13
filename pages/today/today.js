@@ -4,6 +4,7 @@ const util = require('../../utils/util')
 let app = getApp()
 const subHelper = require('../../utils/subscripton')
 const requestsUtil = require('../../utils/request')
+const constants = require('../../utils/constants')
 
 Page({
   data: {
@@ -21,7 +22,8 @@ Page({
     // 每天早9:30 ～ 10:03之间要关闭选房
     disable: false,
     // vip的身份flag
-    isVip: false
+    isVip: false,
+    hasStartDate: false
   },
 
   onLoad: function (options) {
@@ -30,7 +32,9 @@ Page({
     if ((date.getHours() == 9 && date.getMinutes() >= 30) || (date.getHours() == 10 && date.getMinutes() <= 3)) {
       this.setData({
         disable : true,
-        isVip : app.globalData.userinfo.type == 2
+        isVip : app.globalData.userinfo.type == 2,
+        // 用户是否输入了自己的startDated
+        hasStartDate : (app.globalData.userinfo.startDate == null || !app.globalData.userinfo.startDate) ? false : true
       })
     } else {
       // 正常情况
@@ -83,13 +87,16 @@ Page({
       let allHouses = []
       todayProjects.forEach(area => { allProjects = allProjects.concat(area.projects) })
       allProjects.forEach(p => { allHouses = allHouses.concat(p.houses) })
+
       this.setData({
         list : todayProjects,
         milestone : milestone,
         timeStamp : util.formatTime(new Date()),
         projectCount : allProjects.length,
         houseCount : allHouses.length,
-        isVip : app.globalData.userinfo.type == 2
+        isVip : app.globalData.userinfo.type == 2,
+        // 用户是否输入了自己的startDated
+        hasStartDate : (app.globalData.userinfo.startDate == null || !app.globalData.userinfo.startDate) ? false : true
       })
     }
   },
@@ -117,6 +124,14 @@ Page({
   navToHouses(e) {
     let pId = e.currentTarget.dataset.pid
     let url = '../project/project?pid=' + pId
+    wx.navigateTo({
+      url: url,
+    })
+  },
+
+  // 普通用户点击VIP范例
+  vipSample(e) {
+    let url = '../project/project?pid=' + constants.vipPid + '&mock=true'
     wx.navigateTo({
       url: url,
     })

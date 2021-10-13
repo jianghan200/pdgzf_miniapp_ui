@@ -1,0 +1,222 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">申请材料</view>
+</cu-custom>
+
+<scroll-view scroll-x class="nav bg-white">
+  <view class="cu-item {{ 0 == curTab ? 'text-cyan cur' : '' }}" bindtap="tabSelect" data-id="0">
+    <text class="cuIcon-peoplefill"></text> 单身
+  </view>
+  <view class="cu-item {{ 1 == curTab ? 'text-cyan cur' : '' }}" bindtap="tabSelect" data-id="1">
+    <text class="cuIcon-friendfill"></text> 单身已育
+  </view>
+  <view class="cu-item {{ 2 == curTab ? 'text-orange cur' : '' }}" bindtap="tabSelect" data-id="2">
+    <text class="cuIcon-friendfavor"></text> 已婚未育
+  </view>
+  <view class="cu-item {{ 3 == curTab ? 'text-orange cur' : '' }}" bindtap="tabSelect" data-id="3">
+    <text class="cuIcon-group_fill"></text> 已婚已育
+  </view>
+</scroll-view>
+
+<!-- 标题 -->
+<view class="cu-bar bg-white solid-bottom">
+  <view class="action"><text class="cuIcon-titles"></text> 内容参考官网公告</view>
+  <view class="action">
+    <button class="cu-btn bg-green shadow" bindtap="preview">生成列表</button>
+  </view>
+</view>
+
+<scroll-view scroll-y>
+  <!-- 个人信息 -->
+  <view class="cu-bar bg-white solid-bottom">
+    <view class="action"><text class="cuIcon-peoplefill text-grey"></text> 个人材料</view>
+  </view>
+  <view class="cu-list menu">
+    <view class="cu-item">
+      <view class="content padding-tb-sm">
+        公共租赁住房准入资格申请表
+        <view class="text-gray text-sm">网上填报后下载的A4版本</view>
+      </view>
+    </view>
+    <view class="cu-item"><view class="content">身份证正反面复印件（出示原件）</view></view>
+    <view class="cu-item">
+      <view class="content padding-tb-sm">
+        社保缴费证明
+        <view class="text-gray text-sm">
+          <text class="cuIcon-title text-gray"></text>
+          上海市人力资源社会保障网 或 "社保中心"（街道社区事务受理服务中心，不是街道办事处）</view>
+        <view class="text-gray text-sm">
+          <text class="cuIcon-title text-gray"></text>
+          打印日起一个月内有效
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 配偶资料 -->
+  <view class="cu-bar bg-white solid-bottom margin-top" wx:if="{{ 2 == curTab || 3 == curTab }}">
+    <view class="action"><text class="cuIcon-friendfavor text-orange"></text> 配偶资料</view>
+    <view class="action">
+      <text class="margin-right">{{ spouseHasHukou ? '有上海户口' : '无上海户口' }}</text>
+      <switch checked="{{spouseHasHukou}}" bindchange="toggleSpouseHasHukou"/>
+    </view>
+  </view>
+  <view class="cu-list menu" wx:if="{{ 2 == curTab || 3 == curTab }}">
+    <view class="cu-item"><view class="content">婚姻状况证明复印件（夫妻双方结婚证原件）</view></view>
+    <view class="cu-item"><view class="content">配偶的身份证正反面复印件（出示原件）</view></view>
+    <view class="cu-item"><view class="content">配偶拥有本市产权住房的《房地产权证》复印件（出示原件）</view></view>
+    <view class="cu-item"><view class="content">配偶承租本市公有住房的《租用居住公房凭证》复印件（出示原件）</view></view>
+    <view class="cu-item" wx:if="{{spouseHasHukou}}"><view class="content">配偶的本市户口簿从第一页复印到空白页（出示原件）</view></view>
+    <view class="cu-item" wx:if="{{spouseHasHukou}}"><view class="content">配偶的本市户籍证明需注明：公共户或集体户</view></view>
+  </view>
+
+  <!-- 子女资料 -->
+  <view class="cu-bar bg-white solid-bottom margin-top" wx:if="{{ 1 == curTab || 3 == curTab }}">
+    <view class="action"><text class="cuIcon-friendfill text-grey"></text> 子女资料</view>
+    <view class="action">
+      <text class="margin-right">{{ hasAdultChildren ? '有成年' : '无成年' }}</text>
+      <switch checked="{{hasAdultChildren}}" bindchange="toggleHasAdultChildren"></switch>
+    </view>
+    <view class="action">
+      <text class="margin-right margin-left">{{ hasNonageChildren ? '有未成年' : '无未成年' }}</text>
+      <switch checked="{{hasNonageChildren}}" bindchange="toggleHasNonageChildren"></switch>
+    </view>
+  </view>
+  <view class="cu-list menu" wx:if="{{ 1 == curTab || 3 == curTab }}">
+    <view class="cu-item" wx:if="{{hasNonageChildren || hasAdultChildren}}">
+      <view class="content padding-tb-sm">子女的户口页复印件（出示原件）</view>
+    </view>
+    <view class="cu-item" wx:if="{{hasNonageChildren}}"><view class="content">未成年子女的《出生证明》的复印件（出示原件）</view></view>
+    <view class="cu-item" wx:if="{{hasAdultChildren}}"><view class="content">成年子女的身份证正反面复印件（出示原件）</view></view>
+    <view class="cu-item" wx:if="{{hasAdultChildren}}">
+      <view class="content">成年子女在本市的产权住房的《房地产权证》复印件（出示原件）</view>
+    </view>
+    <view class="cu-item" wx:if="{{hasAdultChildren}}">
+      <view class="content">成年子女承租本市公有住房的《租用居住公房凭证》复印件（出示原件）</view>
+    </view>
+    <view class="cu-item" wx:if="{{hasAdultChildren}}">
+      <view class="content padding-tb-sm">
+        成年（适婚）子女的婚姻状况证明
+        <view class="text-gray text-sm">单身承诺书（现场提供模板，签字并右手大拇指盖手印）</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 公司信息 -->
+  <view class="cu-bar bg-white solid-bottom margin-top">
+    <view class="action"><text class="cuIcon-sponsorfill text-grey"></text> 单位材料</view>
+    <view class="action">
+      <picker range="{{ employers }}" value="{{ employerIdx }}" bindchange="pickEmployer">
+        <view class="picker">{{ employers[employerIdx] }}</view>
+      </picker>
+      <text class="cuIcon-right margin-left"></text>
+    </view>
+  </view>
+  <view class="cu-list menu">
+    <view class="cu-item" wx:if="{{employerIdx != 1}}">
+      <view class="content padding-tb-sm">
+        劳动/工作合同复印件（出示原件）
+        <view class="text-gray text-sm">每页复印</view>
+      </view>
+    </view>
+    <view class="cu-item" wx:if="{{employerIdx == 1}}"><view class="content">在职证明（盖公章）</view></view>
+    <view class="cu-item" wx:if="{{employerIdx == 0}}"><view class="content">《营业执照》复印件</view></view>
+    <view class="cu-item" wx:if="{{employerIdx == 1}}"><view class="content">《组织机构代码证》</view></view>
+    <view class="cu-item" wx:if="{{employerIdx == 2}}"><view class="content">《事业单位法人证书》</view></view>
+    <view class="cu-item" wx:if="{{employerIdx == 3}}">
+      <view class="content padding-tb-sm">
+        三证或三证合一复印件（需加盖公章）
+        <view class="text-gray text-sm">三证：营业执照、税务登记证、组织机构代码证</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 户籍信息 -->
+  <view class="cu-bar bg-white solid-bottom margin-top">
+    <view class="action"><text class="cuIcon-homefill text-grey"></text> 户籍材料</view>
+    <view class="action">
+      <text class="margin-right">{{ hasHukou ? '有上海户口' : '有上海居住证' }}</text>
+      <switch checked="{{hasHukou}}" bindchange="toggleHukou"/>
+    </view>
+  </view>
+  <view class="cu-list menu" wx:if="{{hasHukou}}">
+    <view class="cu-item"><view class="content">户口簿从第一页复印到空白页（出示原件）</view></view>
+    <view class="cu-item">
+      <view class="content padding-tb-sm">
+        户籍证明
+        <view class="text-gray text-sm">凭身份证、户口、一寸彩照x1到户籍所在地（如“花木街道”）派出所办理</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="cu-list menu" wx:if="{{!hasHukou}}">
+    <view class="cu-item"><view class="content">居住证正反面复印件（出示原件）</view></view>
+  </view>
+  <!-- 婚配信息 -->
+  <view class="cu-bar bg-white solid-bottom margin-top" wx:if="{{ 0 == curTab || 1 == curTab }}">
+    <view class="action"><text class="cuIcon-friendfill text-grey"></text> 婚配信息材料</view>
+    <view class="action">
+      <text class="margin-right">{{ divorced ? '已离异' : '未离异' }}</text>
+      <switch checked="{{divorced}}" bindchange="toggleDivorced"/>
+
+      <text class="margin-right margin-left">{{ bereft ? '已丧偶' : '未丧偶' }}</text>
+      <switch checked="{{bereft}}" bindchange="toggleBereft"/>
+    </view>
+  </view>
+  <view class="cu-list menu" wx:if="{{ 0 == curTab || 1 == curTab }}">
+    <view class="cu-item">
+      <view class="content padding-tb-sm">
+        单身承诺书
+        <view class="text-gray text-sm">现场提供模板，签字并右手大拇指盖手印</view>
+      </view>
+    </view>
+    <view class="cu-item" wx:if="{{divorced}}"><view class="content">离婚证的复印件（出示原件）</view></view>
+    <view class="cu-item" wx:if="{{divorced}}"><view class="content">法院离婚判决书的复印件（出示原件）</view></view>
+    <view class="cu-item" wx:if="{{divorced}}"><view class="content">离婚协议书证明的复印件（出示原件）</view></view>
+    <view class="cu-item" wx:if="{{bereft}}"><view class="content">《死亡医学证明》的复印件（出示原件）</view></view>
+  </view>
+  <!-- 住房相关信息 -->
+  <view class="cu-bar bg-white solid-bottom margin-top">
+    <view class="action"><text class="cuIcon-homefill text-grey"></text> 住房相关资料</view>
+    <view class="action">
+      <text class="margin-right">{{ hasHouse ? '本市有房' : '本市无房' }}</text>
+      <switch checked="{{hasHouse}}" bindchange="toggleHasHouse"></switch>
+    </view>
+  </view>
+  <view class="cu-list menu" wx:if="{{hasHouse}}">
+    <view class="cu-item"><view class="content">《房地产权证》复印件（出示原件）</view></view>
+  </view>
+
+  <!-- 公有住房相关资料 -->
+  <view class="cu-bar bg-white solid-bottom margin-top">
+    <view class="action"><text class="cuIcon-homefill text-grey"></text> 公有住房资料</view>
+    <view class="action">
+      <text class="margin-right">{{ hasPublicRental ? '有本市公有住房' : '无本市公有住房' }}</text>
+      <switch checked="{{hasPublicRental}}" bindchange="toggleHasPublicRental"></switch>
+    </view>
+  </view>
+  <view class="cu-list menu" wx:if="{{hasPublicRental}}">
+    <view class="cu-item"><view class="content">《租用居住公房凭证》复印件（出示原件）</view></view>
+  </view>
+</scroll-view>
+
+<!-- 预览列表Modal -->
+<view class="cu-modal {{ showPreviewModal ? 'show' : '' }}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">申请资料列表</view>
+      <view class="action" bindtap="hideModal"><text class="cuIcon-close text-red"></text></view>
+    </view>
+    <scroll-view scroll-y style="height: 60%;">
+      <view class="modal-content">
+        <block
+          wx:for="{{previewList}}"
+          wx:for-item="item"
+          wx:key="*this"
+        >
+          <view>{{index + 1}}. {{item}}</view>
+        </block>
+      </view>
+    </scroll-view>
+  </view>
+</view>

@@ -1,0 +1,10 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">公租房统计数据</view>
+</cu-custom>
+
+<view class="container">
+  <ec-canvas id="mychart-dom-line" canvas-id="mychart-line" ec="{{ ec1 }}"></ec-canvas>
+  <ec-canvas id="mychart-dom-line2" canvas-id="mychart-line2" ec="{{ ec2 }}"></ec-canvas>
+  <ec-canvas id="mychart-dom-line3" canvas-id="mychart-line3" ec="{{ ec3 }}"></ec-canvas>
+</view>

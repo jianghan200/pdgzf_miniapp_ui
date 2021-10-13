@@ -9,6 +9,11 @@
     <view class="text-{{tab == 'all' ? 'black' : 'gray'}}">全部房源</view>
   </view>
 
+  <view class="action" bindtap="switchTab" data-tabname="newbee">
+    <view class="cuIcon-{{tab == 'newbee' ? 'discoverfill' : 'discover'}} text-{{tab == 'newbee' ? 'orange' : 'gray'}}"></view>
+    <view class="text-{{tab == 'newbee' ? 'black' : 'gray'}}">公租房新手村</view>
+  </view>
+
   <view class="action" bindtap="switchTab" data-tabname="subscribe">
     <view class="cuIcon-{{tab == 'subscribe' ? 'favorfill' : 'favor'}} text-{{tab == 'subscribe' ? 'orange' : 'gray'}}"></view>
     <view class="text-{{tab == 'subscribe' ? 'black' : 'gray'}}">关注房源</view>
