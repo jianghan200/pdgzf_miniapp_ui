@@ -124,5 +124,35 @@ Page({
   // 检查是否有未回答的问题
   hasEmptyQuestion() {
     return this.data.a1 == '' || this.data.a2 == '' || this.data.a3 == '' || this.data.a4 == '' || this.data.a5 == '' || this.data.a6 == ''
+  },
+
+  // 转发
+  onShareAppMessage: function(options) {
+    let self = this
+    return {
+      title : 'PD公租房',
+      path : '/pages/login/login',
+      imageUrl : '',
+      success : function(res) {
+        if (res.errMsg == 'shareAppMessage:ok') {
+          // 用户转发成功
+          wx.showToast({
+            title: '转发成功',
+            icon: 'success'
+          })
+        }
+      },
+      fail : function(err) {
+        if (err.errMsg == 'shareAppMessage:fail cancel') {
+          wx.showToast({
+            title: '转发已取消',
+          })
+        } else {
+          wx.showToast({
+            title: '转发失败',
+          })
+        }
+      }
+    }
   }
 })

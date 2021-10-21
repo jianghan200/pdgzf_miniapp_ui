@@ -136,6 +136,24 @@ Page({
             .then((rs) => {
               let details = rs[0] // 已经处理好的信息包括多媒体的url，描述，设施简介等
               let heatMap = rs[1] // 是个obj的array
+              if (todayHousesInfo.length > 0) {
+                // 今日有此小区
+                let queueLength = 0
+                todayHousesInfo.forEach(house => {
+                  queueLength += house.queueLength
+                })
+                let date = new Date()
+                // 生成今天的热度hex
+                let heatOfToday = {
+                  date : date,
+                  year : date.getFullYear(),
+                  month : date.getMonth() + 1,
+                  date : date.getDate(),
+                  count : queueLength,
+                  hex : utils.number2Hex(queueLength)
+                }
+                heatMap.push(heatOfToday)
+              }
               let queuesOfHouses = rs[2] // 所有house的排队队列（前四名）
               // 整理需要展示出来的小区的度量值
               let projectInfo = {}
@@ -325,5 +343,35 @@ Page({
       current : idx,
       showmenu : false
     })
+  },
+
+  // 转发
+  onShareAppMessage: function(options) {
+    let self = this
+    return {
+      title : 'PD公租房',
+      path : '/pages/login/login',
+      imageUrl : '',
+      success : function(res) {
+        if (res.errMsg == 'shareAppMessage:ok') {
+          // 用户转发成功
+          wx.showToast({
+            title: '转发成功',
+            icon: 'success'
+          })
+        }
+      },
+      fail : function(err) {
+        if (err.errMsg == 'shareAppMessage:fail cancel') {
+          wx.showToast({
+            title: '转发已取消',
+          })
+        } else {
+          wx.showToast({
+            title: '转发失败',
+          })
+        }
+      }
+    }
   }
 })

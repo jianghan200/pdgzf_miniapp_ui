@@ -40,7 +40,7 @@
     "useCompilerPlugins": false
   },
   "compileType": "miniprogram",
-  "libVersion": "2.19.3",
+  "libVersion": "2.19.6",
   "appid": "wx98a85564da1c5d20",
   "projectname": "PD公租房",
   "debugOptions": {

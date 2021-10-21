@@ -21,4 +21,34 @@ Page({
       scrollLeft: (e.currentTarget.dataset.id - 1 )* 60
     })
   },
+
+  // 转发
+  onShareAppMessage: function(options) {
+    let self = this
+    return {
+      title : 'PD公租房',
+      path : '/pages/login/login',
+      imageUrl : '',
+      success : function(res) {
+        if (res.errMsg == 'shareAppMessage:ok') {
+          // 用户转发成功
+          wx.showToast({
+            title: '转发成功',
+            icon: 'success'
+          })
+        }
+      },
+      fail : function(err) {
+        if (err.errMsg == 'shareAppMessage:fail cancel') {
+          wx.showToast({
+            title: '转发已取消',
+          })
+        } else {
+          wx.showToast({
+            title: '转发失败',
+          })
+        }
+      }
+    }
+  }
 })
