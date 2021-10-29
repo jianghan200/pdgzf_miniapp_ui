@@ -162,24 +162,11 @@
       <text class="cuIcon-{{calendarHidden ? 'un' : ''}}fold" style="font-size: large;"></text>
       <text wx:if="{{!isVip}}" style="font-size: large;">（VIP内容）</text>
     </view>
-    <view class="text-bold text-grey" style="margin: 10px;" wx:if="{{isVip}}" hidden="{{calendarHidden}}">
-      红色代表“竞争激烈”，绿色相反
-    </view>
-    <view class="text-bold" style="margin: 10px;" wx:if="{{isVip}}" hidden="{{calendarHidden}}">
-      <text class="text-grey">{{daySelected}}: </text> <text class="text-red">{{dayCount}}</text>
-    </view>
+  </view>
+  <!-- 小历日历 -->
+  <view hidden="{{curTab != 2}}">
     <view style="padding: 1rem;" wx:if="{{isVip}}" hidden="{{calendarHidden}}">
-      <calendar 
-        calendar-style="calendar" 
-        header-style="calendar-header"
-        board-style="calendar-board"
-        active-type="rounded" 
-        days-color="{{monthlyDaysColor}}" 
-        weeks-type="cn"
-        bindnextMonth="changeMonth"
-        bindprevMonth="changeMonth"
-        binddayClick="dayClick"
-      />
+      <calendar id="calendar" config="{{calendarConfig}}" bind:whenChangeMonth="changeMonth" />
     </view>
   </view>
 

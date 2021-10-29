@@ -1,4 +1,5 @@
 // pages/policy/policy.js
+const log = require('./../../utils/log')
 Page({
 
   /**
@@ -11,7 +12,7 @@ Page({
   },
 
   onLoad: function (options) {
-
+    log.info('onLoad policy页')
   },
 
   // 导航栏上选择不同的tab

@@ -17,11 +17,6 @@
 
 <!-- 表单 -->
 <form>
-  <view class="cu-form-group margin-top">
-		<view class="title">姓名</view>
-		<input placeholder="必填" bindinput="fillName" model:value="{{username}}"></input>
-	</view>
-
   <view class="cu-form-group">
 		<view class="title">邮箱</view>
 		<input placeholder="将定时推送您订阅房源的信息" bindinput="fillEmail" model:value="{{email}}"></input>

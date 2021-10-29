@@ -2,6 +2,7 @@ const app = getApp()
 const constants = require('../../utils/constants')
 const requests = require('../../utils/request')
 const utils = require('../../utils/util')
+const log = require('./../../utils/log')
 
 Page({
   /**
@@ -15,6 +16,8 @@ Page({
   },
   
   onLoad: function (options) {
+    log.info('onLoad user')
+
     this.getVipInfo()
     let userinfo = app.globalData.userinfo
     let startDate = utils.getOrElse(userinfo.startDate, '').split(' ')[0]
@@ -26,9 +29,12 @@ Page({
 
   // 读取用户会员信息
   getVipInfo() {
+    log.info('读取用户的vip信息')
+
     let self = this
     requests.getVipInfo()
       .then((info) => {
+        log.info('成功获得用户的vip信息')
         // 更新一下globalData中的vip相关的数据
         app.globalData.userinfo.emailExpireDate = info.emailExpireDate
         app.globalData.userinfo.type = info.type
@@ -37,6 +43,8 @@ Page({
         })
       })
       .catch((err) => {
+        log.error('未成功获得用户的vip信息')
+        log.error(err)
         console.log(err)
       })
   },

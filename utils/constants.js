@@ -1,6 +1,7 @@
-const server = 'https://pdgzf.vencloud.cn'
+const prodServer = 'https://pdgzf.vencloud.cn'
+const qaServer = 'https://pdgzfqa.vencloud.cn'
 const hkServer = 'http://hk.han.pm:9908'
-const userinfoTestServer = 'http://localhost:8088'
+const userinfoQaServer = 'https://api.pdgzfqa.vencloud.cn'
 const userinfoProdServer = 'https://api.pdgzf.vencloud.cn'
 const ROOM_TYPE = ["未知", "一室", "一室一厅", "两室", "两室一厅", "三室", "三室一厅", "四室", "五室"]
 const id2Type = id => {
@@ -50,7 +51,7 @@ const vipSampleProjectId = 246635
 const vipStartDate = new Date(2021, 3, 26)
 
 module.exports = {
-  server: server,
+  server: prodServer,
   userinfoServer: userinfoProdServer,
   allRoomTypes : [1,2,3,4,5,6,7,8],
   id2Type,

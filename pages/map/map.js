@@ -1,5 +1,6 @@
 const constants = require("../../utils/constants")
 let app = getApp()
+const log = require('./../../utils/log')
 
 Page({
   data: {
@@ -9,7 +10,10 @@ Page({
     markers: []
   },
 
-  onLoad() {
+  onLoad(options) {
+    log.info('onLoad map')
+    log.info(options)
+
     let self = this
 
     // 拿到用户的坐标

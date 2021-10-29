@@ -338,14 +338,69 @@ const getPaymentInfo = function(payType) {
   })
 }
 
+// 上传manualStartDate
+const updateManualStartDate = function(manualStartDate) {
+  const url = constants.userinfoServer + '/api/user/update'
+  let token = app.globalData.userinfo.tokenStr
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      header: {
+        'token' : token,
+        'content-type' : 'application/x-www-form-urlencoded'
+      },
+      method: 'POST',
+      data: { 'manualStartDate' : manualStartDate },
+      success: function(res) {
+        if (res.data.status == 0) {
+          resolve(true)
+        } else {
+          console.log(res.data.data)
+          reject(false)
+        }
+      },
+      fail: function(err) {
+        console.log(err)
+        reject(false)
+      }
+    })
+  })
+}
+
+// 上传用户的昵称，用户的真实姓名是在后端填好的，前端不需要提供，昵称也只是普通用户需要提供的。
+const updateUsername = function(username) {
+  const url = constants.userinfoServer + '/api/user/update'
+  let token = app.globalData.userinfo.tokenStr
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      header: {
+        'token' : token,
+        'content-type' : 'application/x-www-form-urlencoded'
+      },
+      method: 'POST',
+      data : { 'name' : username },
+      success: function(res) {
+        if (res.data.status == 0) {
+          resolve(true)
+        } else {
+          console.log(res.data.data)
+          reject(false)
+        }
+      },
+      fail: function(err) {
+        console.log(err)
+        reject(false)
+      }
+    })
+  })
+}
+
 // 上传 / 更新用户的信息
-const updateUserInfo = function(name, email, account, password) {
+const updateUserInfo = function(email, account, password) {
   const url = constants.userinfoServer + '/api/user/update'
   let token = app.globalData.userinfo.tokenStr
   let payload = {}
-  if (name && name.trim() != '') {
-    payload['name'] = name.trim()
-  }
   if (email && email.trim() != '') {
     payload['email'] = email.trim()
   }
@@ -371,7 +426,67 @@ const updateUserInfo = function(name, email, account, password) {
         } else {
           // 失败
           console.log(res.data.data)
-          reject(res.data.data)
+          reject(false)
+        }
+      },
+      fail: function(err) {
+        console.log(err)
+        reject(false)
+      }
+    })
+  })
+}
+
+// update是否使用邮件订阅
+// 0: 停止订阅，1: 开启订阅
+const updateEmailSubscriptionStatus = function(code) {
+  const url = constants.userinfoServer + '/api/user/update'
+  let token = app.globalData.userinfo.tokenStr
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      header: {
+        'token' : token,
+        'content-type' : 'application/x-www-form-urlencoded'
+      },
+      method: 'POST',
+      data: { 'emailSubscription' : code },
+      success: function(res) {
+        if (res.data.status == 0) {
+          resolve(true)
+        } else {
+          console.log(res)
+          reject(false)
+        }
+      },
+      fail: function(err) {
+        console.log(err)
+        reject(false)
+      }
+    })
+  })
+}
+
+// update是否自动选房
+// 0: No，1: Yes
+const updateAutoSelectionStatus = function(code) {
+  const url = constants.userinfoServer + '/api/user/update'
+  let token = app.globalData.userinfo.tokenStr
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      header: {
+        'token' : token,
+        'content-type' : 'application/x-www-form-urlencoded'
+      },
+      method: 'POST',
+      data: { 'autoChoose' : code },
+      success: function(res) {
+        if (res.data.status == 0) {
+          resolve(true)
+        } else {
+          console.log(res)
+          reject(false)
         }
       },
       fail: function(err) {
@@ -410,8 +525,8 @@ const getProjectInfo = function(pid) {
             // 或者这个小区是三湘名邸
             let isSampleProject = pid == constants.vipPid
             if (isSampleProject || app.globalData.userinfo.type == 2) {
-              if (info.videoUrl && info.videoUrl != null) {
-                info.videoUrl.split(';').forEach(urlStr => {
+              if (info.videoUrls && info.videoUrls != null) {
+                JSON.parse(info.videoUrls).forEach(urlStr => {
                   medias.push({
                     'url' : urlStr,
                     'type' : 'video'
@@ -663,7 +778,11 @@ module.exports = {
   getTodayStats : getTodayStats,
   getVipInfo : getVipInfo,
   getPaymentInfo : getPaymentInfo,
+  updateUsername : updateUsername,
+  updateManualStartDate : updateManualStartDate,
   updateUserInfo : updateUserInfo,
+  updateEmailSubscriptionStatus : updateEmailSubscriptionStatus,
+  updateAutoSelectionStatus : updateAutoSelectionStatus,
   getProjectInfo : getProjectInfo,
   heatOfTheProject : heatOfTheProject,
   queuesOfHouses : queuesOfHouses,

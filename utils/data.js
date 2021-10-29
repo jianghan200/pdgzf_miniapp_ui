@@ -2,6 +2,7 @@ const requests = require('./request')
 const util = require('./util')
 const app = getApp()
 const constants = require('./constants')
+const log = require('./log')
 
 // 处理今日小区的rawData
 const handleTodayProjects = function(projectsRawData, housesRawData, stats, subscriptionsRawData) {
@@ -56,9 +57,18 @@ const handleTodayProjects = function(projectsRawData, housesRawData, stats, subs
               sortedQueue = util.sortByProperty(house.queue, 'position', util.numberComparator)
 
               // 后端传过来的时间不能直接使用 "yyyy-MM-dd hh:mm:ss"
-              // 用户有可能没有资格日，则使用mockStartDate
-              let userStartDateTime = 
-                (app.globalData.userinfo.startDate == null || !app.globalData.userinfo.startDate) ? constants.mockStartDate.getTime() : new Date(app.globalData.userinfo.startDate.split(' ')[0])
+              // 用户有可能没有资格日，则使用mockStartDate或者用户的manualStartDate
+              let userStartDateTime = ''
+              if (app.globalData.userinfo.startDate != null && app.globalData.userinfo.startDate) {
+                // 是个VIP，有真实的startDate
+                userStartDateTime = new Date(app.globalData.userinfo.startDate.split(' ')[0])
+              } else if (app.globalData.userinfo.manualStartDate != null && app.globalData.userinfo.manualStartDate) {
+                // 已经输入过manualStartDate
+                userStartDateTime = new Date(app.globalData.userinfo.manualStartDate)
+              } else {
+                // 啥都没有，暂时用mock的
+                userStartDateTime = constants.mockStartDate.getTime()
+              }
               // 找到第一个比用户startDate.getTime()更新的
               let rank = 1
               for (let i = 0; i < sortedQueue.length; i++) {
@@ -158,6 +168,8 @@ const loadAllData = function() {
       requests.getSubscriptions()
     ])
     .then((rs) => {
+      log.info('loadAllData 成功')
+
       // 今日的数据
       let todayProjectsRawData = rs[0]
       let todayHousesRawData = rs[1]
@@ -176,10 +188,13 @@ const loadAllData = function() {
       // 对于不同的用户，“首页”是不同的.
       // 新用户（userinfo中没有startDate也没有email）
       if (app.globalData.userinfo.type == 0 && app.globalData.userinfo.email == null && app.globalData.userinfo.startDate == null) {
+        log.info('新用户，首页为新手村')
+
         wx.redirectTo({
           url: '/pages/newbee/newbee',
         })
       } else {
+        log.info('老用户，首页为今日房源页')
         // 老用户
         wx.redirectTo({
           url: '/pages/today/today',
@@ -187,6 +202,8 @@ const loadAllData = function() {
       }
     })
     .catch((err) => {
+      log.error('loadAllData 失败')
+      log.error(err)
       console.log(err)
     })
 }

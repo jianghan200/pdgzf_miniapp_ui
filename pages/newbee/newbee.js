@@ -1,11 +1,14 @@
 // pages/newbee/newbee.js
 const app = getApp()
+const log = require('./../../utils/log')
 Page({
   data: {
     vipInfo: null
   },
 
   onLoad: function (options) {
+    log.info('进入newbee的onLoad')
+
     this.setData({
       vipInfo : app.globalData.userinfo
     })

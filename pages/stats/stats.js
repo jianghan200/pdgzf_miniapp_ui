@@ -3,6 +3,7 @@ const app = getApp()
 const requestHelper = require('../../utils/request')
 const charts = require('../../utils/charts')
 const utils = require('../../utils/util')
+const log = require('./../../utils/log')
 
 // 初始化chart1
 function initChart1(canvas, width, height, dpr) {
@@ -94,6 +95,6 @@ Page({
     }
   },
   onLoad(options) {
-
+    log.info('onLoad stats')
   }
 })

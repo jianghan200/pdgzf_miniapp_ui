@@ -1,11 +1,12 @@
 // pages/timeline/timeline.js
+const log = require('./../../utils/log')
 Page({
   data: {
 
   },
 
   onLoad: function (options) {
-
+    log.info('onLoad timeline')
   },
 
   goTo(e) {

@@ -5,6 +5,7 @@ const requests = require('../../utils/request')
 const dataHelper = require('../../utils/data')
 const subHelper = require('../../utils/subscripton')
 let app = getApp()
+const log = require('./../../utils/log')
 
 Page({
   data: {
@@ -24,14 +25,18 @@ Page({
   },
 
   onLoad: function (options) {
+    log.info('onLoad all')
+
     let allProjects = wx.getStorageSync('allProjects')
     if (allProjects && allProjects.length > 0) {
+      log.info('allProjects 获取成功')
       // 说明请求成功了
       this.setData({
         list : allProjects,
         reqSuccessful : true
       })
     } else {
+      log.error('allProjects 获取失败')
       // 请求失败了，需要特殊处理，立一个flag
       console.log('all 失败')
       this.setData({
@@ -49,10 +54,14 @@ Page({
 
   // 重新请求全部房源的数据。
   refresh() {
+    log.info('重新请求全部房源的数据')
+
     let self = this
     dataHelper
       .loadAllProjectsData()
       .then((res) => {
+        log.info('loadAllProjectsData 成功')
+
         wx.showToast({
           title: '数据读取成功！',
           icon: 'success'
@@ -67,6 +76,8 @@ Page({
         }
       })
       .catch((err) => {
+        log.error('loadAllProjectsData 失败')
+        log.error(err)
         console.log(err) 
         wx.showToast({
           title: '数据获取失败',
@@ -95,6 +106,7 @@ Page({
 
   // 处理用户订阅 / 取消订阅的操作
   subscribe(e) {
+    log.info('用户点击订阅')
     // 从event中获取定位数据
     let pid = e.currentTarget.dataset.pid
     let pname = e.currentTarget.dataset.pname
@@ -102,18 +114,24 @@ Page({
     // 如果这个用户是初次使用【订阅】功能的普通用户，需要授权我们使用他的昵称
     let self = this
     if (self.needToGetUserProfile()) {
+      log.info('未找到用户的昵称，需要ask用户提供昵称权限')
+
       wx.getUserProfile({
         desc: '需要您的昵称，才能使用订阅功能',
         success: (res) => {
+          log.info('用户同意提供昵称')
           // 从微信的接口中获得用户的昵称作为标识，主要是为了后端管理方便
           let newUsername = res.userInfo.nickName
           requests
-            .updateUserInfo(newUsername, '', '', '')
+            .updateUsername(newUsername)
             .then((r) => {
+              log.info('updateUsername 成功')
               // 本地更新一下用户名
               app.globalData.userinfo.name = newUsername
               self.doSubscribe(pid, pname, aid)
             }).catch((err) => {
+              log.error('updateUsername 失败')
+              log.error(err)
               console.log(err)
 
               wx.showToast({
@@ -123,6 +141,8 @@ Page({
             })
         },
         fail: (err) => {
+          log.error('用户拒绝提供昵称')
+          log.error(err)
           console.log(err)
           
           wx.showToast({
@@ -139,6 +159,8 @@ Page({
 
   // 专注于订阅的业务逻辑代码
   doSubscribe(pid, pname, aid) {
+    log.info(`用户subscribe: pid: ${pid}, pname: ${pname}, aid: ${aid}`)
+
     let self = this
     // 找所属到街道
     let area = 
@@ -155,10 +177,12 @@ Page({
     let indexOfProjectOnChange = projectsOfThisArea.indexOf(projectOnChange)
     
     if (!projectOnChange.isSubscribed) {
+      log.info('开启订阅')
       // 开启订阅
       subHelper
         .subscribeThenSyncUp(aid, pid, pname)
         .then((rid) => {
+          log.info('subscribeThenSyncUp 成功')
           // 替换
           projectOnChange.isSubscribed = true
           projectOnChange.ruleId = rid
@@ -175,13 +199,17 @@ Page({
           })
         })
         .catch((err) => {
+          log.error('subscribeThenSyncUp 失败')
+          log.error(err)
           console.log(err)
         })
     } else {
+      log.info('关闭订阅')
       // 关闭订阅
       subHelper
         .unsubscribeThenSyncUp(projectOnChange.ruleId, aid, pid)
         .then((res) => {
+          log.info('unsubscribeThenSyncUp 成功')
           // 替换
           projectOnChange.isSubscribed = false
           projectOnChange.ruleId = ''
@@ -198,6 +226,8 @@ Page({
           })
         })
         .catch((err) => {
+          log.error('unsubscribeThenSyncUp 失败')
+          log.error(err)
           console.log(err)
         })
     }

@@ -2,6 +2,7 @@
 let app = getApp()
 const constants = require('../../utils/constants')
 const requests = require('../../utils/request')
+const log = require('./../../utils/log')
 
 Page({
   data: {
@@ -21,8 +22,11 @@ Page({
   },
 
   onLoad: function (options) {
+    log.info('onLoad subdetail')
+
     let subscription = wx.getStorageSync('editingRule')
     if (subscription) {
+      log.info('获取了用户偏好')
       // 读取用户的选择, 默认全选中
       // 户型
       let huXingSelections = 
@@ -103,6 +107,8 @@ Page({
 
   // 递交更新
   saveChanges() {
+    log.info('用户保存变更')
+
     let self = this
     let pid = self.data.subscription.pid
     let pname = self.data.subscription.subInfo.name
@@ -127,6 +133,8 @@ Page({
     requests
       .updateSubscription(pid, pname, payload)
       .then((res) => {
+        log.info('updateSubscription 成功')
+
         wx.removeStorageSync('editingRule')
         self.hideModal()
         wx.redirectTo({
@@ -134,6 +142,8 @@ Page({
         })
       })
       .catch((err) => {
+        log.error('updateSubscription 失败')
+        log.error(err)
         // 请求失败
         console.log(err)
         self.hideModal()

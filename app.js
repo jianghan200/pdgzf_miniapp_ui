@@ -1,6 +1,8 @@
 // app.js
+var log = require('./utils/log')
 App({
   onLaunch: function (options) {
+    log.info('用户onLaunch')
     // 最开始要prompt用户升级程序（if any）
     this.updateApp()
     /*
@@ -24,6 +26,8 @@ App({
         /*
           在小程序中需要使用大量图片，为了加速图片的加载，在非IOS的环境中将使用webp格式的图片。
         */
+        log.info(result.system)
+        
         if (result.system.indexOf('iOS') != -1) {
           this.globalData.IOS = true
         }

@@ -1,4 +1,5 @@
 // pages/qualification/qualification.js
+const log = require('./../../utils/log')
 Page({
   data: {
     a1 : '',
@@ -22,6 +23,8 @@ Page({
   },
 
   onLoad: function (options) {
+    log.info('onLoad qualification')
+
     this.setData({
       a1 : '',
       tip1: '',
@@ -92,6 +95,8 @@ Page({
   },
 
   checkAns() {
+    log.info('点击交卷')
+    
     if (this.hasEmptyQuestion()) {
       wx.showToast({
         title: '有未回答的问题！',

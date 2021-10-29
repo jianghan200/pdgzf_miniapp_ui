@@ -2,7 +2,7 @@
 <cu-custom bgColor="bg-cyan" isBack="{{true}}">
   <view slot="backText">返回</view>
   <view slot="content">
-    <view class="text-bold" style="color: white;">开通邮件订阅</view>
+    <view class="text-bold" style="color: white;">邮件订阅</view>
   </view>
 </cu-custom>
 
@@ -28,7 +28,7 @@
     成为VIP终身免费获得邮件订阅
   </view>
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
-    每月2.99, 一瓶快乐水即可开始懒人选房～
+    邮件订阅限期免费!马上开启懒人选房
   </view>
 </view>
 
@@ -91,7 +91,6 @@
     <view class="avatar"><open-data type="userAvatarUrl"></open-data></view>
     <open-data type="userNickName" lang="zh_CN" class="nickname"></open-data>
   </view>
-
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
     给会员大人请{{dayTime}}安啦～
   </view>
@@ -99,5 +98,10 @@
   <image class="worker-avatar" src="/assets/avatar.jpg" mode="aspectFill"></image>
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
     小的这就给您写研报去～
+  </view>
+
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    <span class="padding-right">{{ openSubscription ? '已开启' : '已关闭' }}</span>
+    <switch class="radius sm" checked="{{openSubscription}}" bindchange="changeSubscriptionStatus"></switch>
   </view>
 </view>

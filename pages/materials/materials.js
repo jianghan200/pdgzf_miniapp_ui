@@ -1,4 +1,5 @@
 // pages/materials/materials.js
+const log = require('./../../utils/log')
 
 Page({
   data: {
@@ -94,6 +95,8 @@ Page({
 
   // 打开预览列表Modal
   preview(e) {
+    log.info('点击预览，生成列表')
+
     let previewList = ['公共租赁住房准入资格申请表（打印）','本人身份证（原件及正反面复印件）','社保缴费证明']
     // 配偶相关
     if (this.data.curTab == 2 || this.data.curTab == 3) {
@@ -185,7 +188,7 @@ Page({
   },
 
   onLoad: function (options) {
-
+    log.info('onLoad materials')
   },
   
   // 转发

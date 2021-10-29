@@ -1,6 +1,6 @@
 /* pages/houses/houses.wxss */
 .calendar {
-  background-color: #fde619;
+  background-color: currentColor;
   padding-top: 10px;
   box-shadow: 0px 0px 10px #000;
 }

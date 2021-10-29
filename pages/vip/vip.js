@@ -4,10 +4,10 @@ const payHelper = require('../../utils/pay')
 const util = require('../../utils/util')
 const requests = require('../../utils/request')
 const app = getApp()
+const log = require('./../../utils/log')
 
 Page({
   data: {
-    username: '',
     email: '',
     account: '',
     password: '',
@@ -20,15 +20,14 @@ Page({
   },
 
   onLoad: function (options) {
+    log.info('onLoad vip')
+
     if (options.mode && options.mode == 'edit') {
+      log.info('VIP修改信息模式')
       // 说明是VIP来修改信息的
       // 设置flag，并且将VIP的信息读进去
-      let username = ''
       let email = ''
       let account = ''
-      if (app.globalData.userinfo.name && app.globalData.userinfo.name != null) {
-        username = app.globalData.userinfo.name
-      }
       if (app.globalData.userinfo.email && app.globalData.userinfo.email != null) {
         email = app.globalData.userinfo.email
       }
@@ -37,7 +36,6 @@ Page({
       }
       this.setData({
         isVip : true,
-        username : username,
         email : email,
         account : account
       })
@@ -45,7 +43,7 @@ Page({
   },
 
   // 填写信息的handler
-  fillName(e) {},
+  // fillName(e) {},
 
   fillEmail(e) {},
 
@@ -62,6 +60,7 @@ Page({
 
   // 开启支付，递交用户信息
   submit(e) {
+    log.info('开启vip支付')
     if (this.checkInputs()) {
       // 通过了输入检查
       this.showConfirmationModal()
@@ -78,8 +77,7 @@ Page({
 
   // 是否有的field为空
   hasEmptyField() {
-    return (this.data.username.trim() == '') && 
-      (this.data.email.trim() == '') && 
+    return (this.data.email.trim() == '') && 
       (this.data.account.trim() == '') && 
       (this.data.password.trim() == '')
   },
@@ -95,12 +93,14 @@ Page({
         title: '处理中',
       })
       requests
-        .updateUserInfo(self.data.username, self.data.email, self.data.account, self.data.password)
+        .updateUserInfo(self.data.email, self.data.account, self.data.password)
         .then((res) => {
+          log.info('updateUserInfo 成功')
           // 隐藏loading动画
           wx.hideLoading()
           // 信息update成功，开始付款
           payHelper.pay(1).then((res) => {
+            log.info('pay(1) 成功')
             // 关闭弹窗
             self.hideModal()
             // 支付成功
@@ -110,7 +110,6 @@ Page({
             })
             // 将mem中的userinfo更新
             // 唯独不能把密码暴露
-            app.globalData.userinfo.name = self.data.username
             app.globalData.userinfo.email = self.data.email
             app.globalData.userinfo.account = self.data.account
             app.globalData.userinfo.type = 2
@@ -119,6 +118,8 @@ Page({
               url: '/pages/user/user',
             })
           }).catch((err) => {
+            log.error('pay(1) 失败')
+            log.error(err)
             console.log(err)
             // 隐藏loading动画
             wx.hideLoading()
@@ -138,8 +139,9 @@ Page({
       })
       let self = this
       requests
-        .updateUserInfo(self.data.username, self.data.email, self.data.account, self.data.password)
+        .updateUserInfo(self.data.email, self.data.account, self.data.password)
         .then((res) => {
+          log.info('updateUserInfo 成功')
           // 隐藏loading动画
           wx.hideLoading()
           // 提示用户成功
@@ -150,7 +152,6 @@ Page({
           self.hideModal()
           // 将mem中的userinfo更新
           // 唯独不能把密码暴露
-          app.globalData.userinfo.name = self.data.username
           app.globalData.userinfo.email = self.data.email
           app.globalData.userinfo.account = self.data.account
           app.globalData.userinfo.type = 2
@@ -160,6 +161,8 @@ Page({
           })
         })
         .catch((err) => {
+          log.error('updateUserInfo 失败')
+          log.error(err)
           // 隐藏loading动画
           wx.hideLoading()
           // 处理更新失败
