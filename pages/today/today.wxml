@@ -78,7 +78,7 @@
 
                   <!-- 小区地址 -->
                   <view style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
-                    <text class="text-{{project.isSubscribed ? 'orange' : 'black'}} padding-left {{project.isSubscribed ? 'text-bold' : ''}}">{{tools.indexOf(project.pName, '（') == -1 ? project.pName : tools.sliceOf(project.pName)}} ({{project.houses.length}}套)
+                    <text class="text-{{project.isSubscribed ? 'orange' : 'black'}} padding-left {{project.isSubscribed ? 'text-bold' : ''}}">{{tools.sliceOf(project.pName)}} ({{project.houses.length}}套)
                     </text>
                     <text style="font-size: smaller; color: grey; padding-left: 10px;">预计最靠前排名：{{project.bestRank}}</text>
                   </view>

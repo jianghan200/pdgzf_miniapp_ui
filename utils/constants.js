@@ -50,6 +50,28 @@ const vipSampleProjectId = 246635
 // 2021-04-26
 const vipStartDate = new Date(2021, 3, 26)
 
+const rentableCountCategory = ['小于10', '10 ~ 50', '50 ~ 100', '大于100']
+const rentableCountLimits = function(category) {
+  let res = []
+  switch(category) {
+    case '小于10':
+      res = [0, 10]
+      break;
+    case '10 ~ 50':
+      res = [10, 50]
+      break;
+    case '50 ~ 100':
+      res = [50, 100]
+      break;
+    case '大于100':
+      res = [100, 10000]
+      break;
+    default:
+      res = []
+  }
+  return res
+}
+
 module.exports = {
   server: prodServer,
   userinfoServer: userinfoProdServer,
@@ -57,5 +79,7 @@ module.exports = {
   id2Type,
   isEmail : isEmail,
   vipPid : vipSampleProjectId,
-  mockStartDate : vipStartDate
+  mockStartDate : vipStartDate,
+  rentableCountCategory : rentableCountCategory,
+  rentableCountLimits : rentableCountLimits
 }

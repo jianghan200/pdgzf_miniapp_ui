@@ -4,9 +4,11 @@
     <view class="text-{{tab == 'today' ? 'black' : 'gray'}}">今日可选房源</view>
   </view>
 
-  <view class="action" bindtap="switchTab" data-tabname="all">
-    <view class="cuIcon-{{tab == 'all' ? 'homefill' : 'home'}} text-{{tab == 'all' ? 'orange' : 'gray'}}"></view>
-    <view class="text-{{tab == 'all' ? 'black' : 'gray'}}">全部房源</view>
+  <view class="action" bindtap="switchTab" data-tabname="allProjects">
+    <view 
+      class="cuIcon-{{tab == 'allProjects' ? 'homefill' : 'home'}} text-{{tab == 'allProjects' ? 'orange' : 'gray'}}"
+    ></view>
+    <view class="text-{{tab == 'allProjects' ? 'black' : 'gray'}}">全部房源</view>
   </view>
 
   <view class="action" bindtap="switchTab" data-tabname="newbee">

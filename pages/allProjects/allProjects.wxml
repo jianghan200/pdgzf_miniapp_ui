@@ -1,0 +1,141 @@
+<wxs src="../../utils/tool.wxs" module="tools" />
+
+<view style="height: 2.5rem;"></view>
+
+<view>
+  <view style="display: flex; flex-direction: row; align-items: center;">
+    <view class="title">全部房源</view>
+    <!-- 请求成功展示地图按钮 -->
+    <button class="bg-black cu-btn icon shadow margin-right" bindtap="openMap" wx:if="{{reqSuccessful}}">
+      <text class="cuIcon-locationfill text-white"></text>
+    </button>
+    <button class="bg-black cu-btn icon shadow" bindtap="openFilterDrawer" wx:if="{{reqSuccessful}}">
+      <text class="cuIcon-filter text-white"></text>
+    </button>
+    <!-- 请求失败展示刷新按钮 -->
+    <button class="bg-green cu-btn icon shadow" bindtap="refresh" wx:if="{{!reqSuccessful}}">
+      <text class="cuIcon-refresh text-white"></text>
+    </button>
+  </view>
+
+  <!-- 搜索栏 -->
+  <view class="cu-bar bg-white search">
+    <view class="search-form round">
+      <text class="cuIcon-search"></text>
+      <input type="text" placeholder="搜索小区名字" confirm-type="search" bindinput="searchPname"></input>
+    </view>
+  </view>
+</view>
+
+<view wx:if="{{reqSuccessful}}">
+  <scroll-view
+    scroll-y 
+    scroll-with-animation
+    style="background-color: #f1f1f1; height:calc(100vh - 9.8rem - calc(100rpx + env(safe-area-inset-bottom) / 2))"
+  >
+    <!-- 遍历社区 -->
+    <view
+      wx:for="{{list}}"
+      wx:for-item="area"
+      wx:key="*this"
+      id="main-{{index}}"
+    >
+      <!-- 社区名称 -->
+      <view class='cu-bar solid-bottom bg-white' wx:if="{{area.display}}">
+        <view class='action'>
+          <text class='cuIcon-titles text-orange'></text> {{area.areaName == null ? '未知街道' : area.areaName}} 
+        </view>
+      </view>
+
+      <!-- 遍历社区的小区 -->
+      <view class="cu-list menu">
+      <block
+        wx:for="{{area.projects}}"
+        wx:for-item="project"
+        wx:key="*this"
+      >
+        <view 
+          class="cu-item arrow" 
+          style="min-height: 80rpx;" 
+          bindtap="navToProject" 
+          data-pId="{{project.pId}}"
+          wx:if="{{project.display}}"
+        >
+          <view class="content">            
+            <view>
+              <view 
+                catchtap="subscribe"
+                data-pid="{{project.pId}}"
+                data-aid="{{area.areaId}}"
+                data-pname="{{project.pName}}"
+              >
+                <text class="text-orange text-bold cuIcon-{{project.isSubscribed ? 'favorfill' : 'favor'}}"></text>
+              </view>
+              <!-- 小区名称 -->
+              <view>
+                <text class="text-{{project.isSubscribed ? 'orange' : 'black'}} padding-left {{project.isSubscribed ? 'text-bold' : ''}}"
+                >{{tools.sliceOf(project.pName)}}</text>
+                <text class="text-grey margin-left">{{project.rentableCount}}套</text>
+                <text class="cuIcon-picfill text-grey text-xlg margin-left" wx:if="{{project.raw.hasImage}}"></text>
+                <text class="cuIcon-videofill text-grey text-xlg margin-left" wx:if="{{project.raw.hasVideo}}"></text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+      </view>
+
+    </view>
+  </scroll-view>
+</view>
+
+<!-- tabBar -->
+<tabBar bindswitchtab="redirect" tab="allProjects"></tabBar>
+
+<!-- 筛选器弹窗 -->
+<view class="cu-modal drawer-modal justify-start {{ openDrawer ? 'show' : '' }}" bindtap="closeFilterDrawer">
+  <view 
+    class="cu-dialog basis-lg" 
+    catchtap 
+    style="top: {{CustomBar}}px; height:calc(100vh - {{CustomBar}}px)"
+  >
+  <!-- 弹窗内容 -->
+    <!-- 社区tags -->
+    <view class="text-bold filter-subtitle">选择社区</view>
+    <view style="padding: 10rpx; display: flex; flex-wrap: wrap;">
+      <view 
+        class="cu-tag round bg-{{ areas.length == chosenAreas.length ? 'blue' : 'grey' }}" 
+        data-areaName="all" 
+        bindtap="tapArea"
+        style="margin: 5rpx;"
+      >全选</view>
+      <block wx:for="{{areas}}" wx:for-item="areaName" wx:key="*this">
+        <view 
+          class="cu-tag round bg-{{ tools.indexOf(chosenAreas, areaName) == -1 ? 'grey' : 'blue' }}"
+          data-areaName="{{areaName}}" 
+          bindtap="tapArea"
+          style="margin: 5rpx;"
+        >{{areaName}}</view>
+      </block>
+    </view>
+
+    <!-- 小区房源数量 -->
+    <view class="text-bold filter-subtitle">小区房源数量</view>
+    <view style="padding: 10rpx; display: flex; flex-wrap: wrap;">
+      <view 
+        class="cu-tag round bg-{{ rentableCountCategory.length == chosenRentableCountCategory.length ? 'blue' : 'grey' }}" 
+        data-category="all"
+        style="margin: 5rpx;" 
+        bindtap="tapRentableCounts"
+      >全选</view>
+      <block wx:for="{{rentableCountCategory}}" wx:for-item="category" wx:key="*this">
+        <view 
+          class="cu-tag round bg-{{ tools.indexOf(chosenRentableCountCategory, category) == -1 ? 'grey' : 'blue' }}" 
+          data-category="{{category}}"
+          style="margin: 5rpx;" 
+          bindtap="tapRentableCounts"
+        >{{category}}</view>
+      </block>
+    </view>
+  </view>
+</view>

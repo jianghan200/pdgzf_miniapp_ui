@@ -2,8 +2,14 @@ function indexOf(arr, value) {
   return arr.indexOf(value)
 }
 
-function sliceOf(arr) {
-  return arr.slice(arr.indexOf('（') + 1, arr.indexOf('）'))
+function sliceOf(str) {
+  if (str.indexOf('(') != -1) {
+    return str.slice(str.indexOf('(') + 1, str.indexOf(')'))
+  } else if (str.indexOf('（') != -1) {
+    return str.slice(str.indexOf('（') + 1, str.indexOf('）'))
+  } else {
+    return str
+  }
 }
 module.exports = {
   indexOf : indexOf,

@@ -188,6 +188,16 @@ const categorize = function(monthlyDataArray) {
   ]
 }
 
+const sliceOf = function(str) {
+  if (str.indexOf('(') != -1) {
+    return str.slice(str.indexOf('(') + 1, str.indexOf(')'))
+  } else if (str.indexOf('（') != -1) {
+    return str.slice(str.indexOf('（') + 1, str.indexOf('）'))
+  } else {
+    return str
+  }
+}
+
 module.exports = {
   formatTime,
   formatDate,
@@ -202,5 +212,6 @@ module.exports = {
   number2Hex : number2Hex,
   daysInBtw : daysInBtw,
   getOrElse : getOrElse,
-  categorize : categorize
+  categorize : categorize,
+  sliceOf : sliceOf
 }

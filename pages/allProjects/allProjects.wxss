@@ -1,0 +1,11 @@
+.title {
+  font-size: larger;
+  font-weight: 500;
+  padding: 1rem;
+}
+
+.filter-subtitle {
+  display: flex; 
+  padding-left: 20rpx; 
+  padding-top: 20rpx;
+}
