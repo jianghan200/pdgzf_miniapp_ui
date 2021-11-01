@@ -151,6 +151,10 @@
         <view class="cu-bar bg-white solid-bottom">
           <view class="action"><text class="cuIcon-homefill text-grey"></text><text>户型</text></view>
           <view class="action">{{house.type}}</view>
+        </view>  
+        <view class="cu-bar bg-white solid-bottom">
+          <view class="action"><text class="cuIcon-homefill text-grey"></text><text>入住时间</text></view>
+          <view class="action">{{house.emoveInDate}}</view>
         </view>      
       </view>
     </block>

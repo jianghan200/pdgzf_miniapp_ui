@@ -135,7 +135,8 @@ Page({
                   displayedQueue : displayedQueue,
                   queueLength : house.queue.length,
                   // 与显示相关的flag
-                  hide : false
+                  hide : false,
+                  emoveInDate: utils.formatDate(new Date(house.emoveInDate)), 
                 }
                 return houseInfo
               })
