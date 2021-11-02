@@ -130,21 +130,23 @@ Page({
       log.info('开始支付')
       // 邮件验证通过
       // 开始支付
-      let self = this
-      payHelper.pay(0).then((res) => {
-        log.info('支付成功')
+      // let self = this
+      // payHelper.pay(0).then((res) => {
+      //   log.info('支付成功')
 
-        self.postPayment()
-      }).catch((err) => {
-        log.error('支付失败')
-        log.error(err)
-        // 微信支付失败
-        wx.showToast({
-          title: '支付失败',
-          icon: 'error'
-        })
-        self.hideModal()
-      })
+      //   self.postPayment()
+      // }).catch((err) => {
+      //   log.error('支付失败')
+      //   log.error(err)
+      //   // 微信支付失败
+      //   wx.showToast({
+      //     title: '支付失败',
+      //     icon: 'error'
+      //   })
+      //   self.hideModal()
+      // })
+
+      self.postPayment()
     } else {
       // 检查未通过
       wx.showToast({
