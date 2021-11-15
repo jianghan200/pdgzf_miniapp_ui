@@ -248,12 +248,16 @@ Page({
   // 拿到当前的calendar组件实例，对其进行配置。
   // wx的this.selectComponent接口有很多限制，首先要求在calendar上添加标签：calendar，且calendar在页面上不能根据wx:if显示，只能用hidden控制。
   renderCalendar() {
-    const calendar = this.selectComponent('#calendar').calendar
-    let curYM = calendar.getCurrentYM()
-    let month = curYM.month
-    let year = curYM.year
-    let payloadOfThisMonth = this.daysColor(this.data.heatMap, year, month)
-    calendar.setTodos(payloadOfThisMonth)
+    if(this.selectComponent('#calendar')){
+      const calendar = this.selectComponent('#calendar').calendar
+      let curYM = calendar.getCurrentYM()
+      let month = curYM.month
+      let year = curYM.year
+      let payloadOfThisMonth = this.daysColor(this.data.heatMap, year, month)
+      calendar.setTodos(payloadOfThisMonth)
+    }else{
+      console.log("this.selectComponent('#calendar') is null");
+    }
   },
 
   // 生成热力日历需要的数据（月度）

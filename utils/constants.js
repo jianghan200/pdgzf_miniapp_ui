@@ -1,4 +1,4 @@
-const prodServer = 'https://pdgzf.vencloud.cn'
+const prodServer = 'https://pdgzf.vencloud.cn/api'
 const qaServer = 'https://pdgzfqa.vencloud.cn'
 const hkServer = 'http://hk.han.pm:9908'
 const userinfoQaServer = 'https://api.pdgzfqa.vencloud.cn'
