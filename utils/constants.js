@@ -3,6 +3,7 @@ const qaServer = 'https://pdgzfqa.vencloud.cn'
 const hkServer = 'http://hk.han.pm:9908'
 const userinfoQaServer = 'https://api.pdgzfqa.vencloud.cn'
 const userinfoProdServer = 'https://api.pdgzf.vencloud.cn'
+const prodFeedbackServer = 'https://cs.vencloud.cn'
 const ROOM_TYPE = ["未知", "一室", "一室一厅", "两室", "两室一厅", "三室", "三室一厅", "四室", "五室"]
 const id2Type = id => {
   let res = ''
@@ -72,6 +73,11 @@ const rentableCountLimits = function(category) {
   return res
 }
 
+const vipJiraTypes = ['新功能', '改进', '举报Bug']
+const commonJiratypes = ['改进', '举报Bug']
+const wordpressFeedbackUsername = 'pdgzf_feedback'
+const wordpressFeedbackPassword = '10dH 2e8r dUeC OHL2 qffa w8S0'
+
 module.exports = {
   server: prodServer,
   userinfoServer: userinfoProdServer,
@@ -81,5 +87,10 @@ module.exports = {
   vipPid : vipSampleProjectId,
   mockStartDate : vipStartDate,
   rentableCountCategory : rentableCountCategory,
-  rentableCountLimits : rentableCountLimits
+  rentableCountLimits : rentableCountLimits,
+  vipJiraTypes : vipJiraTypes,
+  commonJiratypes : commonJiratypes,
+  prodFeedbackServer : prodFeedbackServer,
+  wordpressFeedbackUsername : wordpressFeedbackUsername,
+  wordpressFeedbackPassword : wordpressFeedbackPassword
 }

@@ -150,8 +150,8 @@ Page({
     })
   },
 
-  // 用户点击【房屋详情】
-  navToHouses(e) {
+  // 用户点击进入【房屋详情】
+  navToProject(e) {
     let pId = e.currentTarget.dataset.pid
     let url = '../project/project?pid=' + pId
     wx.navigateTo({

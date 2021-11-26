@@ -72,6 +72,13 @@ Page({
     })
   },
 
+  // Go to 我的反馈进度页
+  gotoKanban(e) {
+    wx.navigateTo({
+      url: '/pages/kanban/kanban',
+    })
+  },
+
   // Bottom Bar的方法
   redirect: function(e) {
     const newTab = e.detail

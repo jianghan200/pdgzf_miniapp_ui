@@ -1,0 +1,10 @@
+<cu-custom bgColor="bg-black" isBack="{{false}}">
+  <view slot="content">递交成功</view>
+</cu-custom>
+
+<view class="success-container" style="height: calc(80vh - {{CustomBar}}px);">
+  <text class="cuIcon-roundcheckfill text-green text-bold text-xsl"></text>
+  <text class="text-bold padding" style="font-size: x-large;">谢谢您参与PD公租房的成长</text>
+  <text class="text-bold padding" style="font-size: larger;">我们将在3天内给您回复</text>
+  <button class="cu-btn block bg-green" bindtap="redirectToUser">了解了</button>
+</view>

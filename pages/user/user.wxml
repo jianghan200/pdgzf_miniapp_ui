@@ -9,32 +9,46 @@
   <button wx:if="{{vipInfo.type == 2}}" class="cu-btn round line-yellow button-hover shadow text-bold">选房资格日：{{startDate}}</button>
 </view>
 
-<!-- 内容 -->
-<view class="cu-list menu sm-border card-menu margin-top">
-  <!-- VIP -->
-  <view class="cu-item arrow" wx:if="{{vipInfo.type != 2}}" bindtap="gotoVipPage">
-    <view class="content">
-      <text class="cuIcon-vip text-bold" style="color: goldenrod;"></text>
-      <text class="text-bold" style="color: goldenrod;">成为自动选房VIP</text>
+<movable-area class="movable-area">
+  <movable-view class="movable-view" x="600rpx" y="750rpx" animation="{{false}}" direction='all'>
+    <mb name="意见反馈" cuIcon="commentfill" targetPath="/pages/report/report"></mb>
+  </movable-view>
+  <!-- 内容 -->
+  <view class="cu-list menu sm-border card-menu margin-top">
+    <!-- VIP -->
+    <view class="cu-item arrow" wx:if="{{vipInfo.type != 2}}" bindtap="gotoVipPage">
+      <view class="content">
+        <text class="cuIcon-vip text-bold" style="color: goldenrod;"></text>
+        <text class="text-bold" style="color: goldenrod;">成为自动选房VIP</text>
+      </view>
     </view>
-  </view>
 
-  <!-- 如果已经是VIP了，可以修改自己的信息 -->
-  <view class="cu-item arrow" wx:if="{{vipInfo.type == 2}}" bindtap="goEditInfo">
-    <view class="content">
-      <text class="cuIcon-peoplefill text-bold" style="color: goldenrod;"></text>
-      <text class="text-bold" style="color: goldenrod;">修改个人信息</text>
+    <!-- 如果已经是VIP了，可以修改自己的信息 -->
+    <view class="cu-item arrow" wx:if="{{vipInfo.type == 2}}" bindtap="goEditInfo">
+      <view class="content">
+        <text class="cuIcon-peoplefill text-bold" style="color: goldenrod;"></text>
+        <text class="text-bold" style="color: goldenrod;">修改个人信息</text>
+      </view>
     </view>
-  </view>
-  
-  <!-- 邮件订阅 -->
-  <view class="cu-item arrow" bindtap="gotoEmailPage">
-    <view class="content">
-      <text class="cuIcon-mail text-bold text-cyan"></text>
-      <text class="text-cyan text-bold">邮件订阅</text>
+    
+    <!-- 邮件订阅 -->
+    <view class="cu-item arrow" bindtap="gotoEmailPage">
+      <view class="content">
+        <text class="cuIcon-mail text-bold text-cyan"></text>
+        <text class="text-cyan text-bold">邮件订阅</text>
+      </view>
     </view>
+
+    <!-- 我的反馈 -->
+    <!-- <view class="cu-item arrow" bindtap="gotoKanban">
+      <view class="content">
+        <text class="cuIcon-activity text-bold text-olive"></text>
+        <text class="text-bold text-olive">我的反馈</text>
+      </view>
+    </view> -->
+
   </view>
-</view>
+</movable-area>
 
 <!-- tabBar -->
 <tabBar bindswitchtab="redirect" tab="user"></tabBar>

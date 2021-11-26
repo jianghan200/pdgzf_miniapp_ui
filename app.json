@@ -19,7 +19,10 @@
     "pages/qualification/qualification",
     "pages/stats/stats",
     "pages/advantages/advantages",
-    "pages/materials/materials"
+    "pages/materials/materials",
+    "pages/report/report",
+    "pages/success/success",
+    "pages/kanban/kanban"
   ],
   "window":{
     "navigationStyle": "custom"

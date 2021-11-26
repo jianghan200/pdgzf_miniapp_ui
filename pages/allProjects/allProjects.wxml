@@ -28,65 +28,70 @@
 </view>
 
 <view wx:if="{{reqSuccessful}}">
-  <scroll-view
-    scroll-y 
-    scroll-with-animation
-    style="background-color: #f1f1f1; height:calc(100vh - 9.8rem - calc(100rpx + env(safe-area-inset-bottom) / 2))"
-  >
-    <!-- 遍历社区 -->
-    <view
-      wx:for="{{list}}"
-      wx:for-item="area"
-      wx:key="*this"
-      id="main-{{index}}"
+  <movable-area class="movable-area">
+    <movable-view class="movable-view" x="600rpx" y="750rpx" animation="{{false}}" direction='all'>
+      <mb name="意见反馈" cuIcon="commentfill" targetPath="/pages/report/report"></mb>
+    </movable-view>
+    <scroll-view
+      scroll-y 
+      scroll-with-animation
+      style="background-color: #f1f1f1; height:calc(100vh - 9.8rem - calc(100rpx + env(safe-area-inset-bottom) / 2))"
     >
-      <!-- 社区名称 -->
-      <view class='cu-bar solid-bottom bg-white' wx:if="{{area.display}}">
-        <view class='action'>
-          <text class='cuIcon-titles text-orange'></text> {{area.areaName == null ? '未知街道' : area.areaName}} 
-        </view>
-      </view>
-
-      <!-- 遍历社区的小区 -->
-      <view class="cu-list menu">
-      <block
-        wx:for="{{area.projects}}"
-        wx:for-item="project"
+      <!-- 遍历社区 -->
+      <view
+        wx:for="{{list}}"
+        wx:for-item="area"
         wx:key="*this"
+        id="main-{{index}}"
       >
-        <view 
-          class="cu-item arrow" 
-          style="min-height: 80rpx;" 
-          bindtap="navToProject" 
-          data-pId="{{project.pId}}"
-          wx:if="{{project.display}}"
+        <!-- 社区名称 -->
+        <view class='cu-bar solid-bottom bg-white' wx:if="{{area.display}}">
+          <view class='action'>
+            <text class='cuIcon-titles text-orange'></text> {{area.areaName == null ? '未知街道' : area.areaName}} 
+          </view>
+        </view>
+
+        <!-- 遍历社区的小区 -->
+        <view class="cu-list menu">
+        <block
+          wx:for="{{area.projects}}"
+          wx:for-item="project"
+          wx:key="*this"
         >
-          <view class="content">            
-            <view>
-              <view 
-                catchtap="subscribe"
-                data-pid="{{project.pId}}"
-                data-aid="{{area.areaId}}"
-                data-pname="{{project.pName}}"
-              >
-                <text class="text-orange text-bold cuIcon-{{project.isSubscribed ? 'favorfill' : 'favor'}}"></text>
-              </view>
-              <!-- 小区名称 -->
+          <view 
+            class="cu-item arrow" 
+            style="min-height: 80rpx;" 
+            bindtap="navToProject" 
+            data-pId="{{project.pId}}"
+            wx:if="{{project.display}}"
+          >
+            <view class="content">            
               <view>
-                <text class="text-{{project.isSubscribed ? 'orange' : 'black'}} padding-left {{project.isSubscribed ? 'text-bold' : ''}}"
-                >{{tools.sliceOf(project.pName)}}</text>
-                <text class="text-grey margin-left">{{project.rentableCount}}套</text>
-                <text class="cuIcon-picfill text-grey text-xlg margin-left" wx:if="{{project.raw.hasImage}}"></text>
-                <text class="cuIcon-videofill text-grey text-xlg margin-left" wx:if="{{project.raw.hasVideo}}"></text>
+                <view 
+                  catchtap="subscribe"
+                  data-pid="{{project.pId}}"
+                  data-aid="{{area.areaId}}"
+                  data-pname="{{project.pName}}"
+                >
+                  <text class="text-orange text-bold cuIcon-{{project.isSubscribed ? 'favorfill' : 'favor'}}"></text>
+                </view>
+                <!-- 小区名称 -->
+                <view>
+                  <text class="text-{{project.isSubscribed ? 'orange' : 'black'}} padding-left {{project.isSubscribed ? 'text-bold' : ''}}"
+                  >{{tools.sliceOf(project.pName)}}</text>
+                  <text class="text-grey margin-left">{{project.rentableCount}}套</text>
+                  <text class="cuIcon-picfill text-grey text-xlg margin-left" wx:if="{{project.raw.hasImage}}"></text>
+                  <text class="cuIcon-videofill text-grey text-xlg margin-left" wx:if="{{project.raw.hasVideo}}"></text>
+                </view>
               </view>
             </view>
           </view>
+        </block>
         </view>
-      </block>
-      </view>
 
-    </view>
-  </scroll-view>
+      </view>
+    </scroll-view>
+  </movable-area>
 </view>
 
 <!-- tabBar -->

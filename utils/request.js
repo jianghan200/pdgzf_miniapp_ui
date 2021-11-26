@@ -1,6 +1,7 @@
 // 读取用户的订阅信息
 const app = getApp()
 const constants = require('../utils/constants')
+const log = require('./../utils/log')
 const utils = require('../utils/util')
 
 // 用户login
@@ -765,6 +766,108 @@ const getMonthlyHouseCount = function() {
   })
 }
 
+// Post用户的反馈
+const postFeedback = function(jiraType, desc, email) {
+  const url = constants.prodFeedbackServer + '/wp_pdgzf/wp-json/wp/v2/posts'
+  const unionId = app.globalData.userinfo.unionId
+  const token = utils.base64_encode(constants.wordpressFeedbackUsername + ':' + constants.wordpressFeedbackPassword)
+  const header = {
+    'Authorization' : 'Basic ' + token
+  }
+  var data = {
+    'title' : '意见反馈' + ': ' + jiraType + '(' + unionId + ')',
+    'content' : desc,
+    'status': 'publish',
+    'meta' : {
+      'unionId' : unionId,
+      'email' : email
+    }
+  }
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url : url,
+      header : header,
+      data : data,
+      method: 'POST',
+      success : function(res) {
+        console.log(res)
+
+        resolve(res.data.id)
+      },
+      fail : function(err) {
+        console.log(err)
+        
+        resolve(-1)
+      }
+    })
+  })
+}
+
+// 上传反馈用到的图片
+const sendAllFeedbackImgs = function(imgUrls, postId) {
+  log.info(`准备上传（${imgUrls.length}）张图片到postId：${postId}`)
+  console.log(`准备上传（${imgUrls.length}）张图片到postId：${postId}`)
+
+  let promises = 
+    imgUrls.map(url => {
+      return sendFeedbackImg(url, postId)
+    })
+
+  return Promise.all(promises).then((res) => {
+    log.info(`成功上传全部（${imgUrls.length}）张图片到postId：${postId}`)
+
+    Promise.resolve(true)
+  }).catch(err => {
+    log.error(err)
+
+    Promise.resolve(false)
+  })
+}
+
+const sendFeedbackImg = function(imgUrl, postId) {
+  console.log(`准备上传图片：${imgUrl}`)
+  
+  // 获取图片文件后缀
+  const index= imgUrl.lastIndexOf(".");
+  const ext = imgUrl.substr(index + 1);
+  console.log(ext)
+  // 获取文件名
+  const filename = imgUrl.substr(imgUrl.lastIndexOf('/') + 1)
+
+  var fs = wx.getFileSystemManager()
+  
+  const url = constants.prodFeedbackServer + '/wp_pdgzf/wp-json/wp/v2/media'
+  const unionId = app.globalData.userinfo.unionId
+  const token = utils.base64_encode(constants.wordpressFeedbackUsername + ':' + constants.wordpressFeedbackPassword)
+  const header = {
+    'Authorization' : 'Basic ' + token,
+    'content-type' : 'image/' + ext,
+    'Content-Disposition' : `attachment; filename=${filename}`,
+    'cache-control' : 'no-cache'
+  }
+
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url : url,
+      header : header,
+      data : {
+        'data-binary' : fs.readFileSync(imgUrl, 'binary')
+      },
+      method : 'POST',
+      success : function(res) {
+        console.log(res)
+
+        resolve(res)
+      },
+      fail : function(err) {
+        console.log(err)
+
+        reject(err)
+      }
+    })
+  })
+}
+
 module.exports = {
   login : login,
   getSubscriptions : getSubscriptions,
@@ -788,5 +891,7 @@ module.exports = {
   queuesOfHouses : queuesOfHouses,
   getCandidatesCounts : getCandidatesCounts,
   getValidCandidatesCounts : getValidCandidatesCounts,
-  getMonthlyHouseCount : getMonthlyHouseCount
+  getMonthlyHouseCount : getMonthlyHouseCount,
+  postFeedback : postFeedback,
+  sendAllFeedbackImgs : sendAllFeedbackImgs
 }

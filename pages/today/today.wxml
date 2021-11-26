@@ -2,6 +2,7 @@
 
 <view style="height: 100vh; background-color: white;" wx:if="{{!disable}}">
   <view style="height: 2.5rem;"></view>
+  <!-- 标题 -->
   <view class="title">
     <view class="text-xl">
       <text class="text-bold"> 今日房源</text>
@@ -11,85 +12,94 @@
     </view>
   </view>
 
-  <view style="padding-bottom: 10rpx; display: flex; flex-direction: row; justify-content: space-around; align-items: center;">
-    <button style="height: 90rpx; width: 30%;" class="cu-btn bg-blue text-bold" bindtap="openMap">
-      <text class="cuIcon-locationfill text-white"></text> 地图
-    </button>
-    <button style="height: 90rpx; width: 30%;" class="cu-btn bg-green text-bold" bindtap="refresh">
-      <text class="cuIcon-refresh text-white"></text> 刷新房源
-    </button>
-    <button 
-      wx:if="{{!isVip}}"
-      style="height: 90rpx; width: 30%;" 
-      class="cu-btn text-bold cuIcon-vip bg-black text-yellow" 
-      bindtap="vipSample"
-    >
-      VIP范例
-    </button>
-  </view>
+  <movable-area class="movable-area">
+    <movable-view class="movable-view" x="600rpx" y="750rpx" animation="{{false}}" direction='all'>
+      <mb name="意见反馈" cuIcon="commentfill" targetPath="/pages/report/report"></mb>
+    </movable-view>
+    <!-- 按钮功能区 -->
+    <view style="padding-bottom: 10rpx; display: flex; flex-direction: row; justify-content: space-around; align-items: center;">
+      <button style="height: 90rpx; width: 30%;" class="cu-btn bg-blue text-bold" bindtap="openMap">
+        <text class="cuIcon-locationfill text-white"></text> 地图
+      </button>
+      <button style="height: 90rpx; width: 30%;" class="cu-btn bg-green text-bold" bindtap="refresh">
+        <text class="cuIcon-refresh text-white"></text> 刷新房源
+      </button>
+      <button 
+        wx:if="{{!isVip}}"
+        style="height: 90rpx; width: 30%;" 
+        class="cu-btn text-bold cuIcon-vip bg-black text-yellow" 
+        bindtap="vipSample"
+      >VIP范例</button>
+    </view>
 
-  <!-- 对于初次登陆用户的提示 -->
-  <view wx:if="{{!hasStartDate}}" class="text-bold text-grey flex" style="justify-content: center; align-items: center;">
-    缺少资格日期，排名依照模拟资格日：2021-04-26
-  </view>
+    <!-- 对于初次登陆用户的提示 -->
+    <view wx:if="{{!hasStartDate}}" class="text-bold text-grey flex" style="justify-content: center; align-items: center;">
+      缺少资格日期，排名依照模拟资格日：2021-04-26
+    </view>
 
-  <!-- 普通用户可以override掉startDate -->
-  <view 
-    wx:if="{{!hasStartDate}}"
-    class="text-bold text-grey flex" 
-    style="justify-content: center; align-items: center;" 
-    bindtap="manualStartDate"
-  >
-    点击输入您的资格日, 当前为({{ manualStartDate == '' ? '2021-04-26' : manualStartDate }})
-  </view>
+    <!-- 普通用户可以override掉startDate -->
+    <view 
+      wx:if="{{!hasStartDate}}"
+      class="text-bold text-grey flex" 
+      style="justify-content: center; align-items: center;" 
+      bindtap="manualStartDate"
+    >点击输入您的资格日, 当前为({{ manualStartDate == '' ? '2021-04-26' : manualStartDate }})</view>
 
-  <view>
-    <scroll-view
-      scroll-y 
-      scroll-with-animation
-      style="height:calc(100vh - 7.5rem - 100rpx - calc(100rpx + env(safe-area-inset-bottom) / 2))"
-    >
-      <!-- 遍历社区 -->
-      <view class="cu-list menu">
-        <block
-          wx:for="{{list}}"
-          wx:for-item="area"
-          wx:key="*this"  
-          id="main-{{index}}"
-        >
-          <!-- 遍历社区的小区 -->
+    <!-- 房源列表 -->
+    <view wx:if="{{list.length > 0}}">
+      <scroll-view
+        scroll-y 
+        scroll-with-animation
+        style="height:calc(100vh - 7.5rem - 100rpx - calc(100rpx + env(safe-area-inset-bottom) / 2))"
+      >
+        <!-- 遍历社区 -->
+        <view class="cu-list menu">
           <block
-            wx:for="{{area.projects}}"
-            wx:for-item="project"
-            wx:key="*this"
+            wx:for="{{list}}"
+            wx:for-item="area"
+            wx:key="*this"  
+            id="main-{{index}}"
           >
-            <view class="cu-item arrow" bindtap="navToHouses" data-pId="{{project.pId}}">
-              <view class="content padding-tb-sm">
-                <view>
-                  <!-- 订阅 -->
-                  <view 
-                    catchtap="subscribe"
-                    data-pid="{{project.pId}}"
-                    data-areaid="{{area.areaId}}"
-                    data-pname="{{project.pName}}"
-                  >
-                    <text class="text-orange text-bold cuIcon-{{project.isSubscribed ? 'favorfill' : 'favor'}}"></text>
-                  </view>
+            <!-- 遍历社区的小区 -->
+            <block
+              wx:for="{{area.projects}}"
+              wx:for-item="project"
+              wx:key="*this"
+            >
+              <view class="cu-item arrow" bindtap="navToProject" data-pId="{{project.pId}}">
+                <view class="content padding-tb-sm">
+                  <view>
+                    <!-- 订阅 -->
+                    <view 
+                      catchtap="subscribe"
+                      data-pid="{{project.pId}}"
+                      data-areaid="{{area.areaId}}"
+                      data-pname="{{project.pName}}"
+                    >
+                      <text class="text-orange text-bold cuIcon-{{project.isSubscribed ? 'favorfill' : 'favor'}}"></text>
+                    </view>
 
-                  <!-- 小区地址 -->
-                  <view style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
-                    <text class="text-{{project.isSubscribed ? 'orange' : 'black'}} padding-left {{project.isSubscribed ? 'text-bold' : ''}}">{{tools.sliceOf(project.pName)}} ({{project.houses.length}}套)
-                    </text>
-                    <text style="font-size: smaller; color: grey; padding-left: 10px;">预计最靠前排名：{{project.bestRank}}</text>
+                    <!-- 小区地址 -->
+                    <view style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
+                      <text class="text-{{project.isSubscribed ? 'orange' : 'black'}} padding-left {{project.isSubscribed ? 'text-bold' : ''}}">{{tools.sliceOf(project.pName)}} ({{project.houses.length}}套)
+                      </text>
+                      <text style="font-size: smaller; color: grey; padding-left: 10px;">预计最靠前排名：{{project.bestRank}}</text>
+                    </view>
                   </view>
                 </view>
               </view>
-            </view>
+            </block>
           </block>
-        </block>
-      </view>
-    </scroll-view>
-  </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 今日房源真的是一套都没有 -->
+    <view wx:else style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <image class="worker-avatar" src="/assets/cat.jpeg" mode="aspectFill"></image>
+      <view class="text-bold text-large padding">没了，真的一套都没了(ｰ ｰ;)，过几小时再看看吧～</view>
+    </view>
+  </movable-area>
 
   <!-- tabBar -->
   <tabBar bindswitchtab="redirect" tab="today"></tabBar>
@@ -97,11 +107,15 @@
 
 <!-- 9:30 am ~ 10:03am 期间禁止选房 -->
 <view wx:if="{{disable}}" style="height: 100vh; ">
-  <view style="height: calc(100vh - calc(100rpx + env(safe-area-inset-bottom) / 2)); display: flex; flex-direction: column; align-items: center; justify-content: center;">
-    <image class="worker-avatar" src="/assets/kid.jpeg" mode="aspectFill"></image>
-    <text class="text-bold text-xl padding">每天上午9:30 ~ 10:00关闭选房通道。请于上午10:03后打开此页～（搬砖的手，微微颤抖）</text>
-  </view>
-
+  <movable-area class="movable-area">
+    <movable-view class="movable-view" x="600rpx" y="750rpx" animation="{{false}}" direction='all'>
+      <mb name="意见反馈" cuIcon="commentfill" targetPath="/pages/report/report"></mb>
+    </movable-view>
+    <view style="height: calc(100vh - calc(100rpx + env(safe-area-inset-bottom) / 2)); display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <image class="worker-avatar" src="/assets/kid.jpeg" mode="aspectFill"></image>
+      <text class="text-bold text-xl padding">每天上午9:30 ~ 10:00关闭选房通道。请于上午10:03后打开此页～（搬砖的手，微微颤抖）</text>
+    </view>
+  </movable-area>
   <!-- tabBar -->
   <tabBar bindswitchtab="redirect" tab="today"></tabBar>
 </view>
