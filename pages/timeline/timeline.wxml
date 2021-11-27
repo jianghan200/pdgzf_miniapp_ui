@@ -14,7 +14,7 @@
       <text bindtap="goTo" data-page="advantages" class="text-yellow">【公租房的优势】</text>后火速开始准备材料
     </view>
   </view>
-  <view class="cu-time" style="text-align: start; width: auto;">小黑资格申请，开始准备材料</view>
+  <view class="cu-time" style="text-align: start; width: auto;">资格申请，开始准备材料</view>
 
   <view class="cu-item text-grey">
     <view class="content shadow-blur bg-grey">
