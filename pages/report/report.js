@@ -3,6 +3,7 @@ const constants = require('./../../utils/constants')
 const requestsHelper = require('./../../utils/request')
 const app = getApp()
 const log = require('../../utils/log')
+const util = require('../../utils/util')
 Page({
   data: {
     jiraTypes : constants.jiraTypes,
@@ -99,8 +100,18 @@ Page({
   submit(e) {
     // 检查描述是否为空
     if (this.data.desc.trim().length == 0) {
+      log.warn('用户问题描述为空')
+
       wx.showToast({
         title: '描述不能为空',
+        icon: 'error'
+      })
+    } else if (!util.validateEmail(this.data.email.trim())) {
+      // 检查Email是否合法
+      log.warn('用户输入的email不合法')
+
+      wx.showToast({
+        title: 'Email有误',
         icon: 'error'
       })
     } else {

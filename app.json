@@ -1,7 +1,6 @@
 {
   "pages":[
     "pages/login/login",
-    "pages/all/all",
     "pages/allProjects/allProjects",
     "pages/user/user",
     "pages/map/map",

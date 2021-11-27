@@ -30,7 +30,7 @@ Page({
     isVip: false,
     // 管理折叠的flags
     equipmentsHidden: true,
-    descriptionsHidden: true,
+    descriptionsHidden: false,
     calendarHidden: false,
     // 导航栏相关
     curTab : 0,

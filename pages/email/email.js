@@ -52,6 +52,8 @@ Page({
 
       // vip是否打开了邮件订阅？
       if (app.globalData.userinfo.emailSubscription == 1) {
+        log.info('是VIP用户，且开启了邮件订阅')
+
         openSubscription = true
       }
     }
@@ -148,6 +150,7 @@ Page({
 
       self.postPayment()
     } else {
+      log.error('用户填写的Email不合法')
       // 检查未通过
       wx.showToast({
         title: '电邮填写有误',
@@ -160,13 +163,31 @@ Page({
   changeSubscriptionStatus(e) {
     let self = this
     let afterStatusCode = e.detail.value ? 1 : 0
-    requests.updateEmailSubscriptionStatus(afterStatusCode).then((res) => {
-      self.setData({
-        openSubscription : e.detail.value
+
+    log.info(`更改邮件订阅状态到：${afterStatusCode}`)
+
+    requests
+      .updateEmailSubscriptionStatus(afterStatusCode)
+      .then((res) => {
+        log.info('成功更新了邮件订阅的状态')
+
+        self.setData({
+          openSubscription : e.detail.value
+        })
+        app.globalData.userinfo.emailSubscription = afterStatusCode
+
+        wx.showToast({
+          title: '更新成功',
+          icon: 'success'
+        })
+      }).catch((err) => {
+        log.error('更新邮件订阅状态失败')
+        console.log(err)
+
+        wx.showToast({
+          title: '更新失败',
+          icon: 'error'
+        })
       })
-      app.globalData.userinfo.emailSubscription = afterStatusCode
-    }).catch((err) => {
-      console.log(err)
-    })
   }
 })
