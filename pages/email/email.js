@@ -26,12 +26,13 @@ Page({
 
   onLoad: function (options) {
     log.info('onLoad email')
+    log.info(app.globalData.userinfo)
 
     let daysToExpire = 0
     let openSubscription = false
     // option.type是vip的类型
     // 现有的邮件订阅用户
-    if (options.type && options.expiryDate && options.type == 1) {
+    if (app.globalData.userinfo.type == 1) {
       // 特殊处理进度
       let today = new Date()
       let expiryDate = new Date(options.expiryDate)
@@ -42,7 +43,7 @@ Page({
     }
     // VIP专享项
     let dayTime = '早'
-    if (options.type && options.expiryDate && options.type == 2) {
+    if (app.globalData.userinfo.type == 2) {
       let hour = new Date().getHours()
       if (hour <= 6 || hour >= 18) {
         dayTime = '晚'

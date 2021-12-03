@@ -25,168 +25,166 @@
   </view>
 </scroll-view>
 
-<movable-area class="movable-area">
-  <movable-view class="movable-view" x="600rpx" y="750rpx" animation="{{false}}" direction='all'>
-    <mb name="意见反馈" cuIcon="commentfill" targetPath="/pages/report/report"></mb>
-  </movable-view>
-  <!-- 内容 -->
-  <scroll-view
-    scroll-y
-    class="cu-list menu"
-    scroll-with-animation
-    style="height:calc(100vh - {{CustomBar}}px - 90rpx); background: white;"
-  > 
-    <!-- 图片 / 视频走马灯 -->
-    <swiper 
-      class="screen-swiper square-dot" 
-      indicator-dots="true" 
-      circular="true" 
-      autoplay="true" 
-      interval="10000" 
-      duration="1000"
-      wx:if="{{medias.length > 0 && curTab == 0}}"
+<!-- 内容 -->
+<scroll-view
+  scroll-y
+  class="cu-list menu"
+  scroll-with-animation
+  style="height:calc(100vh - {{CustomBar}}px - 90rpx); background: white;"
+> 
+  <!-- 图片 / 视频走马灯 -->
+  <swiper 
+    class="screen-swiper square-dot" 
+    indicator-dots="true" 
+    circular="true" 
+    autoplay="true" 
+    interval="10000" 
+    duration="1000"
+    wx:if="{{medias.length > 0 && curTab == 0}}"
+  >
+    <swiper-item 
+      wx:for="{{medias}}"
+      wx:for-item="item" 
+      wx:key="item" 
+      data-item="{{item}}" 
+      bindtap="preview"
     >
-      <swiper-item 
-        wx:for="{{medias}}"
-        wx:for-item="item" 
-        wx:key="item" 
-        data-item="{{item}}" 
-        bindtap="preview"
-      >
-        <!-- 照片展示 -->
-        <image 
-          wx:if="{{item.type == 'image'}}"
-          src="{{item.url}}" 
-          mode="aspectFit" 
-          show-menu-by-longpress="false"
-        ></image>
+      <!-- 照片展示 -->
+      <image 
+        wx:if="{{item.type == 'image'}}"
+        src="{{item.url}}" 
+        mode="aspectFit" 
+        show-menu-by-longpress="false"
+      ></image>
 
-        <!-- 视频展示 -->
-        <video 
-          wx:if="{{item.type == 'video' && isVip}}"
-          src="{{item.url}}" 
-          autoplay 
-          loop="{{false}}"
-          muted 
-          show-play-btn="{{true}}" 
-          controls="{{true}}" 
-          object-fit="cover"
-          direction="90"
-        ></video>
-      </swiper-item>
-    </swiper>
+      <!-- 视频展示 -->
+      <video 
+        wx:if="{{item.type == 'video' && isVip}}"
+        src="{{item.url}}" 
+        autoplay 
+        loop="{{false}}"
+        muted 
+        show-play-btn="{{true}}" 
+        controls="{{true}}" 
+        object-fit="cover"
+        direction="90"
+      ></video>
+    </swiper-item>
+  </swiper>
 
-    <!-- comment box -->
-    <view 
-      wx:if="{{curTab == 0 }}" 
-      class="weui-flex" 
-      style="width:100%; height:40px; background:#fff; position:fixed; bottom:0; font-size:14px; box-shadow:0px -1px 4px #eee;"
-    >
-      <input 
-        bindinput="commentInput" 
-        bindtap="readyComment" 
-        class="weui-flex__item" 
-        type="text" 
-        placeholder="评论当前小区" 
-        style="padding:0px 10px;line-height:40px;height:40px;" 
-        value='{{commentstr}}'
-      />
-      <view style="text-align:center;width:80px;height:100%;line-height:40px;background:#55D98D;color:#fff">提交</view>
-    </view> 
+  <!-- comment box -->
+  <view 
+    wx:if="{{curTab == 0 }}" 
+    class="weui-flex" 
+    style="width:100%;height:40px;background:#fff;position:fixed;bottom:0;font-size:14px;box-shadow:0px -1px 4px #eee;"
+  >
+  <input 
+    bindinput="commentInput" 
+    bindtap="readyComment" 
+    class="weui-flex__item" 
+    type="text" 
+    placeholder="评论当前小区" 
+    style="padding:0px 10px;line-height:40px;height:40px;" 
+    value='{{commentstr}}'/>
+  <view 
+    style="text-align:center;width:80px;height:100%;line-height:40px;background:#55D98D;color:#fff"
+  >提交</view>
+  </view> 
 
-    <!-- 提示普通用户升级为VIP -->
-    <view wx:if="{{!isVip && curTab == 0}}" class="text-bold" style="margin: 10px; color: goldenrod;">
-      升级为VIP，观看看房视频～
+  <!-- 提示普通用户升级为VIP -->
+  <view wx:if="{{!isVip && curTab == 0}}" class="text-bold" style="margin: 10px; color: goldenrod;">
+    升级为VIP，观看看房视频～
+  </view>
+
+  <!-- 查看小区位置 -->
+  <view style="margin: 10px;" bindtap="seePointOnMap" wx:if="{{curTab == 0}}">
+    <text class="cuIcon-locationfill text-red" style="font-size: large;"></text>
+    <text class="text-blue text-bold" style="margin-left: 5px; font-size: large;">查看小区位置</text>
+  </view>
+
+  <!-- 配套设施 -->
+  <view 
+    class="text-bold" 
+    style="margin: 10px;" 
+    wx:if="{{equipments.length > 0 && curTab == 0}}" 
+    bindtap="changeEquipmentsState"
+  >
+    <text class="cuIcon-list" style="font-size: large;"></text> 
+    <text style="font-size: large;"> 配套设施 </text> 
+    <text class="cuIcon-{{equipmentsHidden ? 'un' : ''}}fold" style="font-size: large;"></text>
+  </view>
+  <view style="margin: 10px" hidden="{{equipmentsHidden}}" wx:if="{{curTab == 0}}">
+    <view wx:for="{{equipments}}" wx:for-item="equipment" wx:key="equipment">
+      <text class="cuIcon-title"></text> {{equipment}}
     </view>
+  </view>
 
-    <!-- 查看小区位置 -->
-    <view style="margin: 10px;" bindtap="seePointOnMap" wx:if="{{curTab == 0}}">
-      <text class="cuIcon-locationfill text-red" style="font-size: large;"></text>
-      <text class="text-blue text-bold" style="margin-left: 5px; font-size: large;">查看小区位置</text>
+  <!-- 小区概况 -->
+  <view 
+    class="text-bold" 
+    style="margin: 10px;" 
+    wx:if="{{descriptions.length > 0 && curTab == 0}}" 
+    bindtap="changeDescriptionsState"
+  >
+    <text class="cuIcon-list" style="font-size: large;"></text> 
+    <text style="font-size: large;"> 小区概况 </text> 
+    <text class="cuIcon-{{descriptionsHidden ? 'un' : ''}}fold" style="font-size: large;"></text>
+  </view>
+  <view style="margin: 10px;" hidden="{{descriptionsHidden}}" wx:if="{{curTab == 0}}">
+    <view wx:for="{{descriptions}}" wx:for-item="desc_item" wx:key="desc_item">
+      <text class="cuIcon-title"></text> {{desc_item}}
     </view>
+  </view>
 
-    <!-- 配套设施 -->
-    <view 
-      class="text-bold" 
-      style="margin: 10px;" 
-      wx:if="{{equipments.length > 0 && curTab == 0}}" 
-      bindtap="changeEquipmentsState"
-    >
-      <text class="cuIcon-list" style="font-size: large;"></text> 
-      <text style="font-size: large;"> 配套设施 </text> 
-      <text class="cuIcon-{{equipmentsHidden ? 'un' : ''}}fold" style="font-size: large;"></text>
-    </view>
-    <view style="margin: 10px" hidden="{{equipmentsHidden}}" wx:if="{{curTab == 0}}">
-      <view wx:for="{{equipments}}" wx:for-item="equipment" wx:key="equipment">
-        <text class="cuIcon-title"></text> {{equipment}}
-      </view>
-    </view>
+  <!-- 评论区标题 -->
+  <view wx:if="{{ curTab == 0}}" class="text-bold" style="margin-top:10px;background:#fff;">
+    <view style='font-size:14px;font-weight:bold;padding:10px;'>评论</view>
+  </view>
 
-    <!-- 小区概况 -->
-    <view 
-      class="text-bold" 
-      style="margin: 10px;" 
-      wx:if="{{descriptions.length > 0 && curTab == 0}}" 
-      bindtap="changeDescriptionsState"
-    >
-      <text class="cuIcon-list" style="font-size: large;"></text> 
-      <text style="font-size: large;"> 小区概况 </text> 
-      <text class="cuIcon-{{descriptionsHidden ? 'un' : ''}}fold" style="font-size: large;"></text>
-    </view>
-    <view style="margin: 10px;" hidden="{{descriptionsHidden}}" wx:if="{{curTab == 0}}">
-      <view wx:for="{{descriptions}}" wx:for-item="desc_item" wx:key="desc_item">
-        <text class="cuIcon-title"></text> {{desc_item}}
-      </view>
-    </view>
-
-    <!-- 评论区标题 -->
-    <view wx:if="{{ curTab == 0}}" class="text-bold" style="margin-top:10px;background:#fff;">
-      <view style='font-size:14px;font-weight:bold;padding:10px;'>评论</view>
-    </view>
-
-    <!-- 今日房源，if any -->
-    <view 
-      class="cu-list menu" 
-      style="margin-top: 0px;" 
-      wx:if="{{todayHouses.length > 0 && curTab == 1}}"
-    >
-      <block wx:for="{{todayHouses}}" wx:for-item="house" wx:key="house">
-        <!-- 今日房间标题 -->
-        <view class="cu-bar bg-white solid-bottom" bindtap="changeTodaySectionState" data-name="{{house.name}}">
-          <view class="action">
-            <text class="cuIcon-homefill text-orange text-bold"></text> {{house.name}} 
-            <text class="cuIcon-{{house.hide ? 'un' : ''}}fold" style="font-size: large;"></text>
-          </view>
+  <!-- 今日房源，if any -->
+  <view 
+    class="cu-list menu" 
+    style="margin-top: 0px;" 
+    wx:if="{{todayHouses.length > 0 && curTab == 1}}"
+  >
+      
+    <block wx:for="{{todayHouses}}" wx:for-item="house" wx:key="house">
+      <!-- 今日房间标题 -->
+      <view class="cu-bar bg-white solid-bottom" bindtap="changeTodaySectionState" data-name="{{house.name}}">
+        <view class="action">
+          <text class="cuIcon-homefill text-orange text-bold"></text> {{house.name}} 
+          <text class="cuIcon-{{house.hide ? 'un' : ''}}fold" style="font-size: large;"></text>
         </view>
-        <view hidden="{{house.hide}}">
-          <!-- 内容 -->
-          <view class="cu-bar bg-white solid-bottom">
-            <view class="action"><text class="cuIcon-rankfill text-grey"></text><text>预计排名</text></view>
-            <view class="action" style="color: goldenrod;">第{{house.rank}}名</view>
-          </view>
-          <view class="cu-bar bg-white solid-bottom">
-            <view class="action"><text class="cuIcon-group_fill text-grey"></text><text>排队情况</text></view>
-            <view class="action" style="color: goldenrod;">{{house.displayedQueue}}</view>
-          </view>
-          <view class="cu-bar bg-white solid-bottom">
-            <view class="action"><text class="cuIcon-moneybagfill text-grey"></text><text>月租金</text></view>
-            <view class="action">{{house.rent}}（元）</view>
-          </view>
-          <view class="cu-bar bg-white solid-bottom">
-            <view class="action"><text class="cuIcon-full text-grey"></text><text>面积</text></view>
-            <view class="action">{{house.size}}（平方米）</view>
-          </view>
-          <view class="cu-bar bg-white solid-bottom">
-            <view class="action"><text class="cuIcon-homefill text-grey"></text><text>户型</text></view>
-            <view class="action">{{house.type}}</view>
-          </view>  
-          <view class="cu-bar bg-white solid-bottom">
-            <view class="action"><text class="cuIcon-homefill text-grey"></text><text>入住时间</text></view>
-            <view class="action">{{house.emoveInDate}}</view>
-          </view>      
+      </view>
+      <view hidden="{{house.hide}}">
+        <!-- 内容 -->
+        <view class="cu-bar bg-white solid-bottom">
+          <view class="action"><text class="cuIcon-rankfill text-grey"></text><text>预计排名</text></view>
+          <view class="action" style="color: goldenrod;">第{{house.rank}}名</view>
         </view>
-      </block>
-    </view>
+        <view class="cu-bar bg-white solid-bottom">
+          <view class="action"><text class="cuIcon-group_fill text-grey"></text><text>排队情况</text></view>
+          <view class="action" style="color: goldenrod;">{{house.displayedQueue}}</view>
+        </view>
+        <view class="cu-bar bg-white solid-bottom">
+          <view class="action"><text class="cuIcon-moneybagfill text-grey"></text><text>月租金</text></view>
+          <view class="action">{{house.rent}}（元）</view>
+        </view>
+        <view class="cu-bar bg-white solid-bottom">
+          <view class="action"><text class="cuIcon-full text-grey"></text><text>面积</text></view>
+          <view class="action">{{house.size}}（平方米）</view>
+        </view>
+        <view class="cu-bar bg-white solid-bottom">
+          <view class="action"><text class="cuIcon-homefill text-grey"></text><text>户型</text></view>
+          <view class="action">{{house.type}}</view>
+        </view>  
+        <view class="cu-bar bg-white solid-bottom">
+          <view class="action"><text class="cuIcon-homefill text-grey"></text><text>入住时间</text></view>
+          <view class="action">{{house.emoveInDate}}</view>
+        </view>      
+      </view>
+    </block>
+  </view>
 
     <!-- 历史热力日历 -->
     <view wx:if="{{curTab == 2}}">
@@ -252,5 +250,4 @@
         </view>
       </block>
     </view>
-  </scroll-view>
-</movable-area>
+</scroll-view>

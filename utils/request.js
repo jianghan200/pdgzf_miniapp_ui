@@ -850,9 +850,7 @@ const sendFeedbackImg = function(imgUrl, postId) {
     wx.request({
       url : url,
       header : header,
-      data : {
-        'data-binary' : fs.readFileSync(imgUrl, 'binary')
-      },
+      data : fs.readFileSync(imgUrl),
       method : 'POST',
       success : function(res) {
         console.log(res)
