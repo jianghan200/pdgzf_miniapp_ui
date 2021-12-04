@@ -8,7 +8,7 @@
 </cu-custom>
 
 <!-- 导航栏 -->
-<scroll-view scroll-x class="nav bg-white">
+<scroll-view scroll-x class="nav bg-white" scroll-with-animation>
   <view class="cu-item {{ 0 == curTab ? 'text-orange cur' : '' }}" bindtap="tabSelect" data-id="0">
     <text class="cuIcon-infofill"></text> 小区资料
   </view>
@@ -72,25 +72,6 @@
     </swiper-item>
   </swiper>
 
-  <!-- comment box -->
-  <view 
-    wx:if="{{curTab == 0 }}" 
-    class="weui-flex" 
-    style="width:100%;height:40px;background:#fff;position:fixed;bottom:0;font-size:14px;box-shadow:0px -1px 4px #eee;"
-  >
-  <input 
-    bindinput="commentInput" 
-    bindtap="readyComment" 
-    class="weui-flex__item" 
-    type="text" 
-    placeholder="评论当前小区" 
-    style="padding:0px 10px;line-height:40px;height:40px;" 
-    value='{{commentstr}}'/>
-  <view 
-    style="text-align:center;width:80px;height:100%;line-height:40px;background:#55D98D;color:#fff"
-  >提交</view>
-  </view> 
-
   <!-- 提示普通用户升级为VIP -->
   <view wx:if="{{!isVip && curTab == 0}}" class="text-bold" style="margin: 10px; color: goldenrod;">
     升级为VIP，观看看房视频～
@@ -137,8 +118,28 @@
   </view>
 
   <!-- 评论区标题 -->
-  <view wx:if="{{ curTab == 0}}" class="text-bold" style="margin-top:10px;background:#fff;">
+  <view wx:if="{{ curTab == 0}}" class="text-bold" wx:if="{{curTab == 0}}" style="margin-top:10px;background:#fff;">
     <view style='font-size:14px;font-weight:bold;padding:10px;'>评论</view>
+  </view>
+
+  <!-- 评论输入 -->
+  <view 
+    wx:if="{{curTab == 0}}" 
+    class="cu-bar foot input {{ commentInputHeight != 0 ? 'cur' : '' }}" 
+    style="bottom: {{commentInputHeight}}px;"
+  >
+    <textarea 
+      placeholder="请友善发言哦～"
+      class="solid-bottom" 
+      adjust-position="false" 
+      maxlength="300" 
+      cursor-spacing="10"
+      bindfocus="onFocusCommentInput"
+      bindblur="onBlurCommentInput"
+      bindinput="inputComment"
+      auto-height="true"
+    ></textarea>
+    <button class="cu-btn bg-green shadow" bindtap="submitComment">发送</button>
   </view>
 
   <!-- 今日房源，if any -->
@@ -147,12 +148,22 @@
     style="margin-top: 0px;" 
     wx:if="{{todayHouses.length > 0 && curTab == 1}}"
   >
-      
+    <!-- collapse All -->
+    <view class="cu-bar bg-white solid-bottom" bindtap="collapseAllTodayProjects">
+      <view class="action">
+        <text class="cuIcon-sort text-bold"></text> 今日出现：{{todayHouses.length}}套房源
+        <text class="cuIcon-{{collapseAllTodays ? 'un' : ''}}fold"></text>
+      </view>
+    </view>
+    <!-- loop over 所有的今日房源 -->
     <block wx:for="{{todayHouses}}" wx:for-item="house" wx:key="house">
-      <!-- 今日房间标题 -->
+      <!-- 今日房源标题 -->
       <view class="cu-bar bg-white solid-bottom" bindtap="changeTodaySectionState" data-name="{{house.name}}">
         <view class="action">
-          <text class="cuIcon-homefill text-orange text-bold"></text> {{house.name}} 
+          <text class="cuIcon-homefill text-orange text-bold"></text>
+          <text> {{house.name}}</text>
+          <text decode="true" wx:if="{{!house.hide}}"> &nbsp;&nbsp;</text>
+          <text wx:if="{{house.hide}}" style="color: goldenrod;">（第{{house.rank}}名）</text>
           <text class="cuIcon-{{house.hide ? 'un' : ''}}fold" style="font-size: large;"></text>
         </view>
       </view>
@@ -179,75 +190,75 @@
           <view class="action">{{house.type}}</view>
         </view>  
         <view class="cu-bar bg-white solid-bottom">
-          <view class="action"><text class="cuIcon-homefill text-grey"></text><text>入住时间</text></view>
+          <view class="action"><text class="cuIcon-calendar text-grey"></text><text>入住时间</text></view>
           <view class="action">{{house.emoveInDate}}</view>
         </view>      
       </view>
     </block>
   </view>
 
-    <!-- 历史热力日历 -->
-    <view wx:if="{{curTab == 2}}">
-      <view class="text-bold" style="margin: 10px;" bindtap="changeCalendarState">
-        <text class="cuIcon-calendar text-cyan" style="font-size: large;"></text> 
-        <text style="font-size: large;"> 小区人气日历 </text>
-        <text class="cuIcon-{{calendarHidden ? 'un' : ''}}fold" style="font-size: large;"></text>
-        <text wx:if="{{!isVip}}" style="font-size: large;">（VIP内容）</text>
-      </view>
+  <!-- 历史热力日历 -->
+  <view wx:if="{{curTab == 2}}">
+    <view class="text-bold" style="margin: 10px;" bindtap="changeCalendarState">
+      <text class="cuIcon-calendar text-cyan" style="font-size: large;"></text> 
+      <text style="font-size: large;"> 小区人气日历 </text>
+      <text class="cuIcon-{{calendarHidden ? 'un' : ''}}fold" style="font-size: large;"></text>
+      <text wx:if="{{!isVip}}" style="font-size: large;">（VIP内容）</text>
     </view>
-    <!-- 小历日历 -->
-    <view hidden="{{curTab != 2}}">
-      <view style="padding: 1rem;" wx:if="{{isVip}}" hidden="{{calendarHidden}}">
-        <calendar id="calendar" config="{{calendarConfig}}" bind:whenChangeMonth="changeMonth" />
-      </view>
+  </view>
+  <!-- 小历日历 -->
+  <view hidden="{{curTab != 2}}">
+    <view style="padding: 1rem;" wx:if="{{isVip}}" hidden="{{calendarHidden}}">
+      <calendar id="calendar" config="{{calendarConfig}}" bind:whenChangeMonth="changeMonth" />
     </view>
+  </view>
 
-    <!-- 近期出现的小区户型详情 -->
-    <view wx:if="{{curTab == 2}}">
-      <!-- 此部分的标题 -->
-      <view style="margin: 10px;" bindtap="changeRecentSectionState">
-        <text class="cuIcon-infofill text-cyan" style="font-size: large;"></text>
-        <text style="margin-left: 5px; font-size: large;" class="text-bold">各户型数据</text>
-      </view>
-      <block wx:for="{{project.latestHouseInfo}}" wx:for-item="hInfo" wx:key="hInfo">
-        <!-- 近期户型标题 -->
-        <view class="cu-bar bg-white solid-bottom" bindtap="changeRecentSectionState" data-type="{{hInfo.type}}">
-          <view class="action">
-            <text class="cuIcon-homefill text-cyan text-bold"></text> {{hInfo.type}}（共出现过：{{hInfo.tCount}}套）
-            <text class="cuIcon-{{hInfo.hide ? 'un' : ''}}fold" style="font-size: large;"></text>
-          </view>
-        </view>
-        <!-- 各种参数 -->
-        <view hidden="{{hInfo.hide}}">
-          <view class="cu-bar bg-white solid-bottom">
-            <view class="action">
-              <text class="cuIcon-calendar text-grey" style="color: goldenrod;"></text><text>选中人资格日</text>
-            </view>
-            <view class="action" style="color: goldenrod;">{{isVip ? hInfo.ownerStartDate : '升级为VIP解锁'}}</view>
-          </view>
-          <view class="cu-bar bg-white solid-bottom">
-            <view class="action">
-              <text class="cuIcon-countdownfill text-grey" style="color: goldenrod;"></text><text>选中人等待时长</text>
-            </view>
-            <view class="action" style="color: goldenrod;">{{isVip ? hInfo.ownerWaitingDays + '（天）' : '升级为VIP解锁'}}</view>
-          </view>
-          <view class="cu-bar bg-white solid-bottom">
-            <view class="action"><text class="cuIcon-calendar text-grey"></text><text>最近出现于</text></view>
-            <view class="action">{{hInfo.updateTime}}</view>
-          </view>
-          <view class="cu-bar bg-white solid-bottom">
-            <view class="action"><text class="cuIcon-rankfill text-grey"></text><text>签约当日队列长度</text></view>
-            <view class="action">{{hInfo.hotIndexOnPickedDate}}（人）</view>
-          </view>
-          <view class="cu-bar bg-white solid-bottom">
-            <view class="action"><text class="cuIcon-moneybagfill text-grey"></text><text>月租金</text></view>
-            <view class="action">{{hInfo.rent == 0 ? '【不详】' : hInfo.rent + '（元）'}}</view>
-          </view>
-          <view class="cu-bar bg-white solid-bottom">
-            <view class="action"><text class="cuIcon-full text-grey"></text><text>面积</text></view>
-            <view class="action">{{hInfo.area}}（平方米）</view>
-          </view>
-        </view>
-      </block>
+  <!-- 近期出现的小区户型详情 -->
+  <view wx:if="{{curTab == 2}}">
+    <!-- 此部分的标题 -->
+    <view style="margin: 10px;" bindtap="changeRecentSectionState">
+      <text class="cuIcon-infofill text-cyan" style="font-size: large;"></text>
+      <text style="margin-left: 5px; font-size: large;" class="text-bold">各户型数据</text>
     </view>
+    <block wx:for="{{project.latestHouseInfo}}" wx:for-item="hInfo" wx:key="hInfo">
+      <!-- 近期户型标题 -->
+      <view class="cu-bar bg-white solid-bottom" bindtap="changeRecentSectionState" data-type="{{hInfo.type}}">
+        <view class="action">
+          <text class="cuIcon-homefill text-cyan text-bold"></text> {{hInfo.type}}（共出现过：{{hInfo.tCount}}套）
+          <text class="cuIcon-{{hInfo.hide ? 'un' : ''}}fold" style="font-size: large;"></text>
+        </view>
+      </view>
+      <!-- 各种参数 -->
+      <view hidden="{{hInfo.hide}}">
+        <view class="cu-bar bg-white solid-bottom">
+          <view class="action">
+            <text class="cuIcon-calendar text-grey" style="color: goldenrod;"></text><text>选中人资格日</text>
+          </view>
+          <view class="action" style="color: goldenrod;">{{isVip ? hInfo.ownerStartDate : '升级为VIP解锁'}}</view>
+        </view>
+        <view class="cu-bar bg-white solid-bottom">
+          <view class="action">
+            <text class="cuIcon-countdownfill text-grey" style="color: goldenrod;"></text><text>选中人等待时长</text>
+          </view>
+          <view class="action" style="color: goldenrod;">{{isVip ? hInfo.ownerWaitingDays + '（天）' : '升级为VIP解锁'}}</view>
+        </view>
+        <view class="cu-bar bg-white solid-bottom">
+          <view class="action"><text class="cuIcon-calendar text-grey"></text><text>最近出现于</text></view>
+          <view class="action">{{hInfo.updateTime}}</view>
+        </view>
+        <view class="cu-bar bg-white solid-bottom">
+          <view class="action"><text class="cuIcon-rankfill text-grey"></text><text>签约当日队列长度</text></view>
+          <view class="action">{{hInfo.hotIndexOnPickedDate}}（人）</view>
+        </view>
+        <view class="cu-bar bg-white solid-bottom">
+          <view class="action"><text class="cuIcon-moneybagfill text-grey"></text><text>月租金</text></view>
+          <view class="action">{{hInfo.rent == 0 ? '【不详】' : hInfo.rent + '（元）'}}</view>
+        </view>
+        <view class="cu-bar bg-white solid-bottom">
+          <view class="action"><text class="cuIcon-full text-grey"></text><text>面积</text></view>
+          <view class="action">{{hInfo.area}}（平方米）</view>
+        </view>
+      </view>
+    </block>
+  </view>
 </scroll-view>

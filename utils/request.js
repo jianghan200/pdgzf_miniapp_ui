@@ -803,10 +803,9 @@ const postFeedback = function(jiraType, desc, email) {
   })
 }
 
-// 上传反馈用到的图片
+// 上传反馈用到的图片（s）
 const sendAllFeedbackImgs = function(imgUrls, postId) {
   log.info(`准备上传（${imgUrls.length}）张图片到postId：${postId}`)
-  console.log(`准备上传（${imgUrls.length}）张图片到postId：${postId}`)
 
   let promises = 
     imgUrls.map(url => {
@@ -816,28 +815,27 @@ const sendAllFeedbackImgs = function(imgUrls, postId) {
   return Promise.all(promises).then((res) => {
     log.info(`成功上传全部（${imgUrls.length}）张图片到postId：${postId}`)
 
-    Promise.resolve(true)
+    return Promise.resolve(true)
   }).catch(err => {
     log.error(err)
 
-    Promise.resolve(false)
+    return Promise.resolve(false)
   })
 }
 
+// 发送一张图片到wordpress
 const sendFeedbackImg = function(imgUrl, postId) {
-  console.log(`准备上传图片：${imgUrl}`)
+  log.info(`准备上传图片：${imgUrl}到post id：${postId}`)
   
   // 获取图片文件后缀
   const index= imgUrl.lastIndexOf(".");
   const ext = imgUrl.substr(index + 1);
-  console.log(ext)
   // 获取文件名
   const filename = imgUrl.substr(imgUrl.lastIndexOf('/') + 1)
 
   var fs = wx.getFileSystemManager()
   
-  const url = constants.prodFeedbackServer + '/wp_pdgzf/wp-json/wp/v2/media'
-  const unionId = app.globalData.userinfo.unionId
+  const url = constants.prodFeedbackServer + '/wp_pdgzf/wp-json/wp/v2/media' + '?post=' + postId
   const token = utils.base64_encode(constants.wordpressFeedbackUsername + ':' + constants.wordpressFeedbackPassword)
   const header = {
     'Authorization' : 'Basic ' + token,
@@ -850,17 +848,73 @@ const sendFeedbackImg = function(imgUrl, postId) {
     wx.request({
       url : url,
       header : header,
+      // 这里的编码方式只能是默认的
       data : fs.readFileSync(imgUrl),
       method : 'POST',
       success : function(res) {
-        console.log(res)
+        if (res.statusCode == 201 || res.statusCode == 200) {
+          // 说明post成功了，通常为201
+          log.info(`图片上传成功(${imgUrl})`)
 
-        resolve(res)
+          resolve(true)
+        } else {
+          log.error(`图片上传失败(${imgUrl})`)
+          log.error(res)
+          console.log(res)
+
+          reject(res)
+        }
       },
       fail : function(err) {
+        log.error(`图片上传失败(${imgUrl})`)
+        log.error(err)
         console.log(err)
 
         reject(err)
+      }
+    })
+  })
+}
+
+// 向腾讯云后台get用户的头像和昵称
+const getAvatarAndNickname = function() {
+  return new Promise((resolve, reject) => {
+    wx.cloud.callFunction({
+      name : 'user',
+      data : {
+        action : 'GET'
+      },
+      success: function(res) {
+        log.info(res)
+        console.log(res)
+
+        if (!res.result || res.result == null) {
+          // 没有这个用户的头像和昵称
+          
+        } else {
+          
+        }
+      },
+      fail: function(err) {
+        log.error(`调用云函数失败（GET user）`)
+        log.error(err)
+      }
+    })
+  })
+}
+
+// 向腾讯云后台上传用户在某个小区下的评论
+const sendCommentOnSomeProject = function(pid, comments, avatarUrl, nickname) {
+  return new Promise((resolve, reject) => {
+    wx.cloud.callFunction({
+      name : 'comment',
+      data : {
+        action: "NEW",
+        uid: app.globalData.userinfo.unionId,
+        aid: pid, 
+        comment: comments,
+        avatarUrl: avatarUrl,
+        nickName: nickname,
       }
     })
   })
@@ -891,5 +945,7 @@ module.exports = {
   getValidCandidatesCounts : getValidCandidatesCounts,
   getMonthlyHouseCount : getMonthlyHouseCount,
   postFeedback : postFeedback,
-  sendAllFeedbackImgs : sendAllFeedbackImgs
+  sendAllFeedbackImgs : sendAllFeedbackImgs,
+  sendCommentOnSomeProject : sendCommentOnSomeProject,
+  getAvatarAndNickname : getAvatarAndNickname
 }

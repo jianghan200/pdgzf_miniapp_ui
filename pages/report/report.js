@@ -121,37 +121,77 @@ Page({
       log.info(`向wordpress发送Feedback（jiratype: ${self.data.desc}）`)
       log.info(`向wordpress发送Feedback（jiratype: ${self.data.email}）`)
 
+      wx.showLoading({
+        title: '反馈上传中',
+      })
+
       requestsHelper.postFeedback(
         self.data.jiraTypes[self.data.jIdx], 
         self.data.desc,
         self.data.email
       ).then((postId) => {
-        // if (postId != -1) {
-        //   log.info('Feedback（描述）上传成功！')
-        //   console.info('Feedback（描述）上传成功！')
-          
-        //   // 向后端上传图片list
-        //   requestsHelper.sendAllFeedbackImgs(self.data.imgList, postId).then((res) => {
-        //     if (res) {
-        //       log.info(`成功上传全部图片`)
-        //     } else {
-        //       log.error('图片list上传失败')
-        //     }
-        //   })
-        // } else {
-        //   log.error(`未能成功向wordpress后端上传Feedback（描述）`)
-        // }
-        wx.showToast({
-          title: '反馈失败',
-          icon: 'success'
-        })
+        if (self.data.imgList.length == 0) {
+          // 没有图片
+          log.info('无feedback图片')
 
-        wx.redirectTo({
-          url: '/pages/user/user',
-        })
+          wx.hideLoading()
+
+          wx.showToast({
+            title: '反馈成功',
+            icon: 'success'
+          })
+          
+          wx.redirectTo({
+            url: '/pages/success/success',
+          })
+        } else if (postId != -1) {
+          // 只有在description上传成功后才可以上传图片
+          log.info('Feedback（描述）上传成功！')
+          
+          // 向后端上传图片list
+          requestsHelper
+            .sendAllFeedbackImgs(self.data.imgList, postId)
+            .then((res) => {
+              if (res) {
+                log.info(`成功上传全部图片`)
+
+                wx.hideLoading()
+
+                wx.showToast({
+                  title: '反馈成功',
+                  icon: 'success'
+                })
+
+                // 只有图片和描述都上传成功了，才能导航到success页
+                wx.redirectTo({
+                  url: '/pages/success/success',
+                })
+              } else {
+                log.error('图片list上传失败')
+
+                wx.hideLoading()
+
+                wx.showToast({
+                  title: '图片上传失败',
+                  icon: 'error'
+                })
+              }
+            })
+        } else {
+          log.error(`未能成功向wordpress后端上传Feedback（描述）`)
+
+          wx.hideLoading()
+
+          wx.showToast({
+            title: '反馈失败',
+            icon: 'error'
+          })
+        }
       }).catch(err => {
         log.error(`未能成功向wordpress后端上传Feedback（描述）`)
         log.error(err)
+
+        wx.hideLoading()
 
         wx.showToast({
           title: '反馈失败',

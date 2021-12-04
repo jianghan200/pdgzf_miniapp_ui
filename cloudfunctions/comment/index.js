@@ -7,8 +7,8 @@ cloud.init({
 
 // 云函数入口函数
 exports.main = async (data, context) => {
-
   console.log("DYNAMIC_CURRENT_ENV",cloud.DYNAMIC_CURRENT_ENV)
+
   const db = cloud.database()
   const _ = db.command
 

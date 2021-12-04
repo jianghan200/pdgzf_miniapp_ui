@@ -30,8 +30,9 @@ Page({
     isVip: false,
     // 管理折叠的flags
     equipmentsHidden: true,
-    descriptionsHidden: false,
+    descriptionsHidden: true,
     calendarHidden: false,
+    collapseAllTodays: false,
     // 导航栏相关
     curTab : 0,
     scrollLeft : 0,
@@ -43,7 +44,10 @@ Page({
       highlightToday: false,
       preventSwipe: true,
       onlyShowCurrentMonth: true
-    }
+    },
+    // 评论相关
+    myComments: '',
+    commentInputHeight : 0 // 初始化的时候尚未on focus，所以贴地板
   },
 
   // 导航栏上选择不同的tab
@@ -334,6 +338,19 @@ Page({
     })
   },
 
+  // hide / unhide所有的今日数据
+  collapseAllTodayProjects(e) {
+    let currentTodayHouses = this.data.todayHouses
+    let currentCollapseAllTodays = this.data.collapseAllTodays
+    currentTodayHouses.forEach(h => {
+      h.hide = !h.hide
+    })
+    this.setData({
+      todayHouses : currentTodayHouses,
+      collapseAllTodays : !currentCollapseAllTodays
+    })
+  },
+
   // hide / unhide今日数据
   changeTodaySectionState(e) {
     let selectedName = e.currentTarget.dataset.name
@@ -404,9 +421,57 @@ Page({
     })
   },
 
+  // Focus on评论的输入栏，需要拉高input的高度
+  onFocusCommentInput(e) {
+    log.info('点击了输入框')
+
+    this.setData({
+      commentInputHeight : e.detail.height
+    })
+  },
+
+  // 输入结束即“blur”的时候触发，应该将input的高度还原成贴地板
+  onBlurCommentInput(e) {
+    log.info('完成了输入，输入框blur')
+
+    this.setData({
+      commentInputHeight : 0
+    })
+  },
+
+  // 输入评论
+  inputComment(e) {
+    this.setData({
+      myComments : e.detail.value.trim()
+    })
+  },
+
+  // 上传评论
+  submitComment(e) {
+    log.info('点击上传评论')
+    // 评论不能为空
+    if (this.data.myComments.trim() != '') {
+      log.info(`用户的评论为：${this.data.myComments}`)
+      
+      let self = this
+      wx.showLoading({
+        title: '提交中',
+        mask:true
+      })
+
+      
+    } else {
+      log.warn('用户的评论为空')
+      // 评论为空
+      wx.showToast({
+        title: '啥也没说呀',
+        icon: 'error'
+      })
+    }
+  },
+
   // 转发
   onShareAppMessage: function(options) {
-    let self = this
     return {
       title : 'PD公租房',
       path : '/pages/login/login',

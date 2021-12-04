@@ -31,6 +31,11 @@ Page({
         log.info(userinfo)
 
         app.globalData.userinfo = userinfo
+
+        // 用户必须提供自己的昵称和头像才能进入小程序。
+        // 先看是否云端已经存储过用户的昵称和头像。
+        requests.getAvatarAndNickname()
+
         dataHelper.loadAllData()
       })
       .catch((err) => {
