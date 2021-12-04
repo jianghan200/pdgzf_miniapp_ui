@@ -1,7 +1,6 @@
 {
   "component": true,
   "usingComponents": {
-    "calendar": "/components/calendar/index",
-    "mb": "/components/movableButton/movableButton"
+    "calendar": "/components/calendar/index"
   }
 }

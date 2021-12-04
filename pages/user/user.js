@@ -17,6 +17,7 @@ Page({
   
   onLoad: function (options) {
     log.info('onLoad user')
+    log.info(app.globalData.userinfo)
 
     this.getVipInfo()
     let userinfo = app.globalData.userinfo
