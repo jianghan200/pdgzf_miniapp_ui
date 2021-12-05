@@ -19,3 +19,9 @@
 }
 
 /* 评论相关 */
+.no-comment-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}

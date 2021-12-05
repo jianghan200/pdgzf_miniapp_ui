@@ -121,6 +121,11 @@
   <view wx:if="{{ curTab == 0 }}" class="text-bold margin-top" style="margin: 10px;">
     <view style="font-size: large;">评论 {{commentsList.length}}</view>
   </view>
+
+  <view wx:if="{{ curTab == 0 && commentsList.length == 0 }}" class="no-comment-box padding">
+    <image src="/assets/think.jpg" mode="aspectFit" class="padding"></image>
+    <text class="padding-bottom text-grey">发表第一个评论吧~</text>
+  </view>
   
   <view wx:if="{{ curTab == 0 }}" class="cu-list menu-avatar comment solids-top">
     <block wx:for="{{commentsList}}" wx:for-item="comment" wx:key="comment">
