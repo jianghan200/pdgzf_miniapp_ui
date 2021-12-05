@@ -36,6 +36,8 @@ Page({
         log.info(userinfo)
 
         if (res[1]) {
+          // 向后端上传昵称（仅仅为了同步）
+          requests.updateUsername(app.globalData.nickname)
           log.info('云函数调用成功（both get and post），新用户同意提供头像和昵称')
           // 云函数调用成功（both get and post），新用户同意提供头像和昵称
           dataHelper.loadAllData()
@@ -50,6 +52,7 @@ Page({
       })
       .catch((err) => {
         log.error(err)
+        console.log(err)
 
         wx.showToast({
           title: '微信有bug',

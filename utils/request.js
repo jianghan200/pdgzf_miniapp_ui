@@ -15,16 +15,20 @@ const login = function(jscode) {
       header: { 'content-type' : 'application/x-www-form-urlencoded' },
       success: (res) => {
         if (res.data.status == 0) {
+          log.info('用户login成功')
           // 成功
           resolve(res.data.data)
         } else {
+          log.error('用户login失败')
           // 请求内容可能有误
           console.log(res)
           reject(res.data.data)
         }
       },
       fail: (err) => {
+        log.error('用户login失败')
         console.log(err)
+
         reject(err)
       }
     })
@@ -944,9 +948,6 @@ const getAvatarAndNickname = function() {
                       }
                     }).then((res) => {
                       log.info('成功向云后台post用户的昵称和头像')
-
-                      // 向后端上传昵称（仅仅为了同步）
-                      updateUsername(nickname)
       
                       // 在globalData中写入用户的昵称和头像
                       app.globalData.nickname = nickname
@@ -959,6 +960,7 @@ const getAvatarAndNickname = function() {
       
                       resolve(true)
                     }).catch((err) => {
+                      console.log(err)
                       log.error('未能成功向云后台post用户的昵称和头像')
                       log.error(err)
       
@@ -1020,6 +1022,7 @@ const getAvatarAndNickname = function() {
       fail: function(err) {
         log.error(`调用云函数失败（GET user）`)
         log.error(err)
+        console.log(err)
 
         wx.showToast({
           title: '信息获取失败',
