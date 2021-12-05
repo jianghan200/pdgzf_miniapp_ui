@@ -172,49 +172,7 @@ Page({
   // 普通用户输入自己的资格日
   manualStartDate(e) {
     log.info('普通用户输入自己的资格日')
-
-    let self = this
-    if (self.needToGetUserProfile()) {
-      // 需要先获取用户的昵称
-      wx.getUserProfile({
-        desc: '需要您的昵称，绑定您输入的资格日期',
-        success: (res) => {
-          log.info('用户同意提供昵称')
-          // 从微信的接口中获得用户的昵称作为标识，主要是为了后端管理方便
-          let newUsername = res.userInfo.nickName
-          // 向后端递交昵称
-          requestsUtil.updateUsername(newUsername).then((res) => {
-            log.info('updateUsername 成功')
-            // 本地更新一下用户名
-            app.globalData.userinfo.name = newUsername
-            self.openMaunalStartDateDialog()
-          }).catch((err) => {
-            // 更新用户昵称失败
-            log.error('updateUsername 失败')
-            log.error(err)
-            console.log(err)
-  
-            wx.showToast({
-              title: '更新用户昵称失败',
-              icon: 'error'
-            })
-          })
-        },
-        fail: (err) => {
-          log.error('用户未提供昵称')
-          log.error(err)
-          console.log(err)
-          
-          wx.showToast({
-            title: '没有昵称，无法自定义资格日',
-            icon: 'error'
-          })
-        }
-      })
-    } else {
-      // 已经获取了用户的昵称，直接打开dialog。
-      self.openMaunalStartDateDialog()
-    }
+    this.openMaunalStartDateDialog()
   },
 
   // 向后端更新自定义的资格日
@@ -261,11 +219,6 @@ Page({
     })
   },
 
-  // 判断这个用户是否需要授权我们获得ta的昵称
-  // 这个用户是普通用户，我们后端没有这个用户的真实姓名，所以需要询问‘昵称’来表识
-  needToGetUserProfile() {
-    return app.globalData.userinfo.type == 0 && app.globalData.userinfo.name == null
-  },
   // 处理用户订阅 / 取消订阅的操作
   subscribe(e) {
     // 从event中获取定位数据
@@ -274,48 +227,7 @@ Page({
     let aid = e.currentTarget.dataset.areaid
     // 如果这个用户是初次使用【订阅】功能的普通用户，需要授权我们使用他的昵称
     let self = this
-    if (self.needToGetUserProfile()) {
-      log.info('尚未找到这个用户的昵称')
-
-      wx.getUserProfile({
-        desc: '需要您的昵称，才能使用订阅功能',
-        success: (res) => {
-          log.info('用户同意提供昵称')
-          // 从微信的接口中获得用户的昵称作为标识，主要是为了后端管理方便
-          let newUsername = res.userInfo.nickName
-          requestsUtil
-            .updateUsername(newUsername)
-            .then((r) => {
-              log.info('updateUsername 成功')
-              // 本地更新一下用户名
-              app.globalData.userinfo.name = newUsername
-              self.doSubscribe(pid, pname, aid)
-            }).catch((err) => {
-              log.error('updateUsername 失败')
-              log.error(err)
-              console.log(err)
-
-              wx.showToast({
-                title: '未能成功录入昵称',
-                icon: 'error'
-              })
-            })
-        },
-        fail: (err) => {
-          log.error('用户不同意提供昵称')
-          log.error(err)
-          console.log(err)
-          
-          wx.showToast({
-            title: '没有昵称，无法收藏',
-            icon: 'error'
-          })
-        }
-      })
-    } else {
-      // 无需授权昵称，执行订阅的业务逻辑
-      self.doSubscribe(pid, pname, aid)
-    }
+    self.doSubscribe(pid, pname, aid)
   },
 
   // 专注于订阅的业务逻辑代码

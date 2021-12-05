@@ -260,7 +260,7 @@ Page({
       let areaDisplay = false
       let projectOfThisArea = newList[areaIdx].projects
       for (let pIdx = 0; pIdx < projectOfThisArea.length; pIdx++) {
-        if (utils.sliceOf(projectOfThisArea[pIdx].pName).search(key) != -1) {
+        if (projectOfThisArea[pIdx].pName.search(key) != -1) {
           // 有这个关键字
           newList[areaIdx].projects[pIdx].display = true
           areaDisplay = true

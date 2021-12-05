@@ -47,7 +47,8 @@ Page({
     },
     // 评论相关
     myComments: '',
-    commentInputHeight : 0 // 初始化的时候尚未on focus，所以贴地板
+    commentInputHeight : 0, // 初始化的时候尚未on focus，所以贴地板
+    commentsList: []
   },
 
   // 导航栏上选择不同的tab
@@ -80,6 +81,8 @@ Page({
       log.info('拿到allProjects')
 
       let pId = options.pid
+      // 使用pId拿到comments
+      self.loadCommentList(pId)
       // 首先locate社区
       let areaOpt = 
         allProjects.find(area => {
@@ -249,6 +252,7 @@ Page({
     }
   },
 
+  // 日历相关方法
   // 拿到当前的calendar组件实例，对其进行配置。
   // wx的this.selectComponent接口有很多限制，首先要求在calendar上添加标签：calendar，且calendar在页面上不能根据wx:if显示，只能用hidden控制。
   renderCalendar() {
@@ -322,6 +326,7 @@ Page({
     }
   },
 
+  // hide / unhide sections
   // hide / unhide描述
   changeDescriptionsState(e) {
     let beforeChange = this.data.descriptionsHidden
@@ -421,6 +426,7 @@ Page({
     })
   },
 
+  // 评论功能
   // Focus on评论的输入栏，需要拉高input的高度
   onFocusCommentInput(e) {
     log.info('点击了输入框')
@@ -446,6 +452,37 @@ Page({
     })
   },
 
+  // 拿到最新的评论列表
+  loadCommentList(pid) {
+    let self = this
+    log.info(`读取${self.data.pName}(${pid})的评论列表`)
+    // 使用pId拿到comments
+    requests
+      .getCommentsOf(pid)
+      .then((list) => {
+        let comments = []
+        list.forEach(comment => {
+          comments.push({
+            'avatarUrl' : comment.avatarUrl,
+            'nickname' : comment.nickName,
+            'content' : comment.comment,
+            'timestamp' : utils.getTimeDistanceOf(comment.update_gmt)
+          })
+        })
+        self.setData({
+          commentsList : comments
+        })
+      }).catch((err) => {
+        log.error(`未成功拿到评论列表`)
+        log.error(err)
+
+        wx.showToast({
+          title: '获取评论失败',
+          icon: 'error'
+        })
+      })
+  },
+
   // 上传评论
   submitComment(e) {
     log.info('点击上传评论')
@@ -459,7 +496,41 @@ Page({
         mask:true
       })
 
-      
+      requests
+        .sendCommentOnSomeProject(self.data.pId, self.data.myComments.trim())
+        .then((res) => {
+          if (res) {
+            // 评论发表成功！
+            log.info('成功发布评论')
+
+            wx.hideLoading()
+            wx.showToast({
+              title: '发布成功',
+              icon: 'success'
+            })
+            // 发表成功之后需要重新读取评论列表
+            self.loadCommentList(self.data.pId)
+          } else {
+            // 失败
+            log.error('发布失败')
+
+            wx.hideLoading()
+            wx.showToast({
+              title: '发布失败',
+              icon: 'error'
+            })
+          }
+        })
+        .catch((err) => {
+          log.error('发布失败')
+          log.error(err)
+
+          wx.hideLoading()
+          wx.showToast({
+            title: '发布失败',
+            icon: 'error'
+          })
+        })
     } else {
       log.warn('用户的评论为空')
       // 评论为空

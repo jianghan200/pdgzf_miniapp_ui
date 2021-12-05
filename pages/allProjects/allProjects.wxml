@@ -22,7 +22,7 @@
   <view class="cu-bar bg-white search">
     <view class="search-form round">
       <text class="cuIcon-search"></text>
-      <input type="text" placeholder="搜索小区名字" confirm-type="search" bindinput="searchPname"></input>
+      <input type="text" placeholder="搜索小区名字 / 地址" confirm-type="search" bindinput="searchPname"></input>
     </view>
   </view>
 </view>

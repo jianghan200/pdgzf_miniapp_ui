@@ -34,14 +34,39 @@ Page({
 
         // 用户必须提供自己的昵称和头像才能进入小程序。
         // 先看是否云端已经存储过用户的昵称和头像。
-        requests.getAvatarAndNickname()
+        requests
+          .getAvatarAndNickname()
+          .then((res) => {
+            if (res) {
+              log.info('云函数调用成功（both get and post），新用户同意提供头像和昵称')
+              // 云函数调用成功（both get and post），新用户同意提供头像和昵称
+              dataHelper.loadAllData()
+            } else {
+              log.warn('云函数调用失败（both get and post）或新用户不同意提供头像和昵称')
 
-        dataHelper.loadAllData()
+              wx.showToast({
+                title: '很遗憾',
+                icon: 'error'
+              })
+            }
+          })
+          .catch((err) => {
+            log.error(err)
+
+            wx.showToast({
+              title: '微信有bug',
+              icon: 'error'
+            })
+          })
       })
       .catch((err) => {
         log.error('用户login接口调用失败')
         log.error(err)
-        console.log(err)
+        
+        wx.showToast({
+          title: '微信有bug',
+          icon: 'error'
+        })
       })
   }
 })

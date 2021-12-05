@@ -80,7 +80,7 @@
   <!-- 查看小区位置 -->
   <view style="margin: 10px;" bindtap="seePointOnMap" wx:if="{{curTab == 0}}">
     <text class="cuIcon-locationfill text-red" style="font-size: large;"></text>
-    <text class="text-blue text-bold" style="margin-left: 5px; font-size: large;">查看小区位置</text>
+    <text class="text-blue text-bold" style="margin-left: 5px; font-size: large;">{{pName}}</text>
   </view>
 
   <!-- 配套设施 -->
@@ -118,8 +118,27 @@
   </view>
 
   <!-- 评论区标题 -->
-  <view wx:if="{{ curTab == 0}}" class="text-bold" wx:if="{{curTab == 0}}" style="margin-top:10px;background:#fff;">
-    <view style='font-size:14px;font-weight:bold;padding:10px;'>评论</view>
+  <view wx:if="{{ curTab == 0 }}" class="text-bold margin-top" style="margin: 10px;">
+    <view style="font-size: large;">评论 {{commentsList.length}}</view>
+  </view>
+  
+  <view wx:if="{{ curTab == 0 }}" class="cu-list menu-avatar comment solids-top">
+    <block wx:for="{{commentsList}}" wx:for-item="comment" wx:key="comment">
+      <view class="cu-item">
+        <!-- 头像 -->
+        <view 
+          class="cu-avatar round" 
+          style="background-image: url({{comment.avatarUrl}}); {{isVip ? 'border: 2px solid goldenrod;' : ''}}"
+        ></view>
+        <view class="content">
+          <view class="text-grey">{{comment.nickname}}</view>
+          <view class="text-gray text-content text-df">{{comment.content}}</view>
+          <view class="margin-top-sm flex justify-between">
+            <view class="text-gray text-df">{{comment.timestamp}}</view>
+          </view>
+        </view>
+      </view>
+    </block>
   </view>
 
   <!-- 评论输入 -->
@@ -129,7 +148,7 @@
     style="bottom: {{commentInputHeight}}px;"
   >
     <textarea 
-      placeholder="请友善发言哦～"
+      placeholder="赠人以言，重于珠玉~"
       class="solid-bottom" 
       adjust-position="false" 
       maxlength="300" 

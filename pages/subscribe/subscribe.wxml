@@ -1,3 +1,5 @@
+<wxs src="../../utils/tool.wxs" module="tools" />
+
 <view style="height: 50px;"></view>
 <view style="display: flex; flex-direction: row; align-items: center;">
   <view class="title text-pink">我的订阅</view>
@@ -36,6 +38,9 @@
           <!-- 描述区 -->
           <view style="flex-grow: 2">
             <view class="padding-bottom" style="font-size: larger; font-weight: 500;">
+              {{tools.sliceOf(subscription.info.pName)}}
+            </view>
+            <view class="text-gray" style="font-size: small">
               {{subscription.info.pName}}
             </view>
             <view class="text-gray" style="font-size: small">

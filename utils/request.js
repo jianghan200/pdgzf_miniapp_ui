@@ -368,10 +368,13 @@ const updateManualStartDate = function(manualStartDate) {
   })
 }
 
-// 上传用户的昵称，用户的真实姓名是在后端填好的，前端不需要提供，昵称也只是普通用户需要提供的。
+// 上传用户的昵称(name)，用户的真实姓名(realName)是在后端填好的。
 const updateUsername = function(username) {
+  log.info(`向用户后端上传用户昵称(${username})`)
+
   const url = constants.userinfoServer + '/api/user/update'
   let token = app.globalData.userinfo.tokenStr
+
   return new Promise((resolve, reject) => {
     wx.request({
       url: url,
@@ -383,15 +386,25 @@ const updateUsername = function(username) {
       data : { 'name' : username },
       success: function(res) {
         if (res.data.status == 0) {
+          log.info('昵称上传成功')
+
           resolve(true)
         } else {
-          console.log(res.data.data)
-          reject(false)
+          log.error('昵称上传请求失败')
+          log.error(res)
+
+          wx.showToast({
+            title: '服务器错误',
+            icon: 'error'
+          })
+          resolve(false)
         }
       },
       fail: function(err) {
-        console.log(err)
-        reject(false)
+        log.error('昵称上传失败')
+        log.error(err)
+
+        resolve(false)
       }
     })
   })
@@ -768,14 +781,17 @@ const getMonthlyHouseCount = function() {
 
 // Post用户的反馈
 const postFeedback = function(jiraType, desc, email) {
+  log.info(`准备post反馈（${jiraType}, ${desc}, ${email}）`)
+
   const url = constants.prodFeedbackServer + '/wp_pdgzf/wp-json/wp/v2/posts'
   const unionId = app.globalData.userinfo.unionId
+  const nickname = app.globalData.userinfo.nickname
   const token = utils.base64_encode(constants.wordpressFeedbackUsername + ':' + constants.wordpressFeedbackPassword)
   const header = {
     'Authorization' : 'Basic ' + token
   }
   var data = {
-    'title' : '意见反馈' + ': ' + jiraType + '(' + unionId + ')',
+    'title' : '意见反馈' + ': ' + jiraType + '(' + nickname + ': ' + unionId + ')' + '(' + email + ')',
     'content' : desc,
     'status': 'publish',
     'meta' : {
@@ -790,12 +806,13 @@ const postFeedback = function(jiraType, desc, email) {
       data : data,
       method: 'POST',
       success : function(res) {
-        console.log(res)
+        log.info('成功上传反馈（描述）')
 
         resolve(res.data.id)
       },
       fail : function(err) {
-        console.log(err)
+        log.error('反馈上传（描述）失败')
+        log.error(err)
         
         resolve(-1)
       }
@@ -878,6 +895,13 @@ const sendFeedbackImg = function(imgUrl, postId) {
 
 // 向腾讯云后台get用户的头像和昵称
 const getAvatarAndNickname = function() {
+  log.info('向云后台请求用户的头像和昵称')
+
+  // 1. 先GET云后台的的头像和昵称
+  // 2.1 后台有该用户的头像和昵称，返回
+  // 2.2 后台没有该用户的头像和昵称，prompt用户授权头像和昵称
+  // 3.1 用户授权自己的头像和昵称，可以使用
+  // 3.2 用户不授权自己的头像和昵称，不能使用
   return new Promise((resolve, reject) => {
     wx.cloud.callFunction({
       name : 'user',
@@ -886,35 +910,208 @@ const getAvatarAndNickname = function() {
       },
       success: function(res) {
         log.info(res)
-        console.log(res)
 
         if (!res.result || res.result == null) {
+          log.info('云后台未存储用户的头像和昵称')
+          log.info('向用户索要昵称和头像url')
           // 没有这个用户的头像和昵称
-          
+          wx.showModal({
+            title: '需要您的昵称和头像才能使用',
+            content: '请点击同意按钮开始使用本程序',
+            success: function(res) {
+              log.info(res)
+              log.info('用户点击了授权弹窗中的按钮')
+
+              if (res.confirm) {
+                // 用户点击了“同意”
+                log.info('用户点击了同意')
+                // 调用getUserProfile接口获得用户的头像和昵称
+                wx.getUserProfile({
+                  desc: '需要您的昵称和头像',
+                  success : function(res) {
+                    // 用户同意提供昵称和头像
+                    let nickname = res.userInfo.nickName
+                    let avatarUrl = res.userInfo.avatarUrl
+                    // 像后端post用户的昵称和头像
+                    wx.cloud.callFunction({
+                      name : 'user',
+                      data : {
+                        'action' : 'POST',
+                        'userInfo' : {
+                          'nickName' : nickname,
+                          'avatarUrl' : avatarUrl
+                        }
+                      }
+                    }).then((res) => {
+                      log.info('成功向云后台post用户的昵称和头像')
+
+                      // 向后端上传昵称（仅仅为了同步）
+                      updateUsername(nickname)
+      
+                      // 在globalData中写入用户的昵称和头像
+                      app.globalData.userinfo.nickname = nickname
+                      app.globalData.userinfo.avatarUrl = avatarUrl
+      
+                      wx.showToast({
+                        title: '信息更新成功',
+                        icon: 'success'
+                      })
+      
+                      resolve(true)
+                    }).catch((err) => {
+                      log.error('未能成功向云后台post用户的昵称和头像')
+                      log.error(err)
+      
+                      wx.showToast({
+                        title: '信息更新失败',
+                        icon: 'error'
+                      })
+                      
+                      resolve(false)
+                    })
+                  },
+                  fail: function(err) {
+                    log.error('用户拒绝了授权')
+                    log.error(err)
+                    console.log(err)
+                    // Profile获取失败
+                    wx.showToast({
+                      title: '很遗憾',
+                      icon: 'error'
+                    })
+      
+                    resolve(false)
+                  }
+                })
+              } else {
+                log.error('用户拒绝了授权（Modal中点击了cancel）')
+                log.error(err)
+                // Profile获取失败
+                wx.showToast({
+                  title: '很遗憾',
+                  icon: 'error'
+                })
+  
+                resolve(false)
+              }
+            },
+            fail: function(err) {
+              log.error('程序错误，wx.showModal未能成功')
+              log.error(err)
+
+              wx.showToast({
+                title: '微信错误',
+                icon: 'error'
+              })
+
+              resolve(false)
+            }
+          })
         } else {
-          
+          // 拿到了用户的头像和昵称
+          log.info('在后端找到了用户的昵称和头像并成功返回')
+          log.info(res)
+
+          app.globalData.userinfo.avatarUrl = res.result.avatarUrl
+          app.globalData.userinfo.nickname = res.result.nickName
+          resolve(true)
         }
       },
       fail: function(err) {
         log.error(`调用云函数失败（GET user）`)
         log.error(err)
+
+        wx.showToast({
+          title: '信息获取失败',
+          icon: 'error'
+        })
+
+        reject(err)
       }
     })
   })
 }
 
+// 评论
+const generateArticleIdOf = function(pid) {
+  return `pdgzf_project_${pid}`
+}
 // 向腾讯云后台上传用户在某个小区下的评论
-const sendCommentOnSomeProject = function(pid, comments, avatarUrl, nickname) {
+const sendCommentOnSomeProject = function(pid, comments) {
+  log.info(`向云后台发布评论：${comments} (${generateArticleIdOf(pid)})`)
+  
   return new Promise((resolve, reject) => {
     wx.cloud.callFunction({
       name : 'comment',
       data : {
         action: "NEW",
         uid: app.globalData.userinfo.unionId,
-        aid: pid, 
+        aid: generateArticleIdOf(pid), 
         comment: comments,
-        avatarUrl: avatarUrl,
-        nickName: nickname,
+        avatarUrl: app.globalData.userinfo.avatarUrl,
+        nickName: app.globalData.userinfo.nickname,
+      },
+      success: function(res) {
+        // request发送成功
+        log.info(res)
+        if (res.result.code == 200 || res.result.code == 201) {
+          log.info('评论发布成功！')
+
+          resolve(true)
+        } else {
+          log.error('评论发布失败')
+          log.error(res)
+          
+          resolve(false)
+        }
+        resolve(true)
+      },
+      fail: function(err) {
+        log.error('评论发送失败')
+        log.error(err)
+
+        resolve(false)
+      }
+    })
+  })
+}
+
+// 获取某个小区的全部评论
+const getCommentsOf = function(pid) {
+  log.info(`向云后台索要${pid}的全部评论`)
+
+  return new Promise((resolve, reject) => {
+    wx.cloud.callFunction({
+      name: 'comment',
+      data: {
+        action: "GET_LIST",
+        aid: generateArticleIdOf(pid)
+      },
+      success: function(res) {
+        log.info('收到云后台回复')
+        log.info(res)
+        
+        if (res.result.code == 200 || res.result.code == 201) {
+          log.info(`成功获得评论列表(${res.result.data.length})`)
+  
+          resolve(res.result.data)
+        } else {
+          log.error(`未能获得评论列表，云后台出现错误`)
+          log.error(res)
+          
+          wx.showToast({
+            title: '微信错误',
+            icon: 'error'
+          })
+  
+          resolve([])
+        }
+      },
+      fail: function(err) {
+        log.error(`未能获得评论列表（${generateArticleIdOf(pid)}）`)
+        log.error(err)
+  
+        reject([])
       }
     })
   })
@@ -947,5 +1144,6 @@ module.exports = {
   postFeedback : postFeedback,
   sendAllFeedbackImgs : sendAllFeedbackImgs,
   sendCommentOnSomeProject : sendCommentOnSomeProject,
-  getAvatarAndNickname : getAvatarAndNickname
+  getAvatarAndNickname : getAvatarAndNickname,
+  getCommentsOf : getCommentsOf
 }
