@@ -486,59 +486,86 @@ Page({
   // 上传评论
   submitComment(e) {
     log.info('点击上传评论')
-    // 评论不能为空
-    if (this.data.myComments.trim() != '') {
-      log.info(`用户的评论为：${this.data.myComments}`)
-      
-      let self = this
-      wx.showLoading({
-        title: '提交中',
-        mask:true
-      })
 
-      requests
-        .sendCommentOnSomeProject(self.data.pId, self.data.myComments.trim())
-        .then((res) => {
-          if (res) {
-            // 评论发表成功！
-            log.info('成功发布评论')
+    requests
+      .getAvatarAndNickname()
+      .then((res) => {
+        if (res) {
+          // 用户必须授权头像和用户名才能开始评论
+          requests.updateUsername(app.globalData.nickname)
+          log.info('云函数调用成功（both get and post），新用户同意提供头像和昵称')
 
-            wx.hideLoading()
-            wx.showToast({
-              title: '发布成功',
-              icon: 'success'
+          // 评论不能为空
+          if (this.data.myComments.trim() != '') {
+            log.info(`用户的评论为：${this.data.myComments}`)
+            
+            let self = this
+            wx.showLoading({
+              title: '提交中',
+              mask:true
             })
-            // 发表成功之后需要重新读取评论列表
-            self.loadCommentList(self.data.pId)
-          } else {
-            // 失败
-            log.error('发布失败')
 
-            wx.hideLoading()
+            requests
+              .sendCommentOnSomeProject(self.data.pId, self.data.myComments.trim())
+              .then((res) => {
+                if (res) {
+                  // 评论发表成功！
+                  log.info('成功发布评论')
+
+                  wx.hideLoading()
+                  wx.showToast({
+                    title: '发布成功',
+                    icon: 'success'
+                  })
+                  // 发表成功之后需要重新读取评论列表
+                  self.loadCommentList(self.data.pId)
+                } else {
+                  // 失败
+                  log.error('发布失败')
+
+                  wx.hideLoading()
+                  wx.showToast({
+                    title: '发布失败',
+                    icon: 'error'
+                  })
+                }
+              })
+              .catch((err) => {
+                log.error('发布失败')
+                log.error(err)
+
+                wx.hideLoading()
+                wx.showToast({
+                  title: '发布失败',
+                  icon: 'error'
+                })
+              })
+          } else {
+            log.warn('用户的评论为空')
+            // 评论为空
             wx.showToast({
-              title: '发布失败',
+              title: '啥也没说呀',
               icon: 'error'
             })
           }
-        })
-        .catch((err) => {
-          log.error('发布失败')
-          log.error(err)
+        } else {
+          log.warn('云函数调用失败（both get and post）或新用户不同意提供头像和昵称')
 
-          wx.hideLoading()
           wx.showToast({
-            title: '发布失败',
+            title: '很遗憾',
             icon: 'error'
           })
-        })
-    } else {
-      log.warn('用户的评论为空')
-      // 评论为空
-      wx.showToast({
-        title: '啥也没说呀',
-        icon: 'error'
+        }
       })
-    }
+      .catch((err) => {
+        log.error(err)
+        console.log(err)
+
+        wx.showToast({
+          title: '微信有bug',
+          icon: 'error'
+        })
+      })
   },
 
   // 转发
