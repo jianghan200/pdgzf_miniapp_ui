@@ -949,8 +949,8 @@ const getAvatarAndNickname = function() {
                       updateUsername(nickname)
       
                       // 在globalData中写入用户的昵称和头像
-                      app.globalData.userinfo.nickname = nickname
-                      app.globalData.userinfo.avatarUrl = avatarUrl
+                      app.globalData.nickname = nickname
+                      app.globalData.avatarUrl = avatarUrl
       
                       wx.showToast({
                         title: '信息更新成功',
@@ -1012,8 +1012,8 @@ const getAvatarAndNickname = function() {
           log.info('在后端找到了用户的昵称和头像并成功返回')
           log.info(res)
 
-          app.globalData.userinfo.avatarUrl = res.result.avatarUrl
-          app.globalData.userinfo.nickname = res.result.nickName
+          app.globalData.avatarUrl = res.result.avatarUrl
+          app.globalData.nickname = res.result.nickName
           resolve(true)
         }
       },
@@ -1048,8 +1048,8 @@ const sendCommentOnSomeProject = function(pid, comments) {
         uid: app.globalData.userinfo.unionId,
         aid: generateArticleIdOf(pid), 
         comment: comments,
-        avatarUrl: app.globalData.userinfo.avatarUrl,
-        nickName: app.globalData.userinfo.nickname,
+        avatarUrl: app.globalData.avatarUrl,
+        nickName: app.globalData.nickname,
       },
       success: function(res) {
         // request发送成功

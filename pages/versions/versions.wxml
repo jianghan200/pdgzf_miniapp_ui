@@ -1,0 +1,37 @@
+<!--pages/versions/versions.wxml-->
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content" class="text-bold">PD公租房日记</view>
+</cu-custom>
+
+<view class="cu-timeline">
+  <view class="cu-time">现在</view>
+  <view class="cu-item text-brown">
+    <view class="bg-brown content shadow">
+      <view class="cu-capsule radius">
+        <view class="cu-tag bg-white text-brown">v1.0.37</view>
+        <view class="cu-tag line-white">2021/12/05</view>
+      </view>
+      <view class="margin-top-sm text-content">
+        <view>1.反馈可以上传至多4张图片</view>
+        <view>2.每个小区页可以写评论</view>
+        <view>3.全部房源页支持按地址搜索</view>
+        <view>4.登陆时用户需要授权昵称和头像，方便各处显示</view>
+        <view>特别鸣谢：@xiemo_1994，提供宝贵建议</view>
+      </view>
+    </view>   
+  </view>
+
+  <view class="cu-time">2021年6月</view>
+  <view class="cu-item text-brown">
+    <view class="bg-brown content shadow">
+      <view class="cu-capsule radius">
+        <view class="cu-tag bg-white text-brown">v1.0.0</view>
+        <view class="cu-tag line-white">2021/06/XX</view>
+      </view>
+      <view class="margin-top-sm text-content">
+        <view>PD公租房出生啦！</view>
+      </view>
+    </view>   
+  </view>
+</view>

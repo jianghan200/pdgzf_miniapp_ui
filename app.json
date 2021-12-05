@@ -21,7 +21,8 @@
     "pages/materials/materials",
     "pages/report/report",
     "pages/success/success",
-    "pages/kanban/kanban"
+    "pages/kanban/kanban",
+    "pages/versions/versions"
   ],
   "window":{
     "navigationStyle": "custom"

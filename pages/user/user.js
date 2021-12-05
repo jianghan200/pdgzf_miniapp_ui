@@ -80,6 +80,13 @@ Page({
     })
   },
 
+  // Go to版本页
+  gotoVersions(e) {
+    wx.navigateTo({
+      url: '/pages/versions/versions',
+    })
+  },
+
   // Bottom Bar的方法
   redirect: function(e) {
     const newTab = e.detail

@@ -47,6 +47,13 @@
       </view>
     </view> -->
 
+    <view class="cu-item arrow" bindtap="gotoVersions">
+      <view class="content">
+        <text class="cuIcon-evaluate text-bold text-brown"></text>
+        <text class="text-bold text-brown">PD公租房日记</text>
+      </view>
+    </view>
+
   </view>
 </movable-area>
 
