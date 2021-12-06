@@ -10,6 +10,18 @@
     <view class="bg-brown content shadow">
       <view class="cu-capsule radius">
         <view class="cu-tag bg-white text-brown">v1.0.37</view>
+        <view class="cu-tag line-white">2021/12/06</view>
+      </view>
+      <view class="margin-top-sm text-content">
+        <view>1.添加"公租房干货"页面，将原创文章链接进小程序</view>
+      </view>
+    </view>   
+  </view>
+
+  <view class="cu-item text-brown">
+    <view class="bg-brown content shadow">
+      <view class="cu-capsule radius">
+        <view class="cu-tag bg-white text-brown">v1.0.36</view>
         <view class="cu-tag line-white">2021/12/05</view>
       </view>
       <view class="margin-top-sm text-content">

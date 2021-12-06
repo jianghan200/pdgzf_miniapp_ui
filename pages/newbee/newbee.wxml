@@ -38,9 +38,9 @@
       <text>公租房统计数据</text>
     </view>
 
-    <view class="cu-item" bindtap="goTo" data-page="advantages">
-      <view class="cuIcon-appreciate"></view>
-      <text>公租房的优势</text>
+    <view class="cu-item" bindtap="goTo" data-page="links">
+      <view class="cuIcon-choiceness"></view>
+      <text>公租房干货</text>
     </view>
   </view>
 </movable-area>

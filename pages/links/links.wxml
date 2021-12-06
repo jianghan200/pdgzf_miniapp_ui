@@ -1,0 +1,31 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">干货传送门</view>
+</cu-custom>
+
+<view 
+  class="padding text-white text-bold" 
+  style="display: flex; align-items: center; justify-content: center; background-color: darkslategrey;"
+>点击卡片传送至文章</view>
+
+<scroll-view scroll-y style="height: 100vh;" class="bg-black">
+  <view 
+    class="cu-card article" 
+    bindtap="navTo" 
+    data-url="https://mp.weixin.qq.com/s/n0bvxOYxVsDeeqM5HYF6QA"
+  >
+    <view class="cu-item shadow">
+      <view class="title">
+        <view class="text-cut">公租房--公积金提取</view>
+      </view>
+      <view class="content">
+        <view class="desc">
+          <view class="padding-bottom text-grey">"本攻略力求一步到位"</view>
+          <view>
+            <view class="cu-tag bg-green light round">公积金</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</scroll-view>

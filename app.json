@@ -22,7 +22,9 @@
     "pages/report/report",
     "pages/success/success",
     "pages/kanban/kanban",
-    "pages/versions/versions"
+    "pages/versions/versions",
+    "pages/links/links",
+    "pages/article/article"
   ],
   "window":{
     "navigationStyle": "custom"

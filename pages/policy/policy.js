@@ -23,6 +23,19 @@ Page({
     })
   },
 
+  navTo(e) {
+    log.info(`用户点击一个文章链接`)
+    console.log(e)
+
+    if (e.currentTarget.dataset.url) {
+      log.info(`文章链接是: ${e.currentTarget.dataset.url}`)
+
+      wx.navigateTo({
+        url: '/pages/article/article?url=' + e.currentTarget.dataset.url,
+      })
+    }
+  },
+
   // 转发
   onShareAppMessage: function(options) {
     let self = this

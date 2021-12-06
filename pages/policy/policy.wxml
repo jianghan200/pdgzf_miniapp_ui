@@ -77,9 +77,12 @@
 
       <view class="text-center margin-bottom margin-top text-lg text-grey text-bold">提取公积金</view>
       <view class="text-content">
-        <view class="margin-top-sm">提取公积金的前提是租住房屋已完成“租赁备案”</view>
-        <view class="margin-top-sm">备案至【管理处】发起纸质申请，公租房提供相关备案材料（再也不需要跟房东扯皮了(*^o^*)）</view>
-        <view class="margin-top-sm">凭【租金发票】及【租赁合同】至【公积金中心】办理公积金提取，网点咨询电话：12329</view>
+        <view 
+          class="margin-top-sm" 
+          bindtap="navTo" 
+          data-url="https://mp.weixin.qq.com/s/n0bvxOYxVsDeeqM5HYF6QA"
+          style="color: cornflowerblue;"
+        >【点我开启传送门】</view>
       </view>
 
       <view class="text-center margin-bottom margin-top text-lg text-grey text-bold">租金、合同</view>
