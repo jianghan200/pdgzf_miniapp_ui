@@ -1,6 +1,7 @@
 const constants = require("../../utils/constants")
 let app = getApp()
 const log = require('./../../utils/log')
+const utils = require('./../../utils/util')
 
 Page({
   data: {
@@ -132,10 +133,13 @@ Page({
       recentHouseCounts = `最近30日出现: ${project.houseCounts}套房源`
     }
 
+    // 后端传过来的经纬度都是百度地图中拿到的，必须矫正后才能使用
+    let coordinates = utils.convert2TecentMap(project.raw.longitude, project.raw.latitude)
+
     return {
       id: index, // marker 点击事件回调会返回此 id
-      latitude: project.raw.latitude,
-      longitude: project.raw.longitude,
+      latitude: coordinates.lat,
+      longitude: coordinates.lng,
       width: 22,
       height: 32,
       customCallout : {
@@ -215,11 +219,14 @@ Page({
           timestamp : elem.updateTime
         }
       })
+
+    // 后端传过来的经纬度都是百度地图中拿到的，必须矫正后才能使用
+    let coordinates = utils.convert2TecentMap(project.raw.longitude, project.raw.latitude)
     
     return {
       id: index, // marker 点击事件回调会返回此 id
-      latitude: project.raw.latitude,
-      longitude: project.raw.longitude,
+      latitude: coordinates.lat,
+      longitude: coordinates.lng,
       iconPath: this.gradient(project.rentableCount),
       width: 22,
       height: 22,
@@ -228,7 +235,7 @@ Page({
         anchorX: 0,
         display : 'BYCLICK'
       },
-      pname: project.raw.address,
+      pname: project.raw.name,
       countDesc: `拥有${project.rentableCount}套公租房`,
       houseInfo: housesInfo
     }

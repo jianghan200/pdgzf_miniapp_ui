@@ -29,8 +29,8 @@ Page({
     // 是不是VIP？
     isVip: false,
     // 管理折叠的flags
-    equipmentsHidden: true,
-    descriptionsHidden: true,
+    equipmentsHidden: false,
+    descriptionsHidden: false,
     calendarHidden: false,
     collapseAllTodays: false,
     // 导航栏相关
@@ -58,7 +58,7 @@ Page({
     }
     this.setData({
       curTab: e.currentTarget.dataset.id,
-      scrollLeft: (e.currentTarget.dataset.id - 1 )* 60
+      scrollLeft: (e.currentTarget.dataset.id - 1 ) * 60
     })
   },
 

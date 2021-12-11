@@ -23,6 +23,9 @@
   <view class="cu-item {{ 2 == curTab ? 'text-cyan cur' : '' }}" bindtap="tabSelect" data-id="2">
     <text class="cuIcon-rankfill"></text> 统计信息
   </view>
+  <view class="cu-item {{ 3 == curTab ? 'text-blue' : '' }}" bindtap="tabSelect" data-id="3">
+    <text class="cuIcon-commentfill"></text> 讨论区
+  </view>
 </scroll-view>
 
 <!-- 内容 -->
@@ -118,16 +121,16 @@
   </view>
 
   <!-- 评论区标题 -->
-  <view wx:if="{{ curTab == 0 }}" class="text-bold margin-top" style="margin: 10px;">
+  <view wx:if="{{ curTab == 3 }}" class="text-bold margin-top" style="margin: 10px;">
     <view style="font-size: large;">评论 {{commentsList.length}}</view>
   </view>
 
-  <view wx:if="{{ curTab == 0 && commentsList.length == 0 }}" class="no-comment-box padding">
+  <view wx:if="{{ curTab == 3 && commentsList.length == 0 }}" class="no-comment-box padding">
     <image src="/assets/think.jpg" mode="aspectFit" class="padding"></image>
     <text class="padding-bottom text-grey">发表第一个评论吧~</text>
   </view>
   
-  <view wx:if="{{ curTab == 0 }}" class="cu-list menu-avatar comment solids-top">
+  <view wx:if="{{ curTab == 3 }}" class="cu-list menu-avatar comment solids-top">
     <block wx:for="{{commentsList}}" wx:for-item="comment" wx:key="comment">
       <view class="cu-item">
         <!-- 头像 -->
@@ -148,7 +151,7 @@
 
   <!-- 评论输入 -->
   <view 
-    wx:if="{{curTab == 0}}" 
+    wx:if="{{curTab == 3}}" 
     class="cu-bar foot input {{ commentInputHeight != 0 ? 'cur' : '' }}" 
     style="bottom: {{commentInputHeight}}px;"
   >

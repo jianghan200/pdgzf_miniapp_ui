@@ -9,6 +9,20 @@
   <view class="cu-item text-brown">
     <view class="bg-brown content shadow">
       <view class="cu-capsule radius">
+        <view class="cu-tag bg-white text-brown">v1.0.38</view>
+        <view class="cu-tag line-white">2021/12/07</view>
+      </view>
+      <view class="margin-top-sm text-content">
+        <view>1. 修复绝大多数地图坐标不准的问题。(百度地图的奇葩坐标系。。。)</view>
+        <view>2. 在地图上显示地址以及小区名称，if any</view>
+        <view>3. 让论坛变得更醒目</view>
+      </view>
+    </view>   
+  </view>
+
+  <view class="cu-item text-brown">
+    <view class="bg-brown content shadow">
+      <view class="cu-capsule radius">
         <view class="cu-tag bg-white text-brown">v1.0.37</view>
         <view class="cu-tag line-white">2021/12/06</view>
       </view>
