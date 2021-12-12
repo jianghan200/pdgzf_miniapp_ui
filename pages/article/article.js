@@ -7,12 +7,13 @@ Page({
 
   onLoad: function (options) {
     log.info('onLoad文章')
+    console.log(options)
 
     if (options.url) {
       log.info(options)
 
       this.setData({
-        url : options.url
+        url : options.url + '?mode=mini'
       })
     }
   },
