@@ -75,6 +75,16 @@
     </swiper-item>
   </swiper>
 
+  <!-- 小区文章链接 -->
+  <view class="cu-list menu sm-border card-menu margin-top" wx:if="{{curTab == 0 && articleUrl != ''}}">
+    <view class="cu-item arrow" bindtap="gotoArticle" style="background-color: currentColor;">
+      <view class="content">
+        <text class="cuIcon-form text-bold" style="color: goldenrod;"></text>
+        <text class="text-bold" style="color: goldenrod;">看房详情</text>
+      </view>
+    </view>
+  </view>
+
   <!-- 提示普通用户升级为VIP -->
   <view wx:if="{{!isVip && curTab == 0}}" class="text-bold" style="margin: 10px; color: goldenrod;">
     升级为VIP，观看看房视频～

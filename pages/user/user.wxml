@@ -4,8 +4,16 @@
 <view class="userinfo">
   <view class="{{vipInfo.type == 2 ? 'vip-' : ''}}avatar"><open-data type="userAvatarUrl"></open-data></view>
   <open-data type="userNickName" lang="zh_CN" class="{{vipInfo.type == 2 ? 'vip-' : ''}}nickname"></open-data>
-  <button wx:if="{{vipInfo.type == 0}}" class="cu-btn round line-grey button-hover shadow text-bold">普通用户</button>
-  <button wx:if="{{vipInfo.type == 1}}" class="cu-btn round line-purple button-hover shadow text-bold">邮件订阅用户</button>
+  <button 
+    wx:if="{{vipInfo.type == 0}}" 
+    class="cu-btn round line-grey button-hover shadow text-bold"
+    bindtap="overrideStartDate"
+  >{{ hasStartDateCode == -1 ? '模拟' : '' }}资格日：{{startDate}} 点击重置</button>
+  <button 
+    wx:if="{{vipInfo.type == 1}}" 
+    class="cu-btn round line-purple button-hover shadow text-bold"
+    bindtap="overrideStartDate"
+  >邮件订阅用户({{ hasStartDateCode == -1 ? '模拟' : '' }}资格日：{{startDate}} 点击重置)</button>
   <button wx:if="{{vipInfo.type == 2}}" class="cu-btn round line-yellow button-hover shadow text-bold">选房资格日：{{startDate}}</button>
 </view>
 
@@ -30,7 +38,15 @@
         <text class="text-bold" style="color: goldenrod;">修改个人信息</text>
       </view>
     </view>
-    
+
+    <!-- 查看会员权益 -->
+    <view class="cu-item arrow" bindtap="goToRights" style="background-color: currentColor;">
+      <view class="content">
+        <text class="cuIcon-vip text-bold" style="color: goldenrod;"></text>
+        <text class="text-bold" style="color: goldenrod;">会员权益</text>
+      </view>
+    </view>
+
     <!-- 邮件订阅 -->
     <view class="cu-item arrow" bindtap="gotoEmailPage">
       <view class="content">
@@ -47,10 +63,19 @@
       </view>
     </view> -->
 
+    <!-- 版本内容 -->
     <view class="cu-item arrow" bindtap="gotoVersions">
       <view class="content">
         <text class="cuIcon-evaluate text-bold text-brown"></text>
         <text class="text-bold text-brown">PD公租房日记</text>
+      </view>
+    </view>
+
+    <!-- About页 -->
+    <view class="cu-item arrow" bindtap="gotoAbout">
+      <view class="content">
+        <text class="cuIcon-info text-bold text-green"></text>
+        <text class="text-bold text-green">关于PD公租房</text>
       </view>
     </view>
 
@@ -59,3 +84,22 @@
 
 <!-- tabBar -->
 <tabBar bindswitchtab="redirect" tab="user"></tabBar>
+
+<!-- 普通用户自定义自己资格日的Modal -->
+<view class="cu-modal {{openManualStartDateDialog ? 'show' : ''}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content text-bold">请输入一个资格日期</view>
+      <view class="action" bindtap="closeManualStartDateDialog">
+        <text class="cuIcon-close text-red"></text>
+      </view>
+    </view>
+
+    <!-- 日期选择器 -->
+    <view class="padding">
+      <picker mode="date" value="{{ startDate }}" start="2019-01-01" end="{{today}}" bindchange="addManualStartDate">
+        <view class="picker">资格日: {{ startDate == '' ? '请选择' : startDate }}</view>
+      </picker>
+    </view>
+  </view>
+</view>

@@ -24,7 +24,8 @@
     "pages/kanban/kanban",
     "pages/versions/versions",
     "pages/links/links",
-    "pages/article/article"
+    "pages/article/article",
+    "pages/about/about"
   ],
   "window":{
     "navigationStyle": "custom"

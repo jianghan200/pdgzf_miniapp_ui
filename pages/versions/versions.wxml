@@ -6,6 +6,22 @@
 
 <view class="cu-timeline">
   <view class="cu-time">现在</view>
+
+  <view class="cu-item text-brown">
+    <view class="bg-brown content shadow">
+      <view class="cu-capsule radius">
+        <view class="cu-tag bg-white text-brown">v1.0.39</view>
+        <view class="cu-tag line-white">2021/12/12</view>
+      </view>
+      <view class="margin-top-sm text-content">
+        <view>1. 在今日房源页添加了“通知”</view>
+        <view>2. “我的”页面做了一些调整</view>
+        <view>3. 添加了“关于”页</view>
+        <view>4. 部分小区会添加我们自己写的“看房分享”文章。</view>
+      </view>
+    </view>   
+  </view>
+
   <view class="cu-item text-brown">
     <view class="bg-brown content shadow">
       <view class="cu-capsule radius">

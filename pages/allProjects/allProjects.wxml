@@ -82,6 +82,10 @@
                   <text class="text-grey margin-left">{{project.rentableCount}}套</text>
                   <text class="cuIcon-picfill text-grey text-xlg margin-left" wx:if="{{project.raw.hasImage}}"></text>
                   <text class="cuIcon-videofill text-grey text-xlg margin-left" wx:if="{{project.raw.hasVideo}}"></text>
+                  <text 
+                    class="cuIcon-post text-grey text-xlg margin-left" 
+                    wx:if="{{project.raw.wp_url && project.raw.wp_url != null && project.raw.wp_url != ''}}"
+                  ></text>
                 </view>
               </view>
             </view>

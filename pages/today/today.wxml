@@ -32,25 +32,27 @@
       >VIP范例</button>
     </view>
 
+    <!-- 滚动条 -->
+    <swiper style="height: 55rpx; width: 100vw;" autoplay="true" interval="4000" circular="true">
+      <block wx:for="{{broadcastMsgs}}" wx:for-item="msg" wx:key="*this">
+        <navigator url="/pages/article/article?url={{msg.link}}" open-type="navigate">
+          <swiper-item style="display: flex; align-items: center; justify-content: center; background-color: chocolate;">
+            <view class="swiper_item text-bold text-white">点击查看: {{msg.title.rendered}}</view>
+          </swiper-item>
+        </navigator>
+      </block>
+    </swiper>
     <!-- 对于初次登陆用户的提示 -->
     <view wx:if="{{!hasStartDate}}" class="text-bold text-grey flex" style="justify-content: center; align-items: center;">
-      缺少资格日期，排名依照模拟资格日：2021-04-26
+      缺少资格日期，请至【我的】录入资格日(可模拟)
     </view>
-
-    <!-- 普通用户可以override掉startDate -->
-    <view 
-      wx:if="{{!hasStartDate}}"
-      class="text-bold text-grey flex" 
-      style="justify-content: center; align-items: center;" 
-      bindtap="manualStartDate"
-    >点击输入您的资格日, 当前为({{ manualStartDate == '' ? '2021-04-26' : manualStartDate }})</view>
 
     <!-- 房源列表 -->
     <view wx:if="{{list.length > 0}}">
       <scroll-view
         scroll-y 
         scroll-with-animation
-        style="height:calc(100vh - 7.5rem - 100rpx - calc(100rpx + env(safe-area-inset-bottom) / 2))"
+        style="height:calc(100vh - 7.5rem - 155rpx - calc(100rpx + env(safe-area-inset-bottom) / 2))"
       >
         <!-- 遍历社区 -->
         <view class="cu-list menu">
@@ -131,24 +133,5 @@
     </view>
 
     <view class="padding-xl text-green text-bold">更新于：{{timeStamp}}</view>
-  </view>
-</view>
-
-<!-- 普通用户自定义自己资格日的Modal -->
-<view class="cu-modal {{openManualStartDateDialog ? 'show' : ''}}">
-  <view class="cu-dialog">
-    <view class="cu-bar bg-white justify-end">
-      <view class="content text-bold">请输入一个资格日期</view>
-      <view class="action" bindtap="closeManualStartDateDialog">
-        <text class="cuIcon-close text-red"></text>
-      </view>
-    </view>
-
-    <!-- 日期选择器 -->
-    <view class="padding">
-      <picker mode="date" value="{{manualStartDate}}" start="2019-01-01" end="{{today}}" bindchange="addManualStartDate">
-        <view class="picker">资格日: {{ manualStartDate == '' ? '请选择' : manualStartDate }}</view>
-      </picker>
-    </view>
   </view>
 </view>

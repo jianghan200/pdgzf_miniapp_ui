@@ -5,8 +5,8 @@ let app = getApp()
 const subHelper = require('../../utils/subscripton')
 const requestsUtil = require('../../utils/request')
 const constants = require('../../utils/constants')
-const today = util.formatDate(new Date())
 const log = require('./../../utils/log')
+const userHelper = require('./../../utils/user')
 
 Page({
   data: {
@@ -26,28 +26,14 @@ Page({
     // vip的身份flag
     isVip: false,
     hasStartDate: false,
-    // 是否打开manualStartDate的Dialog
-    openManualStartDateDialog : false,
-    manualStartDate : '',
-    today: today
+    // 公告
+    broadcastMsgs: []
   },
 
   onLoad: function (options) {
     log.info('onLoad today')
-    // 将manualStartDate填好
-    if (app.globalData.userinfo.type != 2) {
-      log.info('非vip用户')
-      // 普通用户没有startDate
-      let manualStartDate = app.globalData.userinfo.manualStartDate 
-      if (!manualStartDate || manualStartDate == null) {
-        // 总之manualStartDate各种不存在
-        manualStartDate = ''
-      }
-      this.setData({
-        manualStartDate : manualStartDate
-      })
-    }
-
+    // 获取公告
+    this.getBroadcastMsgs()
     // 根据当前的时间设置“今日页”的状态
     const date = new Date()
     // 9:30 am ~ 10:03 am期间禁选
@@ -58,7 +44,7 @@ Page({
         disable : true,
         isVip : app.globalData.userinfo.type == 2,
         // 用户是否输入了自己的startDated
-        hasStartDate : (app.globalData.userinfo.startDate == null || !app.globalData.userinfo.startDate) ? false : true
+        hasStartDate : this.hasStartDate()
       })
     } else {
       log.info('正常情况')
@@ -69,6 +55,29 @@ Page({
         this.useTodayProjectsInStorage()
       })
     }
+  },
+
+  // 活动公告
+  getBroadcastMsgs() {
+    let self = this
+    requestsUtil
+      .getBroadcastMsgs()
+      .then((res) => {
+        log.info(`获得${res.length}条公告`)
+
+        self.setData({
+          broadcastMsgs : res
+        })
+      })
+      .catch((err) => {
+        log.error(err)
+        console.log(err)
+        
+        wx.showToast({
+          title: '未获取公告',
+          icon: 'error'
+        })
+      })
   },
 
   // 刷新今日的数据
@@ -126,8 +135,18 @@ Page({
         houseCount : allHouses.length,
         isVip : app.globalData.userinfo.type == 2,
         // 用户是否输入了自己的startDated
-        hasStartDate : (app.globalData.userinfo.startDate == null || !app.globalData.userinfo.startDate) ? false : true
+        hasStartDate : this.hasStartDate()
       })
+    }
+  },
+
+  // 判断用户的资格日：
+  hasStartDate() {
+    let startDateCode = userHelper.hasStartDate()
+    if (startDateCode >= 0) {
+      return true
+    } else {
+      return false
     }
   },
 
@@ -166,56 +185,6 @@ Page({
     let url = '../project/project?pid=' + constants.vipPid + '&mock=true'
     wx.navigateTo({
       url: url,
-    })
-  },
-
-  // 普通用户输入自己的资格日
-  manualStartDate(e) {
-    log.info('普通用户输入自己的资格日')
-    this.openMaunalStartDateDialog()
-  },
-
-  // 向后端更新自定义的资格日
-  addManualStartDate(e) {
-    let self = this
-    let selectedDate = e.detail.value
-    requestsUtil.updateManualStartDate(selectedDate).then((res) => {
-      log.info('updateManualStartDate 成功')
-
-      wx.showToast({
-        title: '成功更新',
-        icon: 'success'
-      })
-      // 更新本地的数据
-      app.globalData.userinfo.manualStartDate = selectedDate
-      self.setData({
-        manualStartDate : selectedDate
-      })
-      self.closeManualStartDateDialog()
-      self.refresh()
-    }).catch((err) => {
-      log.error('updateManualStartDate 失败')
-      log.error(err)
-
-      wx.showToast({
-        title: '未能成功更新',
-        icon: 'error'
-      })
-      self.closeManualStartDateDialog()
-    })
-  },
-  
-  // 打开自定义资格日的Dialog
-  openMaunalStartDateDialog() {
-    this.setData({
-      openManualStartDateDialog : true
-    })
-  },
-
-  // 关闭自定义资格日的Dialog
-  closeManualStartDateDialog() {
-    this.setData({
-      openManualStartDateDialog : false
     })
   },
 

@@ -3,6 +3,8 @@ const constants = require('../../utils/constants')
 const requests = require('../../utils/request')
 const utils = require('../../utils/util')
 const log = require('./../../utils/log')
+const today = utils.formatDate(new Date())
+const userHelper = require('./../../utils/user')
 
 Page({
   /**
@@ -12,7 +14,11 @@ Page({
     CustomBar: app.globalData.CustomBar,
     userinfo: null,
     vipInfo: null,
-    startDate: ''
+    startDate: '',
+    // 是否打开manualStartDate的Dialog
+    openManualStartDateDialog : false,
+    today: today,
+    hasStartDateCode: -1
   },
   
   onLoad: function (options) {
@@ -21,11 +27,29 @@ Page({
 
     this.getVipInfo()
     let userinfo = app.globalData.userinfo
-    let startDate = utils.getOrElse(userinfo.startDate, '').split(' ')[0]
+    // 判断用户的资格日
+    let hasStartDateCode = userHelper.hasStartDate()
     this.setData({
       userinfo: userinfo,
-      startDate: userinfo.type == 2 ? startDate : ''
+      startDate: this.resolveStartDate(hasStartDateCode),
+      hasStartDateCode: hasStartDateCode
     })
+  },
+
+  // 根据hasStartDateCode解析资格日
+  resolveStartDate(hasStartDateCode) {
+    let startDate = ''
+    if (hasStartDateCode == 1) {
+      // 说明用户输入过资格日
+      startDate = app.globalData.userinfo.manualStartDate
+    } else if (hasStartDateCode == 0) {
+      // 说明这个人是vip
+      startDate = utils.getOrElse(app.globalData.userinfo.startDate, '').split(' ')[0]
+    } else {
+      // 这个人是普通用户，且没有输入过资格日
+      startDate = utils.formatDate(constants.mockStartDate)
+    }
+    return startDate
   },
 
   // 读取用户会员信息
@@ -87,6 +111,20 @@ Page({
     })
   },
 
+  // Go to About页
+  gotoAbout(e) {
+    wx.navigateTo({
+      url: '/pages/about/about',
+    })
+  },
+
+  // 查看VIP的权益，导航至权益页
+  goToRights() {
+    wx.navigateTo({
+      url: '/pages/rights/rights',
+    })
+  },
+
   // Bottom Bar的方法
   redirect: function(e) {
     const newTab = e.detail
@@ -97,6 +135,59 @@ Page({
         url: url
       })
     }
+  },
+
+  // 打开自定义资格日的Dialog
+  openMaunalStartDateDialog() {
+    this.setData({
+      openManualStartDateDialog : true
+    })
+  },
+
+  // 关闭自定义资格日的Dialog
+  closeManualStartDateDialog() {
+    this.setData({
+      openManualStartDateDialog : false
+    })
+  },
+
+  // Override模拟的startDate
+  overrideStartDate(e) {
+    log.info('普通用户输入自己的资格日')
+    this.openMaunalStartDateDialog()
+  },
+
+  // 向后端更新自定义的资格日
+  addManualStartDate(e) {
+    let self = this
+    let selectedDate = e.detail.value
+    requests
+      .updateManualStartDate(selectedDate)
+      .then((res) => {
+        log.info('updateManualStartDate 成功')
+
+        wx.showToast({
+          title: '成功更新',
+          icon: 'success'
+        })
+        // 更新本地的数据
+        app.globalData.userinfo.manualStartDate = selectedDate
+        self.setData({
+          startDate : selectedDate,
+          // vip无法看到这个方法
+          hasStartDateCode : 1
+        })
+        self.closeManualStartDateDialog()
+      }).catch((err) => {
+        log.error('updateManualStartDate 失败')
+        log.error(err)
+
+        wx.showToast({
+          title: '未能成功更新',
+          icon: 'error'
+        })
+        self.closeManualStartDateDialog()
+      })
   },
 
   // 转发

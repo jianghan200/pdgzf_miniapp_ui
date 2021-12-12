@@ -1039,6 +1039,7 @@ const getAvatarAndNickname = function() {
 const generateArticleIdOf = function(pid) {
   return `pdgzf_project_${pid}`
 }
+
 // 向腾讯云后台上传用户在某个小区下的评论
 const sendCommentOnSomeProject = function(pid, comments) {
   log.info(`向云后台发布评论：${comments} (${generateArticleIdOf(pid)})`)
@@ -1120,6 +1121,38 @@ const getCommentsOf = function(pid) {
   })
 }
 
+// 获取公告
+const getBroadcastMsgs = function() {
+  log.info('准备获取公告信息')
+
+  const url = constants.prodFeedbackServer + '/wp_pdgzf/wp-json/wp/v2/posts?categories=7&_fields=author,id,content,title,link'
+
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      success: function(res) {
+        if (res.statusCode == 200 || res.statusCode == 201) {
+          log.info('公告获取成功')
+          log.info(res)
+
+          resolve(res.data)
+        } else {
+          log.error('公告获取失败，WP返回error')
+          log.error(res)
+
+          resolve([])
+        }
+      },
+      fail: function(err) {
+        log.error('公告获取出现错误')
+        log.error(err)
+
+        resolve([])
+      }
+    })
+  })
+}
+
 module.exports = {
   login : login,
   getSubscriptions : getSubscriptions,
@@ -1148,5 +1181,6 @@ module.exports = {
   sendAllFeedbackImgs : sendAllFeedbackImgs,
   sendCommentOnSomeProject : sendCommentOnSomeProject,
   getAvatarAndNickname : getAvatarAndNickname,
-  getCommentsOf : getCommentsOf
+  getCommentsOf : getCommentsOf,
+  getBroadcastMsgs : getBroadcastMsgs
 }

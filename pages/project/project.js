@@ -21,6 +21,7 @@ Page({
     descriptions : [],
     medias : [],
     equipments: [],
+    articleUrl : '',
     // 小区的统计信息
     heatMap : [],
     monthlyDaysColor: [],
@@ -95,6 +96,13 @@ Page({
         log.info(`锁定了是哪个社区: ${areaOpt}`)
         // 再找到小区
         let theProject = areaOpt.projects.find(p => p.pId == pId)
+        // 确认是否有文章的链接
+        let articleUrl = ''
+        if (theProject.raw.wp_url && theProject.raw.wp_url.trim() != '') {
+          log.info(`找到了文章链接：${theProject.raw.wp_url}（${theProject.pId}）`)
+
+          articleUrl = theProject.raw.wp_url
+        }
         // 看看这个小区有没有出现在今日房源中
         let todayProjectsDictionary = wx.getStorageSync('todayProjects')
         let todayHousesInfo = []
@@ -159,7 +167,8 @@ Page({
           pId : pId,
           isVip : isVip,
           // 如果小区今天恰好有房源，by default显示今日房源tab
-          curTab : todayHousesInfo.length == 0 ? 0 : 1
+          curTab : todayHousesInfo.length == 0 ? 0 : 1,
+          articleUrl : articleUrl
         }, () => {
           // 拿到所有近期租出去的房间的ID
           let idsOfRecentHouses = theProject.houseInfo.map(house => house.houseId)
@@ -566,6 +575,15 @@ Page({
           icon: 'error'
         })
       })
+  },
+
+  // navigate到文章
+  gotoArticle(e) {
+    log.info(`从小区详情页(${this.data.pId})跳转到article页：${this.data.articleUrl}`)
+
+    wx.navigateTo({
+      url: '/pages/article/article?url=' + this.data.articleUrl,
+    })
   },
 
   // 转发

@@ -1,0 +1,35 @@
+<!--pages/about/about.wxml-->
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content" class="text-bold">关于PD公租房</view>
+</cu-custom>
+
+<view style="height: 50px;"></view>
+
+<!-- 微信用户信息 -->
+<view class="userinfo">
+  <image class="worker-avatar" src="/assets/pdgzf.jpeg" mode="aspectFill"></image>
+</view>
+
+
+<scroll-view 
+  scroll-y 
+  class="padding" 
+  style="display: flex; flex-direction: column; align-items: center; justify-content: center;"
+>
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    1. PD公租房中全部信息来自浦东公租房官网的公开信息以及个人收集。
+  </view>
+
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    2. 如果发现信息与浦东公租房官网信息有出入，请以官网信息为准。
+  </view>
+
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    3. 如果您对一些政策条款有疑问，务必不要、不要、不要（重要的事说3遍）使用PD公租房上的信息到官方进行质询。
+  </view>
+
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    4. 对于浦东公租房的政策条款有任何疑问，请致电官方客服电话：021-50591069
+  </view>
+</scroll-view>
