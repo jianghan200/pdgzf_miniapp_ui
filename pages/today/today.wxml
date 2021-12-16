@@ -4,8 +4,20 @@
   <view style="height: 2.5rem;"></view>
   <!-- 标题 -->
   <view class="title">
-    <view class="text-xl">
+    <view class="margin-bottom" style="display: flex; flex-direction: row; align-items: center;">
       <text class="text-bold"> 今日房源</text>
+      <!-- 按钮功能区 -->
+      <button class="cu-btn text-bold icon bg-black margin-left" bindtap="openMap">
+        <text class="cuIcon-locationfill text-white"></text>
+      </button>
+      <button class="cu-btn text-bold icon bg-black margin-left" bindtap="refresh">
+        <text class="cuIcon-refresh text-white"></text>
+      </button>
+      <button 
+        wx:if="{{!isVip}}"
+        class="cu-btn text-bold cuIcon-vip icon bg-black text-yellow margin-left" 
+        bindtap="vipSample"
+      ></button>
     </view>
     <view class="text-df">
       <text> 当前周期：{{milestone}}（共{{projectCount}}个小区，{{houseCount}}套房）</text>
@@ -16,28 +28,12 @@
     <movable-view class="movable-view" x="600rpx" y="750rpx" animation="{{false}}" direction='all'>
       <mb name="意见反馈" cuIcon="commentfill" targetPath="/pages/report/report"></mb>
     </movable-view>
-    <!-- 按钮功能区 -->
-    <view style="padding-bottom: 10rpx; display: flex; flex-direction: row; justify-content: space-around; align-items: center;">
-      <button style="height: 90rpx; width: 30%;" class="cu-btn bg-blue text-bold" bindtap="openMap">
-        <text class="cuIcon-locationfill text-white"></text> 地图
-      </button>
-      <button style="height: 90rpx; width: 30%;" class="cu-btn bg-green text-bold" bindtap="refresh">
-        <text class="cuIcon-refresh text-white"></text> 刷新房源
-      </button>
-      <button 
-        wx:if="{{!isVip}}"
-        style="height: 90rpx; width: 30%;" 
-        class="cu-btn text-bold cuIcon-vip bg-black text-yellow" 
-        bindtap="vipSample"
-      >VIP范例</button>
-    </view>
-
     <!-- 滚动条 -->
     <swiper style="height: 55rpx; width: 100vw;" autoplay="true" interval="4000" circular="true">
       <block wx:for="{{broadcastMsgs}}" wx:for-item="msg" wx:key="*this">
         <navigator url="/pages/article/article?url={{msg.link}}" open-type="navigate">
-          <swiper-item style="display: flex; align-items: center; justify-content: center; background-color: chocolate;">
-            <view class="swiper_item text-bold text-white">点击查看: {{msg.title.rendered}}</view>
+          <swiper-item class="bg-gray" style="display: flex; align-items: center; justify-content: center;">
+            <view class="swiper_item text-bold">点击查看: {{msg.title.rendered}}</view>
           </swiper-item>
         </navigator>
       </block>
@@ -52,7 +48,7 @@
       <scroll-view
         scroll-y 
         scroll-with-animation
-        style="height:calc(100vh - 7.5rem - 155rpx - calc(100rpx + env(safe-area-inset-bottom) / 2))"
+        style="height:calc(100vh - 7.5rem - calc(200rpx + env(safe-area-inset-bottom) / 2))"
       >
         <!-- 遍历社区 -->
         <view class="cu-list menu">

@@ -1,0 +1,6 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-bold" style="color: gold;">开通付费咨询</view>
+  </view>
+</cu-custom>

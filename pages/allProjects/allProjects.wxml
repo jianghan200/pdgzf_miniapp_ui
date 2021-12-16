@@ -113,14 +113,14 @@
     <view class="text-bold filter-subtitle">选择社区</view>
     <view style="padding: 10rpx; display: flex; flex-wrap: wrap;">
       <view 
-        class="cu-tag round bg-{{ areas.length == chosenAreas.length ? 'blue' : 'grey' }}" 
+        class="cu-tag round bg-{{ areas.length == chosenAreas.length ? 'black' : 'grey' }}" 
         data-areaName="all" 
         bindtap="tapArea"
         style="margin: 5rpx;"
       >全选</view>
       <block wx:for="{{areas}}" wx:for-item="areaName" wx:key="*this">
         <view 
-          class="cu-tag round bg-{{ tools.indexOf(chosenAreas, areaName) == -1 ? 'grey' : 'blue' }}"
+          class="cu-tag round bg-{{ tools.indexOf(chosenAreas, areaName) == -1 ? 'grey' : 'black' }}"
           data-areaName="{{areaName}}" 
           bindtap="tapArea"
           style="margin: 5rpx;"
@@ -132,14 +132,14 @@
     <view class="text-bold filter-subtitle">小区房源数量</view>
     <view style="padding: 10rpx; display: flex; flex-wrap: wrap;">
       <view 
-        class="cu-tag round bg-{{ rentableCountCategory.length == chosenRentableCountCategory.length ? 'blue' : 'grey' }}" 
+        class="cu-tag round bg-{{ rentableCountCategory.length == chosenRentableCountCategory.length ? 'black' : 'grey' }}" 
         data-category="all"
         style="margin: 5rpx;" 
         bindtap="tapRentableCounts"
       >全选</view>
       <block wx:for="{{rentableCountCategory}}" wx:for-item="category" wx:key="*this">
         <view 
-          class="cu-tag round bg-{{ tools.indexOf(chosenRentableCountCategory, category) == -1 ? 'grey' : 'blue' }}" 
+          class="cu-tag round bg-{{ tools.indexOf(chosenRentableCountCategory, category) == -1 ? 'grey' : 'black' }}" 
           data-category="{{category}}"
           style="margin: 5rpx;" 
           bindtap="tapRentableCounts"

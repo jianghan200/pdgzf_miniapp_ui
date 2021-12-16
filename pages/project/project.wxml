@@ -33,7 +33,7 @@
   scroll-y
   class="cu-list menu"
   scroll-with-animation
-  style="height:calc(100vh - {{CustomBar}}px - 90rpx); background: white;"
+  style="height:calc(100vh - {{CustomBar}}px - {{ curTab == 3 ? 190 : 90 }}rpx); background: white;"
 > 
   <!-- 图片 / 视频走马灯 -->
   <swiper 

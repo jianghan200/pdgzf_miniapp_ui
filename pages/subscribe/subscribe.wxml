@@ -2,7 +2,7 @@
 
 <view style="height: 50px;"></view>
 <view style="display: flex; flex-direction: row; align-items: center;">
-  <view class="title text-pink">我的订阅</view>
+  <view class="title text-black">我的订阅</view>
   <!-- 请求失败展示刷新按钮 -->
   <button class="bg-green cu-btn icon shadow" bindtap="refresh" wx:if="{{!reqSuccessful}}">
     <text class="cuIcon-refresh text-white"></text>
@@ -23,8 +23,8 @@
     style="height:calc(100vh - 100px - calc(100rpx + env(safe-area-inset-bottom) / 2))"
     wx:if="{{reqSuccessful}}"
   >
-    <view class="text-bold text-xl" style="padding: 0.5rem; align-items: center;" wx:if="{{isVip}}">
-      <span class="padding-right">{{ openAutoSelection ? '已开启自动选房' : '已关闭自动选房' }}</span>
+    <view class="text-bold" style="align-items: center;" wx:if="{{isVip}}">
+      <span class="padding-right" style="padding-left: 1rem;">{{ openAutoSelection ? '已开启自动选房' : '已关闭自动选房' }}</span>
       <switch class="radius sm" checked="{{openAutoSelection}}" bindchange="changeAutoSelectionStatus"></switch>
     </view>
 

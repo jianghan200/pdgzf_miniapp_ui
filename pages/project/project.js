@@ -11,6 +11,7 @@ plugin.use(todo).use(selectable)
 
 Page({
   data: {
+    CustomBar: app.globalData.CustomBar,
     pName: '',
     todayHouses: [],
     project : {},

@@ -25,7 +25,8 @@
     "pages/versions/versions",
     "pages/links/links",
     "pages/article/article",
-    "pages/about/about"
+    "pages/about/about",
+    "pages/consult/consult"
   ],
   "window":{
     "navigationStyle": "custom"
