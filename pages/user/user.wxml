@@ -56,12 +56,12 @@
     </view>
 
     <!-- 开通付费咨询 -->
-    <!-- <view class="cu-item arrow" bindtap="gotoKanban">
+    <view class="cu-item arrow" bindtap="gotoConsult">
       <view class="content">
-        <text class="cuIcon-activity text-bold text-olive"></text>
-        <text class="text-bold text-olive">付费咨询</text>
+        <text class="cuIcon-service text-bold"></text>
+        <text class="text-bold">真人咨询</text>
       </view>
-    </view> -->
+    </view>
 
     <!-- 版本内容 -->
     <view class="cu-item arrow" bindtap="gotoVersions">

@@ -10,6 +10,19 @@
   <view class="cu-item text-brown">
     <view class="bg-brown content shadow">
       <view class="cu-capsule radius">
+        <view class="cu-tag bg-white text-brown">v1.0.40</view>
+        <view class="cu-tag line-white">2021/12/19</view>
+      </view>
+      <view class="margin-top-sm text-content">
+        <view>1. 添加真人咨询功能</view>
+        <view>2. 对于多处页面布局进行了调整</view>
+      </view>
+    </view>   
+  </view>
+
+  <view class="cu-item text-brown">
+    <view class="bg-brown content shadow">
+      <view class="cu-capsule radius">
         <view class="cu-tag bg-white text-brown">v1.0.39</view>
         <view class="cu-tag line-white">2021/12/12</view>
       </view>

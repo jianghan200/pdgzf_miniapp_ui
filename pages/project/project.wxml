@@ -30,10 +30,11 @@
 
 <!-- 内容 -->
 <scroll-view
+  wx:if="{{curTab != 3}}"
   scroll-y
   class="cu-list menu"
   scroll-with-animation
-  style="height:calc(100vh - {{CustomBar}}px - {{ curTab == 3 ? 190 : 90 }}rpx); background: white;"
+  style="height:calc(100vh - {{CustomBar}}px - 90rpx); background: white;"
 > 
   <!-- 图片 / 视频走马灯 -->
   <swiper 
@@ -128,55 +129,6 @@
     <view wx:for="{{descriptions}}" wx:for-item="desc_item" wx:key="desc_item">
       <text class="cuIcon-title"></text> {{desc_item}}
     </view>
-  </view>
-
-  <!-- 评论区标题 -->
-  <view wx:if="{{ curTab == 3 }}" class="text-bold margin-top" style="margin: 10px;">
-    <view style="font-size: large;">评论 {{commentsList.length}}</view>
-  </view>
-
-  <view wx:if="{{ curTab == 3 && commentsList.length == 0 }}" class="no-comment-box padding">
-    <image src="/assets/think.jpg" mode="aspectFit" class="padding"></image>
-    <text class="padding-bottom text-grey">发表第一个评论吧~</text>
-  </view>
-  
-  <view wx:if="{{ curTab == 3 }}" class="cu-list menu-avatar comment solids-top">
-    <block wx:for="{{commentsList}}" wx:for-item="comment" wx:key="comment">
-      <view class="cu-item">
-        <!-- 头像 -->
-        <view 
-          class="cu-avatar round" 
-          style="background-image: url({{comment.avatarUrl}}); {{isVip ? 'border: 2px solid goldenrod;' : ''}}"
-        ></view>
-        <view class="content">
-          <view class="text-grey">{{comment.nickname}}</view>
-          <view class="text-gray text-content text-df">{{comment.content}}</view>
-          <view class="margin-top-sm flex justify-between">
-            <view class="text-gray text-df">{{comment.timestamp}}</view>
-          </view>
-        </view>
-      </view>
-    </block>
-  </view>
-
-  <!-- 评论输入 -->
-  <view 
-    wx:if="{{curTab == 3}}" 
-    class="cu-bar foot input {{ commentInputHeight != 0 ? 'cur' : '' }}" 
-    style="bottom: {{commentInputHeight}}px;"
-  >
-    <textarea 
-      placeholder="赠人以言，重于珠玉~"
-      class="solid-bottom" 
-      adjust-position="false" 
-      maxlength="300" 
-      cursor-spacing="10"
-      bindfocus="onFocusCommentInput"
-      bindblur="onBlurCommentInput"
-      bindinput="inputComment"
-      auto-height="true"
-    ></textarea>
-    <button class="cu-btn bg-green shadow" bindtap="submitComment">发送</button>
   </view>
 
   <!-- 今日房源，if any -->
@@ -299,3 +251,61 @@
     </block>
   </view>
 </scroll-view>
+
+<!-- 评论tab -->
+<scroll-view
+  wx:if="{{curTab == 3}}"
+  scroll-y
+  class="cu-list menu"
+  scroll-with-animation
+  style="height:calc(100vh - {{CustomBar}}px - 190rpx); background: white;"
+> 
+  <!-- 评论区标题 -->
+  <view wx:if="{{ curTab == 3 }}" class="text-bold margin-top" style="margin: 10px;">
+    <view style="font-size: large;">评论 {{commentsList.length}}</view>
+  </view>
+
+  <view wx:if="{{ curTab == 3 && commentsList.length == 0 }}" class="no-comment-box padding">
+    <image src="/assets/think.jpg" mode="aspectFit" class="padding"></image>
+    <text class="padding-bottom text-grey">发表第一个评论吧~</text>
+  </view>
+  
+  <view wx:if="{{ curTab == 3 }}" class="cu-list menu-avatar comment solids-top">
+    <block wx:for="{{commentsList}}" wx:for-item="comment" wx:key="comment">
+      <view class="cu-item">
+        <!-- 头像 -->
+        <view 
+          class="cu-avatar round" 
+          style="background-image: url({{comment.avatarUrl}}); {{isVip ? 'border: 2px solid goldenrod;' : ''}}"
+        ></view>
+        <view class="content">
+          <view class="text-grey">{{comment.nickname}}</view>
+          <view class="text-gray text-content text-df">{{comment.content}}</view>
+          <view class="margin-top-sm flex justify-between">
+            <view class="text-gray text-df">{{comment.timestamp}}</view>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+</scroll-view>
+
+<!-- 评论输入 -->
+<view 
+  wx:if="{{curTab == 3}}" 
+  class="cu-bar foot input {{ commentInputHeight != 0 ? 'cur' : '' }}" 
+  style="bottom: {{commentInputHeight}}px;"
+>
+  <textarea 
+    placeholder="赠人以言，重于珠玉~"
+    class="solid-bottom" 
+    adjust-position="false" 
+    maxlength="300" 
+    cursor-spacing="10"
+    bindfocus="onFocusCommentInput"
+    bindblur="onBlurCommentInput"
+    bindinput="inputComment"
+    auto-height="true"
+  ></textarea>
+  <button class="cu-btn bg-green shadow" bindtap="submitComment">发送</button>
+</view>  

@@ -32,8 +32,8 @@
     <swiper style="height: 55rpx; width: 100vw;" autoplay="true" interval="4000" circular="true">
       <block wx:for="{{broadcastMsgs}}" wx:for-item="msg" wx:key="*this">
         <navigator url="/pages/article/article?url={{msg.link}}" open-type="navigate">
-          <swiper-item class="bg-gray" style="display: flex; align-items: center; justify-content: center;">
-            <view class="swiper_item text-bold">点击查看: {{msg.title.rendered}}</view>
+          <swiper-item style="display: flex; align-items: center; justify-content: center;">
+            <view class="swiper_item text-bold text-orange">点击查看: {{msg.title.rendered}}</view>
           </swiper-item>
         </navigator>
       </block>

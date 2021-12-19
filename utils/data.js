@@ -165,7 +165,7 @@ const loadAllData = function() {
     .all([
       requests.getTodayProjects(), requests.getTodayHouses(), requests.getTodayStats(), 
       requests.loadAllProjects(), requests.loadProjectHouseInfo(),
-      requests.getSubscriptions()
+      requests.getSubscriptions(), requests.getConsultStatus()
     ])
     .then((rs) => {
       log.info('loadAllData 成功')

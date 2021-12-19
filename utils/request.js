@@ -328,15 +328,58 @@ const getPaymentInfo = function(payType) {
       success: function(res) {
         if (res.data.status == 0) {
           // 成功
+          log.info('请求pre-payment信息成功！')
+          log.info(res)
+
           resolve(res.data.data)
         } else {
           // 失败
+          log.error('请求pre-payment信息失败')
           console.log(res)
+
           reject(res.data.data)
         }
       },
       fail: function(err) {
         console.log(err)
+        reject(err)
+      }
+    })
+  })
+}
+
+// 获得付费咨询的付款信息
+const getConsultingPaymentInfo = function() {
+  log.info('准备获得付费咨询的付款信息(pre-payment)')
+
+  const url = constants.userinfoServer + '/api/pay/consult?nickName=' + app.globalData.nickname
+  const header = { 'token': app.globalData.userinfo.tokenStr }
+  
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      header: header,
+      success: (res) => {
+        if (res.data.status == 0) {
+          // 成功
+          log.info('请求pre-payment信息成功！')
+          log.info(res)
+
+          resolve(res.data.data)
+        } else {
+          // 失败
+          log.error('请求pre-payment信息失败')
+          log.error(res)
+          console.log(res)
+
+          reject(res.data.data)
+        }
+      },
+      fail: (err) => {
+        log.error('pre-payment信息获取失败')
+        log.error(err)
+        console.log(err)
+      
         reject(err)
       }
     })
@@ -1153,6 +1196,66 @@ const getBroadcastMsgs = function() {
   })
 }
 
+// 获得付费咨询信息
+const getConsultStatus = function() {
+  log.info(`获取是否付费咨询的信息`)
+  
+  const url = constants.userinfoServer + '/api/user/consult'
+  const header = { 'token' : app.globalData.userinfo.tokenStr }
+
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      header: header,
+      success: (res) => {
+        log.info(res)
+        
+        if (res.data.status == 0) {
+          // 请求成功
+          log.info('请求成功')
+          log.info(res.data.data)
+
+          // 存入全局变量
+          if (res.data.data.code == '') {
+            // 尚未开通付费咨询
+            log.info('尚未开通付费咨询')
+
+            app.globalData.userinfo.openConsult = false
+          } else {
+            // 已经开通了付费咨询
+            log.info('已经开通了付费咨询')
+
+            app.globalData.userinfo.openConsult = true
+            app.globalData.userinfo.payDay = res.data.data.payDay
+            app.globalData.userinfo.consultCode = res.data.data.code
+          }
+
+          // 其实返回什么不重要
+          resolve(res.data.data)
+        } else {
+          // 请求失败
+          log.error('请求失败')
+          log.error(res)
+
+          wx.showToast({
+            title: '请求失败',
+            icon: 'error'
+          })
+          
+          reject(res)
+        }
+      },
+      fail: (err) => {
+        log.error('获取咨询信息失败')
+        log.error(err)
+        console.log(err)
+        
+        reject(err)
+      }
+    })
+  })
+}
+
 module.exports = {
   login : login,
   getSubscriptions : getSubscriptions,
@@ -1182,5 +1285,7 @@ module.exports = {
   sendCommentOnSomeProject : sendCommentOnSomeProject,
   getAvatarAndNickname : getAvatarAndNickname,
   getCommentsOf : getCommentsOf,
-  getBroadcastMsgs : getBroadcastMsgs
+  getBroadcastMsgs : getBroadcastMsgs,
+  getConsultStatus : getConsultStatus,
+  getConsultingPaymentInfo : getConsultingPaymentInfo
 }

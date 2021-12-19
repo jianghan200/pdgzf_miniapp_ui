@@ -502,7 +502,7 @@ Page({
       .then((res) => {
         if (res) {
           // 用户必须授权头像和用户名才能开始评论
-          requests.updateUsername(app.globalData.nickname)
+          // 用户信息上传云函数成功
           log.info('云函数调用成功（both get and post），新用户同意提供头像和昵称')
 
           // 评论不能为空

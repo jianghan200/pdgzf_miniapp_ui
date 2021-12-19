@@ -98,9 +98,9 @@ Page({
   },
 
   // Go to 我的反馈进度页
-  gotoKanban(e) {
+  gotoConsult(e) {
     wx.navigateTo({
-      url: '/pages/kanban/kanban',
+      url: '/pages/consult/consult',
     })
   },
 

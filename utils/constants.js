@@ -78,6 +78,8 @@ const commonJiratypes = ['改进', '举报Bug']
 const wordpressFeedbackUsername = 'pdgzf_feedback'
 const wordpressFeedbackPassword = '10dH 2e8r dUeC OHL2 qffa w8S0'
 
+const consultant = 'meo365'
+
 module.exports = {
   server: prodServer,
   userinfoServer: userinfoProdServer,
@@ -92,5 +94,6 @@ module.exports = {
   commonJiratypes : commonJiratypes,
   prodFeedbackServer : prodFeedbackServer,
   wordpressFeedbackUsername : wordpressFeedbackUsername,
-  wordpressFeedbackPassword : wordpressFeedbackPassword
+  wordpressFeedbackPassword : wordpressFeedbackPassword,
+  consultant : consultant
 }

@@ -1,6 +1,69 @@
 <cu-custom bgColor="bg-black" isBack="{{true}}">
   <view slot="backText">返回</view>
   <view slot="content">
-    <view class="text-bold" style="color: gold;">开通付费咨询</view>
+    <view class="text-bold">开通真人咨询</view>
   </view>
 </cu-custom>
+
+<view style="height: 50px;"></view>
+
+<!-- 微信用户信息 -->
+<view class="userinfo">
+  <view class="vip-avatar"><open-data type="userAvatarUrl"></open-data></view>
+  <open-data type="userNickName" lang="zh_CN" class="vip-nickname"></open-data>
+</view>
+
+<scroll-view 
+  wx:if="{{statusCode == 0}}"
+  scroll-y 
+  class="padding" 
+  style="display: flex; flex-direction: column; align-items: center; justify-content: center;"
+>
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    1. 开通1v1咨询，答疑解惑，优化您的选房计划。
+  </view>
+
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    2. 每天傍晚回复
+  </view>
+
+  <button class="cu-btn bg-green lg margin-top" style="width: 100%;" bindtap="pay">开通</button>
+</scroll-view>
+
+<scroll-view 
+  wx:if="{{statusCode == 1}}"
+  scroll-y 
+  class="padding" 
+>
+  <view class="flex" style="flex-direction: column; align-items: center; justify-content: center;">
+    <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+      您的身份验证码：{{token}}
+    </view>
+
+    <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+      请添加微信：{{consultant}}
+    </view>
+
+    <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+      并备注: "公租房咨询: {{token}}"
+    </view>
+  </view>
+</scroll-view>
+
+<scroll-view 
+  wx:if="{{statusCode == 2}}"
+  scroll-y 
+  class="padding"
+>
+  <view style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <view class="text-bold text-xl" style="padding-top: 0.5rem">
+      VIP大人自动获得咨询权限
+    </view>
+    <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+      请添加微信：{{consultant}}
+    </view>
+    <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+      并备注: "我是VIP"
+    </view>
+  </view>
+</scroll-view>

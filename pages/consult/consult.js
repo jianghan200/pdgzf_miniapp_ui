@@ -1,65 +1,118 @@
 // pages/consult/consult.js
+const app = getApp()
+const paymentHelper = require('../../utils/pay')
+const log = require('../../utils/log')
+const requestHelper = require('../../utils/request')
+const constants = require('../../utils/constants')
+
 Page({
-
-  /**
-   * 页面的初始数据
-   */
   data: {
-
+    statusCode: 0,
+    token: '',
+    openDatetime: '',
+    consultant: constants.consultant
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
   onLoad: function (options) {
+    log.info('onLoad consult.js')
 
+    // statusCode: 0代表普通用户且为开通咨询。1代表已经开通。2代表是vip
+    let statusCode = 0
+    let token = ''
+    let openDatetime = ''
+    if (app.globalData.userinfo.type == 2) {
+      // VIP无需判断
+      log.info('用户是VIP已经可以咨询')
+
+      statusCode = 2
+      this.setData({
+        statusCode : statusCode
+      })
+    } else if (app.globalData.userinfo.openConsult) {
+      // 已经付费
+      log.info('已经开通了真人咨询')
+      log.info(app.globalData)
+
+      statusCode = 1
+
+      let self = this
+      requestHelper.getConsultStatus().then((res) => {
+        log.info('已经获得用户真人咨询开通状态')
+
+        console.log('here')
+
+        token = app.globalData.userinfo.consultCode
+        openDatetime = app.globalData.userinfo.payDay
+
+        log.info(`用户的咨询token为: ${token}`)
+        log.info(`用户开通咨询的时间为: ${openDatetime}`)
+
+        self.setData({
+          statusCode : statusCode,
+          token : token,
+          openDatetime : openDatetime
+        })
+
+      }).catch((err) => {
+        log.error(err)
+        console.log(err)
+
+        wx.showToast({
+          title: '请求失败',
+          icon: 'error'
+        })
+      })
+    } else {
+      // 普通用户，未付费
+      this.setData({
+        statusCode : statusCode
+      })
+    }
   },
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
+  // 支付
+  pay(e) {
+    wx.showLoading({
+      title: '支付中',
+      mask: true
+    })
+    paymentHelper
+      .payConsultFee()
+      .then((res) => {
+        if (res) {
+          // 付款成功  
+          wx.hideLoading()
+          wx.showToast({
+            title: '支付成功',
+            icon: 'success'
+          })
 
+          app.globalData.userinfo.openConsult = true
+          wx.redirectTo({
+            url: '/pages/user/user',
+          })
+        } else {
+          // 付款失败
+          log.error('付款失败')
+
+          wx.hideLoading()
+          wx.showToast({
+            title: '支付失败',
+            icon: 'error'
+          })
+        }
+      }).catch((err) => {
+        log.error('付款失败')
+        log.error(err)
+
+        wx.hideLoading()
+        wx.showToast({
+          title: '支付失败',
+          icon: 'error'
+        })
+      })
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
   onShareAppMessage: function () {
 
   }
