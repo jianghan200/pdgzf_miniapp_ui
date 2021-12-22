@@ -25,13 +25,13 @@ const actualPayment = function(payment_info) {
     })
   })
 }
-
+// vip 付费
 const pay = function(userType) {
   return requests
     .getPaymentInfo(userType)
     .then((res) => {
       log.info('获得付款信息！')
-      log.info(info)
+      log.info(res)
 
       // 获得预支付信息后开始微信支付
       return actualPayment(res)
