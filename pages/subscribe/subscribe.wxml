@@ -51,11 +51,11 @@
           <view style="display: flex; flex-direction: column">
             <!-- 删除订阅 -->
             <button 
-              class="cu-btn icon shadow bg-red" 
-              catchtap="openWarningDialog" 
+              class="cu-btn cuIcon-settings icon shadow bg-grey" 
+              catchtap="editSubscription" 
               data-rid="{{subscription.subInfo.id}}"
             >
-              <text class="cuIcon-deletefill text-white"></text>
+              <text class="cuIcon-setting text-white"></text>
             </button>
           </view>
         </view>

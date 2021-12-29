@@ -220,7 +220,7 @@ Page({
     let areaId = this.data.selectedRule.aid
     let projectId = this.data.selectedRule.pid
 
-    log.info(`接触订阅: ruleId: ${ruleId}, areaId: ${areaId}, projectId: ${projectId}`)
+    log.info(`解除订阅: ruleId: ${ruleId}, areaId: ${areaId}, projectId: ${projectId}`)
 
     let self = this
     subHelper

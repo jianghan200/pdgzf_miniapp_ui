@@ -7,9 +7,17 @@
 
 <scroll-view scroll-y style="height:calc(100vh - {{CustomBar}}px)">
   <view class="p-title">{{subscription.info.pName}}</view>
+  <button 
+      class="cu-btn cuIcon-deletefill icon shadow bg-red" 
+      catchtap="openWarningDialog" 
+      data-rid="{{subscription.subInfo.id}}"
+    >
+      <text class="cuIcon-setting text-white"></text>
+  </button>
 
   <!-- 导航至详情页 -->
   <view style="padding-left: 1rem;" bindtap="navToHouses">
+   
     <text class="cuIcon-explorefill text-cyan"></text>
     <text class="text-bold text-cyan"> 点击查看小区详情</text>
   </view>
@@ -113,3 +121,27 @@
     </view>
   </view>
 </view>
+
+<!-- 确认删除弹窗 -->
+<view class="cu-modal {{showDeleteModal ? 'show' : ''}}">
+  <view class="cu-dialog">
+    <!-- Dialog Header -->
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">取消订阅</view>
+      <view class="action" bindtap="hideDeleteModal"><text class="cuIcon-close text-red"></text></view>
+    </view>
+    <view class="padding-xl">您确认取消订阅"{{subscription.info.pName}}"小区吗</view>
+    <!-- 按钮区 -->
+    <view class="cu-bar bg-white">
+      <view 
+        class="action margin-0 flex-sub solid-left text-orange text-bold" 
+        bindtap="removeSubscription"
+      >取消订阅</view>
+      <view 
+        class="action margin-0 flex-sub solid-left" 
+        bindtap="hideModal"
+      >留着吧</view>
+    </view>
+  </view>
+</view>
+

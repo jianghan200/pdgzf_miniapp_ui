@@ -3,6 +3,7 @@ let app = getApp()
 const constants = require('../../utils/constants')
 const requests = require('../../utils/request')
 const log = require('./../../utils/log')
+const subHelper = require('../../utils/subscripton')
 
 Page({
   data: {
@@ -18,7 +19,8 @@ Page({
     minArea: null,
     excludeFloor : '',
     // 弹窗相关
-    showModal: false
+    showModal: false,
+    showDeleteModal: false
   },
 
   onLoad: function (options) {
@@ -105,6 +107,19 @@ Page({
     })
   },
 
+  // 弹窗
+  openDeleteModal() {
+    this.setData({
+      showDeleteModal : true
+    })
+  },
+
+  hideDeleteModal() {
+    this.setData({
+      showDeleteModal : false
+    })
+  },
+
   // 递交更新
   saveChanges() {
     log.info('用户保存变更')
@@ -156,5 +171,43 @@ Page({
     wx.navigateTo({
       url: url,
     })
-  }
+  },
+
+   // Dialog相关
+   openWarningDialog(e) {
+    let ruleId = e.currentTarget.dataset.rid
+    this.setData({
+      showDeleteModal : true
+    })
+  },
+
+  // 解除订阅
+  removeSubscription() {
+    let ruleId = this.data.subscription.subInfo.id
+    let areaId = this.data.subscription.aid
+    let projectId = this.data.subscription.pid
+
+    log.info(`解除订阅: ruleId: ${ruleId}, areaId: ${areaId}, projectId: ${projectId}`)
+
+    let self = this
+    subHelper
+      .unsubscribeThenSyncUp(ruleId, areaId, projectId)
+      .then((res) => {
+        log.info('unsubscribeThenSyncUp 成功')
+
+        // self.loadRules()
+        self.hideDeleteModal()
+        wx.redirectTo({
+          url: '/pages/subscribe/subscribe',
+        })
+      })
+      .catch((err) => {
+        log.error('unsubscribeThenSyncUp 失败')
+        log.error(err)
+        console.log(err)
+      })
+  },
+
+  
+
 })
