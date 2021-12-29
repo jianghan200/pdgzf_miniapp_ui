@@ -7,14 +7,6 @@
 
 <scroll-view scroll-y style="height:calc(100vh - {{CustomBar}}px)">
   <view class="p-title">{{subscription.info.pName}}</view>
-  <button 
-      class="cu-btn cuIcon-deletefill icon shadow bg-red" 
-      catchtap="openWarningDialog" 
-      data-rid="{{subscription.subInfo.id}}"
-    >
-      <text class="cuIcon-setting text-white"></text>
-  </button>
-
   <!-- 导航至详情页 -->
   <view style="padding-left: 1rem;" bindtap="navToHouses">
    
@@ -76,6 +68,16 @@
       </block>
     </checkbox-group>
   </form>
+  
+  <!-- 取消订阅按钮 -->
+  <view style="padding: 10rpx;">
+    <button 
+      class="bg-red" 
+      style="height: 90rpx;"
+      catchtap="openWarningDialog" 
+      data-rid="{{subscription.subInfo.id}}"
+    ><text class="cuIcon-deletefill text-white"></text> 取消订阅</button>
+  </view>
 
   <!-- 确认按钮 -->
   <view style="padding: 10rpx;">
@@ -144,4 +146,3 @@
     </view>
   </view>
 </view>
-

@@ -49,7 +49,7 @@
           </view>
           <!-- 按钮区 -->
           <view style="display: flex; flex-direction: column">
-            <!-- 删除订阅 -->
+            <!-- 修改订阅 -->
             <button 
               class="cu-btn cuIcon-settings icon shadow bg-grey" 
               catchtap="editSubscription" 
@@ -66,26 +66,3 @@
 
 <!-- tabBar -->
 <tabBar bindswitchtab="redirect" tab="subscribe"></tabBar>
-
-<!-- 确认删除弹窗 -->
-<view class="cu-modal {{showModal ? 'show' : ''}}">
-  <view class="cu-dialog">
-    <!-- Dialog Header -->
-    <view class="cu-bar bg-white justify-end">
-      <view class="content">取消订阅</view>
-      <view class="action" bindtap="hideModal"><text class="cuIcon-close text-red"></text></view>
-    </view>
-    <view class="padding-xl">您确认取消订阅"{{selectedRule.info.pName}}"小区吗</view>
-    <!-- 按钮区 -->
-    <view class="cu-bar bg-white">
-      <view 
-        class="action margin-0 flex-sub solid-left text-orange text-bold" 
-        bindtap="removeSubscription"
-      >取消订阅</view>
-      <view 
-        class="action margin-0 flex-sub solid-left" 
-        bindtap="hideModal"
-      >留着吧</view>
-    </view>
-  </view>
-</view>

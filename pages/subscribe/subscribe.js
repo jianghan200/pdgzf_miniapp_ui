@@ -214,30 +214,6 @@ Page({
     })
   },
 
-  // 解除订阅
-  removeSubscription() {
-    let ruleId = this.data.selectedRule.subInfo.id
-    let areaId = this.data.selectedRule.aid
-    let projectId = this.data.selectedRule.pid
-
-    log.info(`解除订阅: ruleId: ${ruleId}, areaId: ${areaId}, projectId: ${projectId}`)
-
-    let self = this
-    subHelper
-      .unsubscribeThenSyncUp(ruleId, areaId, projectId)
-      .then((res) => {
-        log.info('unsubscribeThenSyncUp 成功')
-
-        self.loadRules()
-        self.hideModal()
-      })
-      .catch((err) => {
-        log.error('unsubscribeThenSyncUp 失败')
-        log.error(err)
-        console.log(err)
-      })
-  },
-
   // 在地图上查看某个小区
   seePointOnMap(e) {
     let id = e.currentTarget.dataset.id

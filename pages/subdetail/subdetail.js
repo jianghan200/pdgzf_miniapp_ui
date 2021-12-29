@@ -107,7 +107,7 @@ Page({
     })
   },
 
-  // 弹窗
+  // 取消订阅的确认弹窗
   openDeleteModal() {
     this.setData({
       showDeleteModal : true
@@ -195,8 +195,9 @@ Page({
       .then((res) => {
         log.info('unsubscribeThenSyncUp 成功')
 
-        // self.loadRules()
         self.hideDeleteModal()
+
+        // 触发subscribe页的onLoad方法，重新加载用户的最新订阅清单
         wx.redirectTo({
           url: '/pages/subscribe/subscribe',
         })
@@ -206,8 +207,5 @@ Page({
         log.error(err)
         console.log(err)
       })
-  },
-
-  
-
+  }
 })
