@@ -26,13 +26,19 @@
     "pages/links/links",
     "pages/article/article",
     "pages/about/about",
-    "pages/consult/consult"
+    "pages/consult/consult",
+    "pages/rentList/rentDetail",
+    "pages/rentList/rentCreate",
+    "pages/rentList/rentList"
   ],
-  "window":{
+  "window": {
     "navigationStyle": "custom"
   },
   "usingComponents": {
     "cu-custom": "/colorui/components/cu-custom"
+  },
+  "useExtendedLib": {
+    "weui": true
   },
   "sitemapLocation": "sitemap.json",
   "permission": {
@@ -40,6 +46,5 @@
       "desc": "您的位置将会被小程序使用"
     }
   },
-  "plugins": {
-  }
+  "plugins": {}
 }

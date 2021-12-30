@@ -16,9 +16,9 @@
     <view class="text-{{tab == 'newbee' ? 'black' : 'gray'}}">公租房新手村</view>
   </view>
 
-  <view class="action" bindtap="switchTab" data-tabname="subscribe">
-    <view class="cuIcon-{{tab == 'subscribe' ? 'favorfill' : 'favor'}} text-{{tab == 'subscribe' ? 'orange' : 'gray'}}"></view>
-    <view class="text-{{tab == 'subscribe' ? 'black' : 'gray'}}">关注房源</view>
+  <view class="action" bindtap="switchTab" data-tabname="rentList">
+    <view class="cuIcon-{{tab == 'rentList' ? 'favorfill' : 'favor'}} text-{{tab == 'subscribe' ? 'orange' : 'gray'}}"></view>
+    <view class="text-{{tab == 'rentList' ? 'black' : 'gray'}}">租房</view>
   </view>
 
   <view class="action" bindtap="switchTab" data-tabname="user">

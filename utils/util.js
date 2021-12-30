@@ -294,6 +294,59 @@ const convert2TecentMap = function(lng, lat) {
   }
 }
 
+function generateUuid(length=5){
+  return Number(Math.random().toString().substr(3, length) + Date.now()).toString(36);
+} 
+
+function getTimeDistance(str) {
+  // 2014-10-29T18:00:00
+  str = str.substr(0,19)
+  // console.log("Date input", str)
+  var ymd = str.split("T")[0];
+  var ymd_arr = ymd.split("-");
+  var hms = str.split("T")[1];
+  var hms_arr = hms.split(":");
+
+  var date1 = new Date(ymd_arr[0], ymd_arr[1] - 1, ymd_arr[2], hms_arr[0], hms_arr[1], hms_arr[2]);
+  var date2 = new Date();    //结束时间  
+  date2.setHours(date2.getHours() - 8);
+  var date3 = date2.getTime() - date1.getTime();  //时间差的毫秒数  
+  //计算出相差天数  
+  var days = Math.floor(date3 / (24 * 3600 * 1000));
+
+  //计算出小时数  
+
+  var leave1 = date3 % (24 * 3600 * 1000);    //计算天数后剩余的毫秒数  
+  var hours = Math.abs(Math.floor(leave1 / (3600 * 1000)));
+  //计算相差分钟数  
+  var leave2 = leave1 % (3600 * 1000);        //计算小时数后剩余的毫秒数  
+  var minutes = Math.floor(leave2 / (60 * 1000))
+  //计算相差秒数  
+  var leave3 = leave2 % (60 * 1000);      //计算分钟数后剩余的毫秒数  
+  var seconds = Math.round(leave3 / 1000);
+  //alert(" 相差 "+days+"天 "+hours+"小时 "+minutes+" 分钟"+seconds+" 秒");
+
+  if (days > 0) {
+    if (days / 365 >= 1) {
+      return Math.floor(days / 365) + "年前";
+    } else {
+      return days + "天前";
+    }
+  } else {
+    if (hours > 0) {
+      return hours + "小时前";
+    } else {
+      if (minutes <= 3) {
+        return "刚刚";
+      } else {
+        return minutes + "分钟前";
+      }
+    }
+  }
+
+  return "刚刚";
+}
+
 module.exports = {
   formatTime,
   formatDate,
@@ -312,5 +365,7 @@ module.exports = {
   sliceOf : sliceOf,
   base64_encode : base64_encode,
   getTimeDistanceOf : getTimeDistanceOf,
-  convert2TecentMap : convert2TecentMap
+  convert2TecentMap : convert2TecentMap,
+  generateUuid : generateUuid,
+  getTimeDistance : getTimeDistance
 }

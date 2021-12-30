@@ -1,0 +1,34 @@
+<wxs src="../../utils/tool.wxs" module="tools" />
+
+<view style="height: 100px;"></view>
+
+<view style='background:#fff;padding:0px 20px;'>
+  <view style="width:100%;height:10px;background:#fff;"></view>
+  
+  <input model:value="{{ title }}" style="width:100%;background: #fff;font-size:14px;height:40px;line-height:40px;" placeholder="标题" />
+	<view style="width:100%;height:1px;background:#ccc;"></view>
+  <view>
+    <textarea model:value="{{ content }}"  maxlength="10000" placeholder="内容" name="textarea" auto-height='true' style="width:100%;background: #fff;font-size:14px;padding-top:10px;" />
+  </view> 
+  <view style="width:100%;margin-top:50px;margin-left:-8px;background:#fff;">
+    <view class="weui-uploader">
+        <view class="weui-uploader__bd">
+            <view class="weui-uploader__files" id="uploaderFiles">
+                <block wx:for="{{files}}" wx:key="*this">
+                    <view class="weui-uploader__file" bindtap="previewImage" id="img_{{index}}">
+                        <image class="weui-uploader__img" src="{{item}}" mode="aspectFill" />
+                    </view>
+                </block>
+            </view>
+            <view wx:if="{{files.length < maxfile}}" class="weui-uploader__input-box">
+                <view class="weui-uploader__input" bindtap="chooseImage"></view>
+            </view>
+        </view>
+    </view>
+  </view>
+  <view style="height:20px;"></view>
+</view>
+
+<view style='padding:20px;'>
+    <view disabled="{{isPosting}}"  bindtap="btnPost" style='width:100%;height:44px;line-height:44px;text-align:center;color:#fff;background:#000;font-size:14px;border-radius:22px;'>发布</view>
+</view>   
