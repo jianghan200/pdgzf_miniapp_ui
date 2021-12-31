@@ -5,7 +5,7 @@
 
 <view class="cu-bar bg-white solid-bottom">
   <view class='action'>
-    <text class='cuIcon-titles text-orange '></text> 案例类卡片
+    <text class='cuIcon-titles text-orange '></text> 最新房源信息
   </view>
   <button class="cu-btn text-bold icon bg-black margin-left" bindtap="addNewRent">
         <text class="cuIcon-add text-white"></text>

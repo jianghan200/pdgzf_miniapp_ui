@@ -1,5 +1,12 @@
 <wxs src="../../utils/tool.wxs" module="tools" />
 
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold">{{tools.sliceOf(pName)}}</view>
+  </view>
+</cu-custom>
+
 <view style="height: 50px;"></view>
 <view class="cu-bar bg-white solid-bottom {{isCard?'margin-top':''}}">
   <view class='action'>

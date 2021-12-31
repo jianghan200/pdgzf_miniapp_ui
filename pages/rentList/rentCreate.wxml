@@ -1,6 +1,11 @@
 <wxs src="../../utils/tool.wxs" module="tools" />
 
-<view style="height: 100px;"></view>
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold">{{tools.sliceOf(pName)}}</view>
+  </view>
+</cu-custom>
 
 <view style='background:#fff;padding:0px 20px;'>
   <view style="width:100%;height:10px;background:#fff;"></view>

@@ -100,6 +100,17 @@ Page({
     this.loadHomePageData()
   },
 
+   // Bottom Bar的方法
+   redirect: function(e) {
+    const newTab = e.detail
+    if (newTab != 'rentList') {
+      const url = `/pages/${newTab}/${newTab}`
+      wx.redirectTo({
+        url: url
+      })
+    }
+  },
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
