@@ -1093,7 +1093,7 @@ const sendCommentOnSomeProject = function(pid, comments) {
       data : {
         action: "NEW",
         uid: app.globalData.userinfo.unionId,
-        aid: generateArticleIdOf(pid), 
+        aid: pid, 
         comment: comments,
         avatarUrl: app.globalData.avatarUrl,
         nickName: app.globalData.nickname,
@@ -1132,7 +1132,7 @@ const getCommentsOf = function(pid) {
       name: 'comment',
       data: {
         action: "GET_LIST",
-        aid: generateArticleIdOf(pid)
+        aid: pid
       },
       success: function(res) {
         log.info('收到云后台回复')
@@ -1155,7 +1155,7 @@ const getCommentsOf = function(pid) {
         }
       },
       fail: function(err) {
-        log.error(`未能获得评论列表（${generateArticleIdOf(pid)}）`)
+        log.error(`未能获得评论列表（${pid}）`)
         log.error(err)
   
         reject([])

@@ -84,7 +84,7 @@ Page({
 
       let pId = options.pid
       // 使用pId拿到comments
-      self.loadCommentList(pId)
+      self.loadCommentList(utils.generateArticleIdOf(pId))
       // 首先locate社区
       let areaOpt = 
         allProjects.find(area => {
@@ -516,7 +516,7 @@ Page({
             })
 
             requests
-              .sendCommentOnSomeProject(self.data.pId, self.data.myComments.trim())
+              .sendCommentOnSomeProject( utils.generateArticleIdOf(self.data.pId), self.data.myComments.trim())
               .then((res) => {
                 if (res) {
                   // 评论发表成功！
@@ -528,7 +528,7 @@ Page({
                     icon: 'success'
                   })
                   // 发表成功之后需要重新读取评论列表
-                  self.loadCommentList(self.data.pId)
+                  self.loadCommentList(utils.generateArticleIdOf(self.data.pId))
                 } else {
                   // 失败
                   log.error('发布失败')

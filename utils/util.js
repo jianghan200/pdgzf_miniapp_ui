@@ -347,6 +347,10 @@ function getTimeDistance(str) {
   return "刚刚";
 }
 
+const generateArticleIdOf = function(pid) {
+  return `pdgzf_project_${pid}`
+}
+
 module.exports = {
   formatTime,
   formatDate,
@@ -367,5 +371,6 @@ module.exports = {
   getTimeDistanceOf : getTimeDistanceOf,
   convert2TecentMap : convert2TecentMap,
   generateUuid : generateUuid,
-  getTimeDistance : getTimeDistance
+  getTimeDistance : getTimeDistance,
+  generateArticleIdOf: generateArticleIdOf
 }
