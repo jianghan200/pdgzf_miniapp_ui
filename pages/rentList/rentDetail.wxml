@@ -33,8 +33,8 @@
       {{article.content}}
     </view>
     <view class="grid flex-sub padding-lr {{isCard?'col-3 grid-square':'col-1'}}">
-      <view class="image">
-        <image src="{{article.images[0]}}" mode="widthFix"></image>
+      <view wx:for="{{article.images}}" class="image">
+        <image src="{{item}}" mode="widthFix"></image>
       </view>
     </view>
     <view class="text-gray text-sm text-right padding">
