@@ -39,7 +39,7 @@
     </view>
     <view class="text-gray text-sm text-right padding">
       <text class="cuIcon-attentionfill margin-lr-xs"></text> {{article.view}}
-      <text class="cuIcon-appreciatefill margin-lr-xs"></text> {{article.like_count}}
+      <!-- <text class="cuIcon-appreciatefill margin-lr-xs"></text> {{article.like_count}} -->
       <text class="cuIcon-messagefill margin-lr-xs"></text> {{article.comment_count}}
     </view>
     <view class="cu-list menu-avatar comment solids-top">
@@ -51,10 +51,10 @@
             {{item.comment}}
           </view>
           <view class="margin-top-sm flex justify-between">
-            <view class="text-gray text-df">{{item.create_gmt}}</view>
+            <view class="text-gray text-df">{{ item.timedistance }}</view>
             <view>
-              <text class="cuIcon-appreciatefill text-red"></text>
-              <text class="cuIcon-messagefill text-gray margin-left-sm"></text>
+              <!-- <text class="cuIcon-appreciatefill text-red"></text>
+              <text class="cuIcon-messagefill text-gray margin-left-sm"></text> -->
             </view>
           </view>
         </view>

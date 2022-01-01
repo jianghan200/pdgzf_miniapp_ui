@@ -33,7 +33,7 @@
             {{item.timedistance}}
             <view class="text-gray text-sm">
               <text class="cuIcon-attentionfill margin-lr-xs"></text> {{item.view}}
-              <text class="cuIcon-appreciatefill margin-lr-xs"></text> {{item.like_count}}
+              <!-- <text class="cuIcon-appreciatefill margin-lr-xs"></text> {{item.like_count}} -->
               <text class="cuIcon-messagefill margin-lr-xs"></text> {{item.comment_count}}
             </view>
           </view>

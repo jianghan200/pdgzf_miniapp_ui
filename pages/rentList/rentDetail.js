@@ -48,6 +48,13 @@ Page({
       console.log(res);
       //set article detail
       res.result.article.timedistance = util.getTimeDistance(res.result.article.create_gmt);
+      var list = res.result.article.comment;
+      if(list != null && list.length > 0){
+        for(var j = 0, len = list.length; j < len; j++) {
+          list[j]["create_gmt_simple"] = list[j].create_gmt.substr(0,10)
+          list[j]["timedistance"] = util.getTimeDistance(list[j]["create_gmt"]);
+        }
+      }
       this.setData({ article:res.result.article })
 
       // load comment 
@@ -94,6 +101,12 @@ Page({
         let comments = []
         console.log(`拿到评论列表`)
         console.log(list)
+        if(list != null && list.length > 0){
+          for(var j = 0, len = list.length; j < len; j++) {
+            list[j]["create_gmt_simple"] = list[j].create_gmt.substr(0,10)
+            list[j]["timedistance"] = util.getTimeDistance(list[j]["create_gmt"]);
+          }
+        }
         this.data.article.comment = list;
 
 

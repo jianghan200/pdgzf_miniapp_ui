@@ -52,9 +52,7 @@ exports.main = async (data, context) => {
   }
 
   if(data.action=="GET_LIST"){
-      comments = await cloud.database().collection('comment').where({aid: data.aid, 
-        comment:{$nin:[null]}
-      }).get()
+      comments = await cloud.database().collection('comment').where({aid: data.aid, comment:{$nin:[null]}}).get()
       return  {code: 200, msg:"评论列表获取成功", data:comments.data }
   }
 
@@ -71,6 +69,10 @@ exports.main = async (data, context) => {
         comment: data.comment,
         avatarUrl: data.avatarUrl, //评论者的头像地址
         nickName: data.nickName, //评论者的昵称
+        parent_comment_id: data.parent_comment_id,
+        comment_to_uid: data.comment_to_uid,
+        comment_to_user: data.comment_to_user,
+        like_count: 0,
         create_gmt: new Date(),
         update_gmt: new Date(),
       },
