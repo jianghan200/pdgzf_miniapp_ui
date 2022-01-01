@@ -3,7 +3,7 @@
 <cu-custom bgColor="bg-black" isBack="{{true}}">
   <view slot="backText">返回</view>
   <view slot="content">
-    <view class="text-white text-bold">{{tools.sliceOf(pName)}}</view>
+    <view class="text-white text-bold">{{pName}}</view>
   </view>
 </cu-custom>
 

@@ -7,13 +7,12 @@
   </view>
 </cu-custom>
 
-<view style="height: 50px;"></view>
 <view class="cu-bar bg-white solid-bottom {{isCard?'margin-top':''}}">
   <view class='action'>
     <text class='cuIcon-titles text-orange '></text> {{article.title}}
   </view>
   <view class='action'>
-    <switch class='sm' checked='{{isCard}}' bindchange='isCard'></switch>
+    <!-- <switch class='sm' checked='{{isCard}}' bindchange='isCard'></switch> -->
   </view>
 </view>
 <view class="cu-card dynamic {{isCard?'no-card':''}}">
