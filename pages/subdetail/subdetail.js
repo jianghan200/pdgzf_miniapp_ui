@@ -94,13 +94,15 @@ Page({
   // 不要的楼层
   setExcludedFloors(e) {},
 
-  // 弹窗
+  // 确认修改的弹窗
+  // 打开弹窗
   openModal() {
     this.setData({
       showModal : true
     })
   },
 
+  // 关闭弹窗
   hideModal() {
     this.setData({
       showModal : false
@@ -108,12 +110,14 @@ Page({
   },
 
   // 取消订阅的确认弹窗
-  openDeleteModal() {
+  // 打开弹窗
+  openDeleteModal(e) {
     this.setData({
       showDeleteModal : true
     })
   },
 
+  // 关闭弹窗
   hideDeleteModal() {
     this.setData({
       showDeleteModal : false
@@ -122,11 +126,10 @@ Page({
 
   // 递交更新
   saveChanges() {
-    log.info('用户保存变更')
-
     let self = this
     let pid = self.data.subscription.pid
     let pname = self.data.subscription.subInfo.name
+
     let payload = {}
     // 不能保存["1", "2"]，而是[1, 2]
     payload['targetType'] = JSON.stringify(self.data.newHuXings.map(str => Number(str)))
@@ -145,40 +148,37 @@ Page({
       payload['maxArea'] = self.data.areaCap
     }
 
+    log.info(`用户试图保存选房偏好: pid: ${pid}, pname: ${pname}, payload: ${JSON.stringify(payload)}`)
+
     requests
       .updateSubscription(pid, pname, payload)
       .then((res) => {
-        log.info('updateSubscription 成功')
+        log.info('选房偏好更新成功')
 
         wx.removeStorageSync('editingRule')
+
+        wx.showToast({
+          title: '更新成功',
+          icon: 'success'
+        })
+
         self.hideModal()
         wx.redirectTo({
           url: '/pages/subscribe/subscribe',
         })
       })
       .catch((err) => {
-        log.error('updateSubscription 失败')
+        log.error('选房偏好更次呢失败')
         log.error(err)
         // 请求失败
         console.log(err)
+        wx.showToast({
+          title: '更新失败',
+          icon: 'error'
+        })
+
         self.hideModal()
       })
-  },
-
-  // 导航至小区详情页
-  navToHouses(e) {
-    let url = '../project/project?pid=' + this.data.subscription.pid
-    wx.navigateTo({
-      url: url,
-    })
-  },
-
-   // Dialog相关
-   openWarningDialog(e) {
-    let ruleId = e.currentTarget.dataset.rid
-    this.setData({
-      showDeleteModal : true
-    })
   },
 
   // 解除订阅
@@ -207,5 +207,13 @@ Page({
         log.error(err)
         console.log(err)
       })
+  },
+
+  // 导航至小区详情页
+  navToHouses(e) {
+    let url = '../project/project?pid=' + this.data.subscription.pid
+    wx.navigateTo({
+      url: url,
+    })
   }
 })

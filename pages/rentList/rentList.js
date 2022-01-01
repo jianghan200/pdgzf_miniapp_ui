@@ -26,7 +26,6 @@ Page({
   },
 
   addNewRent () {
-
     var target = null;
     target = "../rentList/rentCreate";
     wx.navigateTo({
@@ -86,10 +85,6 @@ Page({
     });
   },
 
-
-  /**
-   * 生命周期函数--监听页面加载
-   */
   onLoad: function (options) {
     let userinfo = app.globalData.userinfo;
     this.setData({
@@ -100,8 +95,8 @@ Page({
     this.loadHomePageData()
   },
 
-   // Bottom Bar的方法
-   redirect: function(e) {
+  // Bottom Bar的方法
+  redirect: function(e) {
     const newTab = e.detail
     if (newTab != 'rentList') {
       const url = `/pages/${newTab}/${newTab}`
@@ -111,51 +106,6 @@ Page({
     }
   },
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
   onShareAppMessage: function () {
 
   }

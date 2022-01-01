@@ -43,4 +43,4 @@
   </view>
 </view>
 <!-- tabBar -->
-<tabBar bindswitchtab="redirect" tab="subscribe"></tabBar>
+<tabBar bindswitchtab="redirect" tab="rentList"></tabBar>

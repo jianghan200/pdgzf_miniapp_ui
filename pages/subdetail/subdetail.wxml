@@ -74,7 +74,7 @@
     <button 
       class="bg-red" 
       style="height: 90rpx;"
-      catchtap="openWarningDialog" 
+      catchtap="openDeleteModal" 
       data-rid="{{subscription.subInfo.id}}"
     ><text class="cuIcon-deletefill text-white"></text> 取消订阅</button>
   </view>
@@ -141,7 +141,7 @@
       >取消订阅</view>
       <view 
         class="action margin-0 flex-sub solid-left" 
-        bindtap="hideModal"
+        bindtap="hideDeleteModal"
       >留着吧</view>
     </view>
   </view>

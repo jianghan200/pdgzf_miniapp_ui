@@ -17,8 +17,8 @@
   </view>
 
   <view class="action" bindtap="switchTab" data-tabname="rentList">
-    <view class="cuIcon-{{tab == 'rentList' ? 'favorfill' : 'favor'}} text-{{tab == 'subscribe' ? 'orange' : 'gray'}}"></view>
-    <view class="text-{{tab == 'rentList' ? 'black' : 'gray'}}">租房</view>
+    <view class="cuIcon-{{tab == 'rentList' ? 'shopfill' : 'shop'}} text-{{tab == 'rentList' ? 'orange' : 'gray'}}"></view>
+    <view class="text-{{tab == 'rentList' ? 'black' : 'gray'}}">短租转租</view>
   </view>
 
   <view class="action" bindtap="switchTab" data-tabname="user">

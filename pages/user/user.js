@@ -97,6 +97,13 @@ Page({
     })
   },
 
+  // Go to 我的关注列表
+  goToSubscriptions(e) {
+    wx.navigateTo({
+      url: '/pages/subscribe/subscribe',
+    })
+  },
+
   // Go to 我的反馈进度页
   gotoConsult(e) {
     wx.navigateTo({

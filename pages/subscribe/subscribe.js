@@ -8,7 +8,6 @@ const log = require('./../../utils/log')
 Page({
   data: {
     list: [],
-    showModal: false,
     selectedRule: null,
     // 跟请求是否成功相关的flag
     reqSuccessful : false,
@@ -226,33 +225,22 @@ Page({
     })
   },
 
-  // Dialog相关
-  openWarningDialog(e) {
-    let ruleId = e.currentTarget.dataset.rid
-    let selectedRule = this.data.list.find(rule => rule.subInfo.id == ruleId)
-    this.setData({
-      selectedRule : selectedRule,
-      showModal : true
-    })
-  },
-
-  hideModal() {
-    this.setData({
-      showModal : false,
-      selectedRule : null
-    })
-  },
-
-  // Bottom Bar的方法
-  redirect: function(e) {
-    const newTab = e.detail
-    if (newTab != 'subscribe') {
-      const url = `/pages/${newTab}/${newTab}`
-
-      wx.redirectTo({
-        url: url
-      })
+  // 返回我的页面
+  navigateBack(e) {
+    let currentPages = getCurrentPages()
+    let delta = 1
+    // 当前页面肯定是currentPages的最后一个element，没必要增加一个iteration
+    let index = currentPages.length - 2
+    while(currentPages[index] && currentPages[index].route === 'pages/subscribe/subscribe') {
+      delta++
+      index--
     }
+
+    log.info(`导航回到【我的】页面：delta: ${delta}, currentPages: ${currentPages.map(p => p.route).join(';')}`)
+    
+    wx.navigateBack({
+      delta: delta
+    });
   },
 
   // 转发
