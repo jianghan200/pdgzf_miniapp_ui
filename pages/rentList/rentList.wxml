@@ -26,9 +26,9 @@
     </view>
     <view class="cu-list menu-avatar">
       <view class="cu-item">
-        <view class="cu-avatar round lg" style="background-image:url({{item.avatarUrl}});"></view>
+        <view class="cu-avatar round lg" style="background-image:url({{item.user_avatar}});"></view>
         <view class="content flex-sub">
-          <view class="text-grey">{{userinfo.name}}</view>
+          <view class="text-grey">{{item.user_nickname}}</view>
           <view class="text-gray text-sm flex justify-between">
             {{item.timedistance}}
             <view class="text-gray text-sm">

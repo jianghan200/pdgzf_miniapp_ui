@@ -130,10 +130,11 @@ Page({
 
   postNewArticle(){
     var that = this;
+    console.log(that.data.userinfo);
     var postData = {
       uid: that.data.userinfo.unionId,
-      userNickName: that.data.userinfo.name,
-      userAvatarUrl: null,
+      user_nickname: that.data.userinfo.name,
+      user_avatar: that.data.userinfo.avatarUrl,
       complex_id: 1,
       title: that.data.title,
       content: that.data.content,

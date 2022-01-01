@@ -27,7 +27,7 @@ exports.main = async (data, context) => {
             data: {
               title: data.title,
               content: data.content,
-              sub_cat: data.sub_cat,
+              // sub_cat: data.sub_cat,
               update_gmt: new Date()
             },
             success: function(res) {
@@ -45,24 +45,26 @@ exports.main = async (data, context) => {
           dbResult = await db.collection('article').add({
             data: {
               uid: data.uid,
-              userNickName: data.userNickName,
-              userAvatarUrl: data.userAvatarUrl,
+              user_nickname: data.user_nickname,
+              user_avatar: data.user_avatar,
               complex_id: data.complex_id,
+
               title: data.title,
               content: data.content,
+              images: data.images,
               // sub_cat: data.sub_cat,
               create_gmt: new Date(),
               update_gmt: new Date(),
               is_deleted: false,
               type: data.type,
+              view_count: 0,
+              comment_count: 0,
+              like_count: 0,
               agree_count: 0,
               agree_weight: 0,
               disagree_count: 0,
               disagree_weight: 0,
-              view: 0,
-              comment_count: 0,
-              like_count: 0,
-              images: data.images,
+              
               visible_to:["游客"],
               votable_to:["游客"]
             }
