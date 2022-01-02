@@ -18,7 +18,12 @@ Page({
     // 是否打开manualStartDate的Dialog
     openManualStartDateDialog : false,
     today: today,
-    hasStartDateCode: -1
+    hasStartDateCode: -1,
+    // 资格日button的信息
+    buttonInfo: {
+      text: '',
+      color: ''
+    }
   },
   
   onLoad: function (options) {
@@ -32,7 +37,8 @@ Page({
     this.setData({
       userinfo: userinfo,
       startDate: this.resolveStartDate(hasStartDateCode),
-      hasStartDateCode: hasStartDateCode
+      hasStartDateCode: hasStartDateCode,
+      buttonInfo: this.resolveButtonInfo(hasStartDateCode, app.globalData.userinfo.type === 2)
     })
   },
 
@@ -43,13 +49,23 @@ Page({
       // 说明用户输入过资格日
       startDate = app.globalData.userinfo.manualStartDate
     } else if (hasStartDateCode == 0) {
-      // 说明这个人是vip
+      // 说明这个人是vip且开启了自动选房（有自己的真实资格日）
       startDate = utils.getOrElse(app.globalData.userinfo.startDate, '').split(' ')[0]
     } else {
       // 这个人是普通用户，且没有输入过资格日
       startDate = utils.formatDate(constants.mockStartDate)
     }
     return startDate
+  },
+
+  // 根据hasStartDateCode以及用户是否为vip设置资格日button应该显示的内容
+  resolveButtonInfo(hasStartDateCode, isVip) {
+    const startDate = this.resolveStartDate(hasStartDateCode)
+    const buttonInfo = {
+      text: `${hasStartDateCode === -1 ? '模拟' : ''}资格日：${startDate} ${hasStartDateCode === 0 ? '' : '点击重置'}`,
+      color: `${isVip ? 'yellow' : 'grey'}`
+    }
+    return buttonInfo
   },
 
   // 读取用户会员信息

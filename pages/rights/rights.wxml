@@ -19,25 +19,63 @@
   style="display: flex; flex-direction: column; align-items: center; justify-content: center;"
 >
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
-    1. 无需登陆官网, 自动排队, 省心选房
+    1. 查看各个公租房小区的户型图、看房视频，实地看房笔记（持续更新中～）
   </view>
 
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
-    2. 免费获得邮件订阅, 每日早晚看到排队情况
+    2. 查看小区统计信息的更多核心指标
   </view>
 
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
-    3. 获取各个公租房小区的户型图、看房视频（持续更新中～）
+    3. 提新功能需求，优先收集VIP关注的房源信息
   </view>
 
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
-    4. 可以向真人咨询，排坑答疑
+    4. 可向真人微信咨询，排坑答疑（每晚统一答复）
   </view>
 
-  <view class="text-bold text-xl" style="padding-top: 0.5rem;" wx:if="{{isIOS}}">
-    5. IOS系统无法支持付费功能，如有问题，请联系：meo365
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    5. 可开启自动排队, 以免遗漏心仪房源（附赠）
   </view>
-  <view class="text-bold text-xl" style="padding-top: 0.5rem;" wx:else>
-    5. 当前优惠价格99元，我们正快速迭代，将上线更多新功能！
+
+  <!-- <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    6. 免费获得邮件订阅, 每日早晚看到排队情况（附赠）
+  </view> -->
+
+  <!-- 付款按钮 -->
+  <view style="padding: 10rpx;" wx:if="{{!isVip}}">
+    <button style="height: 90rpx;" class="bg-black" bindtap="showConfirmationModal">
+      <text class="cuIcon-vip" style="color: gold; font-weight: 500"></text> 开通VIP
+    </button>
+  </view>
+
+  <view class="text-bold text-gray" style="padding-top: 0.5rem;">
+    如果官方系统发生技术升级，附赠功能可能会因为技术限制而取消
+  </view>
+
+  <view class="text-bold text-gray" style="padding-top: 0.5rem;" wx:if="{{isIOS}}">
+    IOS系统无法支持付费功能，如有问题，请联系：meo365
+  </view>
+  <view class="text-bold text-gray" style="padding-top: 0.5rem;" wx:else>
+    当前优惠价格99元，我们正快速迭代，将上线更多新功能！
   </view>
 </scroll-view>
+
+<!-- 确认付款弹窗 -->
+<view class="cu-modal {{showModal ? 'show' : ''}}">
+  <view class="cu-dialog">
+    <!-- Dialog Header -->
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">开通VIP</view>
+      <view class="action" bindtap="hideModal"><text class="cuIcon-close text-red"></text></view>
+    </view>
+    <view class="padding-xl">^ __ ^离公租房就差一步啦～</view>
+    <!-- 按钮们 -->
+    <view class="cu-bar bg-white">
+      <view class="action margin-0 flex-sub text-green " bindtap="pay">
+        <text class="cuIcon-appreciatefill"></text> 给我升级
+      </view>
+      <view class="action margin-0 flex-sub solid-left" bindtap="hideModal">残忍拒绝</view>
+    </view>
+  </view>
+</view>

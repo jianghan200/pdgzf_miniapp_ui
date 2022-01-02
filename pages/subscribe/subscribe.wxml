@@ -24,9 +24,16 @@
     style="height:calc(100vh - 100px - calc(100rpx + env(safe-area-inset-bottom) / 2))"
     wx:if="{{reqSuccessful}}"
   >
-    <view class="text-bold" style="align-items: center;" wx:if="{{isVip}}">
-      <span class="padding-right" style="padding-left: 1rem;">{{ openAutoSelection ? '已开启自动选房' : '已关闭自动选房' }}</span>
+    <!-- 已经开启了自动选房的人看到的 -->
+    <view class="text-bold" style="align-items: center;" wx:if="{{ hasAccountInfo && isVip }}">
+      <span class="padding-right" style="padding-left: 1rem;">{{ openAutoSelection ? '已开启自动排队' : '已关闭自动排队' }}</span>
       <switch class="radius sm" checked="{{openAutoSelection}}" bindchange="changeAutoSelectionStatus"></switch>
+      <span style="margin-left: 10px; color: cornflowerblue;" bindtap="goToVipInfo">【修改信息】</span>
+    </view>
+
+    <!-- 未看到自动选房的VIP看到的 -->
+    <view class="text-bold" style="align-items: center;" wx:if="{{ !hasAccountInfo && isVip }}">
+      <view style="margin-left: 10px; color: cornflowerblue;" bindtap="goToVipInfo">【点击开通自动选房】</view>
     </view>
 
     <block
@@ -64,6 +71,3 @@
     </block>
   </scroll-view>
 </movable-area>
-
-<!-- tabBar -->
-<tabBar bindswitchtab="redirect" tab="subscribe"></tabBar>

@@ -4,17 +4,7 @@
 <view class="userinfo">
   <view class="{{vipInfo.type == 2 ? 'vip-' : ''}}avatar"><open-data type="userAvatarUrl"></open-data></view>
   <open-data type="userNickName" lang="zh_CN" class="{{vipInfo.type == 2 ? 'vip-' : ''}}nickname"></open-data>
-  <button 
-    wx:if="{{vipInfo.type == 0}}" 
-    class="cu-btn round line-grey button-hover shadow text-bold"
-    bindtap="overrideStartDate"
-  >{{ hasStartDateCode == -1 ? '模拟' : '' }}资格日：{{startDate}} 点击重置</button>
-  <button 
-    wx:if="{{vipInfo.type == 1}}" 
-    class="cu-btn round line-purple button-hover shadow text-bold"
-    bindtap="overrideStartDate"
-  >邮件订阅用户({{ hasStartDateCode == -1 ? '模拟' : '' }}资格日：{{startDate}} 点击重置)</button>
-  <button wx:if="{{vipInfo.type == 2}}" class="cu-btn round line-yellow button-hover shadow text-bold">选房资格日：{{startDate}}</button>
+  <button class="cu-btn round line-{{buttonInfo.color}} text-bold">{{buttonInfo.text}}</button>
 </view>
 
 <movable-area class="movable-area">
@@ -24,26 +14,26 @@
   <!-- 内容 -->
   <view class="cu-list menu sm-border card-menu margin-top">
     <!-- VIP -->
-    <view class="cu-item arrow" wx:if="{{vipInfo.type != 2}}" bindtap="gotoVipPage" style="background-color: currentColor;">
+    <!-- <view class="cu-item arrow" wx:if="{{vipInfo.type != 2}}" bindtap="gotoVipPage" style="background-color: currentColor;">
       <view class="content">
         <text class="cuIcon-vip text-bold" style="color: goldenrod;"></text>
         <text class="text-bold" style="color: goldenrod;">成为自动选房VIP</text>
       </view>
-    </view>
+    </view> -->
 
     <!-- 如果已经是VIP了，可以修改自己的信息 -->
-    <view class="cu-item arrow" wx:if="{{vipInfo.type == 2}}" bindtap="goEditInfo" style="background-color: currentColor;">
+    <!-- <view class="cu-item arrow" wx:if="{{vipInfo.type == 2}}" bindtap="goEditInfo" style="background-color: currentColor;">
       <view class="content">
         <text class="cuIcon-peoplefill text-bold" style="color: goldenrod;"></text>
         <text class="text-bold" style="color: goldenrod;">修改个人信息</text>
       </view>
-    </view>
+    </view> -->
 
     <!-- 查看会员权益 -->
     <view class="cu-item arrow" bindtap="goToRights" style="background-color: currentColor;">
       <view class="content">
         <text class="cuIcon-vip text-bold" style="color: goldenrod;"></text>
-        <text class="text-bold" style="color: goldenrod;">会员权益</text>
+        <text class="text-bold" style="color: goldenrod;">成为会员(查看权益)</text>
       </view>
     </view>
 
@@ -51,7 +41,7 @@
     <view class="cu-item arrow" bindtap="goToSubscriptions">
       <view class="content">
         <text class="cuIcon-likefill text-bold text-pink"></text>
-        <text class="text-bold">我的关注列表</text>
+        <text class="text-bold">关注房源列表</text>
       </view>
     </view>
 

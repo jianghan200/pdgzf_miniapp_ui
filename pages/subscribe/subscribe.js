@@ -13,7 +13,9 @@ Page({
     reqSuccessful : false,
     isVip: false,
     // 是否开启自动选房（全局）
-    openAutoSelection : false
+    openAutoSelection : false,
+    // 此人是否有账号信息？如果有证明是个vip且已经开通过个人选房
+    hasAccountInfo: false
   },
 
   onLoad: function (options) {
@@ -24,7 +26,8 @@ Page({
 
       this.setData({
         isVip : true,
-        openAutoSelection : app.globalData.userinfo.autoChoose == 0 ? false : true
+        openAutoSelection : app.globalData.userinfo.autoChoose == 0 ? false : true,
+        hasAccountInfo : app.globalData.userinfo.account == null ? false : true
       })
     }
     // 最新的订阅数据
@@ -120,6 +123,13 @@ Page({
       app.globalData.userinfo.autoChoose = afterChangeStatus
     }).catch((err) => {
       console.log(err)
+    })
+  },
+
+  // 导航至vip信息录入页
+  goToVipInfo(e) {
+    wx.navigateTo({
+      url: '/pages/vip/vip?mode=edit',
     })
   },
 

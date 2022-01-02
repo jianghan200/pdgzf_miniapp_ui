@@ -1,21 +1,35 @@
 // pages/rent/rentList.js
-var app = getApp();
-var util = require('../../utils/util.js');
+const app = getApp();
+const util = require('../../utils/util');
+const log = require('../../utils/log')
+const requestHelper = require('../../utils/request')
 
 Page({
   data: {
-    isCard:true,
+    // 用于计算scroller的高度
+    CustomBar: app.globalData.CustomBar,
+    isCard: true,
     articles: [1, 2],
     allArticles: [],
     page: 0,    //分页记录数
     pageSize: 20,   //分页大小
     refreshData: true,
   },
+
+  onLoad: function (options) {
+    log.info('onLoad rentList')
+
+
+
+    this.loadHomePageData()
+  },
+
   isCard(e) {
     this.setData({
       isCard: e.detail.value
     })
   },
+
   goToDetail (event) {
     var passIn = event.currentTarget.dataset;
     var target = null;
@@ -85,17 +99,7 @@ Page({
     });
   },
 
-  onLoad: function (options) {
-    let userinfo = app.globalData.userinfo;
-    this.setData({
-      userinfo: userinfo
-    });
-    console.log(userinfo)
-
-    this.loadHomePageData()
-  },
-
-  // Bottom Bar的方法
+  // Bottom Bar的方法, 导航至其他tab
   redirect: function(e) {
     const newTab = e.detail
     if (newTab != 'rentList') {
@@ -106,6 +110,7 @@ Page({
     }
   },
 
+  // 分享
   onShareAppMessage: function () {
 
   }

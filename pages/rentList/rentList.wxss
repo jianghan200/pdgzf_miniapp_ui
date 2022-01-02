@@ -1,1 +1,5 @@
-/* pages/rent/rentList.wxss */
+.title {
+  font-size: larger;
+  font-weight: 500;
+  padding: 1rem;
+}

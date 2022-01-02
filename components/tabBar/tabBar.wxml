@@ -1,7 +1,7 @@
 <view class="cu-bar tabbar bg-white shadow foot">
   <view class="action" bindtap="switchTab" data-tabname="today">
     <view class="cuIcon-{{tab == 'today' ? 'homefill' : 'home'}} text-{{tab == 'today' ? 'orange' : 'gray'}}"></view>
-    <view class="text-{{tab == 'today' ? 'black' : 'gray'}}">今日可选房源</view>
+    <view class="text-{{tab == 'today' ? 'black' : 'gray'}}">今日房源</view>
   </view>
 
   <view class="action" bindtap="switchTab" data-tabname="allProjects">
@@ -18,7 +18,7 @@
 
   <view class="action" bindtap="switchTab" data-tabname="rentList">
     <view class="cuIcon-{{tab == 'rentList' ? 'shopfill' : 'shop'}} text-{{tab == 'rentList' ? 'orange' : 'gray'}}"></view>
-    <view class="text-{{tab == 'rentList' ? 'black' : 'gray'}}">短租转租</view>
+    <view class="text-{{tab == 'rentList' ? 'black' : 'gray'}}">市场租房</view>
   </view>
 
   <view class="action" bindtap="switchTab" data-tabname="user">

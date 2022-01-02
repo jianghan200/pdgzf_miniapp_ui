@@ -1,27 +1,31 @@
-<wxs src="../../utils/tool.wxs" module="tools" />
-<!-- 
-<view style="height: 50px;"></view> -->
-<cu-custom bgColor="bg-gradual-pink" isBack="{{false}}"><view slot="backText">返回</view><view slot="content">卡片</view></cu-custom>
+<!-- 占位符 -->
+<view style="height: 2.5rem;"></view>
+
+<!-- 房源列表 -->
+<view class="title">市场租房</view>
 
 <view class="cu-bar bg-white solid-bottom">
   <view class='action'>
     <text class='cuIcon-titles text-orange '></text> 最新房源信息
   </view>
   <button class="cu-btn text-bold icon bg-black margin-left" bindtap="addNewRent">
-        <text class="cuIcon-add text-white"></text>
-      </button>
-  <!-- <view class='action'>
-    <switch class='sm' checked='{{isCard}}' bindchange='isCard'></switch>
-  </view> -->
+    <text class="cuIcon-add text-white"></text>
+  </button>
 </view>
 
-<view wx:for="{{articles}}" wx:key="_id"  bindtap="goToDetail" data-id="{{item._id}}" class="cu-card case {{isCard?'no-card':''}}">
+<scroll-view 
+  wx:for="{{ articles }}" 
+  wx:key="_id"  
+  bindtap="goToDetail" 
+  data-id="{{item._id}}" 
+  class="cu-card case {{ isCard? 'no-card' : '' }}"
+>
   <view class="cu-item shadow">
     <view class="image">
-      <image src="{{item.images[0]}}" mode="widthFix"></image>
+      <image src="{{ item.images[0] }}" mode="widthFix"></image>
       <view class="cu-tag bg-blue">史诗</view>
       <view class="cu-bar bg-shadeBottom">
-        <text class="text-cut">{{item.title}}</text>
+        <text class="text-cut">{{ item.title }}</text>
       </view>
     </view>
     <view class="cu-list menu-avatar">
@@ -41,6 +45,6 @@
       </view>
     </view>
   </view>
-</view>
+</scroll-view>
 <!-- tabBar -->
 <tabBar bindswitchtab="redirect" tab="rentList"></tabBar>

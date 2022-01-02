@@ -15,6 +15,7 @@ Page({
     showErrorModal: false,
     errorMessage: '',
     showModal: false,
+    showIntroModal: false,
     // 跟当前的模式相关的变量
     isVip: false
   },
@@ -43,29 +44,22 @@ Page({
   },
 
   // 填写信息的handler
-  // fillName(e) {},
-
   fillEmail(e) {},
-
   fillAccount(e) {},
-
   fillPassword(e) {},
-
-  // 查看VIP的权益，导航至权益页
-  goToRights() {
-    wx.navigateTo({
-      url: './../../pages/rights/rights',
-    })
-  },
 
   // 开启支付，递交用户信息
   submit(e) {
-    log.info('开启vip支付')
+    log.info('用户递交信息，即将开始检查用户输入')
     if (this.checkInputs()) {
       // 通过了输入检查
+      log.info('通过了用户输入')
+
       this.showConfirmationModal()
     } else {
       // 输入检查失败
+      log.error('未通过输入检查')
+
       this.showErrorModal(this.hasEmptyField() ? '所有条目均为必填' : '请正确填写邮箱地址')
     }
   },
@@ -82,94 +76,45 @@ Page({
       (this.data.password.trim() == '')
   },
 
-  // 支付
   // submit已经检查了用户的输入
-  pay() {
-    if (!this.data.isVip) {
-      let self = this
-      // 必须先update用户信息，再完成付款
-      // 先显示loading动画
-      wx.showLoading({
-        title: '处理中',
+  updateAccountInfo() {
+    // 是VIP回来更改自己的数据
+    // 先显示loading动画
+    wx.showLoading({
+      title: '处理中',
+    })
+    let self = this
+    requests
+      .updateUserInfo(self.data.email, self.data.account, self.data.password)
+      .then((res) => {
+        log.info('updateUserInfo 成功')
+        // 隐藏loading动画
+        wx.hideLoading()
+        // 提示用户成功
+        wx.showToast({
+          title: '信息更新成功',
+          icon: 'success'
+        })
+        self.hideModal()
+        // 将mem中的userinfo更新
+        // 唯独不能把密码暴露
+        app.globalData.userinfo.email = self.data.email
+        app.globalData.userinfo.account = self.data.account
+        app.globalData.userinfo.type = 2
+        // redirect而不是导航到user主页
+        wx.redirectTo({
+          url: '/pages/user/user',
+        })
       })
-      requests
-        .updateUserInfo(self.data.email, self.data.account, self.data.password)
-        .then((res) => {
-          log.info('updateUserInfo 成功')
-          // 隐藏loading动画
-          wx.hideLoading()
-          // 信息update成功，开始付款
-          payHelper.pay(1).then((res) => {
-            log.info('pay(1) 成功')
-            // 关闭弹窗
-            self.hideModal()
-            // 支付成功
-            wx.showToast({
-              title: '支付成功！',
-              icon: 'success'
-            })
-            // 将mem中的userinfo更新
-            // 唯独不能把密码暴露
-            app.globalData.userinfo.email = self.data.email
-            app.globalData.userinfo.account = self.data.account
-            app.globalData.userinfo.type = 2
-            // redirect而不是导航到user主页
-            wx.redirectTo({
-              url: '/pages/user/user',
-            })
-          }).catch((err) => {
-            log.error('pay(1) 失败')
-            log.error(err)
-            console.log(err)
-            // 隐藏loading动画
-            wx.hideLoading()
-            // 关闭弹窗
-            self.hideModal()
-            // 支付失败
-            wx.showToast({
-              title: '支付失败'
-            })
-          })
-        })
-    } else {
-      // 是VIP回来更改自己的数据
-      // 先显示loading动画
-      wx.showLoading({
-        title: '处理中',
+      .catch((err) => {
+        log.error('updateUserInfo 失败')
+        log.error(err)
+        // 隐藏loading动画
+        wx.hideLoading()
+        // 处理更新失败
+        self.hideModal()
+        self.showErrorModal(err)
       })
-      let self = this
-      requests
-        .updateUserInfo(self.data.email, self.data.account, self.data.password)
-        .then((res) => {
-          log.info('updateUserInfo 成功')
-          // 隐藏loading动画
-          wx.hideLoading()
-          // 提示用户成功
-          wx.showToast({
-            title: '信息更新成功',
-            icon: 'success'
-          })
-          self.hideModal()
-          // 将mem中的userinfo更新
-          // 唯独不能把密码暴露
-          app.globalData.userinfo.email = self.data.email
-          app.globalData.userinfo.account = self.data.account
-          app.globalData.userinfo.type = 2
-          // redirect而不是导航到user主页
-          wx.redirectTo({
-            url: '/pages/user/user',
-          })
-        })
-        .catch((err) => {
-          log.error('updateUserInfo 失败')
-          log.error(err)
-          // 隐藏loading动画
-          wx.hideLoading()
-          // 处理更新失败
-          self.hideModal()
-          self.showErrorModal(err)
-        })
-    }
   },
 
   // Modal相关
@@ -187,12 +132,20 @@ Page({
     })
   },
 
+  // 展示自动选房介绍弹窗
+  openIntroModal() {
+    this.setData({
+      showIntroModal: true
+    })
+  },
+
   // 关闭所有弹窗
   hideModal() {
     this.setData({
       showErrorModal: false,
       errorMessage: '',
-      showModal: false
+      showModal: false,
+      showIntroModal: false
     })
   }
 })
