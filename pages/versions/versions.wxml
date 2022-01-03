@@ -10,6 +10,22 @@
   <view class="cu-item text-brown">
     <view class="bg-brown content shadow">
       <view class="cu-capsule radius">
+        <view class="cu-tag bg-white text-brown">v2.0.0</view>
+        <view class="cu-tag line-white">2022/01/03</view>
+      </view>
+      <view class="margin-top-sm text-content">
+        <view>1. 【我的收藏】被放入【我的】菜单中</view>
+        <view>2. 成为VIP不需要提供个人信息</view>
+        <view>3. 添加了对“自动排队”业务的描述</view>
+        <view>4. VIP可选择使用“自动排队”（自动排队需要输入额外信息）</view>
+        <view>5. 添加【市场租房】模块，主要针对短租/转租场景。支持房源的图文信息的浏览、发布、评论</view>
+      </view>
+    </view>   
+  </view>
+
+  <view class="cu-item text-brown">
+    <view class="bg-brown content shadow">
+      <view class="cu-capsule radius">
         <view class="cu-tag bg-white text-brown">v1.0.40</view>
         <view class="cu-tag line-white">2021/12/19</view>
       </view>
@@ -30,7 +46,7 @@
         <view>1. 在今日房源页添加了“通知”</view>
         <view>2. “我的”页面做了一些调整</view>
         <view>3. 添加了“关于”页</view>
-        <view>4. 部分小区会添加我们自己写的“看房分享”文章。</view>
+        <view>4. 部分小区会添加我们自己写的“看房分享”文章</view>
       </view>
     </view>   
   </view>
