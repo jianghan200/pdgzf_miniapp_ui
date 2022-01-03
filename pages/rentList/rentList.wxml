@@ -19,7 +19,7 @@
     <view class="cu-item shadow">
       <view class="image">
         <!-- 首图 -->
-        <image src="{{ item.images[0] }}" mode="widthFix"></image>
+        <image src="{{ item.images[0] }}" mode="aspectFill"></image>
         <!-- 标题 -->
         <view class="cu-bar bg-shadeBottom">
           <text class="text-cut">{{ item.title }}</text>

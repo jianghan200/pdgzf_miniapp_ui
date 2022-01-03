@@ -3,3 +3,7 @@
   font-weight: 500;
   padding: 1rem;
 }
+
+.image{
+  height:150px
+}
