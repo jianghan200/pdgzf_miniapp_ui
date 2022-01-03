@@ -496,12 +496,11 @@ Page({
   // 上传评论
   submitComment(e) {
     log.info('点击上传评论')
-
+    // 用户必须授权头像和用户名才能开始评论
     requests
       .getAvatarAndNickname()
       .then((res) => {
         if (res) {
-          // 用户必须授权头像和用户名才能开始评论
           // 用户信息上传云函数成功
           log.info('云函数调用成功（both get and post），新用户同意提供头像和昵称')
 
@@ -526,6 +525,10 @@ Page({
                   wx.showToast({
                     title: '发布成功',
                     icon: 'success'
+                  })
+
+                  self.setData({
+                    myComments: ''
                   })
                   // 发表成功之后需要重新读取评论列表
                   self.loadCommentList(utils.generateArticleIdOf(self.data.pId))

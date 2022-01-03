@@ -6,45 +6,48 @@
 
 <view class="cu-bar bg-white solid-bottom">
   <view class='action'>
-    <text class='cuIcon-titles text-orange '></text> 最新房源信息
+    <text class='cuIcon-titles text-green '></text> 点击 + 发布租房信息
   </view>
-  <button class="cu-btn text-bold icon bg-black margin-left" bindtap="addNewRent">
+  <button class="cu-btn text-bold icon bg-green margin" bindtap="goToAddNewPage">
     <text class="cuIcon-add text-white"></text>
   </button>
 </view>
 
-<scroll-view 
-  wx:for="{{ articles }}" 
-  wx:key="_id"  
-  bindtap="goToDetail" 
-  data-id="{{item._id}}" 
-  class="cu-card case {{ isCard? 'no-card' : '' }}"
->
-  <view class="cu-item shadow">
-    <view class="image">
-      <image src="{{ item.images[0] }}" mode="widthFix"></image>
-      <view class="cu-tag bg-blue">史诗</view>
-      <view class="cu-bar bg-shadeBottom">
-        <text class="text-cut">{{ item.title }}</text>
+<view wx:for="{{ allArticles }}" wx:key="_id">
+  <!-- 租房详情卡片 -->
+  <view class="cu-card case" bindtap="goToDetail" data-id="{{item._id}}">
+    <view class="cu-item shadow">
+      <view class="image">
+        <!-- 首图 -->
+        <image src="{{ item.images[0] }}" mode="widthFix"></image>
+        <!-- 标题 -->
+        <view class="cu-bar bg-shadeBottom">
+          <text class="text-cut">{{ item.title }}</text>
+        </view>
       </view>
-    </view>
-    <view class="cu-list menu-avatar">
-      <view class="cu-item">
-        <view class="cu-avatar round lg" style="background-image:url({{item.user_avatar}});"></view>
-        <view class="content flex-sub">
-          <view class="text-grey">{{item.user_nickname}}</view>
-          <view class="text-gray text-sm flex justify-between">
-            {{item.timedistance}}
-            <view class="text-gray text-sm">
-              <text class="cuIcon-attentionfill margin-lr-xs"></text> {{item.view}}
-              <!-- <text class="cuIcon-appreciatefill margin-lr-xs"></text> {{item.like_count}} -->
-              <text class="cuIcon-messagefill margin-lr-xs"></text> {{item.comment_count}}
+      <!-- 出租人信息 -->
+      <view class="cu-list menu-avatar">
+        <view class="cu-item">
+          <view class="cu-avatar round lg" style="background-image:url({{item.user_avatar}});"></view>
+          <view class="content flex-sub">
+            <view class="text-grey">{{ item.user_nickname }}</view>
+            <view class="text-gray text-sm flex justify-between">
+              {{ item.timedistance }}
+              <view class="text-gray text-sm">
+                <text class="cuIcon-attentionfill margin-lr-xs"></text> {{ item.view }}
+                <text class="cuIcon-messagefill margin-lr-xs"></text> {{ item.comment_count }}
+              </view>
             </view>
           </view>
         </view>
       </view>
+
     </view>
   </view>
-</scroll-view>
+</view>
+
+<!-- 占位符 -->
+<view style="height: 4rem;"></view>
+
 <!-- tabBar -->
 <tabBar bindswitchtab="redirect" tab="rentList"></tabBar>

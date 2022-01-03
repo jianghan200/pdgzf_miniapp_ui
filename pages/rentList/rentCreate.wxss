@@ -1,1 +1,10 @@
-/* pages/rent/rentCreate.wxss */
+.publish-btn {
+  width: 100%;
+  height: 44px;
+  line-height: 44px;
+  text-align: center;
+  color: #fff;
+  background: #000;
+  font-size: 14px;
+  border-radius: 22px;
+}

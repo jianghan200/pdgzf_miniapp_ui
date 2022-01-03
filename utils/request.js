@@ -958,7 +958,8 @@ const getAvatarAndNickname = function() {
       success: function(res) {
         log.info(res)
 
-        if (!res.result || res.result == null) {
+        // 用户信息中不能没有用户名和头像
+        if (!res.result || res.result == null || !res.result.nickName || !res.result.avatarUrl) {
           log.info('云后台未存储用户的头像和昵称')
           log.info('向用户索要昵称和头像url')
           // 没有这个用户的头像和昵称
@@ -1030,7 +1031,6 @@ const getAvatarAndNickname = function() {
                 })
               } else {
                 log.error('用户拒绝了授权（Modal中点击了cancel）')
-                log.error(err)
                 // Profile获取失败
                 wx.showToast({
                   title: '很遗憾',

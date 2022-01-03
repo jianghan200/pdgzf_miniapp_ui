@@ -3,100 +3,107 @@ const app = getApp();
 const util = require('../../utils/util');
 const log = require('../../utils/log')
 const requestHelper = require('../../utils/request')
+const rentHelper = require('../../utils/rent');
+const rent = require('../../utils/rent');
 
 Page({
   data: {
-    // 用于计算scroller的高度
-    CustomBar: app.globalData.CustomBar,
-    isCard: true,
-    articles: [1, 2],
     allArticles: [],
     page: 0,    //分页记录数
-    pageSize: 20,   //分页大小
+    pageSize: 5,   //分页大小
     refreshData: true,
   },
 
   onLoad: function (options) {
     log.info('onLoad rentList')
 
-
-
-    this.loadHomePageData()
-  },
-
-  isCard(e) {
-    this.setData({
-      isCard: e.detail.value
-    })
-  },
-
-  goToDetail (event) {
-    var passIn = event.currentTarget.dataset;
-    var target = null;
-    target = "../rentList/rentDetail?aid=" + passIn.id;
-    wx.navigateTo({
-      url: target
-    })
-  },
-
-  addNewRent () {
-    var target = null;
-    target = "../rentList/rentCreate";
-    wx.navigateTo({
-      url: target
-    })
-  },
-
-  loadHomePageData(){
-    var that = this;
-    wx.cloud.callFunction({
-        name: 'home',
-        data: {
-          openid : this.data.openid,
-          page: this.data.page,
-          pageSize : this.data.pageSize,
-        }
-      }).then(res => {
-        console.log(res);
-        if(res.result.articles != null && res.result.articles.length > 0){
-          for(var j = 0,len = res.result.articles.length; j < len; j++) {
-            res.result.articles[j]["create_gmt_simple"] = res.result.articles[j].create_gmt.substr(0,10)
-            res.result.articles[j]["timedistance"] = util.getTimeDistance(res.result.articles[j]["create_gmt"]);
-          }
-          that.setData({
-            page: that.data.page + 1,
-            user: res.result.user
-          });
-
-          if(that.data.refreshData){//true为重新刷新数据，false为分页累加数据
-            console.log("fully refresh data")
-            that.setData({
-              articles: res.result.articles, //重新覆盖list,
-              page: that.data.page + 1,
-              user: res.result.user
-            });
-            // this.setRoleForUser(that.data.user);
-            that.setData({
-              user: that.data.user
-            });
-          }else{
-            console.log("load more data")
-            that.setData({
-              articles: that.data.articles.concat(res.result.articles), //累加list,
-              page: that.data.page + 1,
-            });
-          }
-        }else{
-          wx.showToast({ title:'没有更多数据了', icon:'none' })
-          that.setData({ isloading:true })
-        }
-        
-        wx.hideLoading();
+    const self = this
+    // 用户必须提供头像和昵称
+    requestHelper.getAvatarAndNickname().then((res) => {
+      if (res) {
+        // 得到了用户的头像和昵称 或 用户授权
+        self.getRentListOfCurrentPage()
+      } else {
+        // 用户未授权
+        wx.redirectTo({
+          url: '/pages/today/today',
+        })
       }
-    ).catch(err => {
-      console.error(err);
-      wx.hideLoading();
-    });
+    }).catch((err) => {
+      log.error(err)
+      log.error('回到首页')
+      
+      wx.redirectTo({
+        url: '/pages/today/today',
+      })
+    })
+  },
+
+  // 获取某页的文章列表
+  getRentListOfCurrentPage() {
+    const openId = app.globalData.userinfo.openId
+    const self = this
+    
+    if (self.data.refreshData) {
+      wx.showLoading({ title: '加载ing～' })
+
+      rentHelper.loadRentList(openId, self.data.page, self.data.pageSize).then((res) => {
+        if (res == null) {
+          // 没有任何信息
+          wx.showToast({
+            title: '真的没了',
+            icon: 'none'
+          })
+        } else {
+          // 有信息
+          const newArticles = res.result.articles
+          // 为每一个文章添加一些辅助信息
+          newArticles.forEach(article => {
+            article['create_gmt_simple'] = util.formatDate(new Date(article.create_gmt))
+            article['timedistance'] = util.getTimeDistance(article.create_gmt)
+          });
+  
+          self.setData({
+            page: self.data.page + 1,
+            allArticles: self.data.allArticles.concat(newArticles)
+          })
+        }
+        wx.hideLoading()
+      }).catch((err) => {
+        console.log(err)
+        self.setData({
+          refreshData: false
+        })
+  
+        wx.showToast({
+          title: '获取失败',
+          icon: 'error'
+        })
+  
+        wx.hideLoading()
+      })
+    }
+  },
+
+  // 即将触底时触发新的loading
+  onReachBottom(e) {
+    log.info('开始读取新一页的数据')
+    this.getRentListOfCurrentPage()
+  },
+
+  // 导航至房屋卡片详情页
+  goToDetail(e) {
+    const id = e.currentTarget.dataset.id;
+    wx.navigateTo({
+      url: '../rentList/rentDetail?aid=' + id
+    })
+  },
+
+  // 跳转到发布租房信息页
+  goToAddNewPage () {
+    wx.navigateTo({
+      url: '../rentList/rentCreate'
+    })
   },
 
   // Bottom Bar的方法, 导航至其他tab
