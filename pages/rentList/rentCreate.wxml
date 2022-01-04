@@ -28,7 +28,7 @@
   ></textarea>
 
   <!-- 图片 -->
-  <view>最多3张图片</view>
+  <view>最多9张图片</view>
   <view style="width: 100%; background: #fff;">
     <view class="weui-uploader">
       <view class="weui-uploader__bd">
