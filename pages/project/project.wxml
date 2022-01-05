@@ -137,6 +137,36 @@
     style="margin-top: 0px;" 
     wx:if="{{todayHouses.length > 0 && curTab == 1}}"
   >
+  <!-- 小区文章链接 -->
+  <view class="cu-list menu sm-border card-menu margin-top" wx:if="{{curTab == 1 && articleUrl != ''}}">
+    <view wx:if="{{isVip && curTab == 1}}" class="cu-item arrow" bindtap="gotoArticle" style="background-color: currentColor;">
+      <view class="content">
+        <text class="cuIcon-form text-bold" style="color: goldenrod;"></text>
+        <text class="text-bold" style="color: goldenrod;">看房详情</text>
+      </view>
+    </view>
+    <view wx:if="{{!isVip && curTab == 1 }}" class="cu-item arrow" bindtap="showModal" data-target="Modal" style="background-color: currentColor;">
+      <view class="content">
+        <text class="cuIcon-form text-bold" style="color: goldenrod;"></text>
+        <text class="text-bold" style="color: goldenrod;">看房详情</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="cu-modal {{modalName=='Modal'?'show':''}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">VIP 专享</view>
+      <view class="action" bindtap="hideModal">
+        <text class="cuIcon-close text-red"></text>
+      </view>
+    </view>
+    <view class="padding-xl">
+      成为 VIP 查看此小区实地看房笔记。 VIP 示例小区可以参考浦江海德。
+    </view>
+  </view>
+</view>
+
     <!-- collapse All -->
     <view class="cu-bar bg-white solid-bottom" bindtap="collapseAllTodayProjects">
       <view class="action">
@@ -184,6 +214,8 @@
         </view>      
       </view>
     </block>
+
+    
   </view>
 
   <!-- 历史热力日历 -->

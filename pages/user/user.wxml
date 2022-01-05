@@ -4,7 +4,7 @@
 <view class="userinfo">
   <view class="{{vipInfo.type == 2 ? 'vip-' : ''}}avatar"><open-data type="userAvatarUrl"></open-data></view>
   <open-data type="userNickName" lang="zh_CN" class="{{vipInfo.type == 2 ? 'vip-' : ''}}nickname"></open-data>
-  <button class="cu-btn round line-{{buttonInfo.color}} text-bold">{{buttonInfo.text}}</button>
+  <button class="cu-btn round line-{{buttonInfo.color}} text-bold" bindtap="openMaunalStartDateDialog">{{buttonInfo.text}}</button>
 </view>
 
 <movable-area class="movable-area">

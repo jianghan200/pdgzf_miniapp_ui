@@ -195,10 +195,12 @@ Page({
         })
         // 更新本地的数据
         app.globalData.userinfo.manualStartDate = selectedDate
+        let hasStartDateCode = userHelper.hasStartDate()
         self.setData({
           startDate : selectedDate,
           // vip无法看到这个方法
-          hasStartDateCode : 1
+          hasStartDateCode : 1,
+          buttonInfo: this.resolveButtonInfo(hasStartDateCode, app.globalData.userinfo.type === 2)
         })
         self.closeManualStartDateDialog()
       }).catch((err) => {

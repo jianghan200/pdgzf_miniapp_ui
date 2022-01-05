@@ -52,6 +52,16 @@ Page({
     commentInputHeight : 0, // 初始化的时候尚未on focus，所以贴地板
     commentsList: []
   },
+  showModal(e) {
+    this.setData({
+      modalName: e.currentTarget.dataset.target
+    })
+  },
+  hideModal(e) {
+    this.setData({
+      modalName: null
+    })
+  },
 
   // 导航栏上选择不同的tab
   tabSelect(e) {
@@ -71,6 +81,9 @@ Page({
     let self = this
     // 首先判断是不是正在VIP范例模式下
     let isMockMode = options.mock
+    if (constants.vipPid == options.pid ){
+      isMockMode = true;
+    }
     let isVip = app.globalData.userinfo.type == 2
     // 如果是VIP范例，在这一页中所有人都是VIP
     if (isMockMode) {

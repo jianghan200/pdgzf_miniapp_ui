@@ -20,11 +20,13 @@
   style="display: flex; flex-direction: column; align-items: center; justify-content: center;"
 >
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
-    1. 开通1v1咨询，答疑解惑，优化您的选房计划。
+    1. 开通1v1咨询，政策规则答疑解惑，选房排坑，避免浪费时间精力，根据您的入住时间要求，资格日期时间，意向的小区和户型，提供最佳的选房建议。
   </view>
-
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
     2. 每天傍晚回复
+  </view>
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    3. VIP会员可直接享受此服务
   </view>
 
   <button class="cu-btn bg-green lg margin-top" style="width: 100%;" bindtap="pay">开通</button>
