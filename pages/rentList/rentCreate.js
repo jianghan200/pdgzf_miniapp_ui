@@ -28,7 +28,7 @@ Page({
     // 表单的fields
     title: '',
     content: '',
-    maxfile: 3,
+    maxfile: 9,
     files: [],
     cloudFilesPath:[],
     isPosting: false,
