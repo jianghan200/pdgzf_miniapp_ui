@@ -153,19 +153,19 @@
       </view>
     </view>
 
-  <view class="cu-modal {{modalName=='Modal'?'show':''}}">
-    <view class="cu-dialog">
-      <view class="cu-bar bg-white justify-end">
-        <view class="content">VIP 专享</view>
-        <view class="action" bindtap="hideModal">
-          <text class="cuIcon-close text-red"></text>
+    <view class="cu-modal {{modalName=='Modal'?'show':''}}">
+      <view class="cu-dialog">
+        <view class="cu-bar bg-white justify-end">
+          <view class="content">VIP 专享</view>
+          <view class="action" bindtap="hideModal">
+            <text class="cuIcon-close text-red"></text>
+          </view>
+        </view>
+        <view class="padding-xl">
+          成为 VIP 查看此小区实地看房笔记。 VIP 示例小区可以参考浦江海德。
         </view>
       </view>
-      <view class="padding-xl">
-        成为 VIP 查看此小区实地看房笔记。 VIP 示例小区可以参考浦江海德。
-      </view>
     </view>
-  </view>
 
     <!-- collapse All -->
     <view class="cu-bar bg-white solid-bottom" bindtap="collapseAllTodayProjects">
@@ -215,7 +215,6 @@
       </view>
     </block>
 
-    
   </view>
 
   <!-- 历史热力日历 -->
@@ -241,7 +240,7 @@
       <text class="cuIcon-infofill text-cyan" style="font-size: large;"></text>
       <text style="margin-left: 5px; font-size: large;" class="text-bold">各户型数据</text>
     </view>
-    <block wx:for="{{project.latestHouseInfo}}" wx:for-item="hInfo" wx:key="hInfo">
+    <block wx:for="{{recentHouseInfo}}" wx:for-item="hInfo" wx:key="hInfo">
       <!-- 近期户型标题 -->
       <view class="cu-bar bg-white solid-bottom" bindtap="changeRecentSectionState" data-type="{{hInfo.type}}">
         <view class="action">

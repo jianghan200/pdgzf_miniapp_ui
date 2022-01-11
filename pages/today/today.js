@@ -172,7 +172,8 @@ Page({
   // 用户点击进入【房屋详情】
   navToProject(e) {
     let pId = e.currentTarget.dataset.pid
-    let url = '../project/project?pid=' + pId
+    // let url = '../project/project?pid=' + pId
+    const url = '../community/community?pid=' + pId
     wx.navigateTo({
       url: url,
     })

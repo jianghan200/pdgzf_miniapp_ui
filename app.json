@@ -29,7 +29,8 @@
     "pages/consult/consult",
     "pages/rentList/rentDetail",
     "pages/rentList/rentCreate",
-    "pages/rentList/rentList"
+    "pages/rentList/rentList",
+    "pages/community/community"
   ],
   "window": {
     "navigationStyle": "custom"
