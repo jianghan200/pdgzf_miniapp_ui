@@ -56,7 +56,7 @@ Page({
       })
     }
     if(options['pid'] != undefined && options['pid'] != '') {
-      // 来自分享
+      // 来自分享, 需要redirect到community页面, 由于耦合度高, 因此要先跳转到today页面, 再跳转到community
       wx.navigateTo({
         url: '../community/community?pid=' + options['pid'],
       })
