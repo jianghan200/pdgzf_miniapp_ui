@@ -55,6 +55,12 @@ Page({
         this.useTodayProjectsInStorage()
       })
     }
+    if(options['pid'] != undefined && options['pid'] != '') {
+      // 来自分享
+      wx.navigateTo({
+        url: '../community/community?pid=' + options['pid'],
+      })
+    }
   },
 
   // 活动公告

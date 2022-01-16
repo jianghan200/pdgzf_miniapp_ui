@@ -160,7 +160,7 @@ const handleAllProjects = function(projects, info, subscriptionsRawData) {
 }
 
 // 读取所有数据
-const loadAllData = function() {
+const loadAllData = function(options) {
   Promise
     .all([
       requests.getTodayProjects(), requests.getTodayHouses(), requests.getTodayStats(), 
@@ -185,6 +185,14 @@ const loadAllData = function() {
       handleTodayProjects(todayProjectsRawData, todayHousesRawData, todayStats, subscriptions)
       handleAllProjects(allProjectsRawData, allProjectsHouseInfoRawData, subscriptions)
 
+      if(options['redirect'] != undefined &&options['redirect'] != '') {
+        // login后, 如果发现有redirect参数, 说明来自分享, 需要重定向到对应的分享界面
+        let newDirect = decodeURIComponent(options['redirect'])
+        log.info("redirect to new url: " + newDirect)
+        wx.redirectTo({
+          url: newDirect,
+        })
+      }
       // 对于不同的用户，“首页”是不同的.
       // 新用户（userinfo中没有startDate也没有email）
       if (app.globalData.userinfo.type == 0 && app.globalData.userinfo.email == null && app.globalData.userinfo.startDate == null) {
