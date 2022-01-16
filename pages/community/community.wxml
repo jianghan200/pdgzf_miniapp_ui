@@ -7,8 +7,24 @@
   </view>
 </cu-custom>
 
+<!-- 主页面 -->
+<scroll-view class="nav bg-white" scroll-x scroll-with-animation>
+  
+</scroll-view>
+
+<!-- 论坛入口，fix在底部 -->
+<view class="cu-bar bg-white shadow foot">
+  <view class="action">
+    <text class="cuIcon-like text-pink"></text><text>添加收藏</text>
+  </view>
+
+  <view class="action" style="width: 60%;">
+    <button class="cu-btn bg-green lg cuIcon-community round shadow" style="width: 100%;"> 进入社区论坛</button>
+  </view>
+</view>
+
 <!-- 导航栏 -->
-<scroll-view scroll-x class="nav bg-white" scroll-with-animation>
+<!-- <scroll-view scroll-x class="nav bg-white" scroll-with-animation>
   <view class="cu-item {{ 0 == curTab ? 'text-orange cur' : '' }}" bindtap="tabSelect" data-id="0">
     <text class="cuIcon-infofill"></text> 小区资料
   </view>
@@ -26,18 +42,18 @@
   <view class="cu-item {{ 3 == curTab ? 'text-blue' : '' }}" bindtap="tabSelect" data-id="3">
     <text class="cuIcon-commentfill"></text> 讨论区
   </view>
-</scroll-view>
+</scroll-view> -->
 
 <!-- 内容 -->
-<scroll-view
+<!-- <scroll-view
   wx:if="{{curTab != 3}}"
   scroll-y
   class="cu-list menu"
   scroll-with-animation
   style="height:calc(100vh - {{CustomBar}}px - 90rpx); background: white;"
-> 
+>  -->
   <!-- 图片 / 视频走马灯 -->
-  <swiper 
+  <!-- <swiper 
     class="screen-swiper square-dot" 
     indicator-dots="true" 
     circular="true" 
@@ -52,17 +68,17 @@
       wx:key="item" 
       data-item="{{item}}" 
       bindtap="preview"
-    >
+    > -->
       <!-- 照片展示 -->
-      <image 
+      <!-- <image 
         wx:if="{{item.type == 'image'}}"
         src="{{item.url}}" 
         mode="aspectFit" 
         show-menu-by-longpress="false"
-      ></image>
+      ></image> -->
 
       <!-- 视频展示 -->
-      <video 
+      <!-- <video 
         wx:if="{{item.type == 'video' && isVip}}"
         src="{{item.url}}" 
         autoplay 
@@ -74,31 +90,31 @@
         direction="90"
       ></video>
     </swiper-item>
-  </swiper>
+  </swiper> -->
 
   <!-- 小区文章链接 -->
-  <view class="cu-list menu sm-border card-menu margin-top" wx:if="{{curTab == 0 && articleUrl != ''}}">
+  <!-- <view class="cu-list menu sm-border card-menu margin-top" wx:if="{{ curTab == 0 && articleUrl != '' }}">
     <view class="cu-item arrow" bindtap="gotoArticle" style="background-color: currentColor;">
       <view class="content">
         <text class="cuIcon-form text-bold" style="color: goldenrod;"></text>
         <text class="text-bold" style="color: goldenrod;">看房详情</text>
       </view>
     </view>
-  </view>
+  </view> -->
 
   <!-- 提示普通用户升级为VIP -->
-  <view wx:if="{{!isVip && curTab == 0}}" class="text-bold" style="margin: 10px; color: goldenrod;">
+  <!-- <view wx:if="{{!isVip && curTab == 0}}" class="text-bold" style="margin: 10px; color: goldenrod;">
     升级为VIP，观看看房视频～
-  </view>
+  </view> -->
 
   <!-- 查看小区位置 -->
-  <view style="margin: 10px;" bindtap="seePointOnMap" wx:if="{{curTab == 0}}">
+  <!-- <view style="margin: 10px;" bindtap="seePointOnMap" wx:if="{{curTab == 0}}">
     <text class="cuIcon-locationfill text-red" style="font-size: large;"></text>
     <text class="text-blue text-bold" style="margin-left: 5px; font-size: large;">{{pName}}</text>
-  </view>
+  </view> -->
 
   <!-- 配套设施 -->
-  <view 
+  <!-- <view 
     class="text-bold" 
     style="margin: 10px;" 
     wx:if="{{equipments.length > 0 && curTab == 0}}" 
@@ -112,10 +128,10 @@
     <view wx:for="{{equipments}}" wx:for-item="equipment" wx:key="equipment">
       <text class="cuIcon-title"></text> {{equipment}}
     </view>
-  </view>
+  </view> -->
 
   <!-- 小区概况 -->
-  <view 
+  <!-- <view 
     class="text-bold" 
     style="margin: 10px;" 
     wx:if="{{descriptions.length > 0 && curTab == 0}}" 
@@ -129,55 +145,35 @@
     <view wx:for="{{descriptions}}" wx:for-item="desc_item" wx:key="desc_item">
       <text class="cuIcon-title"></text> {{desc_item}}
     </view>
-  </view>
+  </view> -->
 
   <!-- 今日房源，if any -->
-  <view 
+  <!-- <view 
     class="cu-list menu" 
     style="margin-top: 0px;" 
     wx:if="{{todayHouses.length > 0 && curTab == 1}}"
-  >
+  > -->
     <!-- 小区文章链接 -->
-    <view class="cu-list menu sm-border card-menu margin-top" wx:if="{{curTab == 1 && articleUrl != ''}}">
-      <view wx:if="{{isVip && curTab == 1}}" class="cu-item arrow" bindtap="gotoArticle" style="background-color: currentColor;">
+    <!-- <view class="cu-list menu sm-border card-menu margin-top" wx:if="{{ curTab == 1 && articleUrl != '' }}">
+      <view class="cu-item arrow" bindtap="gotoArticle" style="background-color: currentColor;">
         <view class="content">
           <text class="cuIcon-form text-bold" style="color: goldenrod;"></text>
           <text class="text-bold" style="color: goldenrod;">看房详情</text>
         </view>
       </view>
-      <view wx:if="{{!isVip && curTab == 1 }}" class="cu-item arrow" bindtap="showModal" data-target="Modal" style="background-color: currentColor;">
-        <view class="content">
-          <text class="cuIcon-form text-bold" style="color: goldenrod;"></text>
-          <text class="text-bold" style="color: goldenrod;">看房详情</text>
-        </view>
-      </view>
-    </view>
-
-    <view class="cu-modal {{modalName=='Modal'?'show':''}}">
-      <view class="cu-dialog">
-        <view class="cu-bar bg-white justify-end">
-          <view class="content">VIP 专享</view>
-          <view class="action" bindtap="hideModal">
-            <text class="cuIcon-close text-red"></text>
-          </view>
-        </view>
-        <view class="padding-xl">
-          成为 VIP 查看此小区实地看房笔记。 VIP 示例小区可以参考浦江海德。
-        </view>
-      </view>
-    </view>
+    </view> -->
 
     <!-- collapse All -->
-    <view class="cu-bar bg-white solid-bottom" bindtap="collapseAllTodayProjects">
+    <!-- <view class="cu-bar bg-white solid-bottom" bindtap="collapseAllTodayProjects">
       <view class="action">
         <text class="cuIcon-sort text-bold"></text> 今日出现：{{todayHouses.length}}套房源
         <text class="cuIcon-{{collapseAllTodays ? 'un' : ''}}fold"></text>
       </view>
-    </view>
+    </view> -->
     <!-- loop over 所有的今日房源 -->
-    <block wx:for="{{todayHouses}}" wx:for-item="house" wx:key="house">
+    <!-- <block wx:for="{{todayHouses}}" wx:for-item="house" wx:key="house"> -->
       <!-- 今日房源标题 -->
-      <view class="cu-bar bg-white solid-bottom" bindtap="changeTodaySectionState" data-name="{{house.name}}">
+      <!-- <view class="cu-bar bg-white solid-bottom" bindtap="changeTodaySectionState" data-name="{{house.name}}">
         <view class="action">
           <text class="cuIcon-homefill text-orange text-bold"></text>
           <text> {{house.name}}</text>
@@ -186,9 +182,9 @@
           <text class="cuIcon-{{house.hide ? 'un' : ''}}fold" style="font-size: large;"></text>
         </view>
       </view>
-      <view hidden="{{house.hide}}">
+      <view hidden="{{house.hide}}"> -->
         <!-- 内容 -->
-        <view class="cu-bar bg-white solid-bottom">
+        <!-- <view class="cu-bar bg-white solid-bottom">
           <view class="action"><text class="cuIcon-rankfill text-grey"></text><text>预计排名</text></view>
           <view class="action" style="color: goldenrod;">第{{house.rank}}名</view>
         </view>
@@ -215,41 +211,41 @@
       </view>
     </block>
 
-  </view>
+  </view> -->
 
   <!-- 历史热力日历 -->
-  <view wx:if="{{curTab == 2}}">
+  <!-- <view wx:if="{{curTab == 2}}">
     <view class="text-bold" style="margin: 10px;" bindtap="changeCalendarState">
       <text class="cuIcon-calendar text-cyan" style="font-size: large;"></text> 
       <text style="font-size: large;"> 小区人气日历 </text>
       <text class="cuIcon-{{calendarHidden ? 'un' : ''}}fold" style="font-size: large;"></text>
       <text wx:if="{{!isVip}}" style="font-size: large;">（VIP内容）</text>
     </view>
-  </view>
+  </view> -->
   <!-- 小历日历 -->
-  <view hidden="{{curTab != 2}}">
+  <!-- <view hidden="{{curTab != 2}}">
     <view style="padding: 1rem;" wx:if="{{isVip}}" hidden="{{calendarHidden}}">
       <calendar id="calendar" config="{{calendarConfig}}" bind:whenChangeMonth="changeMonth" />
     </view>
-  </view>
+  </view> -->
 
   <!-- 近期出现的小区户型详情 -->
-  <view wx:if="{{curTab == 2}}">
+  <!-- <view wx:if="{{curTab == 2}}"> -->
     <!-- 此部分的标题 -->
-    <view style="margin: 10px;" bindtap="changeRecentSectionState">
+    <!-- <view style="margin: 10px;" bindtap="changeRecentSectionState">
       <text class="cuIcon-infofill text-cyan" style="font-size: large;"></text>
       <text style="margin-left: 5px; font-size: large;" class="text-bold">各户型数据</text>
     </view>
-    <block wx:for="{{recentHouseInfo}}" wx:for-item="hInfo" wx:key="hInfo">
+    <block wx:for="{{recentHouseInfo}}" wx:for-item="hInfo" wx:key="hInfo"> -->
       <!-- 近期户型标题 -->
-      <view class="cu-bar bg-white solid-bottom" bindtap="changeRecentSectionState" data-type="{{hInfo.type}}">
+      <!-- <view class="cu-bar bg-white solid-bottom" bindtap="changeRecentSectionState" data-type="{{hInfo.type}}">
         <view class="action">
           <text class="cuIcon-homefill text-cyan text-bold"></text> {{hInfo.type}}（共出现过：{{hInfo.tCount}}套）
           <text class="cuIcon-{{hInfo.hide ? 'un' : ''}}fold" style="font-size: large;"></text>
         </view>
-      </view>
+      </view> -->
       <!-- 各种参数 -->
-      <view hidden="{{hInfo.hide}}">
+      <!-- <view hidden="{{hInfo.hide}}">
         <view class="cu-bar bg-white solid-bottom">
           <view class="action">
             <text class="cuIcon-calendar text-grey" style="color: goldenrod;"></text><text>选中人资格日</text>
@@ -281,31 +277,31 @@
       </view>
     </block>
   </view>
-</scroll-view>
+</scroll-view> -->
 
 <!-- 评论tab -->
-<scroll-view
+<!-- <scroll-view
   wx:if="{{curTab == 3}}"
   scroll-y
   class="cu-list menu"
   scroll-with-animation
   style="height:calc(100vh - {{CustomBar}}px - 190rpx); background: white;"
-> 
+>  -->
   <!-- 评论区标题 -->
-  <view wx:if="{{ curTab == 3 }}" class="text-bold margin-top" style="margin: 10px;">
+  <!-- <view wx:if="{{ curTab == 3 }}" class="text-bold margin-top" style="margin: 10px;">
     <view style="font-size: large;">评论 {{commentsList.length}}</view>
   </view>
 
   <view wx:if="{{ curTab == 3 && commentsList.length == 0 }}" class="no-comment-box padding">
     <image src="/assets/think.jpg" mode="aspectFit" class="padding"></image>
     <text class="padding-bottom text-grey">发表第一个评论吧~</text>
-  </view>
+  </view> -->
   
-  <view wx:if="{{ curTab == 3 }}" class="cu-list menu-avatar comment solids-top">
+  <!-- <view wx:if="{{ curTab == 3 }}" class="cu-list menu-avatar comment solids-top">
     <block wx:for="{{commentsList}}" wx:for-item="comment" wx:key="comment">
-      <view class="cu-item">
+      <view class="cu-item"> -->
         <!-- 头像 -->
-        <view 
+        <!-- <view 
           class="cu-avatar round" 
           style="background-image: url({{comment.avatarUrl}}); {{isVip ? 'border: 2px solid goldenrod;' : ''}}"
         ></view>
@@ -319,10 +315,10 @@
       </view>
     </block>
   </view>
-</scroll-view>
+</scroll-view> -->
 
 <!-- 评论输入 -->
-<view 
+<!-- <view 
   wx:if="{{curTab == 3}}" 
   class="cu-bar foot input {{ commentInputHeight != 0 ? 'cur' : '' }}" 
   style="bottom: {{commentInputHeight}}px;"
@@ -339,4 +335,4 @@
     auto-height="true"
   ></textarea>
   <button class="cu-btn bg-green shadow" bindtap="submitComment">发送</button>
-</view>  
+</view>   -->

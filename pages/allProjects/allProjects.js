@@ -279,7 +279,7 @@ Page({
   // 导航到某个小区
   navToProject(e) {
     let pId = e.currentTarget.dataset.pid
-    let url = '../project/project?pid=' + pId
+    let url = '../community/community?pid=' + pId
     wx.navigateTo({
       url: url,
     })

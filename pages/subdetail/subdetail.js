@@ -211,7 +211,7 @@ Page({
 
   // 导航至小区详情页
   navToHouses(e) {
-    let url = '../project/project?pid=' + this.data.subscription.pid
+    let url = '../community/community?pid=' + this.data.subscription.pid
     wx.navigateTo({
       url: url,
     })

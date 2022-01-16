@@ -5,6 +5,7 @@ const requests = require('../../utils/request')
 const model = require('../../utils/community')
 const app = getApp()
 const log = require('./../../utils/log')
+const commentsHelper = require('../../utils/comments')
 
 import plugin from './../../components/calendar/plugins/index'
 import todo from './../../components/calendar/plugins/todo'
@@ -119,6 +120,31 @@ Page({
   // 生成地图坐标链接
   mapCoordUrl(areaIdx, areaId, pid, pName) {
     return `/pages/map/map?mode=single&id=${areaIdx}&pid=${pid}&aid=${areaId}&pname=${pName}`
+  },
+
+  // navigate到文章
+  gotoArticle(e) {
+    log.info(`从小区详情页(${this.data.pId})跳转到article页：${this.data.articleUrl}`)
+
+    // 文章内容为VIP专享
+    if (this.data.isVip) {
+      wx.navigateTo({
+        url: '/pages/article/article?url=' + this.data.articleUrl,
+      })
+    } else {
+      wx.showModal({
+        title: 'VIP专享',
+        content: '成为 VIP 查看此小区实地看房笔记。 VIP 示例小区可以参考浦江海德。',
+        showCancel: 'false'
+      })
+    }
+  },
+
+  // 打开地图
+  seePointOnMap(e) {
+    wx.navigateTo({
+      url: this.data.coordUrl,
+    })
   },
 
   // 预览某个照片
@@ -293,9 +319,9 @@ Page({
 
   // 拿到最新的评论列表
   loadCommentList(pid) {
-    const self = this
     log.info(`读取${self.data.pName}(${pid})的评论列表`)
     // 使用pId拿到comments
+    const self = this
     requests
       .getCommentsOf(pid)
       .then((list) => {
@@ -308,130 +334,44 @@ Page({
             'timestamp' : utils.getTimeDistanceOf(comment.update_gmt)
           })
         })
-        self.setData({
-          commentsList : comments
-        })
+        self.setData({ commentsList : comments })
       }).catch((err) => {
         log.error(`未成功拿到评论列表`)
         log.error(err)
 
         wx.showToast({
-          title: '获取评论失败',
+          title: '获取失败',
           icon: 'error'
         })
       })
   },
 
   // 上传评论
-  submitComment(e) {
+  submitComment() {
     log.info('点击上传评论')
-    // 用户必须授权头像和用户名才能开始评论
+
+    wx.showLoading()
+
     const self = this
-    requests
-      .getAvatarAndNickname()
-      .then((res) => {
-        if (res) {
-          // 用户信息上传云函数成功
-          log.info('云函数调用成功（both get and post），新用户同意提供头像和昵称')
+    const aid = utils.generateArticleIdOf(self.data.pId)
+    const userInput = self.data.myComments.trim()
 
-          // 评论不能为空
-          if (self.data.myComments.trim() != '') {
-            log.info(`用户的评论为：${self.data.myComments}`)
-            
-            wx.showLoading({ title: '提交中', mask: true })
+    commentsHelper.submitComment(aid, userInput).then(() => {
+      // 成功
+      self.loadCommentList(aid)
+      self.setData({ myComments: '' })
+      wx.hideLoading()
+    }).catch(err => {
+      // 失败
+      console.log(err)
+      log.error(err)
 
-            requests
-              .sendCommentOnSomeProject(utils.generateArticleIdOf(self.data.pId), self.data.myComments.trim())
-              .then(res => {
-                if (res) {
-                  // 评论发表成功！
-                  log.info('成功发布评论')
-
-                  wx.hideLoading()
-                  wx.showToast({ title: '发布成功', icon: 'success' })
-
-                  self.setData({
-                    myComments: ''
-                  })
-                  // 发表成功之后需要重新读取评论列表
-                  self.loadCommentList(utils.generateArticleIdOf(self.data.pId))
-                } else {
-                  // 失败
-                  log.error('发布失败')
-
-                  wx.hideLoading()
-                  wx.showToast({
-                    title: '发布失败',
-                    icon: 'error'
-                  })
-                }
-              })
-              .catch((err) => {
-                log.error('发布失败')
-                log.error(err)
-
-                wx.hideLoading()
-                wx.showToast({
-                  title: '发布失败',
-                  icon: 'error'
-                })
-              })
-          } else {
-            log.warn('用户的评论为空')
-            // 评论为空
-            wx.showToast({
-              title: '啥也没说呀',
-              icon: 'error'
-            })
-          }
-        } else {
-          log.warn('云函数调用失败（both get and post）或新用户不同意提供头像和昵称')
-
-          wx.showToast({
-            title: '很遗憾',
-            icon: 'error'
-          })
-        }
-      })
-      .catch((err) => {
-        log.error(err)
-        console.log(err)
-
-        wx.showToast({
-          title: '微信有bug',
-          icon: 'error'
-        })
-      })
-  },
-
-  // navigate到文章
-  gotoArticle(e) {
-    log.info(`从小区详情页(${this.data.pId})跳转到article页：${this.data.articleUrl}`)
-
-    wx.navigateTo({
-      url: '/pages/article/article?url=' + this.data.articleUrl,
+      wx.showToast({ title: '评论失败', icon: 'error' })
+      wx.hideLoading()
     })
   },
 
-  // 打开地图
-  seePointOnMap(e) {
-    wx.navigateTo({
-      url: this.data.coordUrl,
-    })
-  },
-
-  showModal(e) {
-    this.setData({
-      modalName: e.currentTarget.dataset.target
-    })
-  },
-
-  hideModal(e) {
-    this.setData({
-      modalName: null
-    })
-  },
-
+  // 分享该页面
   onShareAppMessage: function () {
 
   }
