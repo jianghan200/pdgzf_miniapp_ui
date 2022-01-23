@@ -9,7 +9,6 @@ Page({
   
   onLoad(options) {
     log.info('进入login页，调用wx.login接口')
-
     let self = this
     // 调用微信登陆接口获得用户信息
     wx.login({
@@ -26,6 +25,7 @@ Page({
   login(jscode) {
     // 用户必须提供自己的昵称和头像才能进入小程序。
     // 先看是否云端已经存储过用户的昵称和头像。
+    let self = this
     requests
       .login(jscode)
       .then((userinfo) => {
@@ -33,8 +33,7 @@ Page({
 
         log.info('登陆成功')
         log.info(userinfo)
-
-        dataHelper.loadAllData()
+        dataHelper.loadAllData(self.options)
       })
       .catch((err) => {
         log.error(err)
