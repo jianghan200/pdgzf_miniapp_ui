@@ -24,6 +24,8 @@ Page({
     pId: '',
     pName: '',
     // 坐标的url
+    coordinate: null,
+    marker: [],
     coordUrl: '',
     // 统计数据
     recentHouseInfo: [],
@@ -33,6 +35,9 @@ Page({
     // 资料信息
     articleUrl: '',
     descriptions : [],
+    images: [],
+    videos: [],
+    firstVideo: '暂无看房视频',
     medias : [],
     equipments: [],
     // 今日房源信息
@@ -55,12 +60,25 @@ Page({
       preventSwipe: true,
       onlyShowCurrentMonth: true
     },
+    // Scroll行为的控制器
+    curComponentId: 0,
+    // 多联button的控制器
+    selectedHouseType: '',
+    selectedHouse: null,
+    // 视频列表drawer控制器
+    showvideoListDrawer: false
   },
 
   onLoad: function (options) {
     log.info(`onLoad community`)
     log.info(options)
 
+    this.init(options)
+    this.initScrollerInfo()
+  },
+  
+  // 调用数据接口，populate显示需要的数据
+  init(options) {
     const pid = options.pid
     // 判断是否应该展示VIP内容
     const isVipShowCase = pid == constants.vipSampleProjectId
@@ -75,12 +93,23 @@ Page({
       log.info('成功获得数据')
 
       // 所有从model层获得的数据
-      const { pId, pName, areaIdx, areaId, 
+      const { pId, pName, areaIdx, areaId, coordinate,
         recentHouseInfo, totalCount, heatMap, descriptions, medias, equipments, todayHouses, comments, articleUrl } = res
+        
+      const marker = self.createMarker(coordinate)
+
+      const images = medias.filter(media => media.type == 'image')
+      const videos = medias.filter(media => media.type == 'video')
+      const firstVideo = (videos.length > 0) ? videos[0].url : '暂无看房视频'
+
+      // 设置默认选中的户型
+      const selectedHouse = recentHouseInfo[0]
+      const selectedHouseType = selectedHouse.type
 
       const coordUrl = self.mapCoordUrl(areaIdx, areaId, pId, pName)
       const monthlyDaysColor = self.daysColor(heatMap, new Date().getFullYear(), new Date().getMonth() + 1)
 
+      // 根据此小区是否出现在今日房源中判断应该展示哪部分内容
       const curTabIdx = todayHouses.length == 0 ? 0 : 1
       
       self.setData({
@@ -88,6 +117,8 @@ Page({
         isVip: isVip,
         pId: pId,
         pName: pName,
+        coordinate: coordinate,
+        marker: marker,
         coordUrl: coordUrl,
         recentHouseInfo: recentHouseInfo,
         heatMap: heatMap,
@@ -95,10 +126,15 @@ Page({
         totalCount: totalCount,
         articleUrl: articleUrl,
         descriptions: descriptions,
+        images: images,
+        videos: videos,
+        firstVideo: firstVideo,
         medias: medias,
         equipments: equipments,
         todayHouses: todayHouses,
-        commentsList: comments
+        commentsList: comments,
+        selectedHouse: selectedHouse,
+        selectedHouseType: selectedHouseType
       })
 
       wx.hideLoading()
@@ -117,9 +153,62 @@ Page({
     })
   },
 
+  // 初始化界面滑动相关的数据
+  initScrollerInfo() {
+    this.setData({
+      curComponentId: 0
+    })
+  },
+
+  // 点击TabItem触发的handler
+  selectTab(e) {
+    this.setData({
+      curComponentId: e.currentTarget.dataset.id
+    })
+  },
+
+  // 选择了某个户型的处理器
+  selectHouseType(e) {
+    const selectedHouseType = e.currentTarget.dataset.type
+    const selectedHouse = this.data.recentHouseInfo.find(info => info.type == selectedHouseType)
+
+    this.setData({
+      selectedHouse: selectedHouse,
+      selectedHouseType: selectedHouseType
+    })
+  },
+
+  // 生成地图上的坐标点
+  createMarker(coordinate) {
+    let marker = []
+    marker.push({
+      id: 0, // marker 点击事件回调会返回此 id
+      latitude: coordinate.lat,
+      longitude: coordinate.lng,
+      title: this.data.pName
+    })
+    this.setData({
+      marker: marker
+    })
+  },
+
   // 生成地图坐标链接
   mapCoordUrl(areaIdx, areaId, pid, pName) {
     return `/pages/map/map?mode=single&id=${areaIdx}&pid=${pid}&aid=${areaId}&pname=${pName}`
+  },
+
+  // 打开视频列表
+  openVideoList(e) {
+    this.setData({
+      showvideoListDrawer: true
+    })
+  },
+
+  // 关闭视频列表
+  closeVideoList(e) {
+    this.setData({
+      showvideoListDrawer: false
+    })
   },
 
   // navigate到文章
@@ -201,17 +290,6 @@ Page({
           }
         })
     }
-  },
-
-  // 导航栏上选择不同的tab
-  tabSelect(e) {
-    if (e.currentTarget.dataset.id == 2) {
-      this.renderCalendar()
-    }
-    this.setData({
-      curTab: e.currentTarget.dataset.id,
-      scrollLeft: (e.currentTarget.dataset.id - 1 ) * 60
-    })
   },
 
   // hide / unhide sections

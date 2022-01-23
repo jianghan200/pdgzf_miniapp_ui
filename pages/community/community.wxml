@@ -1,15 +1,302 @@
 <wxs src="../../utils/tool.wxs" module="tools" />
 
-<cu-custom bgColor="bg-black" isBack="{{true}}">
-  <view slot="backText">返回</view>
-  <view slot="content">
-    <view class="text-white text-bold">{{tools.sliceOf(pName)}}</view>
-  </view>
-</cu-custom>
-
 <!-- 主页面 -->
-<scroll-view class="nav bg-white" scroll-x scroll-with-animation>
-  
+<view class="DrawerPage {{showvideoListDrawer ? 'show' : ''}}">
+  <cu-custom bgColor="bg-black" isBack="{{true}}">
+    <view slot="backText">返回</view>
+    <view slot="content">
+      <view class="text-white text-bold">{{tools.sliceOf(pName)}}</view>
+    </view>
+  </cu-custom>
+
+  <!-- 横向的大标题的标签 -->
+  <scroll-view 
+    class="nav bg-white text-center" 
+    scroll-x 
+    scroll-with-animation
+  >
+    <!-- 基本信息 -->
+    <view class="cu-item {{ curComponentId == 0 ? 'text-black cur text-bold' : '' }}" data-id="0" bindtap="selectTab">
+      <text class="cuIcon-homefill"></text> 基本信息
+    </view>
+    <!-- 多媒体信息 -->
+    <view class="cu-item {{ curComponentId == 1 ? 'text-black cur text-bold' : '' }}" data-id="1" bindtap="selectTab">
+      <text class="cuIcon-camerafill"></text> 媒体信息
+    </view>
+    <!-- 不是所有小区都有“今日房源” -->
+    <view 
+      wx:if="{{ todayHouses.length > 0 }}" 
+      class="cu-item {{ curComponentId == 2 ? 'text-black cur text-bold' : '' }}" 
+      data-id="2" 
+      bindtap="selectTab"
+    >
+      <text class="cuIcon-activityfill"></text> 今日房源
+    </view>
+    <!-- 统计信息 -->
+    <view class="cu-item {{ curComponentId == 3 ? 'text-black cur text-bold' : '' }}" data-id="3" bindtap="selectTab">
+      <text class="cuIcon-rankfill"></text> 统计信息
+    </view>
+  </scroll-view>
+
+  <!-- 长列表 -->
+  <scroll-view 
+    style="height: calc(100vh - {{ CustomBar }}px - 90rpx - 100rpx);"
+    scroll-y 
+    scroll-with-animation
+    scroll-into-view="component-{{ curComponentId }}"
+  >
+    <!-- 基本信息 -->
+    <view id="component-0">
+      <!-- 标题 -->
+      <view class="solid-bottom text-xl padding">
+        <text class="text-black text-bold">基础信息</text>
+      </view>
+      <!-- 多联按钮 -->
+      <view class="padding" style="display: flex; flex-direction: row; justify-content: center;">
+        <block wx:for="{{ recentHouseInfo }}" wx:for-item="houseInfo" wx:key="type">
+          <button 
+            class="button-tab bg-{{ selectedHouseType == houseInfo.type ? 'green' : '' }} shadow" 
+            data-type="{{ houseInfo.type }}" 
+            bindtap="selectHouseType"
+          >
+            <text 
+              style="font-size: xx-small;" 
+              class="text-{{ selectedHouseType == houseInfo.type ? 'white text-bold' : 'black' }}"
+            >{{ houseInfo.type }}</text>
+          </button>
+        </block>
+      </view>
+      <!-- 户型信息卡 -->
+      <view class="cu-card article">
+        <view class="cu-item shadow">
+          <view class="title" style="display: flex; justify-content: center;">
+            <text class="text-red text-lg">{{ selectedHouse.rent }}/月（押一付三）</text>
+          </view>
+          <view class="content" style="display: flex; flex-direction: row; justify-content: space-around">
+            <view><text class="text-bold text-lg">{{ selectedHouse.area }}平</text></view>
+            <view><text class="text-bold text-lg">{{ selectedHouse.type }}</text></view>
+            <view><text class="text-bold text-lg">供给{{ selectedHouse.tCount }}套</text></view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 地图 -->
+      <view style="width: 100wh; height: 250px;">
+        <map 
+          style="width: 100%; height: 100%;"
+          latitude="{{ coordinate.lat }}"
+          longitude="{{ coordinate.lng }}"
+          scale="12"
+          markers="{{ marker }}"
+          show-location
+          show-scale
+        ></map>
+      </view>
+
+    </view>
+
+    <!-- 多媒体展示 -->
+    <view id="component-1">
+      <!-- 标题 -->
+      <view class="solid-bottom text-xl padding">
+        <text class="text-black text-bold">多媒体信息</text>
+      </view>
+      <!-- 九宫格图片展示 -->
+      <!-- 有图片 -->
+      <view wx:if="{{ images.length > 0 }}" class="grid flex-sub padding-lr col-3 grid-square">
+        <block wx:for="{{ images }}" wx:for-item="image" wx:key="url">
+          <view class="bg-img" style="background-image:url({{image.url}});"></view>
+        </block>
+      </view>
+      <!-- 没有图片 -->
+      <view wx:else class="flex-sub text-center">
+        <view class="solid-bottom text-xl padding">
+          <text class="text-grey text-bold">暂无图片</text>
+        </view>
+      </view>
+
+      <!-- 视频 + 列表 -->
+      <view style="display: flex; justify-content: center;">
+        <!-- if 小区有视频 -->
+        <view wx:if="{{ videos.length > 0 }}">
+          <video src="{{ firstVideo }}" muted></video>
+          <!-- 点击打开视频列表抽屉 -->
+          <view style="display: flex; justify-content: center;" class="padding">
+            <button class="cu-btn bg-white round shadow text-bold lg" style="width: 60%;" bindtap="openVideoList">
+              <text class="cuIcon-videofill text-red"></text> 更多视频
+            </button>
+          </view>
+        </view>
+        <!-- else 小区没有视频 -->
+        <view wx:else class="flex-sub text-center">
+          <view class="solid-bottom text-xl padding">
+            <text class="text-grey text-bold">{{ firstVideo }}</text>
+          </view>
+        </view>
+
+      </view>
+
+      <!-- 小区文章链接 -->
+      <view class="cu-list menu sm-border card-menu margin" wx:if="{{ articleUrl != '' }}">
+        <view class="cu-item arrow" bindtap="gotoArticle" style="background-color: currentColor;">
+          <view class="content">
+            <text class="cuIcon-form text-bold" style="color: goldenrod;"></text>
+            <text class="text-bold" style="color: goldenrod;">看房图文详情</text>
+          </view>
+        </view>
+      </view>
+
+    </view>
+
+    <!-- 今日房源 -->
+    <view id="component-2">
+      <!-- 标题 -->
+      <view class="solid-bottom text-xl padding">
+        <text class="text-black text-bold">今日房源({{ todayHouses.length }}套)</text>
+      </view>
+      <!-- 今日房源列表 -->
+      <!-- if 此小区今日有房源 -->
+      <view wx:if="{{ todayHouses.length > 0 }}">
+        <block wx:for="{{ todayHouses }}" wx:for-item="house" wx:key="name">
+          <!-- 户型信息卡 -->
+          <view class="cu-card article">
+            <view class="cu-item shadow">
+              <view class="title" style="display: flex; flex-direction: column;">
+                <text class="text-red text-lg">{{ house.rent }}/月（押一付三）</text>
+                <text class="text-bold text-lg">队列: {{ house.displayedQueue }}</text>
+              </view>
+              <!-- 房源基本信息 -->
+              <view class="content" style="display: flex; flex-direction: column;">
+                <view class="cu-list grid col-3">
+                  <view class="cu-item">
+                    <text class="text-bold">{{ house.emoveInDate }}</text>
+                    <text>预计入住</text>
+                  </view>
+                  <view class="cu-item">
+                    <text class="text-bold" style="color: {{ house.rank == 1 ? 'green' : 'grey' }}">第{{ house.rank }}名</text>
+                    <text>当前排名</text>
+                  </view>
+                  <view class="cu-item">
+                    <text class="text-bold">{{ house.name }}</text>
+                    <text>房间名</text>
+                  </view>
+                  <view class="cu-item">
+                    <text class="text-bold">{{ house.size }}平</text>
+                    <text>面积</text>
+                  </view>
+                  <view class="cu-item">
+                    <text class="text-bold">{{ house.type }}</text>
+                    <text>户型</text>
+                  </view>
+                </view>
+              </view>
+
+            </view>
+          </view>
+        </block>
+
+      </view>
+      <!-- else 此小区今日没有房源 -->
+      <view wx:else class="flex-sub text-center">
+        <!-- 今日没放出房源 -->
+        <view class="solid-bottom text-xl padding">
+          <text class="text-grey text-bold">改天再来看看~</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 统计信息 -->
+    <view id="component-3">
+      <!-- 标题 -->
+      <view class="solid-bottom text-xl padding">
+        <text class="text-black text-bold">统计信息</text>
+      </view>
+      <!-- 历史热力日历 -->
+      <view class="text-bold" style="margin: 10px;" bindtap="changeCalendarState">
+        <text class="cuIcon-calendar" style="font-size: large;"></text> 
+        <text style="font-size: large;"> 小区人气日历 </text>
+        <text class="cuIcon-{{ calendarHidden ? 'un' : '' }}fold" style="font-size: large;"></text>
+        <text wx:if="{{ !isVip }}" style="font-size: large;">（VIP内容）</text>
+      </view>
+      <!-- 小历日历 -->
+      <view style="padding: 1rem;" wx:if="{{ isVip }}" hidden="{{ calendarHidden }}">
+        <calendar 
+          id="calendar" 
+          config="{{ calendarConfig }}" 
+          bind:whenChangeMonth="changeMonth" 
+          bind:afterCalendarRender="renderCalendar" 
+        />
+      </view>
+
+      <!-- 各户型的历史数据 -->
+      <!-- 标题 -->
+      <view class="solid-bottom text-xl padding">
+        <text class="cuIcon-rank text-bold"></text>
+        <text class="text-black text-bold">各户型的最近历史数据</text>
+      </view>
+      <!-- 各户型历史数据卡片 -->
+      <block wx:for="{{ recentHouseInfo }}" wx:for-item="info" wx:key="type">
+        <!-- 户型信息卡 -->
+        <view class="cu-card article">
+          <view class="cu-item shadow">
+            <view class="title" style="display: flex; flex-direction: column;">
+              <text class="text-red text-lg">{{ info.rent }}/月（押一付三）</text>
+            </view>
+            <!-- 房源基本信息 -->
+            <view class="content" style="display: flex; flex-direction: column;">
+              <view class="cu-list grid col-3">
+                <view class="cu-item">
+                  <text class="text-bold" style="color: green;">{{ info.type }}</text>
+                  <text>户型</text>
+                </view>
+                <view class="cu-item">
+                  <text class="text-bold">{{ info.area }}平</text>
+                  <text>面积</text>
+                </view>
+                <view class="cu-item">
+                  <text class="text-bold">{{ info.updateTime }}</text>
+                  <text>选中日</text>
+                </view>
+                <view class="cu-item">
+                  <text class="text-bold">{{ info.ownerStartDate }}</text>
+                  <text>选中人资格</text>
+                </view>
+                <view class="cu-item">
+                  <text class="text-bold">{{ info.ownerWaitingDays }}</text>
+                  <text>等待时长</text>
+                </view>
+                <view class="cu-item">
+                  <text class="text-bold">{{ info.hotIndexOnPickedDate }}</text>
+                  <text>选中日热度</text>
+                </view>
+              </view>
+            </view>
+
+          </view>
+        </view>
+
+      </block>
+    </view>
+
+  </scroll-view>
+
+</view>
+
+<!-- 主页面的辅助页面 -->
+<!-- 关闭视频列表（抽屉） -->
+<view class="DrawerClose {{ showvideoListDrawer ? 'show' : '' }}" bindtap="closeVideoList">
+	<text class="cuIcon-pullright"></text>
+</view>
+
+<!-- 视频列表(抽屉) -->
+<scroll-view scroll-y class="DrawerWindow {{ showvideoListDrawer ? 'show' : '' }}">
+  <view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg">
+    <view class="cu-item arrow" wx:for="{{ videos }}" wx:for-item="video" wx:key="url">
+      <view class="content">
+        <text class="cuIcon-videofill text-red"></text> {{video.url}}
+      </view>
+    </view>
+  </view>
 </scroll-view>
 
 <!-- 论坛入口，fix在底部 -->

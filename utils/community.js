@@ -78,17 +78,21 @@ const loadDataForCommunity = function(pid) {
         const statsOfRecentHousesOfAllTypes = populateStatsForAllHouseTypes(project, res)
         // 评论数据
         const comments = handleComments(rawComments)
+        // 小区的坐标
+        const coordinate = utils.convert2TecentMap(project.raw.longitude, project.raw.latitude)
+
         let payload = {
           pId: pid,
           pName: project.pName,
           areaIdx: area.id,
           areaId: area.areaId,
+          coordinate: coordinate,
           recentHouseInfo: statsOfRecentHousesOfAllTypes,
           totalCount: project.rentableCount,
           heatMap: rawHeatInfo,
-          descriptions: rawMedias.descriptions,
-          medias: rawMedias.medias,
-          equipments: rawMedias.equipments,
+          descriptions: (rawMedias == null) ? null : rawMedias.descriptions,
+          medias: (rawMedias == null) ? [] : rawMedias.medias,
+          equipments: (rawMedias == null) ? null : rawMedias.equipments,
           todayHouses: [],
           comments: comments,
           articleUrl: articleUrl
@@ -99,6 +103,24 @@ const loadDataForCommunity = function(pid) {
   
           const todayHouses = housesOfToday(todayData)
           payload['todayHouses'] = todayHouses
+
+          // 热力图数据需要添加今日的
+          let queueLength = 0
+          todayHouses.forEach(house => {
+            queueLength += house.queueLength
+          })
+          const date = new Date()
+          const heatOfToday = {
+            date : date,
+            year : date.getFullYear(),
+            month : date.getMonth() + 1,
+            date : date.getDate(),
+            count : queueLength,
+            hex : utils.number2Hex(queueLength)
+          }
+          const newHeatMap = payload.heatMap
+          newHeatMap.push(heatOfToday)
+          payload.heatMap = newHeatMap
 
           return Promise.resolve(payload)
         } else {
