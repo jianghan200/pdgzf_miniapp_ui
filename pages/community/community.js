@@ -451,6 +451,35 @@ Page({
 
   // 分享该页面
   onShareAppMessage: function () {
-
+    let self = this
+    // 当前页面是community, 由于直接redirect到该community会导致某些渲染不正确, 因此只能先redirect到today页面, 再从today页面跳转到community, 这是因为界面耦合度高导致的
+    var path = '/pages/today/today'
+    var params = utils.getParams(self)
+    path = path + '?' + params
+    return {
+      title : 'PD公租房',
+      path : '/pages/login/login?redirect=' + encodeURIComponent(path),
+      imageUrl : '',
+      success : function(res) {
+        if (res.errMsg == 'shareAppMessage:ok') {
+          // 用户转发成功
+          wx.showToast({
+            title: '转发成功',
+            icon: 'success'
+          })
+        }
+      },
+      fail : function(err) {
+        if (err.errMsg == 'shareAppMessage:fail cancel') {
+          wx.showToast({
+            title: '转发已取消',
+          })
+        } else {
+          wx.showToast({
+            title: '转发失败',
+          })
+        }
+      }
+    }
   }
 })

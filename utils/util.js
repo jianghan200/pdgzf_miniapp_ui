@@ -351,6 +351,22 @@ const generateArticleIdOf = function(pid) {
   return `pdgzf_project_${pid}`
 }
 
+const getRoute = function(page) {
+  let url = page.route
+  if(!url.startsWith("/")) {
+    url = "/" + url
+  }
+  return url
+}
+
+const getParams = function(page) {
+  let options = page.options
+  var params = Object.keys(options).map(function (key) {
+    return key + "=" + options[key]; 
+  }).join("&");
+  return params
+}
+
 module.exports = {
   formatTime,
   formatDate,
@@ -372,5 +388,7 @@ module.exports = {
   convert2TecentMap : convert2TecentMap,
   generateUuid : generateUuid,
   getTimeDistance : getTimeDistance,
-  generateArticleIdOf: generateArticleIdOf
+  generateArticleIdOf: generateArticleIdOf,
+  getRoute: getRoute,
+  getParams: getParams
 }
