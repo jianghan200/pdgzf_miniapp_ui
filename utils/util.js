@@ -100,6 +100,15 @@ const dateStrComparator = function(dStr1, pivotDateStr) {
     return -1
   }
 }
+
+// 比较两个string大小
+const strComparator = function(str1, comparator) {
+  if (str1 > comparator) {
+    return 1
+  } else {
+    return -1
+  }
+}
 // [255, 0, 0] to #ff0000
 const rgbArrayToHex = function(rgbArray) {
   let hex = '#'
@@ -377,6 +386,7 @@ module.exports = {
   sortByProperty : sortByProperty,
   numberComparator : numberComparator,
   dateStrComparator : dateStrComparator,
+  strComparator: strComparator,
   rgbArrayToHex : rgbArrayToHex,
   number2Hex : number2Hex,
   daysInBtw : daysInBtw,

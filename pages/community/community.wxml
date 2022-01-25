@@ -1,7 +1,7 @@
 <wxs src="../../utils/tool.wxs" module="tools" />
 
 <!-- 主页面 -->
-<view class="DrawerPage {{showvideoListDrawer ? 'show' : ''}}">
+<view class="DrawerPage {{ (showvideoListDrawer || showTodaysOutlets) ? 'show' : ''}}">
   <cu-custom bgColor="bg-black" isBack="{{true}}">
     <view slot="backText">返回</view>
     <view slot="content">
@@ -105,7 +105,7 @@
       <!-- 有图片 -->
       <view wx:if="{{ images.length > 0 }}" class="grid flex-sub padding-lr col-3 grid-square">
         <block wx:for="{{ images }}" wx:for-item="image" wx:key="url">
-          <view class="bg-img" style="background-image:url({{image.url}});"></view>
+          <view class="bg-img" style="background-image:url({{image.url}});" bindtap="previewImg" data-idx="{{index}}"></view>
         </block>
       </view>
       <!-- 没有图片 -->
@@ -119,7 +119,7 @@
       <view style="display: flex; justify-content: center;">
         <!-- if 小区有视频 -->
         <view wx:if="{{ videos.length > 0 }}">
-          <video src="{{ firstVideo }}" muted></video>
+          <video src="{{ firstVideo }}" muted bindtap="previewVideo"></video>
           <!-- 点击打开视频列表抽屉 -->
           <view style="display: flex; justify-content: center;" class="padding">
             <button class="cu-btn bg-white round shadow text-bold lg" style="width: 60%;" bindtap="openVideoList">
@@ -153,13 +153,18 @@
       <!-- 标题 -->
       <view class="solid-bottom text-xl padding">
         <text class="text-black text-bold">今日房源({{ todayHouses.length }}套)</text>
+        <!-- 打开今日房源列表 -->
+        <button class="cu-btn bg-white round shadow text-bold margin-left" style="width: 40%;" bindtap="openTodayDrawer">
+          <text class="cuIcon-list text-red"></text> 快捷跳转
+        </button>
       </view>
+
       <!-- 今日房源列表 -->
       <!-- if 此小区今日有房源 -->
       <view wx:if="{{ todayHouses.length > 0 }}">
         <block wx:for="{{ todayHouses }}" wx:for-item="house" wx:key="name">
           <!-- 户型信息卡 -->
-          <view class="cu-card article">
+          <view class="cu-card article" id="component-today{{ index }}">
             <view class="cu-item shadow">
               <view class="title" style="display: flex; flex-direction: column;">
                 <text class="text-red text-lg">{{ house.rent }}/月（押一付三）</text>
@@ -284,16 +289,35 @@
 
 <!-- 主页面的辅助页面 -->
 <!-- 关闭视频列表（抽屉） -->
-<view class="DrawerClose {{ showvideoListDrawer ? 'show' : '' }}" bindtap="closeVideoList">
+<view class="DrawerClose {{ (showvideoListDrawer || showTodaysOutlets) ? 'show' : '' }}" bindtap="closeDrawers">
 	<text class="cuIcon-pullright"></text>
 </view>
 
 <!-- 视频列表(抽屉) -->
-<scroll-view scroll-y class="DrawerWindow {{ showvideoListDrawer ? 'show' : '' }}">
+<scroll-view 
+  scroll-y 
+  class="DrawerWindow {{ showvideoListDrawer ? 'show' : '' }}"
+  style="height: calc(100vh - 100rpx);"
+>
   <view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg">
     <view class="cu-item arrow" wx:for="{{ videos }}" wx:for-item="video" wx:key="url">
-      <view class="content">
+      <view class="content" bindtap="previewVideo" data-idx="{{index}}">
         <text class="cuIcon-videofill text-red"></text> {{video.url}}
+      </view>
+    </view>
+  </view>
+</scroll-view>
+
+<!-- 今日房源列表（抽屉） -->
+<scroll-view 
+  scroll-y 
+  class="DrawerWindow {{ showTodaysOutlets ? 'show' : '' }}"
+  style="height: calc(100vh - 100rpx);"
+>
+  <view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg">
+    <view class="cu-item arrow" wx:for="{{ todayHousesOutlets }}" wx:for-item="outlet" wx:key="*this">
+      <view class="content" bindtap="goToThisTodayHouse" data-idx="{{index}}">
+        <text class="cuIcon-homefill text-green"></text> {{outlet}}
       </view>
     </view>
   </view>

@@ -42,6 +42,10 @@ Page({
     equipments: [],
     // 今日房源信息
     todayHouses: [],
+    // 今日房源抽屉信息
+    showTodaysOutlets: false,
+    currentTodayHouseIndex: 'today0',
+    todayHousesOutlets: [],
     // 评论区
     myComments: '',
     commentInputHeight : 0, // 初始化的时候尚未on focus，所以贴地板
@@ -96,8 +100,13 @@ Page({
       const { pId, pName, areaIdx, areaId, coordinate,
         recentHouseInfo, totalCount, heatMap, descriptions, medias, equipments, todayHouses, comments, articleUrl } = res
         
+      // 对今日房源进行排序
+      const sortedTodayHouses = utils.sortByProperty(todayHouses, 'name', utils.strComparator)
+        
+      // 生成地图上的marker
       const marker = self.createMarker(coordinate)
 
+      // 处理多媒体
       const images = medias.filter(media => media.type == 'image')
       const videos = medias.filter(media => media.type == 'video')
       const firstVideo = (videos.length > 0) ? videos[0].url : '暂无看房视频'
@@ -106,6 +115,7 @@ Page({
       const selectedHouse = recentHouseInfo[0]
       const selectedHouseType = selectedHouse.type
 
+      // 位置坐标
       const coordUrl = self.mapCoordUrl(areaIdx, areaId, pId, pName)
       const monthlyDaysColor = self.daysColor(heatMap, new Date().getFullYear(), new Date().getMonth() + 1)
 
@@ -131,7 +141,8 @@ Page({
         firstVideo: firstVideo,
         medias: medias,
         equipments: equipments,
-        todayHouses: todayHouses,
+        todayHouses: sortedTodayHouses,
+        todayHousesOutlets: sortedTodayHouses.map(house => `${house.name}(${house.type}, ${house.rent})`),
         commentsList: comments,
         selectedHouse: selectedHouse,
         selectedHouseType: selectedHouseType
@@ -178,6 +189,11 @@ Page({
     })
   },
 
+  // 根据用户选择的户型筛选图片和视频
+  // filterMedias(allMedias, selectedHouseType) {
+    
+  // },
+
   // 生成地图上的坐标点
   createMarker(coordinate) {
     let marker = []
@@ -197,17 +213,49 @@ Page({
     return `/pages/map/map?mode=single&id=${areaIdx}&pid=${pid}&aid=${areaId}&pname=${pName}`
   },
 
+  // 预览某一个图片
+  previewImg(e) {
+    const img = this.data.images[e.currentTarget.dataset.idx]
+    const self = this
+    wx.previewImage({
+      urls: self.data.images.map(img => img.url),
+      current: img.url,
+      showmenu: false
+    })
+  },
+
+  // 预览某一个视频
+  previewVideo(e) {
+    console.log(e)
+    const idx = e.currentTarget.dataset.idx
+    if (idx) {
+      // 是从视频列表中点击
+      const video = this.data.videos[idx]
+      this.setData({
+        firstVideo: video,
+        showvideoListDrawer: false
+      }, () => {
+        const self = this
+        wx.previewMedia({
+          sources: self.data.videos,
+          current: idx,
+          showmenu: false
+        })
+      })
+    } else {
+      const self = this
+      wx.previewMedia({
+        sources: self.data.videos,
+        current: self.data.videos.indexOf(self.data.firstVideo),
+        showmenu: false
+      })
+    }
+  },
+
   // 打开视频列表
   openVideoList(e) {
     this.setData({
       showvideoListDrawer: true
-    })
-  },
-
-  // 关闭视频列表
-  closeVideoList(e) {
-    this.setData({
-      showvideoListDrawer: false
     })
   },
 
@@ -236,17 +284,26 @@ Page({
     })
   },
 
-  // 预览某个照片
-  preview(e) {
-    log.info('预览某个照片')
-    log.info(e)
+  // 关闭所有抽屉 
+  closeDrawers(e) {
+    this.setData({
+      showTodaysOutlets: false,
+      showvideoListDrawer: false
+    })
+  },
 
-    let item = e.target.dataset.item
-    let idx = this.data.medias.indexOf(item)
-    wx.previewMedia({
-      sources : this.data.medias,
-      current : idx,
-      showmenu : false
+  // 打开今日房源抽屉
+  openTodayDrawer(e) {
+    this.setData({
+      showTodaysOutlets: true
+    })
+  },
+
+  // 跳转到某个房源的信息处
+  goToThisTodayHouse(e) {
+    this.setData({
+      showTodaysOutlets: false,
+      curComponentId: `today${e.currentTarget.dataset.idx}`
     })
   },
 
