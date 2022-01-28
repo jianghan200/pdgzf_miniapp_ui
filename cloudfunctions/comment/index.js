@@ -72,6 +72,7 @@ exports.main = async (data, context) => {
         parent_comment_id: data.parent_comment_id,
         comment_to_uid: data.comment_to_uid,
         comment_to_user: data.comment_to_user,
+        is_anonymous: data.is_anonymous,
         like_count: 0,
         create_gmt: new Date(),
         update_gmt: new Date(),

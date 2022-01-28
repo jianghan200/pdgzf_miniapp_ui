@@ -52,11 +52,13 @@ exports.main = async (data, context) => {
               title: data.title,
               content: data.content,
               images: data.images,
-              // sub_cat: data.sub_cat,
+              
               create_gmt: new Date(),
               update_gmt: new Date(),
               is_deleted: false,
-              type: data.type,
+              type: data.type,// 转租，社区，新闻
+              topic: data.topic,// pdgzf_project_8445
+
               view_count: 0,
               comment_count: 0,
               like_count: 0,
