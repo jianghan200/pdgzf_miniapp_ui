@@ -6,6 +6,7 @@ const model = require('../../utils/community')
 const app = getApp()
 const log = require('./../../utils/log')
 const commentsHelper = require('../../utils/comments')
+const subscribeHelper = require('../../utils/subscripton')
 
 import plugin from './../../components/calendar/plugins/index'
 import todo from './../../components/calendar/plugins/todo'
@@ -21,8 +22,12 @@ Page({
     // 是不是VIP, 决定是否解锁一些数据
     isVip: false,
     // 小区基本信息
+    areaId: '',
     pId: '',
     pName: '',
+    // 订阅情况
+    subscribed: false,
+    ruleId: '',
     // 坐标的url
     coordinate: null,
     marker: [],
@@ -97,7 +102,7 @@ Page({
       log.info('成功获得数据')
 
       // 所有从model层获得的数据
-      const { pId, pName, areaIdx, areaId, coordinate,
+      const { pId, pName, areaIdx, areaId, subscribed, ruleId, coordinate,
         recentHouseInfo, totalCount, heatMap, descriptions, medias, equipments, todayHouses, comments, articleUrl } = res
         
       // 对今日房源进行排序
@@ -125,8 +130,11 @@ Page({
       self.setData({
         curTab: curTabIdx,
         isVip: isVip,
+        areaId: areaId,
         pId: pId,
         pName: pName,
+        subscribed: subscribed,
+        ruleId: ruleId,
         coordinate: coordinate,
         marker: marker,
         coordUrl: coordUrl,
@@ -169,6 +177,25 @@ Page({
     this.setData({
       curComponentId: 0
     })
+  },
+
+  // 返回上一页
+  backToParent() {
+    log.info('从community页返回上一页')
+    const pages = getCurrentPages()
+    const prevPage = pages[pages.length - 2]
+    const prevPageRoute = prevPage.__route__
+    if (prevPageRoute == 'pages/today/today') {
+      log.info('从社区页返回today')
+
+      prevPage.useTodayProjectsInStorage()
+    } else if (prevPageRoute == 'pages/allProjects/allProjects') {
+      log.info('从社区页返回allProjects')
+
+      prevPage.useAllProjectsInStorage()
+    }
+    
+    wx.navigateBack({ delta: 1 })
   },
 
   // 点击TabItem触发的handler
@@ -349,55 +376,6 @@ Page({
     }
   },
 
-  // hide / unhide sections
-  // hide / unhide描述
-  changeDescriptionsState(e) {
-    let beforeChange = this.data.descriptionsHidden
-    this.setData({
-      descriptionsHidden : !beforeChange
-    })
-  },
-
-  // hide / unhide设施
-  changeEquipmentsState(e) {
-    let beforeChange = this.data.equipmentsHidden
-    this.setData({
-      equipmentsHidden : !beforeChange
-    })
-  },
-
-  // hide / unhide所有的今日数据
-  collapseAllTodayProjects(e) {
-    let currentTodayHouses = this.data.todayHouses
-    let currentCollapseAllTodays = this.data.collapseAllTodays
-    currentTodayHouses.forEach(h => {
-      h.hide = !h.hide
-    })
-    this.setData({
-      todayHouses : currentTodayHouses,
-      collapseAllTodays : !currentCollapseAllTodays
-    })
-  },
-
-  // hide / unhide今日数据
-  changeTodaySectionState(e) {
-    const selectedName = e.currentTarget.dataset.name
-
-    let currentTodayHouses = this.data.todayHouses
-    let selectedHouse = currentTodayHouses.find(house => house.name == selectedName)
-    if (selectedHouse) {
-      let indexOfSelectedHouseInfo = currentTodayHouses.indexOf(selectedHouse)
-      let beforeChange = selectedHouse.hide
-      
-      selectedHouse.hide = !beforeChange
-      currentTodayHouses[indexOfSelectedHouseInfo] = selectedHouse
-      
-      this.setData({
-        todayHouses : currentTodayHouses
-      })
-    }
-  },
-
   // hide / unhide日历
   changeCalendarState(e) {
     let beforeChange = this.data.calendarHidden
@@ -406,22 +384,53 @@ Page({
     })
   },
 
-  // hide / unhide近期数据
-  changeRecentSectionState(e) {
-    const selectedType = e.currentTarget.dataset.type
+  // 订阅 / 取消订阅
+  subscribe() {
+    const subscribed = this.data.subscribed
+    log.info(`用户点击了${ subscribed ? '取消' : '添加' }订阅`)
 
-    let recentHouseInfo = this.data.recentHouseInfo
-    let selectedHouseInfo = recentHouseInfo.find(info => info.type == selectedType)
+    const self = this
+    // 之前是“已经订阅”
+    if (subscribed) {
+      // 要取消订阅
+      subscribeHelper.unsubscribeThenSyncUp(self.data.ruleId, self.data.areaId, self.data.pId).then(res => {
+        // 取消成功
+        log.info('成功取消订阅')
+        
+        self.setData({ subscribed: false })
+        wx.showToast({
+          title: '取消成功',
+          icon: 'success'
+        })
+      }).catch(err => {
+        console.log(err)
+        log.error('取消订阅失败！')
+        log.error(err)
 
-    if (selectedHouseInfo) {
-      const indexOfSelectedHouseInfo = recentHouseInfo.indexOf(selectedHouseInfo)
-      const beforeChange = selectedHouseInfo.hide
+        wx.showToast({
+          title: '取消失败',
+          icon: 'error'
+        })
+      })
+    } else {
+      // 要添加订阅
+      subscribeHelper.subscribeThenSyncUp(self.data.areaId, self.data.pId, self.data.pName).then(ruleId => {
+        log.info(`成功添加订阅（id：${ruleId}）`)
 
-      selectedHouseInfo.hide = !beforeChange
-      recentHouseInfo[indexOfSelectedHouseInfo] = selectedHouseInfo
+        self.setData({ subscribed: true })
+        wx.showToast({
+          title: '订阅成功',
+          icon: 'success'
+        })
+      }).catch(err => {
+        console.log(err)
+        log.error('添加订阅失败！')
+        log.error(err)
 
-      this.setData({
-        recentHouseInfo : recentHouseInfo
+        wx.showToast({
+          title: '订阅失败',
+          icon: 'error'
+        })
       })
     }
   },

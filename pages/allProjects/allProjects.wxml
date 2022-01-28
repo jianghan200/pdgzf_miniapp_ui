@@ -4,7 +4,7 @@
 
 <view>
   <view style="display: flex; flex-direction: row; align-items: center;">
-    <view class="title">全部房源</view>
+    <text class="title">全部房源</text>
     <!-- 请求成功展示地图按钮 -->
     <button class="bg-black cu-btn icon shadow margin-right" bindtap="openMap" wx:if="{{reqSuccessful}}">
       <text class="cuIcon-locationfill text-white"></text>

@@ -28,31 +28,7 @@ Page({
   onLoad: function (options) {
     log.info('onLoad allProjects')
 
-    let allProjects = wx.getStorageSync('allProjects')
-    if (allProjects && allProjects.length > 0) {
-      log.info('allProjects 获取成功')
-      // 说明请求成功了
-      let newList = this.preproccess(allProjects)
-      let areaNames = newList.map(area => area.areaName == null ? '未知街道' : area.areaName)
-      let rentableCountCategoryNames = contants.rentableCountCategory
-      this.setData({
-        list : newList,
-        // 默认全选中
-        areas : areaNames,
-        chosenAreas : areaNames.concat([]),
-        rentableCountCategory : rentableCountCategoryNames,
-        chosenRentableCountCategory : rentableCountCategoryNames.concat([]),
-        reqSuccessful : true
-      })
-    } else {
-      log.error('allProjects 获取失败')
-      // 请求失败了，需要特殊处理，立一个flag
-      console.log('all 失败')
-
-      this.setData({
-        reqSuccessful : false
-      })
-    }
+    this.useAllProjectsInStorage()
   },
 
   // 重新请求全部房源的数据。
@@ -70,21 +46,7 @@ Page({
           icon: 'success'
         })
         // 跟onload一样
-        let allProjects = wx.getStorageSync('allProjects')
-        if (allProjects && allProjects.length > 0) {
-          let newList = self.preproccess(allProjects)
-          let areaNames = newList.map(area => area.areaName == null ? '未知街道' : area.areaName)
-          let rentableCountCategoryNames = contants.rentableCountCategory
-          self.setData({
-            list : newList,
-            // 默认全选中
-            areas : areaNames,
-            chosenAreas : areaNames.concat([]),
-            rentableCountCategory : rentableCountCategoryNames,
-            chosenRentableCountCategory : rentableCountCategoryNames.concat([]),
-            reqSuccessful : true
-          })
-        }
+        self.useAllProjectsInStorage()
       })
       .catch((err) => {
         log.error('loadAllProjectsData 失败')
@@ -96,6 +58,33 @@ Page({
           icon: 'error'
         })
       })
+  },
+
+  // 重新读取缓存中的allProjects
+  useAllProjectsInStorage() {
+    const self = this
+    const allProjects = wx.getStorageSync('allProjects')
+    if (allProjects && allProjects.length > 0) {
+      log.info('allProjects 获取成功')
+
+      const newList = self.preproccess(allProjects)
+      let areaNames = newList.map(area => area.areaName == null ? '未知街道' : area.areaName)
+      let rentableCountCategoryNames = contants.rentableCountCategory
+      self.setData({
+        list : newList,
+        // 默认全选中
+        areas : areaNames,
+        chosenAreas : areaNames.concat([]),
+        rentableCountCategory : rentableCountCategoryNames,
+        chosenRentableCountCategory : rentableCountCategoryNames.concat([]),
+        reqSuccessful : true
+      })
+    } else {
+      log.error('allProjects 获取失败')
+      // 请求失败了，需要特殊处理，立一个flag
+
+      this.setData({ reqSuccessful : false })
+    }
   },
 
   // 点开筛选器抽屉

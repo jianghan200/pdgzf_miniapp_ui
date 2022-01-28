@@ -7,17 +7,19 @@ const constants = require('./constants')
 const loadDataForCommunity = function(pid) {
   const articleId = utils.generateArticleIdOf(pid)
   return Promise
-    .all([loadDataFromStorage('todayProjects'), loadDataFromStorage('allProjects'), 
+    .all([loadDataFromStorage('todayProjects'), loadDataFromStorage('allProjects'), loadDataFromStorage('subscriptions'),
           requests.getProjectInfo(pid), requests.heatOfTheProject(pid), 
           requests.getCommentsOf(articleId)]
     ).then(res => {
+      // 这一步主要看请求是否都正常
       log.info('请求一切正常')
 
       const todayProjects = res[0].data
       const allProjects = res[1].data
-      const rawMedias = res[2]
-      const rawHeatInfo = res[3]
-      const rawComments = res[4]
+      const subscriptions = res[2].data
+      const rawMedias = res[3]
+      const rawHeatInfo = res[4]
+      const rawComments = res[5]
 
       // allProjects是必须的，不能不存在
       if (allProjects == null || allProjects.length === 0) {
@@ -30,6 +32,7 @@ const loadDataForCommunity = function(pid) {
         const payload = {
           todayProjects: todayProjects,
           allProjects: allProjects,
+          subscriptions: subscriptions,
           rawMedias: rawMedias,
           rawHeatInfo: rawHeatInfo,
           rawComments: rawComments
@@ -38,6 +41,7 @@ const loadDataForCommunity = function(pid) {
         return Promise.resolve(payload)
       }
     }).then(payload => {
+      // 这一步为了resolve出来社区和小区
       const { allProjects } = payload
       const area = allProjects.find(area => {
         // 数据可能出现areaId为空的情况或者小区Id为空的情况
@@ -65,7 +69,8 @@ const loadDataForCommunity = function(pid) {
         return Promise.reject('数据有误')
       }
     }).then(payload => {
-      const { area, project, todayProjects, rawMedias, rawHeatInfo, rawComments, idsOfRecentHouses } = payload
+      // 这一步生成每个户型的数据，以及可能会有的今日数据
+      const { area, project, todayProjects, subscriptions, rawMedias, rawHeatInfo, rawComments, idsOfRecentHouses } = payload
       return getQueuesForEveryHouseTypes(idsOfRecentHouses).then(res => {
         const todayData = getDataFromTodayProject(pid, todayProjects)
         // 文章链接
@@ -81,11 +86,22 @@ const loadDataForCommunity = function(pid) {
         // 小区的坐标
         const coordinate = utils.convert2TecentMap(project.raw.longitude, project.raw.latitude)
 
+        // 是否订阅过这个小区
+        let subscribed = false
+        let ruleId = ''
+        const idxOfThisProjectInSubscriptionList = subscriptions.findIndex(item => item.projectId == pid)
+        if (idxOfThisProjectInSubscriptionList != -1) {
+          subscribed = true
+          ruleId = subscriptions[idxOfThisProjectInSubscriptionList].id
+        }
+
         let payload = {
           pId: pid,
           pName: project.pName,
           areaIdx: area.id,
           areaId: area.areaId,
+          subscribed: subscribed,
+          ruleId: ruleId,
           coordinate: coordinate,
           recentHouseInfo: statsOfRecentHousesOfAllTypes,
           totalCount: project.rentableCount,
@@ -97,6 +113,7 @@ const loadDataForCommunity = function(pid) {
           comments: comments,
           articleUrl: articleUrl
         }
+        // 根据是否有今日房源populate payload
         if (todayData) {
           // 出现在今日
           log.info(`${project.pName}(${pid})出现在今日房源中`)

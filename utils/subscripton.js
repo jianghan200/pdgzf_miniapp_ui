@@ -1,5 +1,6 @@
 const requests = require('./request')
 const app = getApp()
+const log = require('./log')
 
 // 订阅信息的更新需要手动更新session中的数据
 const manualUpdateProjects = function(sessionData, aid, pid, changeTo, sessionKey, rid) {
@@ -38,9 +39,31 @@ const unsubscribeThenSyncUp = function(ruleId, aid, pid) {
     // 手动更新所有的缓存
     manualUpdateProjects(curAllProjects, aid, pid, false, 'allProjects', '')
     manualUpdateProjects(curTodayProjects, aid, pid, false, 'todayProjects', '')
-    
-    // 不同的场景下通常会在更新了数据后各自处理，为了他们的方便，这里return一个Promise
-    return Promise.resolve(true)
+    // 将subscription的缓存同步为更新后的状态
+    let subscriptions = wx.getStorageSync('subscriptions')
+    if (subscriptions) {
+      // 不同的场景下通常会在更新了数据后各自处理，为了他们的方便，这里return一个Promise
+      const toBeRemovedRule = subscriptions.find(rule => rule.id == ruleId)
+      if (toBeRemovedRule) {
+        const idxOfToBeRemoved = subscriptions.indexOf(toBeRemovedRule)
+        // 注意splice是一个不RT的method，会对数组本身改动，返回被删掉的元素
+        subscriptions.splice(idxOfToBeRemoved, 1)
+        wx.setStorageSync('subscriptions', subscriptions)
+
+        return Promise.resolve(true)
+      } else {
+        // 未能在subscriptions中找到ruleId
+        log.error(`未能在subscriptions中找到: ${ruleId}`)
+
+        return Promise.resolve(false)
+      }
+      
+    } else {
+      // 未能在缓存中找到subscriptions
+      log.error('未能在缓存中找到subscriptions')
+
+      return Promise.resolve(false)
+    }
   })
 }
 
@@ -59,6 +82,7 @@ const subscribeThenSyncUp = function(aid, pid, pname) {
               const curAllProjects = wx.getStorageSync('allProjects')
               const curTodayProjects = wx.getStorageSync('todayProjects')
               // 手动更新所有的缓存
+              wx.setStorageSync('subscriptions', subscriptions)
               manualUpdateProjects(curAllProjects, aid, pid, true, 'allProjects', ruleId)
               manualUpdateProjects(curTodayProjects, aid, pid, true, 'todayProjects', ruleId)
               // 不同的场景下通常会在更新了数据后各自处理，为了他们的方便，这里return一个Promise
