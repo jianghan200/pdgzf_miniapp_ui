@@ -2,9 +2,22 @@ const log = require('./log')
 const utils = require('./util')
 const app = getApp()
 
-// 获取某个topic下所有的articles
-const getArticles = function(type, topic) {
-    return Promise.resolve(true)
+// 获取某type, topic下所有的articles
+const getArticles = function(type, topic, page, pageSize) {
+    log.info(`准备获取type: ${type}, topic: ${topic}的文章`)
+
+    const openId = app.globalData.userinfo.openId
+
+    return wx.cloud.callFunction({
+        name: 'home',
+        data: {
+            openid : openId,
+            page: page,
+            pageSize : pageSize,
+            type: type,
+            topic: topic
+        }
+    })
 }
 
 // 通过某个小区的id生成topic
@@ -19,6 +32,9 @@ const postArticle = function(typeId, topic, title, contents, imageUrls, anonymou
     const unionId = app.globalData.userinfo.unionId
     const avatar = anonymous ? '' : app.globalData.avatarUrl
     const nickname = anonymous ? '匿名者' : app.globalData.nickname
+
+    console.log(avatar)
+    console.log(nickname)
 
     return postImages(imageUrls).then(cloudUrls => {
         return wx.cloud.callFunction({
@@ -35,6 +51,14 @@ const postArticle = function(typeId, topic, title, contents, imageUrls, anonymou
                 images: cloudUrls
             }
         })
+    })
+}
+
+// 根据aid query到文章详情
+const getArticle = function(aid) {
+    return wx.cloud.callFunction({
+        name: 'getArticle',
+        data: { aid: aid }
     })
 }
 
@@ -74,5 +98,6 @@ const postImages = function(files) {
 module.exports = {
     getArticles: getArticles,
     generateCommunityTopic: generateCommunityTopic,
-    postArticle: postArticle
+    postArticle: postArticle,
+    getArticle: getArticle
 }

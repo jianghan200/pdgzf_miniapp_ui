@@ -1,6 +1,6 @@
 const log = require('../utils/log')
-const util = require('../utils/util')
 
+// 调用home接口获取所有租房信息
 const loadRentList = function(openid, page, pageSize) {
   log.info('请求rentList from云函数')
   

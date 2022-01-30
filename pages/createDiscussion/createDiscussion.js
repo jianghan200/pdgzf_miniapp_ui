@@ -2,6 +2,7 @@
 const app = getApp()
 const log = require('../../utils/log')
 const forumHelper = require('../../utils/forum')
+const requestHelper = require('../../utils/request')
 
 Page({
     data: {
@@ -69,11 +70,11 @@ Page({
         })
     },
 
-    // 发布问题
-    post() {
-        log.info('开始发布问题')
+    // 匿名发布问题
+    postToCloud(anonymous) {
+        log.info(`准备发布问题(${anonymous})`)
 
-        wx.showLoading()
+        wx.showLoading({ title: '发布中~' })
 
         const self = this
         forumHelper.postArticle(
@@ -82,7 +83,7 @@ Page({
             self.data.title, 
             self.data.contents, 
             self.data.imageUrls, 
-            false
+            anonymous
         ).then(() => {
             log.info('问题发布成功')
 
@@ -100,6 +101,42 @@ Page({
             wx.hideLoading()
             wx.showToast({
               title: '发布失败',
+              icon: 'error'
+            })
+        })
+    },
+
+    // 匿名发布问题
+    anonymousPost() {
+        log.info('准备匿名发布问题')
+
+        this.postToCloud(true)
+    },
+
+    // 发布问题
+    post() {
+        log.info('准备实名发布问题')
+
+        const self = this
+        requestHelper.getAvatarAndNickname().then(res => {
+            log.info('已经获得用户授权')
+
+            if (res) {
+                // 已经获得用户的头像和用户名
+                self.postToCloud(false)
+            } else {
+                // 未获得用户的用户名和头像
+                wx.showToast({
+                  title: '授权失败',
+                  icon: 'error'
+                })
+            }
+        }).catch(err => {
+            log.error(err)
+            console.log(err)
+
+            wx.showToast({
+              title: '出错啦',
               icon: 'error'
             })
         })

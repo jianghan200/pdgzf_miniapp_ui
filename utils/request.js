@@ -1085,7 +1085,7 @@ const generateArticleIdOf = function(pid) {
 
 // 向腾讯云后台上传用户在某个小区下的评论
 const sendCommentOnSomeProject = function(pid, comments) {
-  log.info(`向云后台发布评论：${comments} (${generateArticleIdOf(pid)})`)
+  log.info(`向云后台发布评论：${comments} (${pid})`)
   
   return new Promise((resolve, reject) => {
     wx.cloud.callFunction({

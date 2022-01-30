@@ -11,7 +11,7 @@
     <!-- 添加话题按钮 -->
     <view class="cu-bar bg-white solid-bottom">
         <view class='action'>
-            <text class='cuIcon-titles text-green '></text> 点击 + 创建话题
+            <text class='cuIcon-titles text-green '></text> 点击 + 提问
         </view>
         <button class="cu-btn text-bold icon bg-green margin" bindtap="goToNewDiscussion">
             <text class="cuIcon-add text-white"></text>
@@ -21,7 +21,7 @@
     <!-- 由近及远的话题列表 -->
     <view wx:for="{{ articles }}" wx:for-item="article" wx:key="_id">
         <!-- 话题详情卡片 -->
-        <view class="cu-card case" bindtap="goToDetail" data-id="{{ article._id }}">
+        <view class="cu-card case" bindtap="goToDetail" data-aid="{{ article._id }}">
             <view class="cu-item shadow">
                 <view class="image">
                     <!-- 首图 -->

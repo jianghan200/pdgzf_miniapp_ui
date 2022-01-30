@@ -53,4 +53,8 @@
 </view>
 
 <!-- 发布按钮 -->
-<view class="publish-btn" bindtap="post">发布</view>
+
+<view>
+  <button class="bg-green margin" bindtap="post">发布</button>
+  <button class="bg-black margin" bindtap="anonymousPost">匿名发布</button>
+</view>
