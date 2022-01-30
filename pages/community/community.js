@@ -435,6 +435,13 @@ Page({
     }
   },
 
+  // 进入社区论坛
+  goToForum() {
+    wx.navigateTo({
+      url: '/pages/forum/forum?pname=' + utils.sliceOf(this.data.pName) + '&type=3&pid=' + this.data.pId
+    })
+  },
+
   // 评论功能
   // Focus on评论的输入栏，需要拉高input的高度
   onFocusCommentInput(e) {

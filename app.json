@@ -30,7 +30,10 @@
     "pages/rentList/rentDetail",
     "pages/rentList/rentCreate",
     "pages/rentList/rentList",
-    "pages/community/community"
+    "pages/community/community",
+    "pages/forum/forum",
+    "pages/discussion/discussion",
+    "pages/createDiscussion/createDiscussion"
   ],
   "window": {
     "navigationStyle": "custom"

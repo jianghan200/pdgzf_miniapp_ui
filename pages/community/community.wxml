@@ -332,6 +332,6 @@
   </view>
 
   <view class="action" style="width: 60%;">
-    <button class="cu-btn bg-green lg cuIcon-community round shadow" style="width: 100%;"> 进入社区论坛</button>
+    <button class="cu-btn bg-green lg cuIcon-community round shadow" style="width: 100%;" bindtap="goToForum"> 进入社区论坛</button>
   </view>
 </view>
