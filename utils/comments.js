@@ -1,5 +1,6 @@
 const log = require('./log')
 const requests = require('./request')
+const app = getApp()
 
 // 根据aid拿到某个文章的所有评论
 const getCommentsOf = function(aid) {
@@ -24,7 +25,7 @@ const submitComment = function(aid, userInput) {
       return Promise.resolve()
     } else {
       // 用户不授权
-      wx.showToast({ title: '请授权', icon: 'error' })
+      wx.showToast({ title: '请先授权', icon: 'error' })
       return Promise.reject(false)
     }
   }).then(() => {
@@ -43,7 +44,41 @@ const submitComment = function(aid, userInput) {
   })
 }
 
+// 在哪篇文章中，回复了哪个comment？
+const respond = function(aid, comments, parentCommentId, parentCommentUnionId, parentCommentUsername) {
+  log.info(`回复${parentCommentId}(aid: ${aid})`)
+
+  // 要先看用户有没有头像, 用户名
+  return requests.getAvatarAndNickname().then(res => {
+    if (res) {
+      // 用户授权
+      return Promise.resolve()
+    } else {
+      // 用户不授权
+      wx.showToast({ title: '请先授权', icon: 'error' })
+      return Promise.reject(false)
+    }
+  }).then(() => {
+    // 授权后才能评论
+    return wx.cloud.callFunction({
+      name: 'comment',
+      data : {
+        action: "NEW",
+        uid: app.globalData.userinfo.unionId,
+        aid: aid, 
+        comment: comments,
+        avatarUrl: app.globalData.avatarUrl,
+        nickName: app.globalData.nickname,
+        parent_comment_id: parentCommentId,
+        comment_to_uid: parentCommentUnionId,
+        comment_to_user: parentCommentUsername
+      }
+    })
+  })
+}
+
 module.exports = {
   submitComment: submitComment,
-  getCommentsOf: getCommentsOf
+  getCommentsOf: getCommentsOf,
+  respond: respond
 }

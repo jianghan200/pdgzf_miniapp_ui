@@ -37,17 +37,35 @@
     <!-- 评论区 -->
     <view class="cu-list menu-avatar comment solids-top">
       <!-- 评论列表 -->
-      <view wx:for="{{ article.comment }}" wx:key="aid"  data-id="{{ item.aid }}"  class="cu-item">
+      <view wx:for="{{ article.comment }}" wx:key="aid"  data-id="{{ item.aid }}" class="cu-item">
         <!-- 评论者头像 -->
         <view class="cu-avatar round" style="background-image:url({{item.avatarUrl}});"></view>
-        <view class="content">
+        <view 
+          class="content" 
+          bindtap="respond" 
+          data-uid="{{ item.uid }}" 
+          data-username="{{ item.nickName }}" 
+          data-id="{{ item._id }}"
+        >
           <!-- 评论者昵称 -->
           <view class="text-grey"> {{ item.nickName }} </view>
           <!-- 评论内容 -->
           <view class="text-gray text-content text-df">{{ item.comment }}</view>
+          <!-- if 是个回复: 引用他人评论 -->
+          <view class="bg-grey padding-sm radius margin-top-sm  text-sm" wx:if="{{ item.isRespond }}">
+            <view class="flex" style="flex-direction: column;">
+              <view>回复: {{ item.comment_to_user }} </view>
+              <view class="flex-sub">"{{ item.parent_comment }}"</view>
+            </view>
+          </view>
           <!-- 发布时间 -->
           <view class="margin-top-sm flex justify-between">
             <view class="text-gray text-df">{{ item.timedistance }}</view>
+            <!-- 回复数 -->
+            <view>
+              <text class="text-grey">点击回复</text>
+              <text class="cuIcon-message text-gray margin-left-sm" style="font-size: large;"></text>
+            </view>
           </view>
         </view>
       </view>
@@ -57,10 +75,7 @@
 </view>
 
 <!-- 评论输入 -->
-<view 
-  class="cu-bar foot input {{ commentInputHeight != 0 ? 'cur' : '' }}" 
-  style="bottom: {{ commentInputHeight }}px;"
->
+<view class="cu-bar foot input" style="bottom: 0px;">
   <textarea 
     placeholder="赠人以言，重于珠玉~"
     class="solid-bottom" 
@@ -71,6 +86,7 @@
     bindblur="onBlurCommentInput"
     bindinput="inputComment"
     auto-height="true"
+    focus="{{ onFocus }}"
   ></textarea>
   <button class="cu-btn bg-green shadow" bindtap="submitComment">发送</button>
 </view>

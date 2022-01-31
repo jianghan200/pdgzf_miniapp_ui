@@ -3,6 +3,7 @@ const log = require('../../utils/log')
 const app = getApp()
 const forumHelper = require('../../utils/forum')
 const commentsHelper = require('../../utils/comments')
+const utils = require('../../utils/util')
 
 Page({
 
@@ -11,7 +12,13 @@ Page({
         article: null,
         // 评论
         myComments: '',
-        commentInputHeight : 0 // 初始化的时候尚未on focus，所以贴地板
+        // 改变textarea的focus状态为true会弹出虚拟键盘
+        onFocus: false,
+        // 回复评论
+        isResponding: false,
+        parentCommentId: '',
+        parentCommentUnionId: '',
+        parentCommentUsername: ''
     },
 
     onLoad: function (options) {
@@ -32,8 +39,24 @@ Page({
 
         const self = this
         forumHelper.getArticle(self.data.aid).then(res => {
+            const article = res.result.article
+            article.update_gmt = utils.formatDate(new Date(article.update_gmt))
+
+            // 对文章的全部回复进行整理
+            article.comment.forEach(item => {
+                item['timedistance'] = utils.getTimeDistance(item["create_gmt"])
+                // 是否是个回复
+                item['isRespond'] = item.parent_comment_id ? true : false
+            })
+
+            article.comment.forEach(item => {
+                if (item.isRespond) {
+                    item['parent_comment'] = article.comment.find(comment => comment._id == item.parent_comment_id).comment
+                }
+            })
+
             self.setData({
-                article: res.result.article
+                article: article
             })
 
             wx.hideLoading()
@@ -49,39 +72,20 @@ Page({
         })
     },
 
-    // 根据aid拿到文章的所有评论
-    loadComments() {
-        log.info('读取评论')
+    // 回复某人的评论
+    respond(e) {
+        log.info('回复他人评论')
+
+        const parentCommentId = e.currentTarget.dataset.id
+        const parentCommentUnionId = e.currentTarget.dataset.uid
+        const parentCommentUsername = e.currentTarget.dataset.username
         
-        wx.showLoading({ title: '加载评论' })
-
-        const self = this
-        commentsHelper.getCommentsOf(self.data.aid).then(res => {
-            if (res.result.code == 200) {
-                // 加载成功
-                self.setData({
-                    comments: res.result.data
-                })
-                wx.hideLoading()
-            } else {
-                // 加载失败
-                log.error(res)
-
-                wx.hideLoading()
-                wx.showToast({
-                  title: '加载失败',
-                  icon: 'error'
-                })
-            }
-        }).catch(err => {
-            log.error(err)
-            console.log(err)
-
-            wx.hideLoading()
-            wx.showToast({
-              title: '加载失败',
-              icon: 'error'
-            })
+        this.setData({
+            onFocus: true,
+            isResponding: true,
+            parentCommentId: parentCommentId,
+            parentCommentUnionId: parentCommentUnionId,
+            parentCommentUsername: parentCommentUsername
         })
     },
 
@@ -90,7 +94,7 @@ Page({
         log.info('点击了输入框')
 
         this.setData({
-            commentInputHeight : e.detail.height
+            onFocus: true
         })
     },
 
@@ -99,14 +103,14 @@ Page({
         log.info('完成了输入，输入框blur')
 
         this.setData({
-            commentInputHeight : 0
+            onFocus: false
         })
     },
 
     // 输入评论
     inputComment(e) {
         this.setData({
-        myComments : e.detail.value.trim()
+            myComments : e.detail.value.trim()
         })
     },
 
@@ -114,13 +118,26 @@ Page({
     submitComment() {
         log.info('点击发布评论')
 
+        if (this.data.isResponding) {
+            this.respondComment()
+        } else {
+            this.submitCommentsOnArticle()
+        }
+    },
+
+    // 递交评论
+    submitCommentsOnArticle() {
+        log.info('直接评论文章')
+
         wx.showLoading({ title: '正在上传...' })
 
         const self = this
         commentsHelper.submitComment(self.data.aid, self.data.myComments).then(() => {
+            // 回复上传成功，将本地的数据清理干净
             self.setData({
                 myComments: ''
             }, () => {
+                // 重新加载文章以看到自己的评论
                 wx.hideLoading()
                 self.loadArticle()
             })
@@ -134,6 +151,46 @@ Page({
               icon: 'error'
             })
         })
+    },
+
+    // 回复他人评论
+    respondComment() {
+        log.info('回复他人评论')
+
+        wx.showLoading({ title: '正在上传...' })
+
+        const self = this
+        commentsHelper.respond(self.data.aid, self.data.myComments, 
+            self.data.parentCommentId, self.data.parentCommentUnionId, self.data.parentCommentUsername).then(() => {
+                // 回复上传成功，将本地的数据清理干净
+                self.setData({
+                    myComments: '',
+                    isResponding: false,
+                    parentCommentId: '',
+                    parentCommentUnionId: '',
+                    parentCommentUsername: ''
+                }, () => {
+                    // 重新加载文章以看到自己的评论
+                    wx.hideLoading()
+                    self.loadArticle()
+                })
+            }).catch(err => {
+                log.error(err)
+                console.log(err)
+                
+                self.setData({
+                    isResponding: false,
+                    parentCommentId: '',
+                    parentCommentUnionId: '',
+                    parentCommentUsername: ''
+                })
+
+                wx.hideLoading()
+                wx.showToast({
+                    title: '上传失败',
+                    icon: 'error'
+                })
+            })
     },
 
     onShareAppMessage: function () {
