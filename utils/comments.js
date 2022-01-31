@@ -44,6 +44,22 @@ const submitComment = function(aid, userInput) {
   })
 }
 
+// 匿名上传评论
+const submitCommentAnonymously = function(aid, comments) {
+  log.info('匿名上传评论')
+
+  return wx.cloud.callFunction({
+    name: 'comment',
+    data: {
+      action: "NEW",
+      uid: app.globalData.userinfo.unionId,
+      aid: aid, 
+      comment: comments,
+      is_anonymous: true
+    }
+  })
+}
+
 // 在哪篇文章中，回复了哪个comment？
 const respond = function(aid, comments, parentCommentId, parentCommentUnionId, parentCommentUsername) {
   log.info(`回复${parentCommentId}(aid: ${aid})`)
@@ -77,8 +93,29 @@ const respond = function(aid, comments, parentCommentId, parentCommentUnionId, p
   })
 }
 
+// 匿名回复他人评论
+const respondAnonymously = function(aid, comments, parentCommentId, parentCommentUnionId, parentCommentUsername) {
+  log.info(`匿名回复${parentCommentId}(aid: ${aid})`)
+
+  return wx.cloud.callFunction({
+    name: 'comment',
+    data : {
+      action: "NEW",
+      uid: app.globalData.userinfo.unionId,
+      aid: aid, 
+      comment: comments,
+      parent_comment_id: parentCommentId,
+      comment_to_uid: parentCommentUnionId,
+      comment_to_user: parentCommentUsername,
+      is_anonymous: true
+    }
+  })
+}
+
 module.exports = {
   submitComment: submitComment,
+  submitCommentAnonymously: submitCommentAnonymously,
   getCommentsOf: getCommentsOf,
-  respond: respond
+  respond: respond,
+  respondAnonymously: respondAnonymously
 }

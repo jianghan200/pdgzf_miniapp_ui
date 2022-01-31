@@ -14,7 +14,7 @@
   <input 
     bindinput="setTitle"
     style="width: 100%; background: #fff; font-size: 14px; height: 40px; line-height: 40px;" 
-    placeholder="标题" 
+    placeholder="标题（必填）" 
   />
 
   <!-- 分隔符 -->
@@ -24,12 +24,12 @@
   <textarea 
     bindinput="setContents"
     maxlength="1000" 
-    placeholder="问题描述" 
-    style="padding: 5px; width: 100%;"
+    placeholder="问题描述（必填）" 
+    style="padding-top: 5px; width: 100%;"
   ></textarea>
 
   <!-- 图片 -->
-  <view>最多9张图片</view>
+  <view>最多9张图片（可不添加）</view>
   <view style="width: 100%; background: #fff;">
     <view class="weui-uploader">
       <view class="weui-uploader__bd">

@@ -33,9 +33,6 @@ const postArticle = function(typeId, topic, title, contents, imageUrls, anonymou
     const avatar = anonymous ? '' : app.globalData.avatarUrl
     const nickname = anonymous ? '匿名者' : app.globalData.nickname
 
-    console.log(avatar)
-    console.log(nickname)
-
     return postImages(imageUrls).then(cloudUrls => {
         return wx.cloud.callFunction({
             name: 'newArticle',

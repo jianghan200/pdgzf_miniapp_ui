@@ -44,6 +44,7 @@ Page({
 
             // 对文章的全部回复进行整理
             article.comment.forEach(item => {
+                item.user_avatar = item.user_avatar ? item.user_avatar : ''
                 item['timedistance'] = utils.getTimeDistance(item["create_gmt"])
                 // 是否是个回复
                 item['isRespond'] = item.parent_comment_id ? true : false
@@ -114,61 +115,61 @@ Page({
         })
     },
 
-    // 发布评论
+    // 点击发送后选择匿名还是真名
+    chooseCommentMode() {
+        log.info('选择匿名 / 真名模式')
+        
+        const self = this
+        wx.showActionSheet({
+          itemList: ['发送', '匿名发送'],
+          success: res => {
+              if (res.tapIndex == 0) {
+                // 选择真名发送
+                self.submitComment()
+              } else {
+                // 选择匿名发送
+                self.submitCommentAnonymously()
+              }
+          }
+        })
+    },
+
+    // 实名发布评论
     submitComment() {
-        log.info('点击发布评论')
+        log.info('实名发布评论')
 
         if (this.data.isResponding) {
-            this.respondComment()
+            this.respondComment(false)
         } else {
-            this.submitCommentsOnArticle()
+            this.submitCommentsOnArticle(false)
         }
     },
 
-    // 递交评论
-    submitCommentsOnArticle() {
+    // 匿名发布评论
+    submitCommentAnonymously() {
+        log.info('匿名发布评论')
+
+        if (this.data.isResponding) {
+            this.respondComment(true)
+        } else {
+            this.submitCommentsOnArticle(true)
+        }
+    },
+
+    // 评论文章
+    submitCommentsOnArticle(isAnonymous) {
         log.info('直接评论文章')
 
         wx.showLoading({ title: '正在上传...' })
 
         const self = this
-        commentsHelper.submitComment(self.data.aid, self.data.myComments).then(() => {
-            // 回复上传成功，将本地的数据清理干净
-            self.setData({
-                myComments: ''
-            }, () => {
-                // 重新加载文章以看到自己的评论
-                wx.hideLoading()
-                self.loadArticle()
-            })
-        }).catch(err => {
-            log.error(err)
-            console.log(err)
-            
-            wx.hideLoading()
-            wx.showToast({
-              title: '上传失败',
-              icon: 'error'
-            })
-        })
-    },
 
-    // 回复他人评论
-    respondComment() {
-        log.info('回复他人评论')
-
-        wx.showLoading({ title: '正在上传...' })
-
-        const self = this
-        commentsHelper.respond(self.data.aid, self.data.myComments, 
-            self.data.parentCommentId, self.data.parentCommentUnionId, self.data.parentCommentUsername).then(() => {
+        if (isAnonymous) {
+            // 匿名mode
+            commentsHelper.submitCommentAnonymously(self.data.aid, self.data.myComments).then(() => {
                 // 回复上传成功，将本地的数据清理干净
                 self.setData({
-                    myComments: '',
-                    isResponding: false,
-                    parentCommentId: '',
-                    parentCommentUnionId: '',
-                    parentCommentUsername: ''
+                    myComments: ''
                 }, () => {
                     // 重新加载文章以看到自己的评论
                     wx.hideLoading()
@@ -178,19 +179,111 @@ Page({
                 log.error(err)
                 console.log(err)
                 
-                self.setData({
-                    isResponding: false,
-                    parentCommentId: '',
-                    parentCommentUnionId: '',
-                    parentCommentUsername: ''
-                })
-
                 wx.hideLoading()
                 wx.showToast({
-                    title: '上传失败',
-                    icon: 'error'
+                title: '上传失败',
+                icon: 'error'
                 })
             })
+        } else {
+            // 实名mode
+            commentsHelper.submitComment(self.data.aid, self.data.myComments).then(() => {
+                // 回复上传成功，将本地的数据清理干净
+                self.setData({
+                    myComments: ''
+                }, () => {
+                    // 重新加载文章以看到自己的评论
+                    wx.hideLoading()
+                    self.loadArticle()
+                })
+            }).catch(err => {
+                log.error(err)
+                console.log(err)
+                
+                wx.hideLoading()
+                wx.showToast({
+                  title: '上传失败',
+                  icon: 'error'
+                })
+            })
+        }
+    },
+
+    // 回复他人评论
+    respondComment(isAnonymous) {
+        log.info('回复他人评论')
+
+        wx.showLoading({ title: '正在上传...' })
+
+        const self = this
+
+        if (isAnonymous) {
+            // 匿名mode
+            commentsHelper.respondAnonymously(self.data.aid, self.data.myComments, 
+                self.data.parentCommentId, self.data.parentCommentUnionId, self.data.parentCommentUsername).then(() => {
+                    // 回复上传成功，将本地的数据清理干净
+                    self.setData({
+                        myComments: '',
+                        isResponding: false,
+                        parentCommentId: '',
+                        parentCommentUnionId: '',
+                        parentCommentUsername: ''
+                    }, () => {
+                        // 重新加载文章以看到自己的评论
+                        wx.hideLoading()
+                        self.loadArticle()
+                    })
+                }).catch(err => {
+                    log.error(err)
+                    console.log(err)
+                    
+                    self.setData({
+                        isResponding: false,
+                        parentCommentId: '',
+                        parentCommentUnionId: '',
+                        parentCommentUsername: ''
+                    })
+    
+                    wx.hideLoading()
+                    wx.showToast({
+                        title: '上传失败',
+                        icon: 'error'
+                    })
+                })
+        } else {
+            // 实名mode
+            commentsHelper.respond(self.data.aid, self.data.myComments, 
+                self.data.parentCommentId, self.data.parentCommentUnionId, self.data.parentCommentUsername).then(() => {
+                    // 回复上传成功，将本地的数据清理干净
+                    self.setData({
+                        myComments: '',
+                        isResponding: false,
+                        parentCommentId: '',
+                        parentCommentUnionId: '',
+                        parentCommentUsername: ''
+                    }, () => {
+                        // 重新加载文章以看到自己的评论
+                        wx.hideLoading()
+                        self.loadArticle()
+                    })
+                }).catch(err => {
+                    log.error(err)
+                    console.log(err)
+                    
+                    self.setData({
+                        isResponding: false,
+                        parentCommentId: '',
+                        parentCommentUnionId: '',
+                        parentCommentUsername: ''
+                    })
+    
+                    wx.hideLoading()
+                    wx.showToast({
+                        title: '上传失败',
+                        icon: 'error'
+                    })
+                })
+        }
     },
 
     onShareAppMessage: function () {

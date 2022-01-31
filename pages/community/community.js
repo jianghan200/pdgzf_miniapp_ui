@@ -182,6 +182,7 @@ Page({
   // 返回上一页
   backToParent() {
     log.info('从community页返回上一页')
+    
     const pages = getCurrentPages()
     const prevPage = pages[pages.length - 2]
     const prevPageRoute = prevPage.__route__

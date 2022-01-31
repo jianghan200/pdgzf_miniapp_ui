@@ -34,6 +34,7 @@ Page({
 
     // 读取文章
     loadArticles() {
+        console.log('running')
         log.info(`forum页开始读取文章列表page: ${this.data.page}, pageSize: ${this.data.pageSize}`)
         
         const communityTopic = forumHelper.generateCommunityTopic(this.data.pId)
@@ -67,6 +68,19 @@ Page({
               title: '出问题啦',
               icon: 'error'
             })
+        })
+    },
+
+    // 其他Page使用的reload方法
+    reload() {
+        log.info('reload forum Page')
+
+        this.setData({
+            page: 0,
+            pageSize: 5,
+            articles: []
+        }, () => {
+            this.loadArticles()
         })
     },
 

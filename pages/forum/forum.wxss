@@ -1,6 +1,17 @@
 /* pages/forum/forum.wxss */
+/* 页面的标题 */
 .title {
     font-size: larger;
     font-weight: 700;
     padding: 1rem;
+}
+
+/* 卡片的标题 */
+.card-title {
+    padding: 0 30rpx 0;
+    max-height: 6.4em;
+    overflow: hidden;
+    font-size: 30rpx;
+    margin-bottom: 20rpx;
+    line-height: 1.6;
 }

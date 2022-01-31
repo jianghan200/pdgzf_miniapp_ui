@@ -23,7 +23,7 @@
         <!-- 话题详情卡片 -->
         <view class="cu-card case" bindtap="goToDetail" data-aid="{{ article._id }}">
             <view class="cu-item shadow">
-                <view class="image">
+                <view class="image" wx:if="{{ article.images.length > 0 }}" >
                     <!-- 首图 -->
                     <image src="{{ article.images[0] }}" mode="aspectFill"></image>
                     <!-- 标题 -->
@@ -31,6 +31,7 @@
                         <text class="text-cut">{{ article.title }}</text>
                     </view>
                 </view>
+
                 <!-- 楼主信息 -->
                 <view class="cu-list menu-avatar">
                     <view class="cu-item">
@@ -53,6 +54,11 @@
                     </view>
                 </view>
 
+                <!-- 没有图片的话题 -->
+                <view wx:if="{{ article.images.length == 0 }}" class="card-title">
+                    {{ article.title }}
+                </view>
+                
             </view>
 
         </view>

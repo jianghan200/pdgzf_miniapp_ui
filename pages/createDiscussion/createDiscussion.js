@@ -144,6 +144,13 @@ Page({
 
     // 返回论坛
     backToForum() {
+        log.info('返回forum页')
+        
+        const pages = getCurrentPages()
+        const prevPage = pages[pages.length - 2]
+        console.log(prevPage)
+        prevPage.reload()
+
         wx.navigateBack({
           delta: 1,
         })
