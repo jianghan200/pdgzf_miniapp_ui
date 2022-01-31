@@ -120,7 +120,7 @@
       <view style="display: flex; justify-content: center;">
         <!-- if 小区有视频 -->
         <view wx:if="{{ videos.length > 0 }}">
-          <video src="{{ firstVideo }}" muted bindtap="previewVideo"></video>
+          <video src="{{ isVip ? firstVideo : '' }}" muted catchtap="previewVideo"></video>
           <!-- 点击打开视频列表抽屉 -->
           <view style="display: flex; justify-content: center;" class="padding">
             <button class="cu-btn bg-white round shadow text-bold lg" style="width: 60%;" bindtap="openVideoList">
@@ -260,19 +260,23 @@
                   <text>面积</text>
                 </view>
                 <view class="cu-item">
-                  <text class="text-bold">{{ info.updateTime }}</text>
+                  <text class="text-bold" wx:if="{{ isVip }}">{{ info.updateTime }}</text>
+                  <text class="text-bold" style="color: goldenrod;" wx:else>VIP内容</text>
                   <text>选中日</text>
                 </view>
                 <view class="cu-item">
-                  <text class="text-bold">{{ info.ownerStartDate }}</text>
+                  <text class="text-bold" wx:if="{{ isVip }}">{{ info.ownerStartDate }}</text>
+                  <text class="text-bold" style="color: goldenrod;" wx:else>VIP内容</text>
                   <text>选中人资格</text>
                 </view>
                 <view class="cu-item">
-                  <text class="text-bold">{{ info.ownerWaitingDays }}</text>
+                  <text class="text-bold" wx:if="{{ isVip }}">{{ info.ownerWaitingDays }}</text>
+                  <text class="text-bold" style="color: goldenrod;" wx:else>VIP内容</text>
                   <text>等待时长</text>
                 </view>
                 <view class="cu-item">
-                  <text class="text-bold">{{ info.hotIndexOnPickedDate }}</text>
+                  <text class="text-bold" wx:if="{{ isVip }}">{{ info.hotIndexOnPickedDate }}</text>
+                  <text class="text-bold" style="color: goldenrod;" wx:else>VIP内容</text>
                   <text>选中日热度</text>
                 </view>
               </view>
@@ -303,7 +307,7 @@
   <view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg">
     <view class="cu-item arrow" wx:for="{{ videos }}" wx:for-item="video" wx:key="url">
       <view class="content" bindtap="previewVideo" data-idx="{{index}}">
-        <text class="cuIcon-videofill text-red"></text> {{video.url}}
+        <text class="cuIcon-videofill text-red"></text> 视频{{ index + 1 }}
       </view>
     </view>
   </view>

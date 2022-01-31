@@ -1,11 +1,9 @@
 // pages/community/community.js
 const constants = require('../../utils/constants')
 const utils = require('../../utils/util')
-const requests = require('../../utils/request')
 const model = require('../../utils/community')
 const app = getApp()
 const log = require('./../../utils/log')
-const commentsHelper = require('../../utils/comments')
 const subscribeHelper = require('../../utils/subscripton')
 
 import plugin from './../../components/calendar/plugins/index'
@@ -51,10 +49,6 @@ Page({
     showTodaysOutlets: false,
     currentTodayHouseIndex: 'today0',
     todayHousesOutlets: [],
-    // 评论区
-    myComments: '',
-    commentInputHeight : 0, // 初始化的时候尚未on focus，所以贴地板
-    commentsList: [],
     // 管理折叠的flags
     equipmentsHidden: false,
     descriptionsHidden: false,
@@ -103,7 +97,7 @@ Page({
 
       // 所有从model层获得的数据
       const { pId, pName, areaIdx, areaId, subscribed, ruleId, coordinate,
-        recentHouseInfo, totalCount, heatMap, descriptions, medias, equipments, todayHouses, comments, articleUrl } = res
+        recentHouseInfo, totalCount, heatMap, descriptions, medias, equipments, todayHouses, articleUrl } = res
         
       // 对今日房源进行排序
       const sortedTodayHouses = utils.sortByProperty(todayHouses, 'name', utils.strComparator)
@@ -151,7 +145,6 @@ Page({
         equipments: equipments,
         todayHouses: sortedTodayHouses,
         todayHousesOutlets: sortedTodayHouses.map(house => `${house.name}(${house.type}, ${house.rent})`),
-        commentsList: comments,
         selectedHouse: selectedHouse,
         selectedHouseType: selectedHouseType
       })
@@ -169,6 +162,25 @@ Page({
       })
 
       wx.hideLoading()
+    })
+  },
+
+  // 引导用户成为VIP
+  promptUsersToBecomeVip() {
+    log.info('用户非VIP')
+
+    wx.showModal({
+      title: 'VIP专享内容',
+      content: '成为VIP解锁更多服务',
+      showCancel: true,
+      confirmText: '看看权益',
+      success: res => {
+        if (res.confirm) {
+          wx.redirectTo({
+            url: '/pages/rights/rights',
+          })
+        }
+      }
     })
   },
 
@@ -254,54 +266,71 @@ Page({
 
   // 预览某一个视频
   previewVideo(e) {
-    console.log(e)
-    const idx = e.currentTarget.dataset.idx
-    if (idx) {
-      // 是从视频列表中点击
-      const video = this.data.videos[idx]
-      this.setData({
-        firstVideo: video,
-        showvideoListDrawer: false
-      }, () => {
+    log.info('用户预览某一个视频')
+
+    if (this.data.isVip) {
+      // VIP
+      const idx = e.currentTarget.dataset.idx
+      if (idx) {
+        // 是从视频列表中点击
+        const video = this.data.videos[idx]
+        this.setData({
+          firstVideo: video,
+          showvideoListDrawer: false
+        }, () => {
+          const self = this
+          wx.previewMedia({
+            sources: self.data.videos,
+            current: idx,
+            showmenu: false
+          })
+        })
+      } else {
         const self = this
         wx.previewMedia({
           sources: self.data.videos,
-          current: idx,
+          current: self.data.videos.indexOf(self.data.firstVideo),
           showmenu: false
         })
-      })
+      }
     } else {
-      const self = this
-      wx.previewMedia({
-        sources: self.data.videos,
-        current: self.data.videos.indexOf(self.data.firstVideo),
-        showmenu: false
-      })
+      // 非VIP
+      this.promptUsersToBecomeVip()
     }
   },
 
   // 打开视频列表
   openVideoList(e) {
-    this.setData({
-      showvideoListDrawer: true
-    })
+    log.info('用户试图打开视频列表')
+
+    if (this.data.isVip) {
+      this.setData({
+        showvideoListDrawer: true
+      })
+    } else {
+      this.promptUsersToBecomeVip()
+    }
   },
 
   // navigate到文章
   gotoArticle(e) {
     log.info(`从小区详情页(${this.data.pId})跳转到article页：${this.data.articleUrl}`)
 
-    // 文章内容为VIP专享
     if (this.data.isVip) {
-      wx.navigateTo({
-        url: '/pages/article/article?url=' + this.data.articleUrl,
-      })
+      // 文章内容为VIP专享
+      if (this.data.isVip) {
+        wx.navigateTo({
+          url: '/pages/article/article?url=' + this.data.articleUrl,
+        })
+      } else {
+        wx.showModal({
+          title: 'VIP专享',
+          content: '成为 VIP 查看此小区实地看房笔记。 VIP 示例小区可以参考浦江海德。',
+          showCancel: 'false'
+        })
+      }
     } else {
-      wx.showModal({
-        title: 'VIP专享',
-        content: '成为 VIP 查看此小区实地看房笔记。 VIP 示例小区可以参考浦江海德。',
-        showCancel: 'false'
-      })
+      this.promptUsersToBecomeVip()
     }
   },
 
@@ -440,86 +469,6 @@ Page({
   goToForum() {
     wx.navigateTo({
       url: '/pages/forum/forum?pname=' + utils.sliceOf(this.data.pName) + '&type=3&pid=' + this.data.pId
-    })
-  },
-
-  // 评论功能
-  // Focus on评论的输入栏，需要拉高input的高度
-  onFocusCommentInput(e) {
-    log.info('点击了输入框')
-
-    this.setData({
-      commentInputHeight : e.detail.height
-    })
-  },
-
-  // 输入结束即“blur”的时候触发，应该将input的高度还原成贴地板
-  onBlurCommentInput(e) {
-    log.info('完成了输入，输入框blur')
-
-    this.setData({
-      commentInputHeight : 0
-    })
-  },
-
-  // 输入评论
-  inputComment(e) {
-    this.setData({
-      myComments : e.detail.value.trim()
-    })
-  },
-
-  // 拿到最新的评论列表
-  loadCommentList(pid) {
-    log.info(`读取${self.data.pName}(${pid})的评论列表`)
-    // 使用pId拿到comments
-    const self = this
-    requests
-      .getCommentsOf(pid)
-      .then((list) => {
-        let comments = []
-        list.forEach(comment => {
-          comments.push({
-            'avatarUrl' : comment.avatarUrl,
-            'nickname' : comment.nickName,
-            'content' : comment.comment,
-            'timestamp' : utils.getTimeDistanceOf(comment.update_gmt)
-          })
-        })
-        self.setData({ commentsList : comments })
-      }).catch((err) => {
-        log.error(`未成功拿到评论列表`)
-        log.error(err)
-
-        wx.showToast({
-          title: '获取失败',
-          icon: 'error'
-        })
-      })
-  },
-
-  // 上传评论
-  submitComment() {
-    log.info('点击上传评论')
-
-    wx.showLoading()
-
-    const self = this
-    const aid = utils.generateArticleIdOf(self.data.pId)
-    const userInput = self.data.myComments.trim()
-
-    commentsHelper.submitComment(aid, userInput).then(() => {
-      // 成功
-      self.loadCommentList(aid)
-      self.setData({ myComments: '' })
-      wx.hideLoading()
-    }).catch(err => {
-      // 失败
-      console.log(err)
-      log.error(err)
-
-      wx.showToast({ title: '评论失败', icon: 'error' })
-      wx.hideLoading()
     })
   },
 

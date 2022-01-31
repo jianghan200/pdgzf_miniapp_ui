@@ -8,8 +8,7 @@ const loadDataForCommunity = function(pid) {
   const articleId = utils.generateArticleIdOf(pid)
   return Promise
     .all([loadDataFromStorage('todayProjects'), loadDataFromStorage('allProjects'), loadDataFromStorage('subscriptions'),
-          requests.getProjectInfo(pid), requests.heatOfTheProject(pid), 
-          requests.getCommentsOf(articleId)]
+          requests.getProjectInfo(pid), requests.heatOfTheProject(pid)]
     ).then(res => {
       // 这一步主要看请求是否都正常
       log.info('请求一切正常')
@@ -19,7 +18,6 @@ const loadDataForCommunity = function(pid) {
       const subscriptions = res[2].data
       const rawMedias = res[3]
       const rawHeatInfo = res[4]
-      const rawComments = res[5]
 
       // allProjects是必须的，不能不存在
       if (allProjects == null || allProjects.length === 0) {
@@ -34,8 +32,7 @@ const loadDataForCommunity = function(pid) {
           allProjects: allProjects,
           subscriptions: subscriptions,
           rawMedias: rawMedias,
-          rawHeatInfo: rawHeatInfo,
-          rawComments: rawComments
+          rawHeatInfo: rawHeatInfo
         }
 
         return Promise.resolve(payload)
@@ -70,7 +67,7 @@ const loadDataForCommunity = function(pid) {
       }
     }).then(payload => {
       // 这一步生成每个户型的数据，以及可能会有的今日数据
-      const { area, project, todayProjects, subscriptions, rawMedias, rawHeatInfo, rawComments, idsOfRecentHouses } = payload
+      const { area, project, todayProjects, subscriptions, rawMedias, rawHeatInfo, idsOfRecentHouses } = payload
       return getQueuesForEveryHouseTypes(idsOfRecentHouses).then(res => {
         const todayData = getDataFromTodayProject(pid, todayProjects)
         // 文章链接
@@ -81,8 +78,6 @@ const loadDataForCommunity = function(pid) {
           articleUrl = project.raw.wp_url
         }
         const statsOfRecentHousesOfAllTypes = populateStatsForAllHouseTypes(project, res)
-        // 评论数据
-        const comments = handleComments(rawComments)
         // 小区的坐标
         const coordinate = utils.convert2TecentMap(project.raw.longitude, project.raw.latitude)
 
@@ -110,7 +105,6 @@ const loadDataForCommunity = function(pid) {
           medias: (rawMedias == null) ? [] : rawMedias.medias,
           equipments: (rawMedias == null) ? null : rawMedias.equipments,
           todayHouses: [],
-          comments: comments,
           articleUrl: articleUrl
         }
         // 根据是否有今日房源populate payload
@@ -274,23 +268,6 @@ const populateStatsForAllHouseTypes = function(project, queuesForHouseTypes) {
       hide : true
     }
   })
-}
-
-// 处理评论内容
-const handleComments = function(rawComments) {
-  let comments = []
-  rawComments.forEach(comment => {
-    comments.push({
-      'avatarUrl' : comment.avatarUrl,
-      'nickname' : comment.nickName,
-      'content' : comment.comment,
-      'timestamp' : utils.getTimeDistanceOf(comment.update_gmt)
-    })
-  })
-
-  log.info(`该小区有${comments.length}条评论`)
-
-  return comments
 }
 
 module.exports = {

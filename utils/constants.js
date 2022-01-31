@@ -47,6 +47,7 @@ const isEmail = str => {
   return emailRegex.test(str)
 }
 
+// 浦江海德
 const vipSampleProjectId = 349481
 // 2021-04-26
 const vipStartDate = new Date(2021, 3, 26)
