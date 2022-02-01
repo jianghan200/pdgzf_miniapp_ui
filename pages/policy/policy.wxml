@@ -18,13 +18,13 @@
       <view class="action"><text class="cuIcon-homefill text-grey"></text><text>运营方</text></view>
       <view class="action">上海市浦东新区公共租赁住房投资运营有限公司</view>
     </view>
-    <view class="cu-bar bg-white solid-bottom">
-      <view class="action"><text class="cuIcon-locationfill text-grey"></text><text>办事处地址</text></view>
-      <view class="action">浦东新区浦三路930弄1号（近杨高南路）</view>
+    <view class="cu-bar bg-white solid-bottom" bindtap="navigateToOffice">
+      <view class="action"><text class="cuIcon-locationfill text-red"></text><text>办事处地址</text></view>
+      <view class="action text-blue">点击导航：浦东新区浦三路930弄1号（近杨高南路）</view>
     </view>
     <view class="cu-bar bg-white solid-bottom">
-      <view class="action"><text class="cuIcon-servicefill text-grey"></text><text>咨询电话</text></view>
-      <view class="action">021-50591069</view>
+      <view class="action"><text class="cuIcon-servicefill text-blue"></text><text>咨询电话</text></view>
+      <view class="action text-blue" bindtap="makePhoneCall">点击拨打：021-50591069</view>
     </view>
     <view class="cu-bar bg-white solid-bottom">
       <view class="action"><text class="cuIcon-timefill text-grey"></text><text>工作时间</text></view>
@@ -35,8 +35,8 @@
       <view class="action">https://select.pdgzf.com</view>
     </view>
     <view class="cu-bar bg-white solid-bottom">
-      <view class="action"><text class="cuIcon-repairfill text-grey"></text><text>报修热线</text></view>
-      <view class="action">021-68389100</view>
+      <view class="action"><text class="cuIcon-repairfill text-grey"></text><text>报修</text></view>
+      <view class="action">可登录官网申报</view>
     </view>
   </view>
   <!-- 注意事项 -->
@@ -105,3 +105,8 @@
     </view>
   </view>
 </scroll-view>
+
+<!-- 为了让js中的导航创造mapContext -->
+<view hidden="true">
+  <map id="map"></map>
+</view>

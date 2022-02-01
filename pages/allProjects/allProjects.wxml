@@ -35,7 +35,7 @@
     <scroll-view
       scroll-y 
       scroll-with-animation
-      style="background-color: #f1f1f1; height:calc(100vh - 9.8rem - calc(100rpx + env(safe-area-inset-bottom) / 2))"
+      style="background-color: #f1f1f1; height:calc(100vh - 6rem - 200rpx - env(safe-area-inset-bottom) / 2)"
     >
       <!-- 遍历社区 -->
       <view

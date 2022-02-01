@@ -79,7 +79,15 @@ const commonJiratypes = ['改进', '举报Bug']
 const wordpressFeedbackUsername = 'pdgzf_feedback'
 const wordpressFeedbackPassword = '10dH 2e8r dUeC OHL2 qffa w8S0'
 
+// 微信号
 const consultant = 'meo365'
+
+// 公租房受理中心的地址（腾讯地图坐标系）
+const officeCoordinate = {
+  lng: 121.51972900889912,
+  lat: 31.180158541429936,
+  address: '上海市浦东新区浦三路930弄'
+}
 
 module.exports = {
   server: prodServer,
@@ -96,5 +104,6 @@ module.exports = {
   prodFeedbackServer : prodFeedbackServer,
   wordpressFeedbackUsername : wordpressFeedbackUsername,
   wordpressFeedbackPassword : wordpressFeedbackPassword,
-  consultant : consultant
+  consultant : consultant,
+  officeCoordinate: officeCoordinate
 }

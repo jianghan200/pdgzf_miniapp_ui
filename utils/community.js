@@ -2,6 +2,7 @@ const log = require('./log')
 const requests = require('./request')
 const utils = require('./util')
 const constants = require('./constants')
+const util = require('./util')
 
 // 为小区详情页准备好所有数据
 const loadDataForCommunity = function(pid) {
@@ -40,19 +41,29 @@ const loadDataForCommunity = function(pid) {
     }).then(payload => {
       // 这一步为了resolve出来社区和小区
       const { allProjects } = payload
+
+      // 这个社区必须在全部房源中存在
       const area = allProjects.find(area => {
         // 数据可能出现areaId为空的情况或者小区Id为空的情况
         const projectOpt = area.projects.find(p => p.pId == pid)
         return projectOpt
       })
       
+      // 这个小区必须在全部房源中存在
       if (area) {
         const project = area.projects.find(p => p.pId == pid)
         if (project) {
-          // 拿到所有近期租出去的房间的ID
-          const idsOfRecentHouses = project.houseInfo.map(house => house.houseId)
+          // 拿到所有近期租出去的房间的ID (根据户型对房间ID进行去重)
+          const idsOfRecentHouses = 
+            utils.groupBy(project.houseInfo, function(obj) {
+              return obj.typeName
+            }).map(group => {
+              return group[0].houseId
+            })
 
+          // 找到所在社区
           payload['area'] = area
+          // 找到该小区
           payload['project'] = project
           payload['idsOfRecentHouses'] = idsOfRecentHouses
 
@@ -68,7 +79,9 @@ const loadDataForCommunity = function(pid) {
     }).then(payload => {
       // 这一步生成每个户型的数据，以及可能会有的今日数据
       const { area, project, todayProjects, subscriptions, rawMedias, rawHeatInfo, idsOfRecentHouses } = payload
+      // 首先拿到各个户型的统计数据
       return getQueuesForEveryHouseTypes(idsOfRecentHouses).then(res => {
+        // 整理好今日房源的数据(if any)
         const todayData = getDataFromTodayProject(pid, todayProjects)
         // 文章链接
         let articleUrl = ''
@@ -77,11 +90,12 @@ const loadDataForCommunity = function(pid) {
 
           articleUrl = project.raw.wp_url
         }
+        // 整理好各个户型最近出现房间的统计数据
         const statsOfRecentHousesOfAllTypes = populateStatsForAllHouseTypes(project, res)
         // 小区的坐标
         const coordinate = utils.convert2TecentMap(project.raw.longitude, project.raw.latitude)
 
-        // 是否订阅过这个小区
+        // 用户是否订阅过这个小区
         let subscribed = false
         let ruleId = ''
         const idxOfThisProjectInSubscriptionList = subscriptions.findIndex(item => item.projectId == pid)
@@ -211,10 +225,13 @@ const housesOfToday = function(project) {
         size: house.area,
         type: constants.id2Type(house.typeName),
         rank: house.rank,
+        // 某房间的排队情况
         displayedQueue : displayedQueue,
+        // 今天某房间的排队队列有多长
         queueLength : house.queue.length,
         // 与显示相关的flag
         hide : false,
+        // 预计搬进去的时间
         emoveInDate: utils.formatDate(new Date(house.emoveInDate)), 
       }
       return houseInfo
@@ -241,9 +258,18 @@ const getQueuesForEveryHouseTypes = function(houseIds) {
 const populateStatsForAllHouseTypes = function(project, queuesForHouseTypes) {
   log.info('准备所有房型的统计数据')
 
-  return project.houseInfo.map(house => {
+  // 先清洗houseInfo, 根据户型（typeName）进行去重
+  const uniqueHouseInfoOfVariousHouseTypes = 
+    utils.groupBy(project.houseInfo, function(obj) {
+      return obj.typeName
+    }).map(group => {
+      return group[0]
+    })
+
+  return uniqueHouseInfoOfVariousHouseTypes.map(house => {
     let queueOpt = queuesForHouseTypes.find(info => info.houseId == house.houseId)
 
+    // 有可能拿不到所有房间的统计数据
     let ownerStartDate = '暂无数据'
     let hotIndexOnPickedDate = '暂无数据'
     let ownerWaitingDays = '暂无数据'
@@ -257,12 +283,16 @@ const populateStatsForAllHouseTypes = function(project, queuesForHouseTypes) {
       houseId : house.houseId,
       area : house.area,
       rent : house.rent,
+      // 这个户型有多少供给量
       tCount : house.typeCount,
       type : constants.id2Type(house.typeName),
       // 这个小区的所有房源最近都是在什么时候出现的。
       updateTime : utils.formatDate(new Date(house.updateTime)),
+      // 选中人的资格日
       ownerStartDate : ownerStartDate,
+      // 选中日当天有多少人参与排队（热度）
       hotIndexOnPickedDate : hotIndexOnPickedDate,
+      // 选中人等待了多久
       ownerWaitingDays : ownerWaitingDays,
       // 与显示相关
       hide : true

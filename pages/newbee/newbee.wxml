@@ -20,7 +20,7 @@
     </view>
     <view class="cu-item" bindtap="goTo" data-page="policy">
       <view class="cuIcon-read"></view>
-      <text>政策介绍</text>
+      <text>信息&心得</text>
     </view>
 
     <view class="cu-item" bindtap="goTo" data-page="qualification">

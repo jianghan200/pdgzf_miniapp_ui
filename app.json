@@ -4,7 +4,6 @@
     "pages/allProjects/allProjects",
     "pages/user/user",
     "pages/map/map",
-    "pages/project/project",
     "pages/error/error",
     "pages/today/today",
     "pages/subscribe/subscribe",

@@ -4,6 +4,22 @@
     <view class="text-white text-bold">{{title}}</view>
   </view>
 </cu-custom>
+<!-- 图例 -->
+<!-- 0~50, 51~100, 101~300, 301~400, 401~inf -->
+<view style="height: 50px; margin: 5px;">
+  <view class="text-bold">坐标颜色按房屋供给量分配</view>
+  <text class="cuIcon-locationfill text-black"></text>
+  <text>0~50</text>
+  <text class="cuIcon-locationfill text-blue"></text>
+  <text>51~100</text>
+  <text class="cuIcon-locationfill text-green"></text>
+  <text>101~300</text>
+  <text class="cuIcon-locationfill text-orange"></text>
+  <text>310~400</text>
+  <text class="cuIcon-locationfill text-red"></text>
+  <text> >= 401</text>
+</view>
+<!-- 地图 -->
 <view style="height: 100vh">
   <map 
     id="map" 
