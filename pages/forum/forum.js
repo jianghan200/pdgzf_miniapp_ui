@@ -34,7 +34,6 @@ Page({
 
     // 读取文章
     loadArticles() {
-        console.log('running')
         log.info(`forum页开始读取文章列表page: ${this.data.page}, pageSize: ${this.data.pageSize}`)
         
         const communityTopic = forumHelper.generateCommunityTopic(this.data.pId)
@@ -92,7 +91,14 @@ Page({
     // 路由到创建新话题页
     goToNewDiscussion() {
         wx.navigateTo({
-          url: '/pages/createDiscussion/createDiscussion?pid=' + this.data.pId,
+          url: '/pages/createDiscussion/createDiscussion?pid=' + this.data.pId + '&type=2'
+        })
+    },
+
+    // 路由到留言板
+    goToKanban(e) {
+        wx.navigateTo({
+          url: '/pages/discussion/discussion?aid=' + forumHelper.generateCommunityTopic(this.data.pId) + '&type=0'
         })
     },
 

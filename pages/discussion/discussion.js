@@ -25,10 +25,22 @@ Page({
         log.info(`onLoad discussion with options: ${options}`)
 
         this.setData({
-            aid: options.aid
+            aid: options.aid,
+            type: options.type
         }, () => {
-            this.loadArticle()
+            this.init()
         })
+    },
+
+    // 初始化方法
+    init() {
+        if (this.data.type == 0) {
+            // 是小区留言板
+            this.loadComments()
+        } else {
+            // 是一个文章
+            this.loadArticle()
+        }
     },
 
     // 根据aid拿到文章详情
@@ -44,17 +56,71 @@ Page({
 
             // 对文章的全部回复进行整理
             article.comment.forEach(item => {
-                item.user_avatar = item.user_avatar ? item.user_avatar : ''
+                item.avatarUrl = item.avatarUrl ? item.avatarUrl : ''
                 item['timedistance'] = utils.getTimeDistance(item["create_gmt"])
                 // 是否是个回复
                 item['isRespond'] = item.parent_comment_id ? true : false
             })
 
+            // 为每个有parent的评论锁定那个parent comment
             article.comment.forEach(item => {
                 if (item.isRespond) {
                     item['parent_comment'] = article.comment.find(comment => comment._id == item.parent_comment_id).comment
                 }
             })
+
+            self.setData({
+                article: article
+            })
+
+            wx.hideLoading()
+        }).catch(err => {
+            log.error(err)
+            console.log(err)
+
+            wx.hideLoading()
+            wx.showToast({
+              title: '出错啦',
+              icon: 'error'
+            })
+        })
+    },
+
+    // 根据aid拿到所有留言，仅对留言板生效
+    loadComments() {
+        log.info('留言板准备读取所有评论')
+        
+        wx.showLoading({ title: 'Loading...' })
+
+        const self = this
+        commentsHelper.getCommentsOf(self.data.aid).then(res => {
+            const comments = res.result.data
+            // Enrich一些信息
+            comments.forEach(comment => {
+                comment.avatarUrl = comment.avatarUrl ? comment.avatarUrl : ''
+                comment['timedistance'] = utils.getTimeDistance(comment.create_gmt)
+                // 是否是个回复
+                comment['isRespond'] = comment.parent_comment_id ? true : false
+            })
+
+            // 为每个有parent的评论锁定那个parent comment
+            comments.forEach(comment => {
+                if (comment.isRespond) {
+                    comment['parent_comment'] = comments.find(c => c._id == comment.parent_comment_id).comment
+                }
+            })
+
+            // 创造一个article object，因为此处都是留言，并没有文章。
+            const article = {
+                user_avatar: '/assets/pdgzf.jpeg',
+                user_nickname: '网管',
+                update_gmt: '2022-01-01',
+                content: '畅所欲言~',
+                title: '留言板',
+                images: [],
+                comment_count: comments.length,
+                comment: comments
+            }
 
             self.setData({
                 article: article
@@ -173,7 +239,7 @@ Page({
                 }, () => {
                     // 重新加载文章以看到自己的评论
                     wx.hideLoading()
-                    self.loadArticle()
+                    self.init()
                 })
             }).catch(err => {
                 log.error(err)
@@ -194,7 +260,7 @@ Page({
                 }, () => {
                     // 重新加载文章以看到自己的评论
                     wx.hideLoading()
-                    self.loadArticle()
+                    self.init()
                 })
             }).catch(err => {
                 log.error(err)
@@ -231,7 +297,7 @@ Page({
                     }, () => {
                         // 重新加载文章以看到自己的评论
                         wx.hideLoading()
-                        self.loadArticle()
+                        self.init()
                     })
                 }).catch(err => {
                     log.error(err)
@@ -264,7 +330,7 @@ Page({
                     }, () => {
                         // 重新加载文章以看到自己的评论
                         wx.hideLoading()
-                        self.loadArticle()
+                        self.init()
                     })
                 }).catch(err => {
                     log.error(err)

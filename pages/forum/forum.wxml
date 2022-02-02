@@ -11,11 +11,21 @@
     <!-- 添加话题按钮 -->
     <view class="cu-bar bg-white solid-bottom">
         <view class='action'>
-            <text class='cuIcon-titles text-green '></text> 点击 + 提问
+            <text class='cuIcon-titles text-green '></text> 点击 + 提问/开启讨论
         </view>
         <button class="cu-btn text-bold icon bg-green margin" bindtap="goToNewDiscussion">
             <text class="cuIcon-add text-white"></text>
         </button>
+    </view>
+
+    <!-- 小区的留言板 -->
+    <view class="cu-list menu">
+        <view class="cu-item arrow" bindtap="goToKanban">
+            <view class="content">
+                <text class="cuIcon-comment text-bold text-green"></text>
+                <text class="text-bold">小区留言板</text>
+            </view>
+        </view>
     </view>
 
     <!-- 由近及远的话题列表 -->
