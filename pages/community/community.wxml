@@ -230,7 +230,7 @@
         <text class="cuIcon-calendar" style="font-size: large;"></text> 
         <text style="font-size: large;"> 小区人气日历 </text>
         <text class="cuIcon-{{ calendarHidden ? 'un' : '' }}fold" style="font-size: large;"></text>
-        <text wx:if="{{ !isVip }}" style="font-size: large;">（VIP内容）</text>
+        <text wx:if="{{ !isVip }}" bindTap="promptUsersToBecomeVip" style="font-size: large;">（VIP内容）</text>
       </view>
       <!-- 小历日历 -->
       <view style="padding: 1rem;" wx:if="{{ isVip }}" hidden="{{ calendarHidden }}">
@@ -269,22 +269,22 @@
                 </view>
                 <view class="cu-item">
                   <text class="text-bold" wx:if="{{ isVip }}">{{ info.updateTime }}</text>
-                  <text class="text-bold" style="color: goldenrod;" wx:else>VIP内容</text>
+                  <text class="text-bold" bindtap="promptUsersToBecomeVip" style="color: goldenrod;" wx:else>VIP内容</text>
                   <text>选中日</text>
                 </view>
                 <view class="cu-item">
                   <text class="text-bold" wx:if="{{ isVip }}">{{ info.ownerStartDate }}</text>
-                  <text class="text-bold" style="color: goldenrod;" wx:else>VIP内容</text>
+                  <text class="text-bold" bindtap="promptUsersToBecomeVip" style="color: goldenrod;" wx:else>VIP内容</text>
                   <text>选中人资格</text>
                 </view>
                 <view class="cu-item">
                   <text class="text-bold" wx:if="{{ isVip }}">{{ info.ownerWaitingDays }}</text>
-                  <text class="text-bold" style="color: goldenrod;" wx:else>VIP内容</text>
+                  <text class="text-bold" bindtap="promptUsersToBecomeVip" style="color: goldenrod;" wx:else>VIP内容</text>
                   <text>等待时长</text>
                 </view>
                 <view class="cu-item">
                   <text class="text-bold" wx:if="{{ isVip }}">{{ info.hotIndexOnPickedDate }}</text>
-                  <text class="text-bold" style="color: goldenrod;" wx:else>VIP内容</text>
+                  <text class="text-bold" bindtap="promptUsersToBecomeVip" style="color: goldenrod;" wx:else>VIP内容</text>
                   <text>选中日热度</text>
                 </view>
               </view>
