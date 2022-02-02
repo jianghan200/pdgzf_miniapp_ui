@@ -584,8 +584,8 @@ const getProjectInfo = function(pid) {
             }
             // 只有vip能看到视频
             // 或者这个小区是三湘名邸
-            let isSampleProject = pid == constants.vipPid
-            if (isSampleProject || app.globalData.userinfo.type == 2) {
+            // let isSampleProject = pid == constants.vipPid
+            // if (isSampleProject || app.globalData.userinfo.type == 2) {
               if (info.videoUrls && info.videoUrls != null) {
                 JSON.parse(info.videoUrls).forEach(urlStr => {
                   medias.push({
@@ -594,7 +594,7 @@ const getProjectInfo = function(pid) {
                   })
                 })
               }
-            }
+            // }
             let descriptions = []
             if (info.description && info.description != null) {
               descriptions = info.description.split('；')
