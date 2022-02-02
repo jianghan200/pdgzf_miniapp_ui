@@ -10,6 +10,23 @@
   <view class="cu-item text-brown">
     <view class="bg-brown content shadow">
       <view class="cu-capsule radius">
+        <view class="cu-tag bg-white text-brown">v2.0.4</view>
+        <view class="cu-tag line-white">2022/02/03</view>
+      </view>
+      <view class="margin-top-sm text-content">
+        <view>1. 全面重构“小区详情”页</view>
+        <view>2. 每个社区添加一个论坛</view>
+        <view>3. 在社区的论坛中，可以开启话题</view>
+        <view>4. 在社区论坛中可以匿名发布内容</view>
+        <view>5. 在社区论坛中可以回复他人的回复</view>
+        <view>6. 小程序中的地址均可以点击后直接导航</view>
+      </view>
+    </view>   
+  </view>
+
+  <view class="cu-item text-brown">
+    <view class="bg-brown content shadow">
+      <view class="cu-capsule radius">
         <view class="cu-tag bg-white text-brown">v2.0.0</view>
         <view class="cu-tag line-white">2022/01/03</view>
       </view>
