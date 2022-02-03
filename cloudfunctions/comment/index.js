@@ -62,10 +62,11 @@ exports.main = async (data, context) => {
 
   if(data.action=="NEW"){
 
-    db.collection('comment').add({
+    ret = await db.collection('comment').add({
       data: {
         uid: data.uid, //评论者的 uid， 可以使用 unionId
         aid: data.aid, //评论对应的文章 ID, 可以使用小区的id pdgzf_8034
+        article_author_id: data.article_author_id,
         comment: data.comment,
         avatarUrl: data.avatarUrl, //评论者的头像地址
         nickName: data.nickName, //评论者的昵称
@@ -80,7 +81,55 @@ exports.main = async (data, context) => {
       success: res => { console.log('[数据库] [新增记录] 成功，记录 _id: ', res._id);},
       fail: err => { console.error('[数据库] [新增记录] 失败：', err); return  {code: 1004, msg:"新增数据失败", err:err} }
     })
-  
+
+    // console.log(ret);
+    // {
+    //   "_id": "bf4a0bf261faa17d0c13793a646d9e24",
+    //   "errMsg": "collection.add:ok"
+    // }
+ 
+    // 评论通知要考虑的几个点
+    // 文章作者要收到新评论的通知
+    // 评论作者要收到针对自己评论的新评论通知
+    // 关注文章，那么享受文章作者待遇
+    // 关注作者，那么作者发布新文章你会收到通知
+
+    // 为作者增加一个提醒
+    // 发布评论的不是文章作者自己
+    if(data.uid != data.article_author_id){
+      db.collection('unread').add({
+        data: {
+          uid: data.article_author_id,  // 文章的作者，或者评论的作者， 如果是评论的作者，那么文章的作者也会收到通知
+          type: "A",
+          type_id : ret._id,
+          msg: data.comment,
+          has_read: false,
+          create_gmt: new Date(),
+          update_gmt: new Date()
+        }, success: function(res) {
+          console.log(res.data)
+        }
+      });
+    }
+    
+    // 是回复评论而且不是给文章作者的，要给个提醒给评论作者
+    if(data.comment_to_uid !=null && data.comment_to_uid!=data.article_author_id){
+      db.collection('unread').add({
+        data: {
+          uid: data.comment_to_uid,  // 文章的作者，或者评论的作者， 如果是评论的作者，那么文章的作者也会收到通知
+          type: "C",
+          type_id : ret._id,
+          msg: data.comment,
+          has_read: false,
+          create_gmt: new Date(),
+          update_gmt: new Date()
+        }, success: function(res) {
+          console.log(res.data)
+        }
+      });
+    }
+
+
     db.collection('article').doc(data.aid).update({
       data: {
         comment_count: _.inc(1),
