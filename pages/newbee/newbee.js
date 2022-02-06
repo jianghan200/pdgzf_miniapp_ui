@@ -12,6 +12,13 @@ Page({
     this.setData({
       vipInfo : app.globalData.userinfo
     })
+    if(options['tab'] != undefined && options['tab'] != '') {
+      let tab = options['tab']
+      // 来自分享
+      wx.navigateTo({
+        url: `/pages/${tab}/${tab}`,
+      })
+    }
   },
 
   // 导航至某个页面
@@ -37,9 +44,10 @@ Page({
 
   // 转发
   onShareAppMessage: function(options) {
+    var path = '/pages/newbee/newbee'
     return {
       title : 'PD公租房',
-      path : '/pages/login/login',
+      path : '/pages/login/login?redirect=' + encodeURIComponent(path),
       imageUrl : '',
       success : function(res) {
         if (res.errMsg == 'shareAppMessage:ok') {
