@@ -40,6 +40,13 @@ Page({
       hasStartDateCode: hasStartDateCode,
       buttonInfo: this.resolveButtonInfo(hasStartDateCode, app.globalData.userinfo.type === 2)
     })
+
+    if(options['tab'] != undefined && options['tab'] != '' &&  options['tab'] == 'rights') {
+      // 来自分享
+      wx.navigateTo({
+        url: `../rights/rights`
+      })
+    }
   },
 
   // 根据hasStartDateCode解析资格日

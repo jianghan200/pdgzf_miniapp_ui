@@ -78,10 +78,11 @@ Page({
 
   // 转发
   onShareAppMessage: function(options) {
+    var path = '/pages/newbee/newbee?tab=policy'
     let self = this
     return {
       title : 'PD公租房',
-      path : '/pages/login/login',
+      path : '/pages/login/login?redirect=' + encodeURIComponent(path),
       imageUrl : '',
       success : function(res) {
         if (res.errMsg == 'shareAppMessage:ok') {

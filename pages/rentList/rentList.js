@@ -18,11 +18,12 @@ Page({
     log.info('onLoad rentList')
 
     const self = this
+    let aid = options['aid']
     // 用户必须提供头像和昵称
     requestHelper.getAvatarAndNickname().then((res) => {
       if (res) {
         // 得到了用户的头像和昵称 或 用户授权
-        self.getRentListOfCurrentPage()
+        self.getRentListOfCurrentPage(aid)
       } else {
         // 用户未授权
         wx.redirectTo({
@@ -40,7 +41,7 @@ Page({
   },
 
   // 获取某页的文章列表
-  getRentListOfCurrentPage() {
+  getRentListOfCurrentPage(aid) {
     const openId = app.globalData.userinfo.openId
     const self = this
     
@@ -69,6 +70,14 @@ Page({
           })
         }
         wx.hideLoading()
+
+
+        if(aid != undefined && aid != '') {
+          // 来自分享
+          wx.navigateTo({
+            url: '../rentList/rentDetail?aid=' + aid,
+          })
+        }
       }).catch((err) => {
         console.log(err)
         self.setData({
@@ -117,8 +126,34 @@ Page({
     }
   },
 
-  // 分享
-  onShareAppMessage: function () {
+  // 转发
+  onShareAppMessage: function(options) {
+    var path = '/pages/rentList/rentList'
+    return {
+      title : 'PD公租房',
+      path : '/pages/login/login?redirect=' + encodeURIComponent(path),
+      imageUrl : '',
+      success : function(res) {
+        if (res.errMsg == 'shareAppMessage:ok') {
+          // 用户转发成功
+          wx.showToast({
+            title: '转发成功',
+            icon: 'success'
+          })
+        }
+      },
+      fail : function(err) {
+        if (err.errMsg == 'shareAppMessage:fail cancel') {
+          wx.showToast({
+            title: '转发已取消',
+          })
+        } else {
+          wx.showToast({
+            title: '转发失败',
+          })
+        }
+      }
+    }
+  },
 
-  }
 })

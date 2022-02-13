@@ -100,7 +100,7 @@ exports.main = async (data, context) => {
       db.collection('unread').add({
         data: {
           uid: data.article_author_id,  // 文章的作者，或者评论的作者， 如果是评论的作者，那么文章的作者也会收到通知
-          type: "A",
+          type: "C",
           type_id : ret._id,
           msg: data.comment,
           has_read: false,
