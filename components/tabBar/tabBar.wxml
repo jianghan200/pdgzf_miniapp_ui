@@ -1,29 +1,29 @@
 <view class="cu-bar tabbar bg-white shadow foot">
   <view class="action" bindtap="switchTab" data-tabname="today">
-    <view class="cuIcon-{{tab == 'today' ? 'homefill' : 'home'}} text-{{tab == 'today' ? 'orange' : 'gray'}}"></view>
+    <view class="cuIcon-{{tab == 'today' ? 'homefill' : 'home'}} text-{{tab == 'today' ? 'red' : 'gray'}}"></view>
     <view class="text-{{tab == 'today' ? 'black' : 'gray'}}">今日房源</view>
   </view>
 
   <view class="action" bindtap="switchTab" data-tabname="allProjects">
     <view 
-      class="cuIcon-{{tab == 'allProjects' ? 'homefill' : 'home'}} text-{{tab == 'allProjects' ? 'orange' : 'gray'}}"
+      class="cuIcon-{{tab == 'allProjects' ? 'homefill' : 'home'}} text-{{tab == 'allProjects' ? 'red' : 'gray'}}"
     ></view>
     <view class="text-{{tab == 'allProjects' ? 'black' : 'gray'}}">全部房源</view>
   </view>
 
   <view class="action" bindtap="switchTab" data-tabname="newbee">
-    <view class="cuIcon-{{tab == 'newbee' ? 'discoverfill' : 'discover'}} text-{{tab == 'newbee' ? 'orange' : 'gray'}}"></view>
+    <view class="cuIcon-{{tab == 'newbee' ? 'discoverfill' : 'discover'}} text-{{tab == 'newbee' ? 'red' : 'gray'}}"></view>
     <view class="text-{{tab == 'newbee' ? 'black' : 'gray'}}">公租房新手村</view>
   </view>
 
   <view class="action" bindtap="switchTab" data-tabname="rentList">
-    <view class="cuIcon-{{tab == 'rentList' ? 'shopfill' : 'shop'}} text-{{tab == 'rentList' ? 'orange' : 'gray'}}"></view>
+    <view class="cuIcon-{{tab == 'rentList' ? 'shopfill' : 'shop'}} text-{{tab == 'rentList' ? 'red' : 'gray'}}"></view>
     <view class="text-{{tab == 'rentList' ? 'black' : 'gray'}}">市场租房</view>
   </view>
 
   <view class="action" bindtap="switchTab" data-tabname="user">
     <view class="cu-tag badge" style="right: auto; margin-left: 20rpx;">{{ unreadCount == 0 ? '' : unreadCount }}</view>
-    <view class="cuIcon-{{tab == 'user' ? 'peoplefill' : 'people'}} text-{{tab == 'user' ? 'orange' : 'gray'}}"></view>
+    <view class="cuIcon-{{tab == 'user' ? 'peoplefill' : 'people'}} text-{{tab == 'user' ? 'red' : 'gray'}}"></view>
     <view class="text-{{tab == 'user' ? 'black' : 'gray'}}">我的</view>
   </view>
 </view>

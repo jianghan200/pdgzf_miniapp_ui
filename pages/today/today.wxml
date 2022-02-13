@@ -1,17 +1,17 @@
 <wxs src="../../utils/tool.wxs" module="tools" />
 
 <view style="height: 100vh; background-color: white;" wx:if="{{!disable}}">
-  <view style="height: 2.5rem;"></view>
+  <view class="bg-gray" style="height: 2.5rem;"></view>
   <!-- 标题 -->
-  <view class="title">
+  <view class="title bg-gray">
     <view class="margin-bottom" style="display: flex; flex-direction: row; align-items: center;">
       <text class="text-bold"> 今日房源</text>
       <!-- 按钮功能区 -->
-      <button class="cu-btn text-bold icon bg-black margin-left" bindtap="openMap">
-        <text class="cuIcon-locationfill text-white"></text>
+      <button class="cu-btn text-bold icon bg-white margin-left shadow" bindtap="openMap">
+        <text class="cuIcon-locationfill text-red text-bold"></text>
       </button>
-      <button class="cu-btn text-bold icon bg-black margin-left" bindtap="refresh">
-        <text class="cuIcon-refresh text-white"></text>
+      <button class="cu-btn text-bold icon bg-white margin-left shadow" bindtap="refresh">
+        <text class="cuIcon-refresh text-green text-bold"></text>
       </button>
       <button 
         wx:if="{{!isVip}}"
@@ -33,7 +33,7 @@
       <block wx:for="{{broadcastMsgs}}" wx:for-item="msg" wx:key="*this">
         <navigator url="/pages/article/article?url={{msg.link}}" open-type="navigate">
           <swiper-item style="display: flex; align-items: center; justify-content: center;">
-            <view class="swiper_item text-bold text-orange">点击查看: {{msg.title.rendered}}</view>
+            <view class="swiper_item text-bold text-red">点击查看: {{msg.title.rendered}}</view>
           </swiper-item>
         </navigator>
       </block>
@@ -74,12 +74,14 @@
                       data-areaid="{{area.areaId}}"
                       data-pname="{{project.pName}}"
                     >
-                      <text class="text-orange text-bold cuIcon-{{project.isSubscribed ? 'favorfill' : 'favor'}}"></text>
+                      <text class="text-red text-bold cuIcon-{{project.isSubscribed ? 'likefill' : 'like'}}"></text>
                     </view>
 
                     <!-- 小区地址 -->
                     <view style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
-                      <text class="text-{{project.isSubscribed ? 'orange' : 'black'}} padding-left {{project.isSubscribed ? 'text-bold' : ''}}">{{tools.sliceOf(project.pName)}} ({{project.houses.length}}套)
+                      <text 
+                        class="text-black padding-left {{project.isSubscribed ? 'text-bold' : ''}}"
+                      >{{tools.sliceOf(project.pName)}} ({{project.houses.length}}套)
                       </text>
                       <text style="font-size: smaller; color: grey; padding-left: 10px;">预计最靠前排名：{{project.bestRank}}</text>
                     </view>

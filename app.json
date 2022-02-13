@@ -32,7 +32,8 @@
     "pages/community/community",
     "pages/forum/forum",
     "pages/discussion/discussion",
-    "pages/createDiscussion/createDiscussion"
+    "pages/createDiscussion/createDiscussion",
+    "pages/interactions/interactions"
   ],
   "window": {
     "navigationStyle": "custom"

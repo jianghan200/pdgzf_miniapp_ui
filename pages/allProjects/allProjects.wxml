@@ -6,11 +6,11 @@
   <view style="display: flex; flex-direction: row; align-items: center;">
     <text class="title">全部房源</text>
     <!-- 请求成功展示地图按钮 -->
-    <button class="bg-black cu-btn icon shadow margin-right" bindtap="openMap" wx:if="{{reqSuccessful}}">
-      <text class="cuIcon-locationfill text-white"></text>
+    <button class="bg-white cu-btn icon shadow margin-right" bindtap="openMap" wx:if="{{reqSuccessful}}">
+      <text class="cuIcon-locationfill text-red text-bold"></text>
     </button>
-    <button class="bg-black cu-btn icon shadow" bindtap="openFilterDrawer" wx:if="{{reqSuccessful}}">
-      <text class="cuIcon-filter text-white"></text>
+    <button class="bg-white cu-btn icon shadow" bindtap="openFilterDrawer" wx:if="{{reqSuccessful}}">
+      <text class="cuIcon-filter text-blue text-bold"></text>
     </button>
     <!-- 请求失败展示刷新按钮 -->
     <button class="bg-green cu-btn icon shadow" bindtap="refresh" wx:if="{{!reqSuccessful}}">
@@ -47,7 +47,7 @@
         <!-- 社区名称 -->
         <view class='cu-bar solid-bottom bg-white' wx:if="{{area.display}}">
           <view class='action'>
-            <text class='cuIcon-titles text-orange'></text> {{area.areaName == null ? '未知街道' : area.areaName}} 
+            <text class='cuIcon-titles text-red'></text> {{area.areaName == null ? '未知街道' : area.areaName}} 
           </view>
         </view>
 
@@ -73,11 +73,11 @@
                   data-aid="{{area.areaId}}"
                   data-pname="{{project.pName}}"
                 >
-                  <text class="text-orange text-bold cuIcon-{{project.isSubscribed ? 'favorfill' : 'favor'}}"></text>
+                  <text class="text-red text-bold cuIcon-{{project.isSubscribed ? 'likefill' : 'like'}}"></text>
                 </view>
                 <!-- 小区名称 -->
                 <view>
-                  <text class="text-{{project.isSubscribed ? 'orange' : 'black'}} padding-left {{project.isSubscribed ? 'text-bold' : ''}}"
+                  <text class="text-black padding-left {{project.isSubscribed ? 'text-bold' : ''}}"
                   >{{tools.sliceOf(project.pName)}}</text>
                   <text class="text-grey margin-left">{{project.rentableCount}}套</text>
                   <text class="cuIcon-picfill text-grey text-xlg margin-left" wx:if="{{project.raw.hasImage}}"></text>
