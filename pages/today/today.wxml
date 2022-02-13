@@ -20,7 +20,7 @@
       ></button>
     </view>
     <view class="text-df">
-      <text> 当前周期：{{milestone}}（共{{projectCount}}个小区，{{houseCount}}套房）</text>
+      <text class="text-bold"> 当前周期：{{milestone}}（共{{projectCount}}个小区，{{houseCount}}套房）</text>
     </view>
   </view>
 

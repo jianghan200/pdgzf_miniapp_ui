@@ -22,7 +22,7 @@
   </view>
 
   <view class="action" bindtap="switchTab" data-tabname="user">
-    <view class="cu-tag badge" style="right: auto; margin-left: 20rpx;">{{ unreadCount == 0 ? '' : unreadCount }}</view>
+    <!-- <view class="cu-tag badge" style="right: auto; margin-left: 20rpx;">{{ unreadCount == 0 ? '' : unreadCount }}</view> -->
     <view class="cuIcon-{{tab == 'user' ? 'peoplefill' : 'people'}} text-{{tab == 'user' ? 'red' : 'gray'}}"></view>
     <view class="text-{{tab == 'user' ? 'black' : 'gray'}}">我的</view>
   </view>

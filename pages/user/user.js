@@ -109,6 +109,13 @@ Page({
     })
   },
 
+  // Go to 用户的评论 / 文章详情页
+  goToInteractions(e) {
+    wx.navigateTo({
+      url: '/pages/interactions/interactions',
+    })
+  },
+
   // VIP 才能看到的修改个人信息页
   goEditInfo() {
     wx.navigateTo({
