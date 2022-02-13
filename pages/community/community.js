@@ -476,7 +476,7 @@ Page({
       subscribeHelper.subscribeThenSyncUp(self.data.areaId, self.data.pId, self.data.pName).then(ruleId => {
         log.info(`成功添加订阅（id：${ruleId}）`)
 
-        self.setData({ subscribed: true })
+        self.setData({ subscribed: true, ruleId: ruleId })
         wx.showToast({
           title: '订阅成功',
           icon: 'success'
