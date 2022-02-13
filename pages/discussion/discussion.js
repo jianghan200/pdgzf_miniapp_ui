@@ -18,7 +18,9 @@ Page({
         isResponding: false,
         parentCommentId: '',
         parentCommentUnionId: '',
-        parentCommentUsername: ''
+        parentCommentUsername: '',
+        // 评论textarea的placeholder
+        textPlaceHolder: '我的评论'
     },
 
     onLoad: function (options) {
@@ -34,6 +36,9 @@ Page({
 
     // 初始化方法
     init() {
+        this.setData({
+            textPlaceHolder: '我的评论'
+        })
         if (this.data.type == 0) {
             // 是小区留言板
             this.loadComments()
@@ -152,7 +157,8 @@ Page({
             isResponding: true,
             parentCommentId: parentCommentId,
             parentCommentUnionId: parentCommentUnionId,
-            parentCommentUsername: parentCommentUsername
+            parentCommentUsername: parentCommentUsername,
+            textPlaceHolder: `回复${parentCommentUsername ? parentCommentUsername : '匿名者'}`
         })
     },
 
@@ -232,7 +238,7 @@ Page({
 
         if (isAnonymous) {
             // 匿名mode
-            commentsHelper.submitCommentAnonymously(self.data.aid, self.data.myComments).then(() => {
+            commentsHelper.submitCommentAnonymously(self.data.aid, self.data.myComments, self.data.article.uid).then(() => {
                 // 回复上传成功，将本地的数据清理干净
                 self.setData({
                     myComments: ''
@@ -253,7 +259,7 @@ Page({
             })
         } else {
             // 实名mode
-            commentsHelper.submitComment(self.data.aid, self.data.myComments).then(() => {
+            commentsHelper.submitComment(self.data.aid, self.data.myComments, self.data.article.uid).then(() => {
                 // 回复上传成功，将本地的数据清理干净
                 self.setData({
                     myComments: ''
@@ -286,7 +292,8 @@ Page({
         if (isAnonymous) {
             // 匿名mode
             commentsHelper.respondAnonymously(self.data.aid, self.data.myComments, 
-                self.data.parentCommentId, self.data.parentCommentUnionId, self.data.parentCommentUsername).then(() => {
+                self.data.parentCommentId, self.data.parentCommentUnionId, self.data.parentCommentUsername, 
+                self.data.article.uid).then(() => {
                     // 回复上传成功，将本地的数据清理干净
                     self.setData({
                         myComments: '',
@@ -319,7 +326,8 @@ Page({
         } else {
             // 实名mode
             commentsHelper.respond(self.data.aid, self.data.myComments, 
-                self.data.parentCommentId, self.data.parentCommentUnionId, self.data.parentCommentUsername).then(() => {
+                self.data.parentCommentId, self.data.parentCommentUnionId, self.data.parentCommentUsername, 
+                self.data.article.uid).then(() => {
                     // 回复上传成功，将本地的数据清理干净
                     self.setData({
                         myComments: '',

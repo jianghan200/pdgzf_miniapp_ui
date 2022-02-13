@@ -16,7 +16,7 @@ const getCommentsOf = function(aid) {
 }
 
 // 上传评论
-const submitComment = function(aid, userInput) {
+const submitComment = function(aid, userInput, articleAuthor) {
   log.info('点击上传评论')
   // 用户必须授权头像和用户名才能开始评论
   return requests.getAvatarAndNickname().then(res => {
@@ -30,22 +30,23 @@ const submitComment = function(aid, userInput) {
     }
   }).then(() => {
     // 上传评论内容
-    return requests.sendCommentOnSomeProject(aid, userInput)
-  }).then(res => {
-    if (res) {
-      // 上传成功
-      wx.showToast({ title: '评论成功', icon: 'success' })
-      return Promise.resolve()
-    } else {
-      // 上传失败
-      wx.showToast({ title: '上传失败', icon: 'error' })
-      return Promise.reject(false)
-    }
+    return wx.cloud.callFunction({
+      name : 'comment',
+      data : {
+        action: "NEW",
+        uid: app.globalData.userinfo.unionId,
+        aid: aid, 
+        comment: userInput,
+        avatarUrl: app.globalData.avatarUrl,
+        nickName: app.globalData.nickname,
+        article_author_id: articleAuthor
+      }
+    })
   })
 }
 
 // 匿名上传评论
-const submitCommentAnonymously = function(aid, comments) {
+const submitCommentAnonymously = function(aid, comments, articleAuthor) {
   log.info('匿名上传评论')
 
   return wx.cloud.callFunction({
@@ -55,13 +56,14 @@ const submitCommentAnonymously = function(aid, comments) {
       uid: app.globalData.userinfo.unionId,
       aid: aid, 
       comment: comments,
-      is_anonymous: true
+      is_anonymous: true,
+      article_author_id: articleAuthor
     }
   })
 }
 
 // 在哪篇文章中，回复了哪个comment？
-const respond = function(aid, comments, parentCommentId, parentCommentUnionId, parentCommentUsername) {
+const respond = function(aid, comments, parentCommentId, parentCommentUnionId, parentCommentUsername, articleAuthor) {
   log.info(`回复${parentCommentId}(aid: ${aid})`)
 
   // 要先看用户有没有头像, 用户名
@@ -87,14 +89,15 @@ const respond = function(aid, comments, parentCommentId, parentCommentUnionId, p
         nickName: app.globalData.nickname,
         parent_comment_id: parentCommentId,
         comment_to_uid: parentCommentUnionId,
-        comment_to_user: parentCommentUsername
+        comment_to_user: parentCommentUsername,
+        article_author_id: articleAuthor
       }
     })
   })
 }
 
 // 匿名回复他人评论
-const respondAnonymously = function(aid, comments, parentCommentId, parentCommentUnionId, parentCommentUsername) {
+const respondAnonymously = function(aid, comments, parentCommentId, parentCommentUnionId, parentCommentUsername, articleAuthor) {
   log.info(`匿名回复${parentCommentId}(aid: ${aid})`)
 
   return wx.cloud.callFunction({
@@ -107,7 +110,18 @@ const respondAnonymously = function(aid, comments, parentCommentId, parentCommen
       parent_comment_id: parentCommentId,
       comment_to_uid: parentCommentUnionId,
       comment_to_user: parentCommentUsername,
-      is_anonymous: true
+      is_anonymous: true,
+      article_author_id: articleAuthor
+    }
+  })
+}
+
+// 拿到自己所有的unread的评论 (type: A, 别人评论我的文章, type: C, 别人回复我)
+const getUnreadComments = function() {
+  return wx.cloud.callFunction({
+    name: 'unread',
+    data: {
+      uid: app.globalData.userinfo.unionId
     }
   })
 }
@@ -117,5 +131,6 @@ module.exports = {
   submitCommentAnonymously: submitCommentAnonymously,
   getCommentsOf: getCommentsOf,
   respond: respond,
-  respondAnonymously: respondAnonymously
+  respondAnonymously: respondAnonymously,
+  getUnreadComments: getUnreadComments
 }

@@ -3,6 +3,7 @@ const app = getApp()
 const requests = require('../../utils/request')
 const dataHelper = require('../../utils/data')
 const log = require('./../../utils/log')
+const commentsHelper = require('../../utils/comments')
 Page({
   data: {
   },
@@ -33,7 +34,13 @@ Page({
 
         log.info('登陆成功')
         log.info(userinfo)
+        // 几乎全部的初始请求
         dataHelper.loadAllData(self.options)
+        // 拿到该用户的unread comments，存入globalData
+        commentsHelper.getUnreadComments().then(res => {
+          const unreadComments = res.result.data
+          app.globalData.unreadComments = unreadComments
+        })
       })
       .catch((err) => {
         log.error(err)

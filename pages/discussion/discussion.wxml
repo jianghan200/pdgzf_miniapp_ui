@@ -76,7 +76,7 @@
 <!-- 评论输入 -->
 <view class="cu-bar foot input" style="bottom: 0px;">
   <textarea 
-    placeholder="赠人以言，重于珠玉~"
+    placeholder="{{ textPlaceHolder }}"
     class="solid-bottom" 
     adjust-position="false" 
     maxlength="300" 
