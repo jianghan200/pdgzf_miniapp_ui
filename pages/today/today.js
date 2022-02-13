@@ -27,13 +27,17 @@ Page({
     isVip: false,
     hasStartDate: false,
     // 公告
-    broadcastMsgs: []
+    broadcastMsgs: [],
+    // 用户的未读信息数量
+    unreadCount: 0
   },
 
   onLoad: function (options) {
     log.info('onLoad today')
     // 获取公告
     this.getBroadcastMsgs()
+    // 获取用户的未读信息数量
+    this.setData({ unreadCount: app.globalData.unread })
     // 根据当前的时间设置“今日页”的状态
     const date = new Date()
     // 9:30 am ~ 10:03 am期间禁选
@@ -49,17 +53,11 @@ Page({
     } else {
       log.info('正常情况')
       // 正常情况
-      this.setData({
-        disable : false
-      }, () => {
-        this.useTodayProjectsInStorage()
-      })
+      this.setData({ disable : false }, () => { this.useTodayProjectsInStorage() })
     }
-    if(options['pid'] != undefined && options['pid'] != '') {
+    if (options['pid'] != undefined && options['pid'] != '') {
       // 来自分享, 需要redirect到community页面, 由于耦合度高, 因此要先跳转到today页面, 再跳转到community
-      wx.navigateTo({
-        url: '../community/community?pid=' + options['pid'],
-      })
+      wx.navigateTo({ url: '../community/community?pid=' + options['pid'] })
     }
   },
 

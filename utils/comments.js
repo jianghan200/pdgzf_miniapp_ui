@@ -116,21 +116,10 @@ const respondAnonymously = function(aid, comments, parentCommentId, parentCommen
   })
 }
 
-// 拿到自己所有的unread的评论 (type: A, 别人评论我的文章, type: C, 别人回复我)
-const getUnreadComments = function() {
-  return wx.cloud.callFunction({
-    name: 'unread',
-    data: {
-      uid: app.globalData.userinfo.unionId
-    }
-  })
-}
-
 module.exports = {
   submitComment: submitComment,
   submitCommentAnonymously: submitCommentAnonymously,
   getCommentsOf: getCommentsOf,
   respond: respond,
-  respondAnonymously: respondAnonymously,
-  getUnreadComments: getUnreadComments
+  respondAnonymously: respondAnonymously
 }

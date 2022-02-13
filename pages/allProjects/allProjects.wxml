@@ -99,7 +99,7 @@
 </view>
 
 <!-- tabBar -->
-<tabBar bindswitchtab="redirect" tab="allProjects"></tabBar>
+<tabBar bindswitchtab="redirect" tab="allProjects" unreadCount="{{ unreadCount }}"></tabBar>
 
 <!-- 筛选器弹窗 -->
 <view class="cu-modal drawer-modal justify-start {{ openDrawer ? 'show' : '' }}" bindtap="closeFilterDrawer">

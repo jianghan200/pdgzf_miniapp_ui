@@ -22,11 +22,16 @@ Page({
     chosenAreas : [],
     // 房源数量的category
     rentableCountCategory : [],
-    chosenRentableCountCategory : []
+    chosenRentableCountCategory : [],
+    // 未读信息的数量
+    unreadCount: 0
   },
 
   onLoad: function (options) {
     log.info('onLoad allProjects')
+
+    // 设置未读信息的数量
+    this.setData({ unreadCount: app.globalData.unread })
 
     this.useAllProjectsInStorage()
   },

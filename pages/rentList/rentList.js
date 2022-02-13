@@ -4,7 +4,6 @@ const util = require('../../utils/util');
 const log = require('../../utils/log')
 const requestHelper = require('../../utils/request')
 const rentHelper = require('../../utils/rent');
-const rent = require('../../utils/rent');
 
 Page({
   data: {
@@ -12,10 +11,15 @@ Page({
     page: 0,    //分页记录数
     pageSize: 5,   //分页大小
     refreshData: true,
+    // 未读信息数量
+    unreadCount: 0
   },
 
   onLoad: function (options) {
     log.info('onLoad rentList')
+
+    // 设置未读信息数量
+    this.setData({ unreadCount: app.globalData.unread })
 
     const self = this
     let aid = options['aid']

@@ -1,9 +1,12 @@
+const app = getApp()
+
 Component({
   properties: {
-    tab: String
-  },
-
-  data: {
+    tab: String,
+    unreadCount: {
+      type: Number,
+      value: 0
+    }
   },
 
   methods: {

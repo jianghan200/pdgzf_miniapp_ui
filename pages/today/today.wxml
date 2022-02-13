@@ -100,7 +100,7 @@
   </movable-area>
 
   <!-- tabBar -->
-  <tabBar bindswitchtab="redirect" tab="today"></tabBar>
+  <tabBar bindswitchtab="redirect" tab="today" unreadCount="{{ unreadCount }}"></tabBar>
 </view>
 
 <!-- 9:30 am ~ 10:03am 期间禁止选房 -->

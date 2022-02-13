@@ -15,16 +15,16 @@ exports.main = async (data, context) => {
   console.log(data);
   console.log(context);
 
-  if(data.action == null){
+  if (data.action == null) {
     return {
       code: 300,
       msg: '参数缺失，action is required'
     }
   }
 
-  if(data.comment!=null && data.comment != ""){
+  if (data.comment != null && data.comment != "") {
     try {
-      let result = await cloud.openapi.security.msgSecCheck({
+      const result = await cloud.openapi.security.msgSecCheck({
         content:  data.comment
       })
       if (result && result.errCode.toString() === '87014') {
@@ -32,8 +32,7 @@ exports.main = async (data, context) => {
           code: 300,
           msg: '内容含有违法违规内容',
           data: result
-        } //
-      } else {
+        }
       }
     } catch (err) {
       if (err.errCode.toString() === '87014') {
@@ -41,7 +40,7 @@ exports.main = async (data, context) => {
           code: 300,
           msg: '内容含有违法违规内容',
           data: err
-        } //
+        }
       }
       return {
         code: 400,
@@ -51,17 +50,16 @@ exports.main = async (data, context) => {
     }
   }
 
-  if(data.action=="GET_LIST"){
-      comments = await cloud.database().collection('comment').where({aid: data.aid, comment:{$nin:[null]}}).get()
-      return  {code: 200, msg:"评论列表获取成功", data:comments.data }
-  }
-
-  if(data.action=="GET"){
-
-  }
-
-  if(data.action=="NEW"){
-
+  // 获取某个文章的评论列表
+  if (data.action=="GET_LIST") {
+    comments = await cloud.database().collection('comment').where({ aid: data.aid, comment: { $nin: [null] } }).get()
+    return { code: 200, msg: "评论列表获取成功", data: comments.data }
+  } else if (data.action == "GET_USER_COMMENTS") {
+    // 获取某个人的全部评论
+    const comments = await cloud.database().collection('comment').where({ uid: data.uid }).get()
+    return { code: 200, msg: '用户评论获取成功', data: comments.data }
+  } else if (data.action == "NEW") {
+    // 如果模式是新建评论
     ret = await db.collection('comment').add({
       data: {
         uid: data.uid, //评论者的 uid， 可以使用 unionId
@@ -78,15 +76,14 @@ exports.main = async (data, context) => {
         create_gmt: new Date(),
         update_gmt: new Date(),
       },
-      success: res => { console.log('[数据库] [新增记录] 成功，记录 _id: ', res._id);},
-      fail: err => { console.error('[数据库] [新增记录] 失败：', err); return  {code: 1004, msg:"新增数据失败", err:err} }
+      success: res => { 
+        console.log('[数据库] [新增记录] 成功，记录 _id: ', res._id)
+      },
+      fail: err => { 
+        console.error('[数据库] [新增记录] 失败：', err)
+        return  {code: 1004, msg:"新增数据失败", err:err} 
+      }
     })
-
-    // console.log(ret);
-    // {
-    //   "_id": "bf4a0bf261faa17d0c13793a646d9e24",
-    //   "errMsg": "collection.add:ok"
-    // }
  
     // 评论通知要考虑的几个点
     // 文章作者要收到新评论的通知
@@ -96,7 +93,7 @@ exports.main = async (data, context) => {
 
     // 为作者增加一个提醒
     // 发布评论的不是文章作者自己
-    if(data.uid != data.article_author_id){
+    if (data.uid != data.article_author_id) {
       db.collection('unread').add({
         data: {
           uid: data.article_author_id,  // 文章的作者，或者评论的作者， 如果是评论的作者，那么文章的作者也会收到通知
@@ -113,7 +110,7 @@ exports.main = async (data, context) => {
     }
     
     // 是回复评论而且不是给文章作者的，要给个提醒给评论作者
-    if(data.comment_to_uid !=null && data.comment_to_uid!=data.article_author_id){
+    if (data.comment_to_uid != null && data.comment_to_uid != data.article_author_id) {
       db.collection('unread').add({
         data: {
           uid: data.comment_to_uid,  // 文章的作者，或者评论的作者， 如果是评论的作者，那么文章的作者也会收到通知
@@ -139,10 +136,12 @@ exports.main = async (data, context) => {
       }
     })
   
-    return  {code: 200, msg:"评论成功"}
+    return  { code: 200, msg: "评论成功" }
+  } else if (data.action == 'GET_REPLY') {
+    // 获取某人收到的全部回复
+    const replies = await cloud.database().collection('comment').where({ comment_to_uid: data.uid }).get()
+    return { code: 200, msg: '获得所有的回复', data: replies.data }
   }
-  // var dbResult = await cloud.database().collection('user').where({_id: data.uid}).get()
-  // let user = dbResult.data[0]
 };
 
 

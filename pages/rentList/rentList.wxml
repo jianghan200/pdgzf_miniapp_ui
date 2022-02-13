@@ -50,4 +50,4 @@
 <view style="height: 4rem;"></view>
 
 <!-- tabBar -->
-<tabBar bindswitchtab="redirect" tab="rentList"></tabBar>
+<tabBar bindswitchtab="redirect" tab="rentList" unreadCount="{{ unreadCount }}"></tabBar>

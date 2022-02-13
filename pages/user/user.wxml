@@ -13,22 +13,6 @@
   </movable-view>
   <!-- 内容 -->
   <view class="cu-list menu sm-border card-menu margin-top">
-    <!-- VIP -->
-    <!-- <view class="cu-item arrow" wx:if="{{vipInfo.type != 2}}" bindtap="gotoVipPage" style="background-color: currentColor;">
-      <view class="content">
-        <text class="cuIcon-vip text-bold" style="color: goldenrod;"></text>
-        <text class="text-bold" style="color: goldenrod;">成为自动选房VIP</text>
-      </view>
-    </view> -->
-
-    <!-- 如果已经是VIP了，可以修改自己的信息 -->
-    <!-- <view class="cu-item arrow" wx:if="{{vipInfo.type == 2}}" bindtap="goEditInfo" style="background-color: currentColor;">
-      <view class="content">
-        <text class="cuIcon-peoplefill text-bold" style="color: goldenrod;"></text>
-        <text class="text-bold" style="color: goldenrod;">修改个人信息</text>
-      </view>
-    </view> -->
-
     <!-- 查看会员权益 -->
     <view class="cu-item arrow" bindtap="goToRights" style="background-color: currentColor;">
       <view class="content">
@@ -81,7 +65,7 @@
 </movable-area>
 
 <!-- tabBar -->
-<tabBar bindswitchtab="redirect" tab="user"></tabBar>
+<tabBar bindswitchtab="redirect" tab="user" unreadCount="{{ unreadCount }}"></tabBar>
 
 <!-- 普通用户自定义自己资格日的Modal -->
 <view class="cu-modal {{openManualStartDateDialog ? 'show' : ''}}">

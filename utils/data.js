@@ -3,6 +3,7 @@ const util = require('./util')
 const app = getApp()
 const constants = require('./constants')
 const log = require('./log')
+const userHelper = require('./user')
 
 // 处理今日小区的rawData
 const handleTodayProjects = function(projectsRawData, housesRawData, stats, subscriptionsRawData) {
@@ -165,7 +166,8 @@ const loadAllData = function(options) {
     .all([
       requests.getTodayProjects(), requests.getTodayHouses(), requests.getTodayStats(), 
       requests.loadAllProjects(), requests.loadProjectHouseInfo(),
-      requests.getSubscriptions(), requests.getConsultStatus()
+      requests.getSubscriptions(), requests.getConsultStatus(),
+      userHelper.getUserInteractions()
     ])
     .then((rs) => {
       log.info('loadAllData 成功')
@@ -185,28 +187,24 @@ const loadAllData = function(options) {
       handleTodayProjects(todayProjectsRawData, todayHousesRawData, todayStats, subscriptions)
       handleAllProjects(allProjectsRawData, allProjectsHouseInfoRawData, subscriptions)
 
-      if(options['redirect'] != undefined &&options['redirect'] != '') {
+      if (options['redirect'] && options['redirect'] != '') {
         // login后, 如果发现有redirect参数, 说明来自分享, 需要重定向到对应的分享界面
         let newDirect = decodeURIComponent(options['redirect'])
+
         log.info("redirect to new url: " + newDirect)
-        wx.redirectTo({
-          url: newDirect,
-        })
+
+        wx.redirectTo({ url: newDirect })
       }
       // 对于不同的用户，“首页”是不同的.
       // 新用户（userinfo中没有startDate也没有email）
       if (app.globalData.userinfo.type == 0 && app.globalData.userinfo.email == null && app.globalData.userinfo.startDate == null) {
         log.info('新用户，首页为新手村')
 
-        wx.redirectTo({
-          url: '/pages/newbee/newbee',
-        })
+        wx.redirectTo({ url: '/pages/newbee/newbee' })
       } else {
         log.info('老用户，首页为今日房源页')
         // 老用户
-        wx.redirectTo({
-          url: '/pages/today/today',
-        })
+        wx.redirectTo({ url: '/pages/today/today' })
       }
     })
     .catch((err) => {

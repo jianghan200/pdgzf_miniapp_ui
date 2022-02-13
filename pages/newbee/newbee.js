@@ -3,16 +3,20 @@ const app = getApp()
 const log = require('./../../utils/log')
 Page({
   data: {
-    vipInfo: null
+    vipInfo: null,
+    // 未读信息的数量
+    unreadCount: 0
   },
 
   onLoad: function (options) {
     log.info('进入newbee的onLoad')
 
     this.setData({
-      vipInfo : app.globalData.userinfo
+      vipInfo : app.globalData.userinfo,
+      unreadCount: app.globalData.unread
     })
-    if(options['tab'] != undefined && options['tab'] != '') {
+
+    if (options['tab'] && options['tab'] != '') {
       let tab = options['tab']
       // 来自分享
       wx.navigateTo({
