@@ -194,17 +194,18 @@ const loadAllData = function(options) {
         log.info("redirect to new url: " + newDirect)
 
         wx.redirectTo({ url: newDirect })
-      }
-      // 对于不同的用户，“首页”是不同的.
-      // 新用户（userinfo中没有startDate也没有email）
-      if (app.globalData.userinfo.type == 0 && app.globalData.userinfo.email == null && app.globalData.userinfo.startDate == null) {
-        log.info('新用户，首页为新手村')
-
-        wx.redirectTo({ url: '/pages/newbee/newbee' })
       } else {
-        log.info('老用户，首页为今日房源页')
-        // 老用户
-        wx.redirectTo({ url: '/pages/today/today' })
+        // 对于不同的用户，“首页”是不同的.
+        // 新用户（userinfo中没有startDate也没有email）
+        if (app.globalData.userinfo.type == 0 && app.globalData.userinfo.email == null && app.globalData.userinfo.startDate == null) {
+          log.info('新用户，首页为新手村')
+
+          wx.redirectTo({ url: '/pages/newbee/newbee' })
+        } else {
+          log.info('老用户，首页为今日房源页')
+          // 老用户
+          wx.redirectTo({ url: '/pages/today/today' })
+        }
       }
     })
     .catch((err) => {
