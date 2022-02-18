@@ -92,9 +92,21 @@ const postImages = function(files) {
     })
 }
 
+// 通过多个aid拿到多个文章
+const getArticlesByIds = function(ids) {
+    return wx.cloud.callFunction({
+        name: 'getArticle',
+        data: {
+            action: 'MULTI_AID',
+            ids: ids
+        }
+    })
+}
+
 module.exports = {
     getArticles: getArticles,
     generateCommunityTopic: generateCommunityTopic,
     postArticle: postArticle,
-    getArticle: getArticle
+    getArticle: getArticle,
+    getArticlesByIds: getArticlesByIds
 }

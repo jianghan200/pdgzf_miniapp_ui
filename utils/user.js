@@ -1,5 +1,6 @@
 var app = getApp()
 const log = require('./log')
+const utils = require('./util')
 
 // 通过用户的userinfo判断该用户是否有资格日或者资格日是模拟的
 // 0：是个VIP；1：模拟过资格日；-1：不是vip也没有模拟资格日
@@ -66,9 +67,26 @@ const getUnreadComments = function() {
 const getUserInteractions = function() {
   return Promise.all([getAllMyPosts(), getAllMyComments(), getAllReplies(), getUnreadComments()]).then(res => {
     const posts = res[0].result.articles
-    const comments = res[1].result.data
+    
+    // 过滤出去一些测试时遗留的数据
+    const comments = res[1].result.data.filter(comment => {
+      return comment.aid && comment.aid != null
+    })
+
     const replies = res[2].result.data
-    const unread = res[3].result.data
+
+    // 由于历史原因，这个方法也会query出来用户创建的没有添加author_id的文章，所以在model level进行过滤
+    const unread = res[3].result.data.filter(msg => msg.type == 'C')
+
+    // 为文章添加信息
+    posts.forEach(article => {
+      article['timedistance'] = utils.getTimeDistance(article.create_gmt)
+    })
+
+    // 为未读消息添加额外信息
+    unread.forEach(unreadComment => {
+      unreadComment['comment'] = unreadComment.type_id
+    })
 
     const userInteractions = {
       posts: posts,
@@ -84,6 +102,52 @@ const getUserInteractions = function() {
     wx.setStorageSync('interactions', userInteractions)
     
     return Promise.resolve(true)
+  })
+}
+
+// 为所有的comments找到他们的文章
+const getArticlesForComments = function(comments) {
+  const allProjectsFromStorage = wx.getStorageSync('allProjects')
+  let allPidsAndNames = []
+  allProjectsFromStorage.forEach(area => {
+      area.projects.forEach(project => {
+          allPidsAndNames.push({
+              id: project.pId,
+              name: project.pName
+          })
+      })
+  })
+
+  let commentsOnUserArticles = []
+  // 遍历所有小区留言板，找到小区的名称
+  comments.forEach(comment => {
+      if (comment.aid.indexOf('pdgzf_project_') != -1) {
+          // 属于小区留言板
+          const pid = comment.aid.split('_')[comment.aid.split('_').length - 1]
+          const pname = allPidsAndNames.find(pair => pair.id == pid).name
+          comment['pname'] = pname
+      } else {
+          // 属于用户创建的文章
+          commentsOnUserArticles.push(comment)
+      }
+  })
+
+  log.info(`准备加载${commentsOnUserArticles.length}篇文章`)
+
+  // 如果aid以pdgzf_project开头，则为小区留言板，小区留言板不会被返回
+  return forumHelper.getArticlesByIds(commentsOnUserArticles.map(comment => comment.aid)).then(res => {
+      const articles = res.result.articles.data
+      // 遍历所有非留言板上的评论，并为之匹配文章(多个评论可能属于同一篇文章)
+      commentsOnUserArticles.forEach(comment => {
+          const article = articles.find(article => article._id == comment.aid)
+          if (article) {
+              comment['article'] = article
+          } else {
+              log.error(`comment: ${comment._id} 虽然不是留言板的评论，但未找到文章`)
+          }
+      })
+
+      return Promise.resolve(comments)
   })
 }
 

@@ -23,6 +23,12 @@ exports.main = async (data, context) => {
     return {
       articles: user_articles
     }
+  } else if (data.action && data.action == 'MULTI_AID') {
+    // 通过多个aid找到所有文章
+    const articles = await cloud.database().collection('article').where({ _id: _.in(data.ids) }).get()
+    return {
+      articles: articles
+    }
   } else {
     // 默认行为：query文章by文章的id：aid
     // 如果云函数所在环境为 abc，则下面的调用就会请求到 abc 环境的数据库

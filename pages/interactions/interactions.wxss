@@ -1,1 +1,9 @@
-/* pages/interactions/interactions.wxss */
+/* 卡片的标题 */
+.card-title {
+  padding: 0 30rpx 0;
+  max-height: 6.4em;
+  overflow: hidden;
+  font-size: 30rpx;
+  margin-bottom: 20rpx;
+  line-height: 1.6;
+}

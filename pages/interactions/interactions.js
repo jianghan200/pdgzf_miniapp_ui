@@ -1,5 +1,7 @@
 const app = getApp()
 const log = require('../../utils/log')
+const utils = require('../../utils/util')
+const forumHelper = require('../../utils/forum')
 
 Page({
     data: {
@@ -22,25 +24,38 @@ Page({
 
     // 从storage中读取出来interactions
     populateInteractions() {
+        wx.showLoading({ title: 'Loading...' })
+
         const interactions = wx.getStorageSync('interactions')
         if (interactions) {
             log.info(`在storage中找到了interactions: ${interactions}`)
 
-            // 过滤出去一些测试时遗留的数据
-            const validComments = interactions.comments.filter(comment => {
-                return comment.aid && comment.aid != null
-            })
+            const self = this
+            self.getArticlesForComments(validComments).then(comments => {
+                self.setData({
+                    unreadMsgs: interactions.unread,
+                    comments: comments,
+                    replies: interactions.replies,
+                    posts: interactions.posts
+                })
 
-            this.setData({
-                unreadMsgs: interactions.unread,
-                comments: validComments,
-                replies: interactions.replies,
-                posts: interactions.posts
+                wx.hideLoading()
+            }).catch(err => {
+                log.error(err)
+                console.log(err)
+
+                wx.showToast({
+                  title: '读取失败',
+                  icon: 'error'
+                })
+                wx.hideLoading()
             })
         } else {
             log.error('未能在storage中找到interactions')
+            console.log('未能在storage中找到interactions')
 
             wx.showToast({ title: '数据出错', icon: 'error' })
+            wx.hideLoading()
         }
     },
 

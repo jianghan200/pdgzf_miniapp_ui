@@ -6,19 +6,27 @@
 <!-- 按钮区 -->
 <view class="cu-list grid col-4 no-border">
     <view class="cu-item" bindtap="handleIconClick" data-mode="0">
-        <view class="cuIcon-notice" style="color: goldenrod;"><view class="cu-tag badge">{{ unreadCount }}</view></view>
+        <view class="cuIcon-notice" style="color: goldenrod;">
+            <view class="cu-tag badge">{{ unreadMsgs.length == 0 ? '' : unreadMsgs.length }}</view>
+        </view>
         <text>未读回复</text>
     </view>
     <view class="cu-item" bindtap="handleIconClick" data-mode="1">
-        <view class="cuIcon-comment text-green"><view class="cu-tag badge">{{ commentCount }}</view></view>
+        <view class="cuIcon-comment text-green">
+            <view class="cu-tag badge">{{ comments.length == 0 ? '' : comments.length }}</view>
+        </view>
         <text>我的评论</text>
     </view>
     <view class="cu-item" bindtap="handleIconClick" data-mode="2">
-        <view class="cuIcon-community text-orange"><view class="cu-tag badge">{{ replyCount }}</view></view>
+        <view class="cuIcon-community text-orange">
+            <view class="cu-tag badge">{{ replies.length == 0 ? '' : replies.length }}</view>
+        </view>
         <text>回复我的</text>
     </view>
     <view class="cu-item" bindtap="handleIconClick" data-mode="3">
-        <view class="cuIcon-edit text-blue"><view class="cu-tag badge">{{ postCount }}</view></view>
+        <view class="cuIcon-edit text-blue">
+            <view class="cu-tag badge">{{ posts.length == 0 ? '' : posts.length }}</view>
+        </view>
         <text>我的文章</text>
     </view>
 </view>
@@ -50,7 +58,7 @@
 
 <!-- 我的文章 -->
 <view class="cu-list menu-avatar" wx:if="{{ mode == 3 }}">
-    <view wx:for="{{ posts }}" wx:for-item="{{ article }}" wx:key="_id">
+    <view wx:for="{{ posts }}" wx:for-item="article" wx:key="_id">
         <!-- 话题详情卡片 -->
         <view class="cu-card case" bindtap="goToDetail" data-aid="{{ article._id }}">
             <view class="cu-item shadow">

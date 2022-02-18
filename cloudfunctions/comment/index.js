@@ -86,8 +86,8 @@ exports.main = async (data, context) => {
     })
  
     // 评论通知要考虑的几个点
-    // 文章作者要收到新评论的通知
-    // 评论作者要收到针对自己评论的新评论通知
+    // 1. 文章作者要收到新评论的通知
+    // 2. 评论作者要收到针对自己评论的新评论通知
     // 关注文章，那么享受文章作者待遇
     // 关注作者，那么作者发布新文章你会收到通知
 
@@ -116,6 +116,7 @@ exports.main = async (data, context) => {
           uid: data.comment_to_uid,  // 文章的作者，或者评论的作者， 如果是评论的作者，那么文章的作者也会收到通知
           type: "C",
           type_id : ret._id,
+          type_aid: ret._aid,
           msg: data.comment,
           has_read: false,
           create_gmt: new Date(),
