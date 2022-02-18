@@ -91,14 +91,15 @@ exports.main = async (data, context) => {
     // 关注文章，那么享受文章作者待遇
     // 关注作者，那么作者发布新文章你会收到通知
 
-    // 为作者增加一个提醒
-    // 发布评论的不是文章作者自己
-    if (data.uid != data.article_author_id) {
+    // 发布评论（可以是对文章的评论，也可以对文章评论的评论）, 且发布评论的不是文章作者自己， 给文章作者增加一个提醒
+    if (data.action == "NEW" && data.uid != data.article_author_id) {
       db.collection('unread').add({
         data: {
           uid: data.article_author_id,  // 文章的作者，或者评论的作者， 如果是评论的作者，那么文章的作者也会收到通知
-          type: "C",
-          type_id : ret._id,
+          type: "CUAA",// comment_unread_to_article_author
+          // type_id : ret._id,
+          cid : ret._id,
+          aid : data.aid,
           msg: data.comment,
           has_read: false,
           create_gmt: new Date(),
@@ -109,14 +110,15 @@ exports.main = async (data, context) => {
       });
     }
     
-    // 是回复评论而且不是给文章作者的，要给个提醒给评论作者
-    if (data.comment_to_uid != null && data.comment_to_uid != data.article_author_id) {
+    // 是回复评论而且不是给文章作者的，要给评论作者个提醒
+    if (data.action == "NEW" && data.comment_to_uid != null && data.comment_to_uid != data.article_author_id) {
       db.collection('unread').add({
         data: {
           uid: data.comment_to_uid,  // 文章的作者，或者评论的作者， 如果是评论的作者，那么文章的作者也会收到通知
-          type: "C",
-          type_id : ret._id,
-          type_aid: ret._aid,
+          type: "CUCA", //comment_unread_to_comment_author
+          // type_id : ret._id,
+          aid: data.aid,
+          cid: ret._id,
           msg: data.comment,
           has_read: false,
           create_gmt: new Date(),
