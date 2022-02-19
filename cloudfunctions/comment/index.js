@@ -50,13 +50,13 @@ exports.main = async (data, context) => {
     }
   }
 
-  // 获取某个文章的评论列表
   if (data.action=="GET_LIST") {
+    // 获取某个文章的评论列表
     comments = await cloud.database().collection('comment').where({ aid: data.aid, comment: { $nin: [null] } }).get()
     return { code: 200, msg: "评论列表获取成功", data: comments.data }
   } else if (data.action == "GET_USER_COMMENTS") {
     // 获取某个人的全部评论
-    const comments = await cloud.database().collection('comment').where({ uid: data.uid }).get()
+    const comments = await cloud.database().collection('comment').where({ uid: data.uid }).orderBy('create_gmt', 'desc').get()
     return { code: 200, msg: '用户评论获取成功', data: comments.data }
   } else if (data.action == "NEW") {
     // 如果模式是新建评论
@@ -96,10 +96,11 @@ exports.main = async (data, context) => {
       db.collection('unread').add({
         data: {
           uid: data.article_author_id,  // 文章的作者，或者评论的作者， 如果是评论的作者，那么文章的作者也会收到通知
-          type: "CUAA",// comment_unread_to_article_author
-          // type_id : ret._id,
+          type: "CUAA", // comment_unread_to_article_author
           cid : ret._id,
           aid : data.aid,
+          userAvatar: ret.avatarUrl,
+          nickname: ret.nickName,
           msg: data.comment,
           has_read: false,
           create_gmt: new Date(),
@@ -116,9 +117,10 @@ exports.main = async (data, context) => {
         data: {
           uid: data.comment_to_uid,  // 文章的作者，或者评论的作者， 如果是评论的作者，那么文章的作者也会收到通知
           type: "CUCA", //comment_unread_to_comment_author
-          // type_id : ret._id,
           aid: data.aid,
           cid: ret._id,
+          userAvatar: ret.avatarUrl,
+          nickname: ret.nickName,
           msg: data.comment,
           has_read: false,
           create_gmt: new Date(),
@@ -142,7 +144,7 @@ exports.main = async (data, context) => {
     return  { code: 200, msg: "评论成功" }
   } else if (data.action == 'GET_REPLY') {
     // 获取某人收到的全部回复
-    const replies = await cloud.database().collection('comment').where({ comment_to_uid: data.uid }).get()
+    const replies = await cloud.database().collection('comment').where({ comment_to_uid: data.uid }).orderBy('create_gmt', 'desc').get()
     return { code: 200, msg: '获得所有的回复', data: replies.data }
   }
 };

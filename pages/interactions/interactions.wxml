@@ -13,19 +13,19 @@
     </view>
     <view class="cu-item" bindtap="handleIconClick" data-mode="1">
         <view class="cuIcon-comment text-green">
-            <view class="cu-tag badge">{{ comments.length == 0 ? '' : comments.length }}</view>
+            <view class="cu-tag badge bg-blue">{{ comments.length == 0 ? '' : comments.length }}</view>
         </view>
         <text>我的评论</text>
     </view>
     <view class="cu-item" bindtap="handleIconClick" data-mode="2">
         <view class="cuIcon-community text-orange">
-            <view class="cu-tag badge">{{ replies.length == 0 ? '' : replies.length }}</view>
+            <view class="cu-tag badge bg-blue">{{ replies.length == 0 ? '' : replies.length }}</view>
         </view>
         <text>回复我的</text>
     </view>
     <view class="cu-item" bindtap="handleIconClick" data-mode="3">
         <view class="cuIcon-edit text-blue">
-            <view class="cu-tag badge">{{ posts.length == 0 ? '' : posts.length }}</view>
+            <view class="cu-tag badge bg-blue">{{ posts.length == 0 ? '' : posts.length }}</view>
         </view>
         <text>我的文章</text>
     </view>
@@ -36,31 +36,91 @@
 <view class="cu-bar bg-white solid-bottom">
     <view class="action">
         <text class="text-bold" style="font-size: larger;">{{ title }} </text>
-        <text class="text-green">点击进入上下文</text>
+        <text class="text-green">点击卡片进入上下文</text>
     </view>
 </view>
 
 <!-- 内容列表 -->
 <!-- 未读 -->
 <view class="cu-list menu-avatar" wx:if="{{ mode == 0 }}">
-    
+    <block wx:for="{{ unreadMsgs }}" wx:for-item="unread" wx:key="_id">
+    <view class="cu-card case" bindtap="gotoDiscussion" data-aid="{{ unread.aid }}" data-unreadid="{{ unread._id }}">
+    <view class="cu-item shadow">
+    <view class="cu-list menu-avatar comment">
+    <view class="cu-item">
+        <view class="cu-avatar round" style="background-image:url({{unread.avatarUrl}});"></view>
+        <view class="content flex-sub">
+            <view class="text-grey">{{ unread.nickname ? unread.nickname : '匿名者' }}</view>
+            <view class="text-gray text-content text-df">回复道：{{ unread.msg }}</view>
+            <view class="bg-grey padding-sm radius margin-top-sm text-sm">
+                @文章《{{ unread.article ? unread.article.title : (unread.pname + '留言板') }}》
+            </view>
+            <view class="margin-top-sm flex justify-between">
+                <view class="text-gray text-df">{{ unread.timedistance }}</view>
+            </view>
+        </view>
+    </view>
+    </view>
+    </view>
+    </view>
+    </block>    
 </view>
 
 <!-- 我的评论 -->
 <view class="cu-list menu-avatar" wx:if="{{ mode == 1 }}">
-    
+    <block wx:for="{{ comments }}" wx:for-item="comment" wx:key="_id">
+    <view class="cu-card case" bindtap="gotoDiscussion" data-aid="{{ comment.aid }}">
+    <view class="cu-item shadow">
+    <view class="cu-list menu-avatar comment">
+    <view class="cu-item">
+        <view class="cu-avatar round" style="background-image:url({{comment.avatarUrl}});"></view>
+        <view class="content flex-sub">
+            <view class="text-grey">{{ comment.nickName ? comment.nickName : '匿名者' }}</view>
+            <view class="text-gray text-content text-df">回复道：{{ comment.comment }}</view>
+            <view class="bg-grey padding-sm radius margin-top-sm text-sm">
+                @文章《{{ comment.article ? comment.article.title : (comment.pname + '留言板') }}》
+            </view>
+            <view class="margin-top-sm flex justify-between">
+                <view class="text-gray text-df">{{ comment.timedistance }}</view>
+            </view>
+        </view>
+    </view>
+    </view>
+    </view>
+    </view>
+    </block>
 </view>
 
 <!-- 回复我的 -->
 <view class="cu-list menu-avatar" wx:if="{{ mode == 2 }}">
-    
+    <block wx:for="{{ replies }}" wx:for-item="reply" wx:key="_id">
+    <view class="cu-card case" bindtap="gotoDiscussion" data-aid="{{ reply.aid }}">
+    <view class="cu-item shadow">
+    <view class="cu-list menu-avatar comment">
+    <view class="cu-item">
+        <view class="cu-avatar round" style="background-image:url({{reply.avatarUrl}});"></view>
+        <view class="content flex-sub">
+            <view class="text-grey">{{ reply.nickName ? reply.nickName : '匿名者' }}</view>
+            <view class="text-gray text-content text-df">回复道：{{ reply.comment }}</view>
+            <view class="bg-grey padding-sm radius margin-top-sm text-sm">
+                @文章《{{ reply.article ? reply.article.title : (reply.pname + '留言板') }}》
+            </view>
+            <view class="margin-top-sm flex justify-between">
+                <view class="text-gray text-df">{{ reply.timedistance }}</view>
+            </view>
+        </view>
+    </view>
+    </view>
+    </view>
+    </view>
+    </block>
 </view>
 
 <!-- 我的文章 -->
 <view class="cu-list menu-avatar" wx:if="{{ mode == 3 }}">
     <view wx:for="{{ posts }}" wx:for-item="article" wx:key="_id">
         <!-- 话题详情卡片 -->
-        <view class="cu-card case" bindtap="goToDetail" data-aid="{{ article._id }}">
+        <view class="cu-card case" bindtap="gotoDiscussion" data-aid="{{ article._id }}">
             <view class="cu-item shadow">
                 <!-- 图片信息（if any） -->
                 <view class="image" wx:if="{{ article.images.length > 0 }}" >

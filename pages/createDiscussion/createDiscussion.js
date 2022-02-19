@@ -148,7 +148,6 @@ Page({
         
         const pages = getCurrentPages()
         const prevPage = pages[pages.length - 2]
-        console.log(prevPage)
         prevPage.reload()
 
         wx.navigateBack({

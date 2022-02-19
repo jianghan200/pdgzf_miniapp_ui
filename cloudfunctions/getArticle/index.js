@@ -16,7 +16,7 @@ exports.main = async (data, context) => {
 
   if (data.action && data.action == 'BY_UID') {
     // 拿到某个用户unionId下的全部文章（他创建的）
-    const queryRes = await cloud.database().collection('article').where({ uid: data.uid }).get()
+    const queryRes = await cloud.database().collection('article').where({ uid: data.uid }).orderBy('create_gmt', 'desc').get()
     const user_articles = queryRes.data
     console.log(user_articles)
 

@@ -14,7 +14,7 @@ exports.main = async (data, context) => {
 
   // 数据过滤条件处理
   if(data.uid!=null){
-    cloud.database().collection('unread').where({uid: data.uid}).update({
+    cloud.database().collection('unread').where({_id: data.unread_id}).update({
       data: {
         has_read: true
       }

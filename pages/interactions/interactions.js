@@ -1,7 +1,6 @@
 const app = getApp()
 const log = require('../../utils/log')
-const utils = require('../../utils/util')
-const forumHelper = require('../../utils/forum')
+const userInteractionHelper = require('../../utils/user')
 
 Page({
     data: {
@@ -26,37 +25,24 @@ Page({
     populateInteractions() {
         wx.showLoading({ title: 'Loading...' })
 
-        const interactions = wx.getStorageSync('interactions')
-        if (interactions) {
-            log.info(`在storage中找到了interactions: ${interactions}`)
+        userInteractionHelper.getUserInteractions().then(interactions => {
+            log.info(`在storage中找到了interactions`)
 
-            const self = this
-            self.getArticlesForComments(validComments).then(comments => {
-                self.setData({
-                    unreadMsgs: interactions.unread,
-                    comments: comments,
-                    replies: interactions.replies,
-                    posts: interactions.posts
-                })
-
-                wx.hideLoading()
-            }).catch(err => {
-                log.error(err)
-                console.log(err)
-
-                wx.showToast({
-                  title: '读取失败',
-                  icon: 'error'
-                })
+            this.setData({
+                unreadMsgs: interactions.unread,
+                comments: interactions.comments,
+                replies: interactions.replies,
+                posts: interactions.posts
+            }, () => {
                 wx.hideLoading()
             })
-        } else {
-            log.error('未能在storage中找到interactions')
-            console.log('未能在storage中找到interactions')
+        }).catch(err => {
+            log.error(err)
+            console.log(err)
 
             wx.showToast({ title: '数据出错', icon: 'error' })
             wx.hideLoading()
-        }
+        })
     },
 
     // 点击顶层按钮
@@ -84,6 +70,36 @@ Page({
             default:
                 log.error(`不支持此mode：${this.data.mode}`)
                 break;
+        }
+    },
+
+    // 进入文章
+    gotoDiscussion(e) {
+        const aid = e.currentTarget.dataset.aid
+        const unreadid = e.currentTarget.dataset.unreadid
+
+        if (unreadid) {
+            // 因为是未读消息，点击卡片唤起mark as read
+            userInteractionHelper.markAsRead(unreadid).catch(err => {
+                console.log(err)
+                log.error(err)
+                
+                wx.showToast({ title: '请求有误', icon: 'error' })
+            })
+        }
+
+        log.info(`跳转到文章：${aid}`)
+
+        if (aid.indexOf('pdgzf_project_') != -1) {
+            // 是留言板
+            wx.navigateTo({
+              url: '/pages/discussion/discussion?aid=' + aid + '&type=0',
+            })
+        } else {
+            // 是用户创建文章
+            wx.navigateTo({
+              url: '/pages/discussion/discussion?aid=' + aid,
+            })
         }
     }
 })

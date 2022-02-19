@@ -10,6 +10,18 @@
   <view class="cu-item text-brown">
     <view class="bg-brown content shadow">
       <view class="cu-capsule radius">
+        <view class="cu-tag bg-white text-brown">v2.0.10</view>
+        <view class="cu-tag line-white">2022/02/19</view>
+      </view>
+      <view class="margin-top-sm text-content">
+        <view>1. 消息提醒功能</view>
+      </view>
+    </view>   
+  </view>
+
+  <view class="cu-item text-brown">
+    <view class="bg-brown content shadow">
+      <view class="cu-capsule radius">
         <view class="cu-tag bg-white text-brown">v2.0.4</view>
         <view class="cu-tag line-white">2022/02/03</view>
       </view>

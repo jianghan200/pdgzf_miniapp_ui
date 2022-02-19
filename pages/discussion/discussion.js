@@ -8,6 +8,7 @@ const utils = require('../../utils/util')
 Page({
 
     data: {
+        CustomBar: app.globalData.CustomBar,
         aid: null,
         article: null,
         // 评论
@@ -144,7 +145,7 @@ Page({
         })
     },
 
-    // 回复某人的评论
+    // 实名回复某人的评论
     respond(e) {
         log.info('回复他人评论')
 
@@ -358,6 +359,22 @@ Page({
                     })
                 })
         }
+    },
+
+    // 自定义返回的方法
+    backToParent() {
+        log.info('从discussion页返回上一页')
+    
+        const pages = getCurrentPages()
+        const prevPage = pages[pages.length - 2]
+        const prevPageRoute = prevPage.__route__
+        if (prevPageRoute == 'pages/interactions/interactions') {
+          log.info('从文章页返回interactions')
+    
+          prevPage.populateInteractions()
+        }
+        
+        wx.navigateBack({ delta: 1 })
     },
 
     onShareAppMessage: function () {
