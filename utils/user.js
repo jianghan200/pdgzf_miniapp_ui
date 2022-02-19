@@ -159,7 +159,12 @@ const getArticlesForComments = function(comments) {
       if (comment.aid.indexOf('pdgzf_project_') != -1) {
           // 属于小区留言板
           const pid = comment.aid.split('_')[comment.aid.split('_').length - 1]
-          const pname = allPidsAndNames.find(pair => pair.id == pid).name
+          // const pname = allPidsAndNames.find(pair => pair.id == pid).name
+          var projectId2Name = allPidsAndNames.find(pair => pair.id == pid)
+          var pname =  "Wrong "+ pid;
+          if(projectId2Name){
+             pname = allPidsAndNames.find(pair => pair.id == pid).name
+          }
           comment['pname'] = pname
       } else {
           // 属于用户创建的文章
