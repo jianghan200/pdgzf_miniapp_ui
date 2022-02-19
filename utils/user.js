@@ -159,6 +159,7 @@ const getArticlesForComments = function(comments) {
       if (comment.aid.indexOf('pdgzf_project_') != -1) {
           // 属于小区留言板
           const pid = comment.aid.split('_')[comment.aid.split('_').length - 1]
+          //p id can be undefined and -1 , because old comment may not contain aid
           // const pname = allPidsAndNames.find(pair => pair.id == pid).name
           var projectId2Name = allPidsAndNames.find(pair => pair.id == pid)
           var pname =  "Wrong "+ pid;
