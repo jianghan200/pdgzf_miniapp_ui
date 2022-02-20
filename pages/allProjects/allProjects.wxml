@@ -29,6 +29,11 @@
 
 <view wx:if="{{reqSuccessful}}">
   <movable-area class="movable-area">
+    <!-- 消息中心的浮窗 -->
+    <movable-view class="movable-view" x="600rpx" y="550rpx" animation="{{false}}" direction='all'>
+      <mb name="消息中心" cuIcon="noticefill" targetPath="/pages/interactions/interactions"></mb>
+    </movable-view>
+    <!-- 意见反馈浮窗 -->
     <movable-view class="movable-view" x="600rpx" y="750rpx" animation="{{false}}" direction='all'>
       <mb name="意见反馈" cuIcon="commentfill" targetPath="/pages/report/report"></mb>
     </movable-view>
