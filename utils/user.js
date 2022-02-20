@@ -123,14 +123,25 @@ const getUserInteractions = function() {
       unread: unread
     })
   }).then(userInteractions => {
+    // 需要为每个comment找到对应的文章（aid）
+    // 用户的所有回复（comment）, 别人对用户的回复（reply）, 用户未读的消息（unread）本质都是comment
+    const allProjectsFromStorage = wx.getStorageSync('allProjects')
+    const allPidsAndNames = []
+    allProjectsFromStorage.forEach(area => {
+      area.projects.forEach(project => {
+        allPidsAndNames.push({ id: project.pId, name: project.pName})
+      })
+    })
+
     return Promise.all([
-      getArticlesForComments(userInteractions.comments),
-      getArticlesForComments(userInteractions.replies),
-      getArticlesForComments(userInteractions.unread)
+      getArticlesForComments(userInteractions.comments, allPidsAndNames),
+      getArticlesForComments(userInteractions.replies, allPidsAndNames),
+      getArticlesForComments(userInteractions.unread, allPidsAndNames)
     ]).then(res => {
-      userInteractions.comments = res[0]
-      userInteractions.replies = res[1]
-      userInteractions.unread = res[2]
+      // 需要过滤掉没有pname或者没有article reference的，即aid异常的
+      userInteractions.comments = res[0].filter(comment => comment.pname || comment.article)
+      userInteractions.replies = res[1].filter(comment => comment.pname || comment.article)
+      userInteractions.unread = res[2].filter(comment => comment.pname || comment.article)
 
       // 方便其他Page使用用户的互动信息
       wx.setStorageSync('interactions', userInteractions)
@@ -141,36 +152,31 @@ const getUserInteractions = function() {
 }
 
 // 为所有的comments找到他们的文章
-const getArticlesForComments = function(comments) {
-  const allProjectsFromStorage = wx.getStorageSync('allProjects')
-  let allPidsAndNames = []
-  allProjectsFromStorage.forEach(area => {
-      area.projects.forEach(project => {
-          allPidsAndNames.push({
-              id: project.pId,
-              name: project.pName
-          })
-      })
-  })
-
-  let commentsOnUserArticles = []
+const getArticlesForComments = function(comments, allPidsAndNames) {
+  const commentsOnUserArticles = []
   // 遍历所有小区留言板，找到小区的名称
   comments.forEach(comment => {
+    if (comment.aid && comment.aid != null) {
+      // 由于历史原因有的comment是没有aid或者aid为null的
       if (comment.aid.indexOf('pdgzf_project_') != -1) {
-          // 属于小区留言板
-          const pid = comment.aid.split('_')[comment.aid.split('_').length - 1]
-          //p id can be undefined and -1 , because old comment may not contain aid
-          // const pname = allPidsAndNames.find(pair => pair.id == pid).name
-          var projectId2Name = allPidsAndNames.find(pair => pair.id == pid)
-          var pname =  "Wrong "+ pid;
-          if(projectId2Name){
-             pname = allPidsAndNames.find(pair => pair.id == pid).name
-          }
+        // 属于小区留言板
+        const pid = comment.aid.split('_')[comment.aid.split('_').length - 1]
+        
+        if (!pid || pid == -1 || pid == 'undefined') {
+          // 由于历史原因，有的pid是-1或者undefined，这样的comment我们不能显示
+          log.warn(`遇到pid异常，此comment的aid为：${comment.aid}`)
+        } else {
+          // pid正常的情况
+          const pname = allPidsAndNames.find(pair => pair.id == pid).name
           comment['pname'] = pname
+        }
       } else {
-          // 属于用户创建的文章
-          commentsOnUserArticles.push(comment)
+        // 属于用户创建的文章
+        commentsOnUserArticles.push(comment)
       }
+    } else {
+      log.warn(`发现有的comment的aid不存在或者为null`)
+    }
   })
 
   log.info(`准备加载${commentsOnUserArticles.length}篇文章`)
