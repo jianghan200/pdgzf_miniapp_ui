@@ -7,7 +7,13 @@ Page({
   },
 
   onLoad: function (options) {
-
+    if (options['articleUrl'] && options['articleUrl'] != '') {
+      let url = options['articleUrl']
+      log.info(`文章链接是: ${url}`)
+      wx.navigateTo({
+        url: '/pages/article/article?url=' + url,
+      })
+    }
   },
 
   navTo(e) {
