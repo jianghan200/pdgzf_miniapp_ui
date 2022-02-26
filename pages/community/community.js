@@ -150,6 +150,19 @@ Page({
       })
 
       wx.hideLoading()
+      if(options['forum'] == 1) {
+        let aid = ''
+        if(options['aid'] != undefined && options['aid'] != '') {
+          aid = `&aid=${options['aid']}`
+        }
+        let discussionType = ''
+        if(options['discussionType'] != undefined && options['discussionType'] != '') {
+          discussionType = `&discussionType=${options['discussionType']}`
+        } 
+        wx.navigateTo({
+          url: '/pages/forum/forum?pname=' + utils.sliceOf(this.data.pName) + '&type=3&pid=' + this.data.pId + aid + discussionType
+        })
+      }
     }).catch(err => {
       log.error(`处理数据时遇到错误`)
       log.error(err)

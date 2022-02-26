@@ -18,9 +18,13 @@ Page({
 
     if (options['tab'] && options['tab'] != '') {
       let tab = options['tab']
+      let articleUrl = ''
+      if(options['articleUrl'] && options['articleUrl'] != '') {
+        articleUrl = '?articleUrl=' + options['articleUrl']
+      }
       // 来自分享
       wx.navigateTo({
-        url: `/pages/${tab}/${tab}`,
+        url: `/pages/${tab}/${tab}` + articleUrl,
       })
     }
   },

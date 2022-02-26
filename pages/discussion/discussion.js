@@ -10,6 +10,8 @@ Page({
     data: {
         CustomBar: app.globalData.CustomBar,
         aid: null,
+        pId: null,
+        type: null,
         article: null,
         // 评论
         myComments: '',
@@ -26,9 +28,9 @@ Page({
 
     onLoad: function (options) {
         log.info(`onLoad discussion with options: ${options}`)
-
         this.setData({
             aid: options.aid,
+            pId: options.pid,
             type: options.type
         }, () => {
             this.init()
@@ -378,6 +380,38 @@ Page({
     },
 
     onShareAppMessage: function () {
-
+        let self = this
+        var path = '/pages/today/today'
+        let type = ''
+        if(self.data.type != null && self.data.type != undefined && self.data.type != '') {
+            type = `&discussionType=${self.data.type}`
+        }
+        var params = `pid=${self.data.pId}&forum=1&aid=${self.data.aid}${type}`
+        path = path + '?' + params
+        return {
+            title : 'PD公租房',
+            path : '/pages/login/login?redirect=' + encodeURIComponent(path),
+            imageUrl : '',
+            success : function(res) {
+                if (res.errMsg == 'shareAppMessage:ok') {
+                    // 用户转发成功
+                    wx.showToast({
+                        title: '转发成功',
+                        icon: 'success'
+                    })
+                }
+            },
+            fail : function(err) {
+                if (err.errMsg == 'shareAppMessage:fail cancel') {
+                    wx.showToast({
+                        title: '转发已取消',
+                    })
+                } else {
+                    wx.showToast({
+                        title: '转发失败',
+                    })
+                }
+            }
+        }
     }
 })
