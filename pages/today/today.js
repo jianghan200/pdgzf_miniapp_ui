@@ -57,7 +57,19 @@ Page({
     }
     if (options['pid'] != undefined && options['pid'] != '') {
       // 来自分享, 需要redirect到community页面, 由于耦合度高, 因此要先跳转到today页面, 再跳转到community
-      wx.navigateTo({ url: '../community/community?pid=' + options['pid'] })
+      let forum = ''
+      if(options['forum'] != undefined && options['forum'] != '') {
+        forum = `&forum=${options['forum']}`
+      }
+      let aid = ''
+      if(options['aid'] != undefined && options['aid'] != '') {
+        aid = `&aid=${options['aid']}`
+      }
+      let discussionType = ''
+      if(options['discussionType'] != undefined && options['discussionType'] != '') {
+        discussionType = `&discussionType=${options['discussionType']}`
+      }
+      wx.navigateTo({ url: '../community/community?pid=' + options['pid'] + forum + aid + discussionType})
     }
   },
 

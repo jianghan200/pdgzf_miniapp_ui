@@ -28,12 +28,12 @@ Page({
             page: 0,
             pageSize: 5
         }, () => {
-            this.loadArticles()
+            this.loadArticles(options)
         })
     },
 
     // 读取文章
-    loadArticles() {
+    loadArticles(options) {
         log.info(`forum页开始读取文章列表page: ${this.data.page}, pageSize: ${this.data.pageSize}`)
         
         const communityTopic = forumHelper.generateCommunityTopic(this.data.pId)
@@ -57,6 +57,15 @@ Page({
                     articles: self.data.articles.concat(newArticles)
                 })
                 wx.hideLoading()
+            }
+            if(options['aid'] != undefined && options['aid'] != '') {
+                let discussionType = ''
+                if(options['discussionType'] != undefined && options['discussionType'] != '') {
+                    discussionType = `&type=${options['discussionType']}`
+                }
+                wx.navigateTo({
+                    url: '/pages/discussion/discussion?aid=' + options['aid'] + '&pid=' + self.data.pId + discussionType,
+                })
             }
         }).catch(err => {
             log.error(err)
@@ -97,15 +106,17 @@ Page({
 
     // 路由到留言板
     goToKanban(e) {
+        let self = this
         wx.navigateTo({
-          url: '/pages/discussion/discussion?aid=' + forumHelper.generateCommunityTopic(this.data.pId) + '&type=0'
+          url: '/pages/discussion/discussion?aid=' + forumHelper.generateCommunityTopic(this.data.pId) + '&type=0' + '&pid=' + self.data.pId
         })
     },
 
     // 路由到某个文章详情
     goToDetail(e) {
+        let self = this
         wx.navigateTo({
-          url: '/pages/discussion/discussion?aid=' + e.currentTarget.dataset.aid,
+          url: '/pages/discussion/discussion?aid=' + e.currentTarget.dataset.aid + '&pid=' + self.data.pId,
         })
     },
 
@@ -115,4 +126,38 @@ Page({
 
         this.loadArticles()
     },
+
+
+    // 分享该页面
+    onShareAppMessage: function () {
+        let self = this
+        var path = '/pages/today/today'
+        var params = `pid=${self.data.pId}&forum=1`
+        path = path + '?' + params
+        return {
+            title : 'PD公租房',
+            path : '/pages/login/login?redirect=' + encodeURIComponent(path),
+            imageUrl : '',
+            success : function(res) {
+                if (res.errMsg == 'shareAppMessage:ok') {
+                    // 用户转发成功
+                    wx.showToast({
+                        title: '转发成功',
+                        icon: 'success'
+                    })
+                }
+            },
+            fail : function(err) {
+                if (err.errMsg == 'shareAppMessage:fail cancel') {
+                    wx.showToast({
+                        title: '转发已取消',
+                    })
+                } else {
+                    wx.showToast({
+                        title: '转发失败',
+                    })
+                }
+            }
+        }
+    }
 })
