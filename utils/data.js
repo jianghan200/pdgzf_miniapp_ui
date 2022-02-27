@@ -166,8 +166,7 @@ const loadAllData = function(options) {
     .all([
       requests.getTodayProjects(), requests.getTodayHouses(), requests.getTodayStats(), 
       requests.loadAllProjects(), requests.loadProjectHouseInfo(),
-      requests.getSubscriptions(), requests.getConsultStatus(),
-      userHelper.getUserInteractions()
+      requests.getSubscriptions(), requests.getConsultStatus()
     ])
     .then((rs) => {
       log.info('loadAllData 成功')
@@ -207,6 +206,9 @@ const loadAllData = function(options) {
           wx.redirectTo({ url: '/pages/today/today' })
         }
       }
+    })
+    .then(() => {
+      userHelper.getUserInteractions()
     })
     .catch((err) => {
       log.error('loadAllData 失败')

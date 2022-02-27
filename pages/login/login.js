@@ -34,7 +34,7 @@ Page({
         log.info('登陆成功')
         log.info(userinfo)
         // 几乎全部的初始请求
-        dataHelper.loadAllData(self.options)     
+        dataHelper.loadAllData(self.options)
       })
       .catch((err) => {
         log.error(err)
