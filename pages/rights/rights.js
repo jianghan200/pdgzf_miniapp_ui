@@ -27,9 +27,16 @@ Page({
 
   // Modal相关
   showConfirmationModal() {
-    this.setData({
-      showModal: true
-    })
+    if (app.globalData.IOS) {
+      wx.showModal({
+        'title' : '苹果税',
+        'content' : '请联系meo365成为VIP'
+      })
+    } else {
+      this.setData({
+        showModal: true
+      })
+    }
   },
 
   // 关闭所有弹窗

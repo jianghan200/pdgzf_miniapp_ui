@@ -38,10 +38,6 @@
     5. 可开启自动排队, 以免遗漏心仪房源（附赠）
   </view>
 
-  <!-- <view class="text-bold text-xl" style="padding-top: 0.5rem;">
-    6. 免费获得邮件订阅, 每日早晚看到排队情况（附赠）
-  </view> -->
-
   <!-- 付款按钮 -->
   <view style="padding: 10rpx;" wx:if="{{!isVip}}">
     <button style="height: 90rpx;" class="bg-black" bindtap="showConfirmationModal">
