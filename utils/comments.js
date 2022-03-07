@@ -1,6 +1,7 @@
 const log = require('./log')
 const requests = require('./request')
 const app = getApp()
+const constants = require('./constants')
 
 // 根据aid拿到某个文章的所有评论
 const getCommentsOf = function(aid) {
@@ -48,6 +49,8 @@ const submitComment = function(aid, userInput, articleAuthor) {
 // 匿名上传评论
 const submitCommentAnonymously = function(aid, comments, articleAuthor) {
   log.info('匿名上传评论')
+  
+  const randomNickname = constants.randomUserName()
 
   return wx.cloud.callFunction({
     name: 'comment',
@@ -57,6 +60,7 @@ const submitCommentAnonymously = function(aid, comments, articleAuthor) {
       aid: aid, 
       comment: comments,
       is_anonymous: true,
+      nickName: randomNickname,
       article_author_id: articleAuthor
     }
   })
@@ -100,6 +104,8 @@ const respond = function(aid, comments, parentCommentId, parentCommentUnionId, p
 const respondAnonymously = function(aid, comments, parentCommentId, parentCommentUnionId, parentCommentUsername, articleAuthor) {
   log.info(`匿名回复${parentCommentId}(aid: ${aid})`)
 
+  const randomNickname = constants.randomUserName()
+
   return wx.cloud.callFunction({
     name: 'comment',
     data : {
@@ -111,6 +117,7 @@ const respondAnonymously = function(aid, comments, parentCommentId, parentCommen
       comment_to_uid: parentCommentUnionId,
       comment_to_user: parentCommentUsername,
       is_anonymous: true,
+      nickName: randomNickname,
       article_author_id: articleAuthor
     }
   })

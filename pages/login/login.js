@@ -3,6 +3,8 @@ const app = getApp()
 const requests = require('../../utils/request')
 const dataHelper = require('../../utils/data')
 const log = require('./../../utils/log')
+const userHelper = require('../../utils/user')
+
 Page({
   data: {
   },
@@ -35,6 +37,8 @@ Page({
         log.info(userinfo)
         // 几乎全部的初始请求
         dataHelper.loadAllData(self.options)
+      }).then(() => {
+        userHelper.getUserInteractions()
       })
       .catch((err) => {
         log.error(err)

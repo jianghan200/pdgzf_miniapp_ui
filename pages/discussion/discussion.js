@@ -161,7 +161,7 @@ Page({
             parentCommentId: parentCommentId,
             parentCommentUnionId: parentCommentUnionId,
             parentCommentUsername: parentCommentUsername,
-            textPlaceHolder: `回复${parentCommentUsername ? parentCommentUsername : '匿名者'}`
+            textPlaceHolder: `回复${parentCommentUsername ? parentCommentUsername : '排队老铁'}`
         })
     },
 
@@ -196,7 +196,7 @@ Page({
         
         const self = this
         wx.showActionSheet({
-          itemList: ['发送', '匿名发送'],
+          itemList: ['发送', '化名发送(拼人品)'],
           success: res => {
               if (res.tapIndex == 0) {
                 // 选择真名发送

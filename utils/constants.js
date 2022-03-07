@@ -89,6 +89,32 @@ const officeCoordinate = {
   address: '上海市浦东新区浦三路930弄'
 }
 
+// 随机生成一个用户名
+const guanLanGaoShou = ['樱木花道(Sakuragi Hanamichi)', '流川枫(Rukawa Kaede)', '赤木刚宪(Takenori Akagi)', '三井 寿(Hisashi Mitsui)', '宫城良田 (Ryouta Miyagi)', '井上 彩子(Inoue Ayako)', '赤木 晴子(Haruko Akagi )', '木暮公延(Kiminobu Kogure)', '牧绅一(SHINICHI MAKI)', '神宗一郎(SOICHIROJIN)', '清田信长(NOBUNGAKIYOTA)', '田冈茂一(MOICHITAOKA)', '鱼住纯(JUNUOZUMI)', '福田吉兆(Kicchou Fukuda)', '越野宏明(Hiroaki Koshino)', '相田彦一(Hikoichi Aida)', '藤真健司(Kenji Fujima)', '花形透(Touru Hanagata)', '青田龙彦(Tatsuhiko Aota)', '水户洋平(Youhei Mitou)']
+
+const aot = ['艾伦·耶格尔', '韩吉·佐耶', '三笠·阿克曼', '利威尔·阿克曼', '阿明·阿诺德', '莱纳·布朗', '希琪·德利斯', '马可·博特', '尤弥尔', '奇行种', '萨莎·布劳斯', '康尼·斯普林格', '让·基尔希斯坦', '贝特霍尔德·胡佛', '埃尔文·史密斯', '亚妮·雷恩哈特', '吉克·耶格尔', '皮克小姐姐']
+
+const deathNotes = ['夜神月(Light Yagami)', 'Ryuk', '弥·海莎(Misa Amane)', 'Rem', 'L']
+
+var usernames = guanLanGaoShou.concat(aot).concat(deathNotes)
+
+// 洗牌
+const shuffleUsernames = function(array) {
+  let len = array.length;
+  for (let i = len - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+// 伪随机即可，真随机影响速度
+const randomUserName = function() {
+  shuffleUsernames(usernames)
+  shuffleUsernames(usernames)
+  shuffleUsernames(usernames)
+  return usernames[0]
+}
+
 module.exports = {
   server: prodServer,
   userinfoServer: userinfoProdServer,
@@ -105,5 +131,6 @@ module.exports = {
   wordpressFeedbackUsername : wordpressFeedbackUsername,
   wordpressFeedbackPassword : wordpressFeedbackPassword,
   consultant : consultant,
-  officeCoordinate: officeCoordinate
+  officeCoordinate: officeCoordinate,
+  randomUserName: randomUserName
 }

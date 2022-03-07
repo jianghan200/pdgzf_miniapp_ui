@@ -3,7 +3,6 @@ const util = require('./util')
 const app = getApp()
 const constants = require('./constants')
 const log = require('./log')
-const userHelper = require('./user')
 
 // 处理今日小区的rawData
 const handleTodayProjects = function(projectsRawData, housesRawData, stats, subscriptionsRawData) {
@@ -206,9 +205,6 @@ const loadAllData = function(options) {
           wx.redirectTo({ url: '/pages/today/today' })
         }
       }
-    })
-    .then(() => {
-      userHelper.getUserInteractions()
     })
     .catch((err) => {
       log.error('loadAllData 失败')

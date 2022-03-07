@@ -1,6 +1,7 @@
 const log = require('./log')
 const utils = require('./util')
 const app = getApp()
+const constants = require('./constants')
 
 // 获取某type, topic下所有的articles
 const getArticles = function(type, topic, page, pageSize) {
@@ -29,9 +30,10 @@ const generateCommunityTopic = function(pId) {
 const postArticle = function(typeId, topic, title, contents, imageUrls, anonymous) {
     log.info('正在创建article')
 
+    const randomUsername = constants.randomUserName()
     const unionId = app.globalData.userinfo.unionId
     const avatar = anonymous ? '' : app.globalData.avatarUrl
-    const nickname = anonymous ? '匿名者' : app.globalData.nickname
+    const nickname = anonymous ? randomUsername : app.globalData.nickname
 
     return postImages(imageUrls).then(cloudUrls => {
         return wx.cloud.callFunction({

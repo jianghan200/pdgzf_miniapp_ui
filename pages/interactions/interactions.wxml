@@ -50,7 +50,7 @@
     <view class="cu-item">
         <view class="cu-avatar round" style="background-image:url({{unread.avatarUrl}});"></view>
         <view class="content flex-sub">
-            <view class="text-grey">{{ unread.nickname ? unread.nickname : '匿名者' }}</view>
+            <view class="text-grey">{{ unread.nickname ? unread.nickname : '排队老铁' }}</view>
             <view class="text-gray text-content text-df">回复道：{{ unread.msg }}</view>
             <view class="bg-grey padding-sm radius margin-top-sm text-sm">
                 @文章《{{ unread.article ? unread.article.title : (unread.pname + '留言板') }}》
@@ -75,7 +75,7 @@
     <view class="cu-item">
         <view class="cu-avatar round" style="background-image:url({{comment.avatarUrl}});"></view>
         <view class="content flex-sub">
-            <view class="text-grey">{{ comment.nickName ? comment.nickName : '匿名者' }}</view>
+            <view class="text-grey">{{ comment.nickName ? comment.nickName : '排队老铁' }}</view>
             <view class="text-gray text-content text-df">回复道：{{ comment.comment }}</view>
             <view class="bg-grey padding-sm radius margin-top-sm text-sm">
                 @文章《{{ comment.article ? comment.article.title : (comment.pname + '留言板') }}》
@@ -100,7 +100,7 @@
     <view class="cu-item">
         <view class="cu-avatar round" style="background-image:url({{reply.avatarUrl}});"></view>
         <view class="content flex-sub">
-            <view class="text-grey">{{ reply.nickName ? reply.nickName : '匿名者' }}</view>
+            <view class="text-grey">{{ reply.nickName ? reply.nickName : '排队老铁' }}</view>
             <view class="text-gray text-content text-df">回复道：{{ reply.comment }}</view>
             <view class="bg-grey padding-sm radius margin-top-sm text-sm">
                 @文章《{{ reply.article ? reply.article.title : (reply.pname + '留言板') }}》
