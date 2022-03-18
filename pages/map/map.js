@@ -6,6 +6,7 @@ const utils = require('./../../utils/util')
 Page({
   data: {
     title: '',
+    mode: '',
     selfLatitude: 31.23037,
     selfLongitude: 121.4737,
     markers: []
@@ -16,6 +17,10 @@ Page({
     log.info(options)
 
     let self = this
+
+    this.setData({
+      mode: self.options.mode
+    })
 
     // 拿到用户的坐标
     wx.getLocation({
@@ -239,6 +244,36 @@ Page({
       countDesc: `拥有${project.rentableCount}套公租房`,
       houseInfo: housesInfo
     }
-  }
+  },
 
+  // 转发
+  onShareAppMessage: function(options) {
+    console.log(this.data)
+    var path = '/pages/today/today?mode=' + this.data.mode
+    return {
+      title : 'PD公租房',
+      path : '/pages/login/login?redirect=' + encodeURIComponent(path),
+      imageUrl : '',
+      success : function(res) {
+        if (res.errMsg == 'shareAppMessage:ok') {
+          // 用户转发成功
+          wx.showToast({
+            title: '转发成功',
+            icon: 'success'
+          })
+        }
+      },
+      fail : function(err) {
+        if (err.errMsg == 'shareAppMessage:fail cancel') {
+          wx.showToast({
+            title: '转发已取消',
+          })
+        } else {
+          wx.showToast({
+            title: '转发失败',
+          })
+        }
+      }
+    }
+  }
 })

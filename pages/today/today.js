@@ -70,6 +70,8 @@ Page({
         discussionType = `&discussionType=${options['discussionType']}`
       }
       wx.navigateTo({ url: '../community/community?pid=' + options['pid'] + forum + aid + discussionType})
+    } else if (options['mode'] != undefined && options['mode'] != '') {
+      wx.navigateTo({ url: '../map/map?mode=' + options['mode']})
     }
   },
 
