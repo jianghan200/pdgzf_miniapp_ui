@@ -2,6 +2,7 @@
 var log = require('./utils/log')
 App({
   onLaunch: function (options) {
+    console.log(options)
     log.info('用户onLaunch')
     // 最开始要prompt用户升级程序（if any）
     this.updateApp()

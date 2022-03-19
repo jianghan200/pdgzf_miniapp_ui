@@ -10,19 +10,17 @@
     <view class="content shadow-blur bg-grey">
       在查询了
       <text bindtap="goTo" data-page="policy" class="text-yellow">【政策】</text>、
-      <text bindtap="goTo" data-page="qualification" class="text-yellow">【申请资格】</text>以及
-      <text bindtap="goTo" data-page="advantages" class="text-yellow">【公租房的优势】</text>后火速开始准备材料
+      <text bindtap="goTo" data-page="qualification" class="text-yellow">【申请资格】</text>后火速准备材料
     </view>
   </view>
   <view class="cu-time" style="text-align: start; width: auto;">资格申请，开始准备材料</view>
 
   <view class="cu-item text-grey">
     <view class="content shadow-blur bg-grey">
-      准备好<text bindtap="goTo" data-page="materials" class="text-yellow">【申请材料】</text>
+      准备<text bindtap="goTo" data-page="materials" class="text-yellow">【申请材料】</text>
       <view>
         <text class="cuIcon-creativefill text-yellow"></text> 先准备好材料是为了在【网申通过】或【初审通过】后能立马递交材料。
       </view>
-      <view><text class="text-bold">【网申通过】到【递交材料】之间只有5个工作日的窗口，切记！</text></view>
     </view>
   </view>
 
@@ -44,9 +42,15 @@
         <text class="cuIcon-creativefill text-yellow"></text>
         《公租房申请》要求上传【居住证】，有户口的可以无视。“共同申请人”和“申请人现有住房”没有就不填
       </view>
+      <view>
+        <text class="cuIcon-creativefill text-yellow"></text>
+        <text class="text-bold">【网申通过】到【递交材料】之间只有5个工作日的窗口，切记！</text>
+      </view>
     </view>
   </view>
-  <view class="cu-time">几个工作日后</view>
+  <view class="cu-time" style="text-align: start; width: auto;">几个工作日后，收到“网签通过”的短信提示</view>
+
+  <view class="cu-time">当面递交材料</view>
 
   <view class="cu-item text-green">
     <view class="content shadow-blur bg-green">
