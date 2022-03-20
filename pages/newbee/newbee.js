@@ -50,6 +50,14 @@ Page({
     }
   },
 
+  // Top Bar的重定向方法
+  topBarRedirect(e) {
+    const newTab = e.detail
+    if (newTab != 'newbee') {
+      wx.redirectTo({ url: `/pages/${newTab}/${newTab}` })
+    }
+  },
+
   // 转发
   onShareAppMessage: function(options) {
     var path = '/pages/newbee/newbee'

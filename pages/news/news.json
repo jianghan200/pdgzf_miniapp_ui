@@ -1,3 +1,7 @@
 {
-  "usingComponents": {}
+  "usingComponents": {
+    "topBar": "/components/topBar/topBar",
+    "botBar": "/components/tabBar/tabBar"
+  },
+  "onReachBottomDistance": 500
 }

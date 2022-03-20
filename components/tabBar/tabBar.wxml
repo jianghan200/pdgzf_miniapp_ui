@@ -11,9 +11,9 @@
     <view class="text-{{tab == 'allProjects' ? 'black' : 'gray'}}">全部房源</view>
   </view>
 
-  <view class="action" bindtap="switchTab" data-tabname="newbee">
-    <view class="cuIcon-{{tab == 'newbee' ? 'discoverfill' : 'discover'}} text-{{tab == 'newbee' ? 'red' : 'gray'}}"></view>
-    <view class="text-{{tab == 'newbee' ? 'black' : 'gray'}}">公租房新手村</view>
+  <view class="action" bindtap="switchTab" data-tabname="news">
+    <view class="cuIcon-{{isDiscoveryPage ? 'discoverfill' : 'discover'}} text-{{isDiscoveryPage ? 'red' : 'gray'}}"></view>
+    <view class="text-{{isDiscoveryPage ? 'black' : 'gray'}}">发现</view>
   </view>
 
   <view class="action" bindtap="switchTab" data-tabname="rentList">

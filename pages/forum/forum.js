@@ -58,7 +58,7 @@ Page({
                 })
                 wx.hideLoading()
             }
-            if(options['aid'] != undefined && options['aid'] != '') {
+            if (options['aid'] != undefined && options['aid'] != '') {
                 let discussionType = ''
                 if(options['discussionType'] != undefined && options['discussionType'] != '') {
                     discussionType = `&type=${options['discussionType']}`

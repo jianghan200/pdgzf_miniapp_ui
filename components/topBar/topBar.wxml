@@ -1,0 +1,8 @@
+<!-- 有刘海的机型会遮挡内容，所以要有占位符 -->
+<view>
+  <view style="height: 2.5rem;"></view>
+  <scroll-view scroll-x class="bg-white nav text-center">
+    <view class="cu-item {{ tab == 'news' ? 'text-blue cur' : '' }}" data-tabname="news" bindtap="onSwitchTab">信息流</view>
+    <view class="cu-item {{ tab == 'newbee' ? 'text-blue cur' : '' }}" data-tabname="newbee" bindtap="onSwitchTab">新手村</view>
+  </scroll-view>
+</view>

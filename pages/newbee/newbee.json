@@ -1,6 +1,7 @@
 {
   "usingComponents": {
     "tabBar": "/components/tabBar/tabBar",
+    "topBar": "/components/topBar/topBar",
     "mb": "/components/movableButton/movableButton"
   }
 }

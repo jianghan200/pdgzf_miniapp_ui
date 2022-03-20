@@ -1,2 +1,23 @@
-<!--pages/news/news.wxml-->
-<text>pages/news/news.wxml</text>
+
+
+<view>
+  <topBar bindswitchdiscoverytab="topBarRedirect" tab="news"></topBar>
+  <view 
+    wx:for="{{ list }}" 
+    wx:for-item="article" 
+    wx:key="id"
+  >
+    <view class="cu-card article" bindtap="goToArticle" data-url="{{ article.url }}" data-id="{{ article.id }}">
+      <view class="cu-item shadow" style="margin: 10rpx 0; padding-bottom: 0;">
+        <view style="font-size: 30rpx; font-weight: 900; padding: 10rpx 30rpx;"><text>{{ article.title }}</text></view>
+        <view class="content">
+          <view class="desc">
+            <view class="padding-bottom text-grey">{{ article.albumName }} 发布于: {{ article.createTime_text }}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<botBar bindswitchtab="redirect" tab="news" unreadCount="{{ unreadCount }}"></botBar>
