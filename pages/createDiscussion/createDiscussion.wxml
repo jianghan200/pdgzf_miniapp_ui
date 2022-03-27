@@ -56,5 +56,5 @@
 
 <view>
   <button class="bg-green margin" bindtap="post">发布</button>
-  <button class="bg-black margin" bindtap="anonymousPost">化名发布</button>
+  <!-- <button class="bg-black margin" bindtap="anonymousPost">化名发布</button> -->
 </view>
