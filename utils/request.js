@@ -830,7 +830,7 @@ const getMonthlyHouseCount = function() {
 const postFeedback = function(jiraType, desc, email) {
   log.info(`准备post反馈（${jiraType}, ${desc}, ${email}）`)
 
-  const url = constants.prodFeedbackServer + '/wp_pdgzf/wp-json/wp/v2/posts'
+  const url = constants.prodFeedbackServer + '/wp-json/wp/v2/posts'
   const unionId = app.globalData.userinfo.unionId
   const nickname = app.globalData.userinfo.nickname
   const token = utils.base64_encode(constants.wordpressFeedbackUsername + ':' + constants.wordpressFeedbackPassword)
@@ -899,7 +899,7 @@ const sendFeedbackImg = function(imgUrl, postId) {
 
   var fs = wx.getFileSystemManager()
   
-  const url = constants.prodFeedbackServer + '/wp_pdgzf/wp-json/wp/v2/media' + '?post=' + postId
+  const url = constants.prodFeedbackServer + '/wp-json/wp/v2/media' + '?post=' + postId
   const token = utils.base64_encode(constants.wordpressFeedbackUsername + ':' + constants.wordpressFeedbackPassword)
   const header = {
     'Authorization' : 'Basic ' + token,
@@ -1168,7 +1168,7 @@ const getCommentsOf = function(pid) {
 const getBroadcastMsgs = function() {
   log.info('准备获取公告信息')
 
-  const url = constants.prodFeedbackServer + '/wp_pdgzf/wp-json/wp/v2/posts?categories=7&_fields=author,id,content,title,link'
+  const url = constants.prodFeedbackServer + '/wp-json/wp/v2/posts?categories=7&_fields=author,id,content,title,link'
 
   return new Promise((resolve, reject) => {
     wx.request({
