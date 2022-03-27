@@ -84,7 +84,7 @@ Page({
           wx.hideLoading()
           wx.showModal({
             title: '请关注公众号',
-            content: `请关注公众号：${self.officialAccount}，获取原文链接`,
+            content: `请关注公众号：${self.data.officialAccount}，获取原文链接`,
             cancelColor: 'cancelColor',
           })
         } else {
