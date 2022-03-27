@@ -2,6 +2,7 @@ const app = getApp()
 const newsHelper = require('../../utils/news')
 const log = require('../../utils/log')
 const utils = require('../../utils/util')
+const constants = require('../../utils/constants')
 
 Page({
   data: {
@@ -9,11 +10,17 @@ Page({
     unreadCount: 0,
     pageSize: 10,
     pageNum: 1,
-    list: []
+    list: [],
+    displayOfficialAccount: true,
+    officialAccount: 'PD生活'
   },
 
   onLoad: function (options) {
-    this.setData({ unreadCount: app.globalData.unread })
+    this.setData({ 
+      unreadCount: app.globalData.unread, 
+      displayOfficialAccount: utils.displayOfficialAccount(),
+      officialAccount: constants.officialAccount
+    })
 
     this.loadArticles()
   },
@@ -47,6 +54,13 @@ Page({
     })
   },
 
+  // 将公众号名称复制到用户的clipboard
+  copyToClipboard() {
+    log.info(`复制公众号${this.data.officialAccount}到剪贴板上`)
+    
+    utils.copyToClipboard(this.data.officialAccount)
+  },
+
   // 打开文章
   goToArticle(e) {
     const url = e.currentTarget.dataset.url
@@ -55,6 +69,7 @@ Page({
     if (article) {
       wx.showLoading({ title: '发送中...' })
 
+      const self = this
       wx.cloud.callFunction({
         name: 'notification',
         data: {
@@ -63,10 +78,20 @@ Page({
           title: article.title,
           createTime: utils.formatDate(new Date(article.createTime * 1000))
         }
-      }).then(() => {
-        wx.showToast({ title: '请查看微信' })
+      }).then((res) => {
+        console.log(res)
+        if (res.result.errCode == '43004') {
+          wx.hideLoading()
+          wx.showModal({
+            title: '请关注公众号',
+            content: `请关注公众号：${self.officialAccount}，获取原文链接`,
+            cancelColor: 'cancelColor',
+          })
+        } else {
+          wx.showToast({ title: '请查看微信' })
 
-        wx.hideLoading()
+          wx.hideLoading()
+        }
       }).catch(err => {
         wx.showToast({ title: '发送失败', icon: 'error' })
         console.log(err)
@@ -91,13 +116,6 @@ Page({
     if (newTab != 'news') {
       wx.redirectTo({ url: `/pages/${newTab}/${newTab}` })
     }
-  },
-
-  // 即将触底时触发新的loading
-  onReachBottom(e) {
-    log.info('开始读取新一页的数据')
-
-    this.loadArticles()
   },
   
   onShareAppMessage: function () {

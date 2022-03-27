@@ -10,6 +10,19 @@
   <view class="cu-item text-brown">
     <view class="bg-brown content shadow">
       <view class="cu-capsule radius">
+        <view class="cu-tag bg-white text-brown">v2.0.13</view>
+        <view class="cu-tag line-white">2022/03/27</view>
+      </view>
+      <view class="margin-top-sm text-content">
+        <view>1. 信息流，展示政府官网、官方公众号实时发布的信息</view>
+        <view>2. VIP每天会收到【微信消息提醒】，提示当日出现了心仪房源</view>
+      </view>
+    </view>   
+  </view>
+
+  <view class="cu-item text-brown">
+    <view class="bg-brown content shadow">
+      <view class="cu-capsule radius">
         <view class="cu-tag bg-white text-brown">v2.0.10</view>
         <view class="cu-tag line-white">2022/02/19</view>
       </view>

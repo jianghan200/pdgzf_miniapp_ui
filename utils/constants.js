@@ -115,6 +115,9 @@ const randomUserName = function() {
   return usernames[0]
 }
 
+// 公众号的名称
+const officialAccount = 'PD生活'
+
 module.exports = {
   server: prodServer,
   userinfoServer: userinfoProdServer,
@@ -132,5 +135,6 @@ module.exports = {
   wordpressFeedbackPassword : wordpressFeedbackPassword,
   consultant : consultant,
   officeCoordinate: officeCoordinate,
-  randomUserName: randomUserName
+  randomUserName: randomUserName,
+  officialAccount: officialAccount
 }

@@ -1,8 +1,27 @@
-
-
 <view>
   <topBar bindswitchdiscoverytab="topBarRedirect" tab="news"></topBar>
+  <!-- 公众号链接 -->
+  <official-account></official-account>
   <view 
+    style="height: 84px; background-color: white; display: flex; justify-content: center; flex-direction: column;" 
+    wx:if="{{ !displayOfficialAccount }}"
+  >
+    <button 
+      class="cu-btn bg-white shadow text-bold lg" style="width: 90%; font-size: 20rpx; align-self: center;" 
+      bindtap="copyToClipboard"
+    >
+      请关注公众号：“{{ officialAccount }}“获取文章【点击复制到剪贴板】
+    </button>
+  </view>
+  <view style="height: 16px; display: flex; justify-content: center;">
+    <text style="padding-left: 15px; font-size: smaller; color: grey;">点击文章卡片获取原文</text>
+  </view>
+  <scroll-view 
+    scroll-y 
+    scroll-with-animation
+    style="height:calc(100vh - 2.5rem - 190rpx - 100px - env(safe-area-inset-bottom) / 2)"
+  >
+  <block
     wx:for="{{ list }}" 
     wx:for-item="article" 
     wx:key="id"
@@ -17,7 +36,12 @@
         </view>
       </view>
     </view>
+  </block>
+  <!-- 加载更多的按钮 -->
+  <view style="display: flex; justify-content: center;" class="padding">
+    <button class="cu-btn bg-white round shadow text-bold lg" style="width: 60%;" bindtap="loadArticles">加载更多</button>
   </view>
+  </scroll-view>
 </view>
 
 <botBar bindswitchtab="redirect" tab="news" unreadCount="{{ unreadCount }}"></botBar>

@@ -1,0 +1,7 @@
+<view style="height: 100vh;">
+  <view style="height: 50vh;">
+    <web-view src="{{url}}"></web-view>
+  </view>
+  <!-- <tabBar bindswitchtab="redirect" tab="flarum" unreadCount="{{ unreadCount }}"></tabBar> -->
+  <view style="height: 200px;">hello world</view>
+</view>

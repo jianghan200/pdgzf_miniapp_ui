@@ -12,7 +12,7 @@
 </view>
 
 <movable-area class="movable-area">
-  <movable-view class="movable-view" x="600rpx" y="750rpx" animation="{{false}}" direction='all'>
+  <movable-view class="movable-view" x="600rpx" y="450rpx" animation="{{false}}" direction='all'>
     <mb name="意见反馈" cuIcon="commentfill" targetPath="/pages/report/report"></mb>
   </movable-view>
   <!-- 内容 -->
@@ -49,7 +49,7 @@
     <view class="cu-item arrow" bindtap="gotoEmailPage">
       <view class="content">
         <text class="cuIcon-mail text-bold text-blue"></text>
-        <text class="text-bold">邮件订阅</text>
+        <text class="text-bold">邮件订阅 (请关注公众号“PD生活”)</text>
       </view>
     </view>
 

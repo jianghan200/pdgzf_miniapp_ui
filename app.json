@@ -10,6 +10,7 @@
     "pages/discussion/discussion",
     "pages/email/email",
     "pages/error/error",
+    "pages/flarum/flarum",
     "pages/forum/forum",
     "pages/interactions/interactions",
     "pages/links/links",

@@ -20,6 +20,10 @@
     <view class="cuIcon-{{tab == 'rentList' ? 'shopfill' : 'shop'}} text-{{tab == 'rentList' ? 'red' : 'gray'}}"></view>
     <view class="text-{{tab == 'rentList' ? 'black' : 'gray'}}">市场租房</view>
   </view>
+  <!-- <view class="action" bindtap="switchTab" data-tabname="flarum">
+    <view class="cuIcon-{{tab == 'flarum' ? 'communityfill' : 'community'}} text-{{tab == 'flarum' ? 'red' : 'gray'}}"></view>
+    <view class="text-{{tab == 'flarum' ? 'black' : 'gray'}}">社区论坛</view>
+  </view> -->
 
   <view class="action" bindtap="switchTab" data-tabname="user">
     <view class="cu-tag badge" style="right: auto; margin-left: 20rpx;">{{ unreadCount == 0 ? '' : unreadCount }}</view>

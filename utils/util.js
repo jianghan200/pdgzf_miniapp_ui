@@ -1,3 +1,5 @@
+const app = getApp()
+
 const formatTime = date => {
   const year = date.getFullYear()
   const month = date.getMonth() + 1
@@ -403,6 +405,29 @@ const compareVersion = (v1, v2) => {
   return 0
 };
 
+// 根据场景值判断是否应该展示公众号的引导组件
+const officialAccountAvailableScenes = [1011, 1017, 1025, 1047, 1124]
+const displayOfficialAccount = function() {
+  if (app.globalData.scene) {
+    if (officialAccountAvailableScenes.indexOf(app.globalData.scene) == -1) {
+      return false
+    } else {
+      return true
+    }
+  } else {
+    return false
+  }
+}
+
+// 讲某个string复制到用户的clipboard
+const copyToClipboard = function(str) {
+  wx.setClipboardData({
+    data: str,
+    success: function (res) {
+      wx.showToast({ title: '复制成功' })
+    }
+  })
+}
 
 module.exports = {
   formatTime,
@@ -429,5 +454,7 @@ module.exports = {
   generateArticleIdOf: generateArticleIdOf,
   getRoute: getRoute,
   getParams: getParams,
-  compareVersion: compareVersion
+  compareVersion: compareVersion,
+  displayOfficialAccount: displayOfficialAccount,
+  copyToClipboard: copyToClipboard
 }
