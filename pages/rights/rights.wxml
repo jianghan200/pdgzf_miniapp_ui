@@ -18,6 +18,24 @@
   class="padding" 
   style="display: flex; flex-direction: column; align-items: center; justify-content: center;"
 >
+  <!-- 公众号链接 -->
+  <!-- <official-account></official-account> -->
+  <view 
+    style="height: 84px; display: flex; justify-content: center; flex-direction: column;" 
+    wx:if="{{ displayOfficialAccount }}"
+  >
+    <button 
+      class="cu-btn bg-white shadow text-bold lg" style="width: 90%; font-size: 20rpx; align-self: center;" 
+      bindtap="copyToClipboard"
+    >
+      请关注公众号：“{{ officialAccount }}“获取文章【点击复制到剪贴板】
+    </button>
+  </view>
+
+  <view class="text-bold text-xl" style="padding-top: 0.5rem; color: goldenrod;">
+    请务必关注公众号：“PD生活”，关注后可以查收消息提醒，不错过心仪房源。
+  </view>
+
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
     1. 查看各个公租房小区的户型图、看房视频，实地看房笔记（持续更新中～）
   </view>

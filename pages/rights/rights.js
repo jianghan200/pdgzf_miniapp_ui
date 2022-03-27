@@ -3,7 +3,7 @@ const log = require('./../../utils/log')
 
 const constants = require('../../utils/constants')
 const payHelper = require('../../utils/pay')
-const util = require('../../utils/util')
+const utils = require('../../utils/util')
 const requests = require('../../utils/request')
 
 Page({
@@ -13,7 +13,9 @@ Page({
     isIOS: false,
     isVip: false,
     // 弹窗相关
-    showModal: false
+    showModal: false,
+    displayOfficialAccount: true,
+    officialAccount: 'PD生活'
   },
 
   onLoad: function (options) {
@@ -21,7 +23,9 @@ Page({
 
     this.setData({
       isIOS: app.globalData.IOS,
-      isVip: app.globalData.userinfo.type == 2
+      isVip: app.globalData.userinfo.type == 2,
+      displayOfficialAccount: utils.displayOfficialAccount(),
+      officialAccount: constants.officialAccount
     })
   },
 
@@ -82,6 +86,14 @@ Page({
       })
     })
   },
+
+  // 将公众号名称复制到用户的clipboard
+  copyToClipboard() {
+    log.info(`复制公众号${this.data.officialAccount}到剪贴板上`)
+    
+    utils.copyToClipboard(this.data.officialAccount)
+  },
+
   // 转发
   onShareAppMessage: function(options) {
     var path = '/pages/user/user?tab=rights'
