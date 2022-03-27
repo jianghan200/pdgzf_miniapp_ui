@@ -19,10 +19,10 @@
   style="display: flex; flex-direction: column; align-items: center; justify-content: center;"
 >
   <!-- 公众号链接 -->
-  <!-- <official-account></official-account> -->
+  <official-account></official-account>
   <view 
     style="height: 84px; display: flex; justify-content: center; flex-direction: column;" 
-    wx:if="{{ displayOfficialAccount }}"
+    wx:if="{{ !displayOfficialAccount }}"
   >
     <button 
       class="cu-btn bg-white shadow text-bold lg" style="width: 90%; font-size: 20rpx; align-self: center;" 
