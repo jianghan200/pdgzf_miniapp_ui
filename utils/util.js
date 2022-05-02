@@ -429,6 +429,16 @@ const copyToClipboard = function(str) {
   })
 }
 
+// 生成论坛的url
+const generate_flarum_url = function() {
+  const url = 'https://pdbbs.vencloud.cn/api/wechatl?unionId=' + 
+                app.globalData.userinfo.unionId + 
+                '&nickname=' + app.globalData.nickname + 
+                '&avatarUrl=' + app.globalData.avatarUrl +
+                '&url=' + 'https://pdbbs.vencloud.cn'
+  return url
+}
+
 module.exports = {
   formatTime,
   formatDate,
@@ -456,5 +466,6 @@ module.exports = {
   getParams: getParams,
   compareVersion: compareVersion,
   displayOfficialAccount: displayOfficialAccount,
-  copyToClipboard: copyToClipboard
+  copyToClipboard: copyToClipboard,
+  generate_flarum_url: generate_flarum_url
 }

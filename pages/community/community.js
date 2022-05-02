@@ -5,6 +5,7 @@ const model = require('../../utils/community')
 const app = getApp()
 const log = require('./../../utils/log')
 const subscribeHelper = require('../../utils/subscripton')
+const requestHelper = require('../../utils/request')
 
 import plugin from './../../components/calendar/plugins/index'
 import todo from './../../components/calendar/plugins/todo'
@@ -509,8 +510,8 @@ Page({
 
   // 进入社区论坛
   goToForum() {
-    wx.navigateTo({
-      url: '/pages/forum/forum?pname=' + utils.sliceOf(this.data.pName) + '&type=3&pid=' + this.data.pId
+    wx.switchTab({
+      url: '/pages/flarum/flarum',
     })
   },
 

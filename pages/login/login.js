@@ -37,8 +37,6 @@ Page({
         log.info(userinfo)
         // 几乎全部的初始请求
         dataHelper.loadAllData(self.options)
-      }).then(() => {
-        userHelper.getUserInteractions()
       })
       .catch((err) => {
         log.error(err)

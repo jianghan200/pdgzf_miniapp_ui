@@ -2,11 +2,9 @@ const log = require('./log')
 const requests = require('./request')
 const utils = require('./util')
 const constants = require('./constants')
-const util = require('./util')
 
 // 为小区详情页准备好所有数据
 const loadDataForCommunity = function(pid) {
-  const articleId = utils.generateArticleIdOf(pid)
   return Promise
     .all([loadDataFromStorage('todayProjects'), loadDataFromStorage('allProjects'), loadDataFromStorage('subscriptions'),
           requests.getProjectInfo(pid), requests.heatOfTheProject(pid)]
