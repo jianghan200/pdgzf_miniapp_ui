@@ -27,17 +27,13 @@ Page({
     isVip: false,
     hasStartDate: false,
     // 公告
-    broadcastMsgs: [],
-    // 用户的未读信息数量
-    unreadCount: 0
+    broadcastMsgs: []
   },
 
   onLoad: function (options) {
     log.info('onLoad today')
     // 获取公告
     this.getBroadcastMsgs()
-    // 获取用户的未读信息数量
-    this.setData({ unreadCount: app.globalData.unread })
     // 根据当前的时间设置“今日页”的状态
     const date = new Date()
     // 9:30 am ~ 10:03 am期间禁选

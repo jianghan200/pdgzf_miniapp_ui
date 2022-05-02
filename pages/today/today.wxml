@@ -101,9 +101,6 @@
       <view class="text-bold text-large padding">没了，真的一套都没了(ｰ ｰ;)，过几小时再看看吧～</view>
     </view>
   </movable-area>
-
-  <!-- tabBar -->
-  <tabBar bindswitchtab="redirect" tab="today" unreadCount="{{ unreadCount }}"></tabBar>
 </view>
 
 <!-- 9:30 am ~ 10:03am 期间禁止选房 -->
@@ -117,8 +114,6 @@
       <text class="text-bold text-xl padding">每天上午9:30 ~ 10:00关闭选房通道。请于上午10:03后打开此页～（搬砖的手，微微颤抖）</text>
     </view>
   </movable-area>
-  <!-- tabBar -->
-  <tabBar bindswitchtab="redirect" tab="today"></tabBar>
 </view>
 
 <!-- 刷新房源后的Modal -->

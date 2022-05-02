@@ -81,7 +81,7 @@
 </movable-area>
 
 <!-- tabBar -->
-<tabBar bindswitchtab="redirect" tab="user" unreadCount="{{ unreadCount }}"></tabBar>
+<!-- <tabBar bindswitchtab="redirect" tab="user" unreadCount="{{ unreadCount }}"></tabBar> -->
 
 <!-- 普通用户自定义自己资格日的Modal -->
 <view class="cu-modal {{openManualStartDateDialog ? 'show' : ''}}">

@@ -43,5 +43,3 @@
   </view>
   </scroll-view>
 </view>
-
-<botBar bindswitchtab="redirect" tab="news" unreadCount="{{ unreadCount }}"></botBar>

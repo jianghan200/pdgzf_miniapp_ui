@@ -39,6 +39,43 @@
   "window": {
     "navigationStyle": "custom"
   },
+  "tabBar": {
+    "color": "#b4b4b4",
+    "selectedColor": "#f44d56",
+    "backgroundColor": "white",
+    "borderStyle": "white",
+    "list": [{
+      "pagePath": "pages/today/today",
+      "iconPath": "/assets/today_grey.png",
+      "selectedIconPath": "/assets/today.png",
+      "text": "今日房源"
+    }, 
+    {
+      "pagePath": "pages/allProjects/allProjects",
+      "iconPath": "/assets/Map-grey.png",
+      "selectedIconPath": "/assets/Map-_1.png",
+      "text": "全部房源"
+    },
+    {
+      "pagePath": "pages/newbee/newbee",
+      "iconPath": "/assets/discoverfill_grey.png",
+      "selectedIconPath": "/assets/discoverfill.png",
+      "text": "发现"
+    },
+    {
+      "pagePath": "pages/flarum/flarum",
+      "iconPath": "/assets/communityfill_grey.png",
+      "selectedIconPath": "/assets/communityfill.png",
+      "text": "社区"
+    },
+    {
+      "pagePath": "pages/user/user",
+      "iconPath": "/assets/user-filling_grey.png",
+      "selectedIconPath": "/assets/user-filling.png",
+      "text": "我的"
+    }],
+    "position": "bottom"
+  },
   "usingComponents": {
     "cu-custom": "/colorui/components/cu-custom"
   },

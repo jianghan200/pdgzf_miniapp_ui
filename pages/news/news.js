@@ -6,8 +6,6 @@ const constants = require('../../utils/constants')
 
 Page({
   data: {
-    // 未读信息的数量
-    unreadCount: 0,
     pageSize: 10,
     pageNum: 1,
     list: [],
@@ -17,7 +15,6 @@ Page({
 
   onLoad: function (options) {
     this.setData({ 
-      unreadCount: app.globalData.unread, 
       displayOfficialAccount: utils.displayOfficialAccount(),
       officialAccount: constants.officialAccount
     })
@@ -98,15 +95,6 @@ Page({
 
         wx.hideLoading()
       })
-    }
-  },
-
-  // Bottom Bar的方法
-  redirect: function(e) {
-    const newTab = e.detail
-    // 只要不是news那就redirect
-    if (newTab != 'news') {
-      wx.redirectTo({ url: `/pages/${newTab}/${newTab}` })
     }
   },
 

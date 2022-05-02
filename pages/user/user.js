@@ -23,17 +23,12 @@ Page({
     buttonInfo: {
       text: '',
       color: ''
-    },
-    // 未读信息数量
-    unreadCount: 0
+    }
   },
   
   onLoad: function (options) {
     log.info('onLoad user')
     log.info(app.globalData.userinfo)
-
-    // 设置未读信息的数量
-    this.setData({ unreadCount: app.globalData.unread })
 
     this.getVipInfo()
     let userinfo = app.globalData.userinfo

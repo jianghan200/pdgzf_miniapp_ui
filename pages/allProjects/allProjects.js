@@ -1,10 +1,8 @@
 // pages/allProjects/allProjects.js
 let app = getApp()
 const log = require('./../../utils/log')
-const requestHelper = require('../../utils/request')
 const dataHelper = require('../../utils/data')
 const subHelper = require('../../utils/subscripton')
-const utils = require('../../utils/util')
 const contants = require('../../utils/constants')
 const constants = require('../../utils/constants')
 
@@ -22,16 +20,11 @@ Page({
     chosenAreas : [],
     // 房源数量的category
     rentableCountCategory : [],
-    chosenRentableCountCategory : [],
-    // 未读信息的数量
-    unreadCount: 0
+    chosenRentableCountCategory : []
   },
 
   onLoad: function (options) {
     log.info('onLoad allProjects')
-
-    // 设置未读信息的数量
-    this.setData({ unreadCount: app.globalData.unread })
 
     this.useAllProjectsInStorage()
   },
@@ -450,18 +443,6 @@ Page({
           })
         }
       }
-    }
-  },
-
-  // Bottom Bar的功能
-  redirect: function(e) {
-    const newTab = e.detail
-    if (newTab != 'allProjects') {
-      const url = `/pages/${newTab}/${newTab}`
-
-      wx.redirectTo({
-        url: url
-      })
     }
   }
 })

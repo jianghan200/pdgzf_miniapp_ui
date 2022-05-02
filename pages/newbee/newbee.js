@@ -3,18 +3,13 @@ const app = getApp()
 const log = require('./../../utils/log')
 Page({
   data: {
-    vipInfo: null,
-    // 未读信息的数量
-    unreadCount: 0
+    vipInfo: null
   },
 
   onLoad: function (options) {
     log.info('进入newbee的onLoad')
 
-    this.setData({
-      vipInfo : app.globalData.userinfo,
-      unreadCount: app.globalData.unread
-    })
+    this.setData({ vipInfo : app.globalData.userinfo })
 
     if (options['tab'] && options['tab'] != '') {
       let tab = options['tab']
@@ -36,18 +31,6 @@ Page({
     wx.navigateTo({
       url: url,
     })
-  },
-
-  // Bottom Bar的方法
-  redirect: function(e) {
-    const newTab = e.detail
-    if (newTab != 'newbee') {
-      const url = `/pages/${newTab}/${newTab}`
-
-      wx.redirectTo({
-        url: url
-      })
-    }
   },
 
   // Top Bar的重定向方法

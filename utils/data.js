@@ -198,11 +198,11 @@ const loadAllData = function(options) {
         if (app.globalData.userinfo.type == 0 && app.globalData.userinfo.email == null && app.globalData.userinfo.startDate == null) {
           log.info('新用户，首页为新手村')
 
-          wx.redirectTo({ url: '/pages/newbee/newbee' })
+          wx.switchTab({ url: '/pages/newbee/newbee' })
         } else {
           log.info('老用户，首页为今日房源页')
           // 老用户
-          wx.redirectTo({ url: '/pages/today/today' })
+          wx.switchTab({ url: '/pages/today/today' })
         }
       }
     })

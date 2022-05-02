@@ -46,6 +46,3 @@
     </view>
   </view>
 </movable-area>
-
-<!-- tabBar -->
-<tabBar bindswitchtab="redirect" tab="newbee" unreadCount="{{ unreadCount }}"></tabBar>

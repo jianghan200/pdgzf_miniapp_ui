@@ -48,6 +48,3 @@
 
 <!-- 占位符 -->
 <view style="height: 4rem;"></view>
-
-<!-- tabBar -->
-<tabBar bindswitchtab="redirect" tab="rentList" unreadCount="{{ unreadCount }}"></tabBar>

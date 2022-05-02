@@ -10,16 +10,11 @@ Page({
     allArticles: [],
     page: 0,    //分页记录数
     pageSize: 5,   //分页大小
-    refreshData: true,
-    // 未读信息数量
-    unreadCount: 0
+    refreshData: true
   },
 
   onLoad: function (options) {
     log.info('onLoad rentList')
-
-    // 设置未读信息数量
-    this.setData({ unreadCount: app.globalData.unread })
 
     const self = this
     let aid = options['aid']

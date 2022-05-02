@@ -2,25 +2,6 @@ const app = getApp();
 const utils = require('../../utils/util.js');
 const log = require('../../utils/log')
 
-// account: null
-// autoChoose: 1
-// email: "18825169013@163.com"
-// emailExpireDate: null
-// emailSubscription: 1
-// id: 11
-// loginDate: "2021-12-30 21:40:50"
-// manualStartDate: "2020-10-12"
-// name: "星空冰淇淋"
-// openConsult: false
-// openId: "o4Sva5AWDNq6ZAqUEAP8lQkTz72M"
-// password: null
-// realName: null
-// serverAccountId: null
-// startDate: null
-// tokenStr: "34dc9091-756b-42a2-910f-fb5061ea0514"
-// type: 0
-// unionId: "oTmbiwqdRX59s99WzvROiqYljNho"
-
 Page({
   data: {
     app: app.globalData,

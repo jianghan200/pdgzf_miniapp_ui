@@ -1,6 +1,5 @@
 {
   "usingComponents": {
-    "topBar": "/components/topBar/topBar",
-    "botBar": "/components/tabBar/tabBar"
+    "topBar": "/components/topBar/topBar"
   }
 }
