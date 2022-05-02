@@ -28,15 +28,11 @@
 </view>
 
 <view wx:if="{{reqSuccessful}}">
-  <movable-area class="movable-area">
-    <!-- 消息中心的浮窗 -->
-    <movable-view class="movable-view" x="600rpx" y="550rpx" animation="{{false}}" direction='all'>
-      <mb name="消息中心" cuIcon="noticefill" targetPath="/pages/interactions/interactions"></mb>
-    </movable-view>
+  <movable-area class="movable-area" style="height: 100%;">
     <scroll-view
       scroll-y 
       scroll-with-animation
-      style="background-color: #f1f1f1; height:calc(100vh - 6rem - 200rpx - env(safe-area-inset-bottom) / 2)"
+      style="background-color: #f1f1f1; height: calc()"
     >
       <!-- 遍历社区 -->
       <view

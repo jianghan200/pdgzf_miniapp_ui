@@ -1,11 +1,7 @@
 <!--pages/newbee/newbee.wxml-->
-<topBar bindswitchdiscoverytab="topBarRedirect" tab="newbee"></topBar>
+<view style="height: 2.5rem;"></view>
 
-<movable-area class="movable-area">
-  <!-- 消息中心的浮窗 -->
-  <movable-view class="movable-view" x="600rpx" y="550rpx" animation="{{false}}" direction='all'>
-    <mb name="消息中心" cuIcon="noticefill" targetPath="/pages/interactions/interactions"></mb>
-  </movable-view>
+<movable-area class="movable-area" style="height: 100%;">
   <!-- 标题 -->
   <view class="userinfo">
     <view class="{{vipInfo.type == 2 ? 'vip-' : ''}}avatar"><open-data type="userAvatarUrl"></open-data></view>

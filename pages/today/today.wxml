@@ -24,11 +24,7 @@
     </view>
   </view>
 
-  <movable-area class="movable-area">
-    <!-- 消息中心的浮窗 -->
-    <movable-view class="movable-view" x="600rpx" y="550rpx" animation="{{false}}" direction='all'>
-      <mb name="消息中心" cuIcon="noticefill" targetPath="/pages/interactions/interactions"></mb>
-    </movable-view>
+  <movable-area class="movable-area" style="height: 100%;">
     <!-- 滚动条 -->
     <swiper style="height: 55rpx; width: 100vw;" autoplay="true" interval="4000" circular="true">
       <block wx:for="{{broadcastMsgs}}" wx:for-item="msg" wx:key="*this">
@@ -49,7 +45,7 @@
       <scroll-view
         scroll-y 
         scroll-with-animation
-        style="height:calc(100vh - 7.5rem - calc(200rpx + env(safe-area-inset-bottom) / 2))"
+        style="height: 100%"
       >
         <!-- 遍历社区 -->
         <view class="cu-list menu">

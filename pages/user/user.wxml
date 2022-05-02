@@ -11,10 +11,7 @@
   >{{buttonInfo.text}}</button>
 </view>
 
-<movable-area class="movable-area">
-  <movable-view class="movable-view" x="600rpx" y="450rpx" animation="{{false}}" direction='all'>
-    <mb name="意见反馈" cuIcon="commentfill" targetPath="/pages/report/report"></mb>
-  </movable-view>
+<movable-area class="movable-area" style="height: 100%;">
   <!-- 内容 -->
   <view class="cu-list menu sm-border card-menu margin-top">
     <!-- 查看会员权益 -->
@@ -30,18 +27,6 @@
       <view class="content">
         <text class="cuIcon-likefill text-bold text-pink"></text>
         <text class="text-bold">关注房源列表</text>
-      </view>
-    </view>
-
-    <!-- 用户在论坛的互动 -->
-    <view class="cu-item arrow" bindtap="goToInteractions">
-      <view class="content">
-        <text class="cuIcon-noticefill text-bold" style="color: goldenrod;"></text>
-        <text class="text-bold">我的评论/文章</text>
-      </view>
-      <!-- 多少未读信息 -->
-      <view class="action">
-        <view class="cu-tag round bg-red sm">{{ unreadCount }}条未读回复</view>
       </view>
     </view>
 
@@ -77,11 +62,16 @@
       </view>
     </view>
 
+    <!-- 意见反馈 -->
+    <view class="cu-item arrow" bindtap="goToReport">
+      <view class="content">
+        <text class="cuIcon-info text-bold"></text>
+        <text class="text-bold">意见反馈</text>
+      </view>
+    </view>
+
   </view>
 </movable-area>
-
-<!-- tabBar -->
-<!-- <tabBar bindswitchtab="redirect" tab="user" unreadCount="{{ unreadCount }}"></tabBar> -->
 
 <!-- 普通用户自定义自己资格日的Modal -->
 <view class="cu-modal {{openManualStartDateDialog ? 'show' : ''}}">

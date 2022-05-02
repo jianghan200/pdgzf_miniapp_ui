@@ -162,6 +162,13 @@ Page({
     })
   },
 
+  // 导航至问题反馈页
+  goToReport() {
+    wx.navigateTo({
+      url: '/pages/report/report',
+    })
+  },
+
   // Bottom Bar的方法
   redirect: function(e) {
     const newTab = e.detail
