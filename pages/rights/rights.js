@@ -4,13 +4,13 @@ const log = require('./../../utils/log')
 const constants = require('../../utils/constants')
 const payHelper = require('../../utils/pay')
 const utils = require('../../utils/util')
-const requests = require('../../utils/request')
 
 Page({
   data: {
     CustomBar: app.globalData.CustomBar,
     userinfo : null,
     isIOS: false,
+    isNormalMode: false,
     isVip: false,
     // 弹窗相关
     showModal: false,
@@ -23,6 +23,7 @@ Page({
 
     this.setData({
       isIOS: app.globalData.IOS,
+      isNormalMode: app.globalData.isNormalMode,
       isVip: app.globalData.userinfo.type == 2,
       displayOfficialAccount: utils.displayOfficialAccount(),
       officialAccount: constants.officialAccount

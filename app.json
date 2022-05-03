@@ -52,7 +52,7 @@
       "pagePath": "pages/newbee/newbee",
       "iconPath": "/assets/discoverfill_grey.png",
       "selectedIconPath": "/assets/discoverfill.png",
-      "text": "发现"
+      "text": "新手村"
     },
     {
       "pagePath": "pages/flarum/flarum",

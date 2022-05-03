@@ -30,11 +30,11 @@
       </view>
     </view>
 
-    <!-- 邮件订阅 -->
+    <!-- 房源提醒 -->
     <view class="cu-item arrow" bindtap="gotoEmailPage">
       <view class="content">
-        <text class="cuIcon-mail text-bold text-blue"></text>
-        <text class="text-bold">邮件订阅 (请关注公众号“PD生活”)</text>
+        <text class="cuIcon-noticefill text-bold text-yellow"></text>
+        <text class="text-bold">房源提醒 (请关注公众号“PD生活”)</text>
       </view>
     </view>
 
@@ -65,7 +65,7 @@
     <!-- 意见反馈 -->
     <view class="cu-item arrow" bindtap="goToReport">
       <view class="content">
-        <text class="cuIcon-info text-bold"></text>
+        <text class="cuIcon-questionfill text-bold"></text>
         <text class="text-bold">意见反馈</text>
       </view>
     </view>

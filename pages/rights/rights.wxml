@@ -67,7 +67,7 @@
     如果官方系统发生技术升级，附赠功能可能会因为技术限制而取消
   </view>
 
-  <view class="text-bold text-gray" style="padding-top: 0.5rem;" wx:if="{{isIOS}}">
+  <view class="text-bold text-gray" style="padding-top: 0.5rem;" wx:if="{{isIOS && !isNormalMode}}">
     IOS系统无法支持付费功能，如有问题，请联系：meo365
   </view>
   <view class="text-bold text-gray" style="padding-top: 0.5rem;" wx:else>
