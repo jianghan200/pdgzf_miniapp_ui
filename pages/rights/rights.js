@@ -32,7 +32,7 @@ Page({
 
   // Modal相关
   showConfirmationModal() {
-    if (app.globalData.IOS) {
+    if (app.globalData.IOS && !isNormalMode) {
       wx.showModal({
         'title' : '苹果税',
         'content' : '请联系meo365成为VIP'
