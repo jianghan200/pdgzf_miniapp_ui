@@ -1,7 +1,5 @@
 // pages/vip/vip.js
 const constants = require('../../utils/constants')
-const payHelper = require('../../utils/pay')
-const util = require('../../utils/util')
 const requests = require('../../utils/request')
 const app = getApp()
 const log = require('./../../utils/log')
@@ -17,7 +15,10 @@ Page({
     showModal: false,
     showIntroModal: false,
     // 跟当前的模式相关的变量
-    isVip: false
+    isVip: false,
+    // 用户的头像和昵称
+    nickname: '未知用户',
+    avatarUrl: ''
   },
 
   onLoad: function (options) {
@@ -39,6 +40,25 @@ Page({
         isVip : true,
         email : email,
         account : account
+      })
+    }
+
+    // open-id被禁用，只能向用户请求权限
+    if (!app.globalData.nickname || app.globalData.nickname == null) {
+      const self = this
+      requests.getAvatarAndNickname().then(res => {
+        if (res) {
+          // 成功获得
+          self.setData({
+            nickname: app.globalData.nickname,
+            avatarUrl: app.globalData.avatarUrl
+          })
+        }
+      })
+    } else {
+      this.setData({
+        nickname: app.globalData.nickname,
+        avatarUrl: app.globalData.avatarUrl
       })
     }
   },

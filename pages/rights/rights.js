@@ -15,7 +15,10 @@ Page({
     // 弹窗相关
     showModal: false,
     displayOfficialAccount: true,
-    officialAccount: 'PD生活'
+    officialAccount: 'PD生活',
+    // 用户的头像和昵称
+    nickname: '未知用户',
+    avatarUrl: ''
   },
 
   onLoad: function (options) {
@@ -28,6 +31,25 @@ Page({
       displayOfficialAccount: utils.displayOfficialAccount(),
       officialAccount: constants.officialAccount
     })
+
+    // open-id被禁用，只能向用户请求权限
+    if (!app.globalData.nickname || app.globalData.nickname == null) {
+      const self = this
+      requests.getAvatarAndNickname().then(res => {
+        if (res) {
+          // 成功获得
+          self.setData({
+            nickname: app.globalData.nickname,
+            avatarUrl: app.globalData.avatarUrl
+          })
+        }
+      })
+    } else {
+      this.setData({
+        nickname: app.globalData.nickname,
+        avatarUrl: app.globalData.avatarUrl
+      })
+    }
   },
 
   // Modal相关

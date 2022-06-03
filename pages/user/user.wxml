@@ -2,8 +2,8 @@
 
 <!-- 微信用户信息 -->
 <view class="userinfo">
-  <view class="{{vipInfo.type == 2 ? 'vip-' : ''}}avatar"><open-data type="userAvatarUrl"></open-data></view>
-  <open-data type="userNickName" lang="zh_CN" class="{{vipInfo.type == 2 ? 'vip-' : ''}}nickname"></open-data>
+  <image class="{{vipInfo.type == 2 ? 'vip-' : ''}}avatar" src="{{avatarUrl}}" mode="aspectFill"></image>
+  <view class="{{vipInfo.type == 2 ? 'vip-' : ''}}nickname">{{ nickname }}</view>
   <button 
     class="cu-btn round line-{{buttonInfo.color}} text-bold" 
     style="border: 1px solid;"

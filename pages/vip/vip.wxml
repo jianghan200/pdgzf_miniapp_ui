@@ -7,8 +7,8 @@
 
 <!-- 头像，微信名 -->
 <view class="userinfo">
-  <view class="avatar"><open-data type="userAvatarUrl"></open-data></view>
-  <open-data type="userNickName" lang="zh_CN" class="nickname"></open-data>
+  <image class="avatar" src="{{avatarUrl}}" mode="aspectFill"></image>
+  <view class="nickname">{{ nickname }}</view>
   <button 
     class="bg-black text-yellow cu-btn round button-hover text-bold" 
     bindtap="openIntroModal"

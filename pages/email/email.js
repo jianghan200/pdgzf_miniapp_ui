@@ -21,7 +21,10 @@ Page({
     showRegisterModal : false,
     modalTitle : '开启邮件订阅',
     // 是否开启邮件订阅，有资格但不想收邮件。
-    openSubscription : false
+    openSubscription : false,
+    // 用户的头像和昵称
+    nickname: '未知用户',
+    avatarUrl: ''
   },
 
   onLoad: function (options) {
@@ -67,6 +70,25 @@ Page({
       modalTitle : app.globalData.userinfo.type == 0 ? '开启邮件订阅' : '续一个月',
       openSubscription : openSubscription
     })
+
+    // open-id被禁用，只能向用户请求权限
+    if (!app.globalData.nickname || app.globalData.nickname == null) {
+      const self = this
+      requests.getAvatarAndNickname().then(res => {
+        if (res) {
+          // 成功获得
+          self.setData({
+            nickname: app.globalData.nickname,
+            avatarUrl: app.globalData.avatarUrl
+          })
+        }
+      })
+    } else {
+      this.setData({
+        nickname: app.globalData.nickname,
+        avatarUrl: app.globalData.avatarUrl
+      })
+    }
   },
 
   // 点击小铃铛开启订阅

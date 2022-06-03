@@ -23,7 +23,10 @@ Page({
     buttonInfo: {
       text: '',
       color: ''
-    }
+    },
+    // 用户的头像和昵称
+    nickname: '未知用户',
+    avatarUrl: ''
   },
   
   onLoad: function (options) {
@@ -41,10 +44,29 @@ Page({
       buttonInfo: this.resolveButtonInfo(hasStartDateCode, app.globalData.userinfo.type === 2)
     })
 
-    if(options['tab'] != undefined && options['tab'] != '' &&  options['tab'] == 'rights') {
+    if (options['tab'] != undefined && options['tab'] != '' &&  options['tab'] == 'rights') {
       // 来自分享
       wx.navigateTo({
         url: `../rights/rights`
+      })
+    }
+
+    // open-id被禁用，只能向用户请求权限
+    if (!app.globalData.nickname || app.globalData.nickname == null) {
+      const self = this
+      requests.getAvatarAndNickname().then(res => {
+        if (res) {
+          // 成功获得
+          self.setData({
+            nickname: app.globalData.nickname,
+            avatarUrl: app.globalData.avatarUrl
+          })
+        }
+      })
+    } else {
+      this.setData({
+        nickname: app.globalData.nickname,
+        avatarUrl: app.globalData.avatarUrl
       })
     }
   },

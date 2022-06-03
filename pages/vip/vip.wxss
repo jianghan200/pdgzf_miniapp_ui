@@ -11,10 +11,13 @@
   width: 150rpx; 
   height: 150rpx; 
   border-radius: 50%; 
-  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 3px 3px 10px rgba(218, 165, 32, 0.959);
+  border: 5px solid goldenrod;
 }
 
 .nickname {
+  color: goldenrod;
+  font-weight: 500;
   font-size: x-large; 
   font-family: serif;
   padding: .5rem;

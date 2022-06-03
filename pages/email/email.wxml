@@ -88,8 +88,8 @@
   wx:if="{{type == 2}}"
 >
   <view class="userinfo">
-    <view class="avatar"><open-data type="userAvatarUrl"></open-data></view>
-    <open-data type="userNickName" lang="zh_CN" class="nickname"></open-data>
+    <image class="avatar" src="{{avatarUrl}}" mode="aspectFill"></image>
+    <view class="nickname">{{ nickname }}</view>
   </view>
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
     给会员大人请{{dayTime}}安啦～

@@ -9,8 +9,8 @@
 
 <!-- 微信用户信息 -->
 <view class="userinfo">
-  <view class="vip-avatar"><open-data type="userAvatarUrl"></open-data></view>
-  <open-data type="userNickName" lang="zh_CN" class="vip-nickname"></open-data>
+  <image class="vip-avatar" src="{{avatarUrl}}" mode="aspectFill"></image>
+  <view class="vip-nickname">{{ nickname }}</view>
 </view>
 
 <scroll-view 
