@@ -69,7 +69,30 @@ Page({
     }
   },
 
-  onShareAppMessage: function () {
+  onShareAppMessage: function (options) {
+    // options.webViewUrl
+    console.log(options);
+    return {
+      title: this.data.title,
+      path: 'pages/flarum/flarum?url=' + options.webViewUrl
+    }
+  },
 
-  }
+  bindmessage(e) {//接收web-view传递的参数
+    console.log(e)
+    var length = e.detail.data.length;
+    if( length == 0){
+      this.setData({//存储状态
+        title: "PD公租房社区"
+      })
+    } else {
+      this.setData({//存储状态
+        title: e.detail.data[length-1].title
+      })
+    }
+  },
+
+  webviewReady: function (params) {
+    console.log("tab webview ready");
+  },
 })
