@@ -430,12 +430,12 @@ const copyToClipboard = function(str) {
 }
 
 // 生成论坛的url
-const generate_flarum_url = function() {
+const generate_flarum_url = function(webUrl) {
   const url = 'https://pdbbs.vencloud.cn/api/wechatl?unionId=' + 
                 app.globalData.userinfo.unionId + 
                 '&nickname=' + app.globalData.nickname + 
                 '&avatarUrl=' + app.globalData.avatarUrl +
-                '&url=' + 'https://pdbbs.vencloud.cn'
+                '&url=' + webUrl
   return url
 }
 

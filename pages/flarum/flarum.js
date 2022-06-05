@@ -6,11 +6,17 @@ Page({
 
   data: {
     unreadCount: 0,
-    url: ''
+    url: 'https://pdbbs.vencloud.cn'
   },
 
-  onShow() {
-    log.info(`用户进入论坛 onShow`)
+  onShow(options) {
+    log.info(`用户进入论坛 onShow`,options)
+    if(options && options.url){
+      console.log("option has url")
+      this.setData({
+        url:options.url
+      })
+    }
 
     const self = this
     requestHelper.getAvatarAndNickname().then((response) => {
@@ -50,7 +56,7 @@ Page({
 
   // 生成论坛的url
   setUrl() {
-    const url = utils.generate_flarum_url()
+    const url = utils.generate_flarum_url(this.data.url)
 
     log.info(`生成了论坛的url为: ${url}`)
 
