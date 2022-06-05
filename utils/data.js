@@ -191,7 +191,10 @@ const loadAllData = function(options) {
 
         log.info("redirect to new url: " + newDirect)
 
-        wx.switchTab({ url: newDirect })
+        wx.switchTab({ url: newDirect,success:function(e){
+          let parm = util.getReqParam(newDirect)
+          getCurrentPages().pop().onLoad(parm)
+        } })
       } else {
         // 对于不同的用户，“首页”是不同的.
         // 新用户（userinfo中没有startDate也没有email）

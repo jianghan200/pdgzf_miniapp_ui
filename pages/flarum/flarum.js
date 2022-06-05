@@ -9,7 +9,7 @@ Page({
     url: 'https://pdbbs.vencloud.cn'
   },
 
-  onShow(options) {
+  onLoad(options) {
     log.info(`用户进入论坛 onShow`,options)
     if(options && options.url){
       console.log("option has url")

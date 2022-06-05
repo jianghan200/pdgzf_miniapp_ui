@@ -439,6 +439,29 @@ const generate_flarum_url = function(webUrl) {
   return url
 }
 
+const getReqParam = function(urlStr) {
+  if (typeof urlStr == "undefined") {
+      // 获取url中"?"符后的字符串
+      var url = decodeURI(location.search)
+  } else {
+      var url = "?" + urlStr.split("?")[1]
+  }
+  var theRequest = new Object()
+  if (url.indexOf("?") != -1) {
+      var str = url.substr(1)
+      if(str.indexOf("&") != -1) {
+        strs = str.split("&")
+        for (var i = 0; i < strs.length; i++) {
+            theRequest[strs[i].split("=")[0]] = decodeURI(strs[i].split("=")[1])
+        }
+      } else {
+        theRequest[str.split("=")[0]] = decodeURI(str.split("=")[1])
+      }
+  }
+  return theRequest
+}
+
+
 module.exports = {
   formatTime,
   formatDate,
@@ -467,5 +490,6 @@ module.exports = {
   compareVersion: compareVersion,
   displayOfficialAccount: displayOfficialAccount,
   copyToClipboard: copyToClipboard,
-  generate_flarum_url: generate_flarum_url
+  generate_flarum_url: generate_flarum_url,
+  getReqParam: getReqParam,
 }
