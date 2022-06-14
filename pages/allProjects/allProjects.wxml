@@ -2,6 +2,7 @@
 
 <view style="height: 2.5rem;"></view>
 
+<!-- 标题 + 筛选 -->
 <view>
   <view style="display: flex; flex-direction: row; align-items: center;">
     <text class="title">全部房源</text>
@@ -28,71 +29,69 @@
 </view>
 
 <view wx:if="{{reqSuccessful}}">
-  <movable-area class="movable-area" style="height: 100%;">
-    <scroll-view
-      scroll-y 
-      scroll-with-animation
-      style="background-color: #f1f1f1; height: 100%"
+  <scroll-view
+    scroll-y 
+    scroll-with-animation
+    style="background-color: #f1f1f1; height: 100%"
+  >
+    <!-- 遍历社区 -->
+    <view
+      wx:for="{{list}}"
+      wx:for-item="area"
+      wx:key="*this"
+      id="main-{{index}}"
     >
-      <!-- 遍历社区 -->
-      <view
-        wx:for="{{list}}"
-        wx:for-item="area"
-        wx:key="*this"
-        id="main-{{index}}"
-      >
-        <!-- 社区名称 -->
-        <view class='cu-bar solid-bottom bg-white' wx:if="{{area.display}}">
-          <view class='action'>
-            <text class='cuIcon-titles text-red'></text> {{area.areaName == null ? '未知街道' : area.areaName}} 
-          </view>
+      <!-- 社区名称 -->
+      <view class='cu-bar solid-bottom bg-white' wx:if="{{area.display}}">
+        <view class='action'>
+          <text class='cuIcon-titles text-red'></text> {{area.areaName == null ? '未知街道' : area.areaName}} 
         </view>
+      </view>
 
-        <!-- 遍历社区的小区 -->
-        <view class="cu-list menu">
-        <block
-          wx:for="{{area.projects}}"
-          wx:for-item="project"
-          wx:key="*this"
+      <!-- 遍历社区的小区 -->
+      <view class="cu-list menu">
+      <block
+        wx:for="{{area.projects}}"
+        wx:for-item="project"
+        wx:key="*this"
+      >
+        <view 
+          class="cu-item arrow" 
+          style="min-height: 80rpx;" 
+          bindtap="navToProject" 
+          data-pId="{{project.pId}}"
+          wx:if="{{project.display}}"
         >
-          <view 
-            class="cu-item arrow" 
-            style="min-height: 80rpx;" 
-            bindtap="navToProject" 
-            data-pId="{{project.pId}}"
-            wx:if="{{project.display}}"
-          >
-            <view class="content">            
+          <view class="content">            
+            <view>
+              <view 
+                catchtap="subscribe"
+                data-pid="{{project.pId}}"
+                data-aid="{{area.areaId}}"
+                data-pname="{{project.pName}}"
+              >
+                <text class="text-red text-bold cuIcon-{{project.isSubscribed ? 'likefill' : 'like'}}"></text>
+              </view>
+              <!-- 小区名称 -->
               <view>
-                <view 
-                  catchtap="subscribe"
-                  data-pid="{{project.pId}}"
-                  data-aid="{{area.areaId}}"
-                  data-pname="{{project.pName}}"
-                >
-                  <text class="text-red text-bold cuIcon-{{project.isSubscribed ? 'likefill' : 'like'}}"></text>
-                </view>
-                <!-- 小区名称 -->
-                <view>
-                  <text class="text-black padding-left {{project.isSubscribed ? 'text-bold' : ''}}"
-                  >{{tools.sliceOf(project.pName)}}</text>
-                  <text class="text-grey margin-left">{{project.rentableCount}}套</text>
-                  <text class="cuIcon-picfill text-grey text-xlg margin-left" wx:if="{{project.raw.hasImage}}"></text>
-                  <text class="cuIcon-videofill text-grey text-xlg margin-left" wx:if="{{project.raw.hasVideo}}"></text>
-                  <text 
-                    class="cuIcon-post text-grey text-xlg margin-left" 
-                    wx:if="{{project.raw.wp_url && project.raw.wp_url != null && project.raw.wp_url != ''}}"
-                  ></text>
-                </view>
+                <text class="text-black padding-left {{project.isSubscribed ? 'text-bold' : ''}}"
+                >{{tools.sliceOf(project.pName)}}</text>
+                <text class="text-grey margin-left">{{project.rentableCount}}套</text>
+                <text class="cuIcon-picfill text-grey text-xlg margin-left" wx:if="{{project.raw.hasImage}}"></text>
+                <text class="cuIcon-videofill text-grey text-xlg margin-left" wx:if="{{project.raw.hasVideo}}"></text>
+                <text 
+                  class="cuIcon-post text-grey text-xlg margin-left" 
+                  wx:if="{{project.raw.wp_url && project.raw.wp_url != null && project.raw.wp_url != ''}}"
+                ></text>
               </view>
             </view>
           </view>
-        </block>
         </view>
-
+      </block>
       </view>
-    </scroll-view>
-  </movable-area>
+
+    </view>
+  </scroll-view>
 </view>
 
 <!-- 筛选器弹窗 -->
