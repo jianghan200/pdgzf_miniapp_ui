@@ -108,6 +108,11 @@ Page({
 
       // 处理多媒体
       const images = medias.filter(media => media.type == 'image')
+      // 修复名字有空格的缩略图无法正常显示的瑕疵
+      images.forEach(image => {
+        image.url = image.url.replaceAll(" ","%20")
+      });
+      
       const videos = medias.filter(media => media.type == 'video')
       const firstVideo = (videos.length > 0) ? videos[0].url : '暂无看房视频'
 
