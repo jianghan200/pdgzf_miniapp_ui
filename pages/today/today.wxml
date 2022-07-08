@@ -24,79 +24,77 @@
     </view>
   </view>
 
-  <movable-area class="movable-area" style="height: 100%;">
-    <!-- 滚动条 -->
-    <swiper style="height: 55rpx; width: 100vw;" autoplay="true" interval="4000" circular="true">
-      <block wx:for="{{broadcastMsgs}}" wx:for-item="msg" wx:key="*this">
-        <navigator url="/pages/article/article?url={{msg.link}}" open-type="navigate">
-          <swiper-item style="display: flex; align-items: center; justify-content: center;">
-            <view class="swiper_item text-bold text-red">点击查看: {{msg.title.rendered}}</view>
-          </swiper-item>
-        </navigator>
-      </block>
-    </swiper>
-    <!-- 对于初次登陆用户的提示 -->
-    <view wx:if="{{!hasStartDate}}" class="text-bold text-grey flex" style="justify-content: center; align-items: center;">
-      缺少资格日期，请至【我的】录入资格日(可模拟)
-    </view>
+  <!-- 滚动条 -->
+  <swiper style="height: 55rpx; width: 100vw;" autoplay="true" interval="4000" circular="true">
+    <block wx:for="{{broadcastMsgs}}" wx:for-item="msg" wx:key="*this">
+      <navigator url="/pages/article/article?url={{msg.link}}" open-type="navigate">
+        <swiper-item style="display: flex; align-items: center; justify-content: center;">
+          <view class="swiper_item text-bold text-red">点击查看: {{msg.title.rendered}}</view>
+        </swiper-item>
+      </navigator>
+    </block>
+  </swiper>
+  <!-- 对于初次登陆用户的提示 -->
+  <view wx:if="{{!hasStartDate}}" class="text-bold text-grey flex" style="justify-content: center; align-items: center;">
+    缺少资格日期，请至【我的】录入资格日(可模拟)
+  </view>
 
-    <!-- 房源列表 -->
-    <view wx:if="{{list.length > 0}}">
-      <scroll-view
-        scroll-y 
-        scroll-with-animation
-        style="height: 100%"
-      >
-        <!-- 遍历社区 -->
-        <view class="cu-list menu">
+  <!-- 房源列表 -->
+  <view wx:if="{{list.length > 0}}">
+    <scroll-view
+      scroll-y 
+      scroll-with-animation
+      style="height: 100%"
+    >
+      <!-- 遍历社区 -->
+      <view class="cu-list menu">
+        <block
+          wx:for="{{list}}"
+          wx:for-item="area"
+          wx:key="*this"  
+          id="main-{{index}}"
+        >
+          <!-- 遍历社区的小区 -->
           <block
-            wx:for="{{list}}"
-            wx:for-item="area"
-            wx:key="*this"  
-            id="main-{{index}}"
+            wx:for="{{area.projects}}"
+            wx:for-item="project"
+            wx:key="*this"
           >
-            <!-- 遍历社区的小区 -->
-            <block
-              wx:for="{{area.projects}}"
-              wx:for-item="project"
-              wx:key="*this"
-            >
-              <view class="cu-item arrow" bindtap="navToProject" data-pId="{{project.pId}}">
-                <view class="content padding-tb-sm">
-                  <view>
-                    <!-- 订阅 -->
-                    <view 
-                      catchtap="subscribe"
-                      data-pid="{{project.pId}}"
-                      data-areaid="{{area.areaId}}"
-                      data-pname="{{project.pName}}"
-                    >
-                      <text class="text-red text-bold cuIcon-{{project.isSubscribed ? 'likefill' : 'like'}}"></text>
-                    </view>
+            <view class="cu-item arrow" bindtap="navToProject" data-pId="{{project.pId}}">
+              <view class="content padding-tb-sm">
+                <view>
+                  <!-- 订阅 -->
+                  <view 
+                    catchtap="subscribe"
+                    data-pid="{{project.pId}}"
+                    data-areaid="{{area.areaId}}"
+                    data-pname="{{project.pName}}"
+                  >
+                    <text class="text-red text-bold cuIcon-{{project.isSubscribed ? 'likefill' : 'like'}}"></text>
+                  </view>
 
-                    <!-- 小区地址 -->
-                    <view style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
-                      <text 
-                        class="text-black padding-left {{project.isSubscribed ? 'text-bold' : ''}}"
-                      >{{tools.sliceOf(project.pName)}} ({{project.houses.length}}套)
-                      </text>
-                      <text style="font-size: smaller; color: grey; padding-left: 10px;">预计最靠前排名：{{project.bestRank}}</text>
-                    </view>
+                  <!-- 小区地址 -->
+                  <view style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
+                    <text 
+                      class="text-black padding-left {{project.isSubscribed ? 'text-bold' : ''}}"
+                    >{{tools.sliceOf(project.pName)}} ({{project.houses.length}}套)
+                    </text>
+                    <text style="font-size: smaller; color: grey; padding-left: 10px;">预计最靠前排名：{{project.bestRank}}</text>
                   </view>
                 </view>
               </view>
-            </block>
+            </view>
           </block>
-        </view>
-      </scroll-view>
-    </view>
+        </block>
+      </view>
+    </scroll-view>
+  </view>
 
-    <!-- 今日房源真的是一套都没有 -->
-    <view wx:else style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-      <image class="worker-avatar" src="/assets/cat.jpeg" mode="aspectFill"></image>
-      <view class="text-bold text-large padding">没了，真的一套都没了(ｰ ｰ;)，过几小时再看看吧～</view>
-    </view>
-  </movable-area>
+  <!-- 今日房源真的是一套都没有 -->
+  <view wx:else style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <image class="worker-avatar" src="/assets/cat.jpeg" mode="aspectFill"></image>
+    <view class="text-bold text-large padding">没了，真的一套都没了(ｰ ｰ;)，过几小时再看看吧～</view>
+  </view>
 </view>
 
 <!-- 9:30 am ~ 10:03am 期间禁止选房 -->
