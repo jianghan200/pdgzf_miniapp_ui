@@ -5,7 +5,6 @@ const model = require('../../utils/community')
 const app = getApp()
 const log = require('./../../utils/log')
 const subscribeHelper = require('../../utils/subscripton')
-const requestHelper = require('../../utils/request')
 
 import plugin from './../../components/calendar/plugins/index'
 import todo from './../../components/calendar/plugins/todo'
@@ -16,8 +15,6 @@ plugin.use(todo).use(selectable)
 Page({
   data: {
     CustomBar: app.globalData.CustomBar,
-    // Tab
-    curTab: 0,
     // 是不是VIP, 决定是否解锁一些数据
     isVip: false,
     // 小区基本信息
@@ -39,7 +36,7 @@ Page({
     // 资料信息
     articleUrl: '',
     descriptions : [],
-    images: [],
+    selectedImageGroup: null,
     videos: [],
     firstVideo: '暂无看房视频',
     medias : [],
@@ -111,7 +108,21 @@ Page({
       medias.forEach(media => {
         media.url = media.url.replaceAll(" ", "%20")
       })
-      const images = medias.filter(media => media.type == 'image')
+      const images = medias.filter(media => media.type == 'image').map(image => self.classifyImage(image))
+      // 给图片分组
+      const imageGroups = 
+        utils.groupBy(images, (image) => {
+          return image.group
+        }).map(group => {
+          if (group.length > 0) {
+            return {
+              'id': group[0].group,
+              'images': group
+            }
+          } else {
+            return {}
+          }
+        })
       const videos = medias.filter(media => media.type == 'video')
       const firstVideo = (videos.length > 0) ? videos[0].url : '暂无看房视频'
 
@@ -124,10 +135,10 @@ Page({
       const monthlyDaysColor = self.daysColor(heatMap, new Date().getFullYear(), new Date().getMonth() + 1)
 
       // 根据此小区是否出现在今日房源中判断应该展示哪部分内容
-      const curTabIdx = todayHouses.length == 0 ? 0 : 1
+      const curTabIdx = todayHouses.length == 0 ? 0 : 2
       
       self.setData({
-        curTab: curTabIdx,
+        curComponentId: curTabIdx,
         isVip: isVip,
         areaId: areaId,
         pId: pId,
@@ -143,7 +154,9 @@ Page({
         totalCount: totalCount,
         articleUrl: articleUrl,
         descriptions: descriptions,
-        images: images,
+        imageGroups: imageGroups,
+        selectedImageGroup: imageGroups.length > 0 ? imageGroups[0] : null,
+        selectedImageGroupId: imageGroups.length > 0 ? imageGroups[0].id : '',
         videos: videos,
         firstVideo: firstVideo,
         medias: medias,
@@ -181,6 +194,25 @@ Page({
 
       wx.hideLoading()
     })
+  },
+
+  // 使用图片url中的信息为图片分类
+  classifyImage(imageInfo) {
+    const imageUrl = imageInfo.url
+    const components = imageUrl.split('//')[1].split('/')
+    // 将域名和小区名过滤掉
+    components.shift()
+    components.shift()
+    // 解析出图片的名称
+    const name = components.pop().split('.')[0]
+    // 默认所有图片都是'图片'类
+    let group = '图片'
+    if (components.length > 0) {
+      group = components.pop()
+    }
+    imageInfo['name'] = name
+    imageInfo['group'] = group
+    return imageInfo
   },
 
   // 引导用户成为VIP
@@ -247,10 +279,16 @@ Page({
     })
   },
 
-  // 根据用户选择的户型筛选图片和视频
-  // filterMedias(allMedias, selectedHouseType) {
-    
-  // },
+  // 选择了某个类别的图片
+  onSelectImageGroup(e) {
+    const selectedImageGroupId = e.currentTarget.dataset.group
+    const selectedImageGroup = this.data.imageGroups.find(group => group.id == selectedImageGroupId)
+
+    this.setData({
+      selectedImageGroup: selectedImageGroup,
+      selectedImageGroupId: selectedImageGroupId
+    })
+  },
 
   // 生成地图上的坐标点
   createMarker(coordinate) {
@@ -302,13 +340,14 @@ Page({
 
   // 预览某一个图片
   previewImg(e) {
-    const img = this.data.images[e.currentTarget.dataset.idx]
     const self = this
-    wx.previewImage({
-      urls: self.data.images.map(img => img.url),
-      current: img.url,
-      showmenu: false
-    })
+    app.globalData.previewInfo = {
+      list: self.data.selectedImageGroup.images.map(img => {
+        return { picUrl: img.url, desc: img.name }
+      }),
+      current: e.currentTarget.dataset.idx
+    }
+    wx.navigateTo({ url: '../../pages/preview-media-desc/index' })
   },
 
   // 预览某一个视频
@@ -326,19 +365,25 @@ Page({
           showvideoListDrawer: false
         }, () => {
           const self = this
-          wx.previewMedia({
-            sources: self.data.videos,
-            current: idx,
-            showmenu: false
-          })
+          app.globalData.previewInfo = {
+            list: self.data.videos.map(video => {
+              const desc = video.url.split('//')[1].split('/').pop().split('.')[0]
+              return { videoUrl: video.url, desc: `>>>（此处滑动退出）${desc}` }
+            }),
+            current: idx + 1
+          }
+          wx.navigateTo({ url: '../../pages/preview-media-desc/index' })
         })
       } else {
         const self = this
-        wx.previewMedia({
-          sources: self.data.videos,
-          current: self.data.videos.indexOf(self.data.firstVideo),
-          showmenu: false
-        })
+        app.globalData.previewInfo = {
+          list: self.data.videos.map(video => {
+            const desc = video.url.split('//')[1].split('/').pop().split('.')[0]
+            return { videoUrl: video.url, desc: `>>>（此处滑动退出）${desc}` }
+          }),
+          current: self.data.videos.indexOf(self.data.firstVideo) + 1
+        }
+        wx.navigateTo({ url: '../../pages/preview-media-desc/index' })
       }
     } else {
       // 非VIP

@@ -112,8 +112,8 @@
       </view>
       <!-- 九宫格图片展示 -->
       <!-- 有图片 -->
-      <view wx:if="{{ images.length > 0 }}" class="grid flex-sub padding-lr col-3 grid-square">
-        <block wx:for="{{ images }}" wx:for-item="image" wx:key="url">
+      <view wx:if="{{ selectedImageGroup.images.length > 0 }}" class="grid flex-sub padding-lr col-3 grid-square">
+        <block wx:for="{{ selectedImageGroup.images }}" wx:for-item="image" wx:key="url">
           <view class="bg-img" style="background-image:url({{image.url}}$detail_thumb);" bindtap="previewImg" data-idx="{{index}}"></view>
         </block>
       </view>
@@ -123,7 +123,21 @@
           <text class="text-grey text-bold">暂无图片</text>
         </view>
       </view>
-
+      <!-- 多联按钮 -->
+      <view class="padding" style="display: flex; flex-direction: row; justify-content: center;">
+        <block wx:for="{{ imageGroups }}" wx:for-item="imageGroup" wx:key="id">
+          <button 
+            class="button-tab bg-{{ selectedImageGroupId == imageGroup.id ? 'green' : '' }} shadow" 
+            data-group="{{ imageGroup.id }}" 
+            bindtap="onSelectImageGroup"
+          >
+            <text 
+              style="font-size: xx-small;" 
+              class="text-{{ selectedImageGroupId == imageGroup.id ? 'white text-bold' : 'black' }}"
+            >{{ imageGroup.id }}</text>
+          </button>
+        </block>
+      </view>
       <!-- 视频 + 列表 -->
       <view style="display: flex; justify-content: center;">
         <!-- if 小区有视频 -->

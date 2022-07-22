@@ -26,7 +26,10 @@
     "pages/user/user",
     "pages/userArticles/userArticles",
     "pages/versions/versions",
-    "pages/vip/vip"
+    "pages/vip/vip",
+    "pages/preview-media-desc/item/item-index",
+    "pages/preview-media-desc/swiper-limited-load/index",
+    "pages/preview-media-desc/index"
   ],
   "window": {
     "navigationStyle": "custom"
