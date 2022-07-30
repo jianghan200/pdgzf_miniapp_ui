@@ -118,10 +118,16 @@
         </block>
       </view>
       <!-- 没有图片 -->
-      <view wx:else class="flex-sub text-center">
-        <view class="solid-bottom text-xl padding">
-          <text class="text-grey text-bold">暂无图片</text>
-        </view>
+      <view wx:else style="display: flex; flex-direction: column; align-items: center;" class="margin">
+        <image class="vip-avatar" src="/assets/keJiaQian.jpeg" mode="aspectFill"></image>
+        <button 
+          class="cu-btn bg-white round shadow text-bold lg margin" 
+          style="background-color: black; width: 60%;"
+          bindtap="goToRewardPage"
+        >
+          <text class="cuIcon-vip text-bold" style="color: goldenrod;"></text>
+          <text style="color: goldenrod;">求图, 可加钱</text>
+        </button>
       </view>
       <!-- 多联按钮 -->
       <view class="padding" style="display: flex; flex-direction: row; justify-content: center;">
@@ -139,24 +145,28 @@
         </block>
       </view>
       <!-- 视频 + 列表 -->
-      <view style="display: flex; justify-content: center;">
-        <!-- if 小区有视频 -->
-        <view wx:if="{{ videos.length > 0 }}">
-          <video src="{{ isVip ? firstVideo : '' }}" muted catchtap="previewVideo"></video>
-          <!-- 点击打开视频列表抽屉 -->
-          <view style="display: flex; justify-content: center;" class="padding">
-            <button class="cu-btn bg-white round shadow text-bold lg" style="width: 60%;" bindtap="openVideoList">
-              <text class="cuIcon-videofill text-red"></text> 更多视频
-            </button>
-          </view>
-        </view>
-        <!-- else 小区没有视频 -->
-        <view wx:else class="flex-sub text-center">
-          <view class="solid-bottom text-xl padding">
-            <text class="text-grey text-bold">{{ firstVideo }}</text>
-          </view>
-        </view>
-
+      <!-- if 小区有视频 -->
+      <view 
+        wx:if="{{ videos.length > 0 }}" 
+        style="display: flex; justify-content: center; flex-direction: column; align-items: center;"
+      >
+        <video src="{{ isVip ? firstVideo : '' }}" muted catchtap="previewVideo"></video>
+        <!-- 点击打开视频列表抽屉 -->
+        <button class="cu-btn bg-white round shadow text-bold lg margin" style="width: 60%;" bindtap="openVideoList">
+          <text class="cuIcon-videofill text-red"></text> 更多视频
+        </button>
+      </view>
+      <!-- else 小区没有视频 -->
+      <view wx:else style="display: flex; flex-direction: column; align-items: center;" class="margin">
+        <image class="vip-avatar" src="/assets/keJiaQian.jpeg" mode="aspectFill"></image>
+        <button 
+          class="cu-btn bg-white round shadow text-bold lg margin" 
+          style="background-color: black; width: 60%;"
+          bindtap="goToRewardPage"
+        >
+          <text class="cuIcon-vip text-bold" style="color: goldenrod;"></text>
+          <text style="color: goldenrod;">求视频, 可加钱</text>
+        </button>
       </view>
 
       <!-- 小区文章链接 -->

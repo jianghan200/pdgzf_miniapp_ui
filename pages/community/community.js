@@ -5,6 +5,7 @@ const model = require('../../utils/community')
 const app = getApp()
 const log = require('./../../utils/log')
 const subscribeHelper = require('../../utils/subscripton')
+const imageAndVideoCollectingDescriptionUrl = 'https://pd.vencloud.cn/%e8%a7%86%e9%a2%91%e3%80%81%e5%9b%be%e7%89%87%e3%80%81%e5%b0%8f%e5%8c%ba%e6%83%85%e6%8a%a5%e6%9c%89%e5%81%bf%e5%be%81%e9%9b%86%e6%a0%87%e5%87%86%e5%92%8c%e8%a7%84%e5%88%99/'
 
 import plugin from './../../components/calendar/plugins/index'
 import todo from './../../components/calendar/plugins/todo'
@@ -36,7 +37,11 @@ Page({
     // 资料信息
     articleUrl: '',
     descriptions : [],
+    imageGroups: [],
+    noImage: true,
     selectedImageGroup: null,
+    selectedImageGroupId: '',
+    noVideo: true,
     videos: [],
     firstVideo: '暂无看房视频',
     medias : [],
@@ -109,6 +114,7 @@ Page({
         media.url = media.url.replaceAll(" ", "%20")
       })
       const images = medias.filter(media => media.type == 'image').map(image => self.classifyImage(image))
+      const noImage = images.length == 0
       // 给图片分组
       const imageGroups = 
         utils.groupBy(images, (image) => {
@@ -124,6 +130,7 @@ Page({
           }
         })
       const videos = medias.filter(media => media.type == 'video')
+      const noVideo = videos.length == 0
       const firstVideo = (videos.length > 0) ? videos[0].url : '暂无看房视频'
 
       // 设置默认选中的户型
@@ -155,9 +162,11 @@ Page({
         articleUrl: articleUrl,
         descriptions: descriptions,
         imageGroups: imageGroups,
+        noImage: noImage,
         selectedImageGroup: imageGroups.length > 0 ? imageGroups[0] : null,
         selectedImageGroupId: imageGroups.length > 0 ? imageGroups[0].id : '',
         videos: videos,
+        noVideo: noVideo,
         firstVideo: firstVideo,
         medias: medias,
         equipments: equipments,
@@ -335,6 +344,13 @@ Page({
       fail: err => {
         console.log(err)
       }
+    })
+  },
+
+  // 跳转到有奖征集图片/视频的标准页
+  goToRewardPage(e) {
+    wx.navigateTo({
+      url: '/pages/article/article?url=' + imageAndVideoCollectingDescriptionUrl,
     })
   },
 
