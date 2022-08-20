@@ -2,7 +2,8 @@
   "cloudfunctionRoot": "cloudfunctions/",
   "description": "项目配置文件",
   "packOptions": {
-    "ignore": []
+    "ignore": [],
+    "include": []
   },
   "setting": {
     "urlCheck": false,
@@ -46,12 +47,7 @@
   "libVersion": "2.19.6",
   "appid": "wx98a85564da1c5d20",
   "projectname": "PD%E5%85%AC%E7%A7%9F%E6%88%BF",
-  "debugOptions": {
-    "hidedInDevtools": []
-  },
-  "scripts": {},
-  "isGameTourist": false,
-  "cloudfunctionTemplateRoot": "cloudfunctionTemplate",
+  "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
   "condition": {
     "search": {
       "list": []
@@ -71,5 +67,9 @@
     "miniprogram": {
       "list": []
     }
+  },
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
   }
 }

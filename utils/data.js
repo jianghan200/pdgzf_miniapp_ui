@@ -170,12 +170,18 @@ const loadAllData = function(options) {
     .then((rs) => {
       log.info('loadAllData 成功')
 
-      // 今日的数据
+      // 今日房源的数据
+      // /project, 今日的小区信息
       let todayProjectsRawData = rs[0]
+      // /house, 今日的户型信息
       let todayHousesRawData = rs[1]
+      // /all_project_stat
       let todayStats = rs[2]
-      // 全部的数据
+
+      // 全部房源的数据
+      // /all_project, 全部小区的的统计信息
       let allProjectsRawData = rs[3]
+      // /project_house_type, 各个小区的各户型信息
       let allProjectsHouseInfoRawData = rs[4]
       // 订阅信息
       let subscriptions = rs[5]
