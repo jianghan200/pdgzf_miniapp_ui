@@ -214,12 +214,15 @@ Page({
     components.shift()
     // 解析出图片的名称
     const name = components.pop().split('.')[0]
+    // 图片名称中是否带着VIP？
+    const vipOnly = name.indexOf('vip') > -1
     // 默认所有图片都是'图片'类
     let group = '图片'
     if (components.length > 0) {
       group = components.pop()
     }
     imageInfo['name'] = name
+    imageInfo['vipOnly'] = vipOnly
     imageInfo['group'] = group
     return imageInfo
   },
@@ -354,11 +357,20 @@ Page({
     })
   },
 
+  // 跳转到vip页
+  goToVipPage(e) {
+    wx.navigateTo({ url: '/pages/vip/vip' })
+  },
+
   // 预览某一个图片
   previewImg(e) {
     const self = this
+    let gallery = self.data.selectedImageGroup.images
+    if (!this.data.isVip) {
+      gallery = self.data.selectedImageGroup.images.filter(image => !image.vipOnly)
+    }
     app.globalData.previewInfo = {
-      list: self.data.selectedImageGroup.images.map(img => {
+      list: gallery.map(img => {
         return { picUrl: img.url, desc: img.name }
       }),
       current: e.currentTarget.dataset.idx

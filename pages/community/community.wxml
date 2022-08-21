@@ -114,7 +114,12 @@
       <!-- 有图片 -->
       <view wx:if="{{ selectedImageGroup.images.length > 0 }}" class="grid flex-sub padding-lr col-3 grid-square">
         <block wx:for="{{ selectedImageGroup.images }}" wx:for-item="image" wx:key="url">
-          <view class="bg-img" style="background-image:url({{image.url}}$detail_thumb);" bindtap="previewImg" data-idx="{{index}}"></view>
+          <view class="banner" wx:if="{{image.vipOnly}}" bindtap="goToVipPage">
+            <view class="mask" style="display: flex; align-items: center; justify-content: center;">
+              <text style="color: white;">VIP内容</text>
+            </view>
+          </view>
+          <view wx:else class="bg-img" style="background-image:url({{image.url}}$detail_thumb);" bindtap="previewImg" data-idx="{{index}}"></view>
         </block>
       </view>
       <!-- 没有图片 -->
