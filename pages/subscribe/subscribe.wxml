@@ -14,60 +14,55 @@
   请求失败，请检查网络连接。或者点击上面的按钮重新请求数据。
 </view>
 
-<movable-area class="movable-area">
-  <movable-view class="movable-view" x="600rpx" y="750rpx" animation="{{false}}" direction='all'>
-    <mb name="意见反馈" cuIcon="commentfill" targetPath="/pages/report/report"></mb>
-  </movable-view>
-  <scroll-view
-    scroll-y
-    scroll-with-animation
-    style="height:calc(100vh - 100px - calc(100rpx + env(safe-area-inset-bottom) / 2))"
-    wx:if="{{reqSuccessful}}"
+<scroll-view
+  scroll-y
+  scroll-with-animation
+  style="height:calc(100vh - 100px - calc(100rpx + env(safe-area-inset-bottom) / 2))"
+  wx:if="{{reqSuccessful}}"
+>
+  <!-- 已经开启了自动选房的人看到的 -->
+  <view class="text-bold" style="align-items: center;" wx:if="{{ hasAccountInfo && isVip }}">
+    <span class="padding-right" style="padding-left: 1rem;">{{ openAutoSelection ? '已开启自动排队' : '已关闭自动排队' }}</span>
+    <switch class="radius sm" checked="{{openAutoSelection}}" bindchange="changeAutoSelectionStatus"></switch>
+    <span style="margin-left: 10px; color: cornflowerblue;" bindtap="goToVipInfo">【修改信息】</span>
+  </view>
+
+  <!-- 未看到自动选房的VIP看到的 -->
+  <view class="text-bold" style="align-items: center;" wx:if="{{ !hasAccountInfo && isVip }}">
+    <view style="margin-left: 10px; color: cornflowerblue;" bindtap="goToVipInfo">【点击开通自动选房】</view>
+  </view>
+
+  <block
+    wx:for="{{list}}"
+    wx:for-item="subscription"
+    wx:key="*this"
   >
-    <!-- 已经开启了自动选房的人看到的 -->
-    <view class="text-bold" style="align-items: center;" wx:if="{{ hasAccountInfo && isVip }}">
-      <span class="padding-right" style="padding-left: 1rem;">{{ openAutoSelection ? '已开启自动排队' : '已关闭自动排队' }}</span>
-      <switch class="radius sm" checked="{{openAutoSelection}}" bindchange="changeAutoSelectionStatus"></switch>
-      <span style="margin-left: 10px; color: cornflowerblue;" bindtap="goToVipInfo">【修改信息】</span>
-    </view>
-
-    <!-- 未看到自动选房的VIP看到的 -->
-    <view class="text-bold" style="align-items: center;" wx:if="{{ !hasAccountInfo && isVip }}">
-      <view style="margin-left: 10px; color: cornflowerblue;" bindtap="goToVipInfo">【点击开通自动选房】</view>
-    </view>
-
-    <block
-      wx:for="{{list}}"
-      wx:for-item="subscription"
-      wx:key="*this"
-    >
-      <view class="cu-card case">
-        <view class="cu-item padding" style="display: flex; margin: 20rpx;" data-rid="{{subscription.subInfo.id}}" bindtap="editSubscription">
-          <!-- 描述区 -->
-          <view style="flex-grow: 2">
-            <view class="padding-bottom" style="font-size: larger; font-weight: 500;">
-              {{tools.sliceOf(subscription.info.pName)}}
-            </view>
-            <view class="text-gray" style="font-size: small">
-              {{subscription.info.pName}}
-            </view>
-            <view class="text-gray" style="font-size: small">
-              {{subscription.info.raw.townshipName}} {{subscription.info.rentableCount}}套房源
-            </view>
+    <view class="cu-card case">
+      <view class="cu-item padding" style="display: flex; margin: 20rpx;" data-rid="{{subscription.subInfo.id}}" bindtap="editSubscription">
+        <!-- 描述区 -->
+        <view style="flex-grow: 2">
+          <view class="padding-bottom" style="font-size: larger; font-weight: 500;">
+            {{tools.sliceOf(subscription.info.pName)}}
           </view>
-          <!-- 按钮区 -->
-          <view style="display: flex; flex-direction: column">
-            <!-- 修改订阅 -->
-            <button 
-              class="cu-btn cuIcon-settings icon shadow bg-grey" 
-              catchtap="editSubscription" 
-              data-rid="{{subscription.subInfo.id}}"
-            >
-              <text class="cuIcon-setting text-white"></text>
-            </button>
+          <view class="text-gray" style="font-size: small">
+            {{subscription.info.pName}}
+          </view>
+          <view class="text-gray" style="font-size: small">
+            {{subscription.info.raw.townshipName}} {{subscription.info.rentableCount}}套房源
           </view>
         </view>
+        <!-- 按钮区 -->
+        <view style="display: flex; flex-direction: column">
+          <!-- 修改订阅 -->
+          <button 
+            class="cu-btn cuIcon-settings icon shadow bg-grey" 
+            catchtap="editSubscription" 
+            data-rid="{{subscription.subInfo.id}}"
+          >
+            <text class="cuIcon-setting text-white"></text>
+          </button>
+        </view>
       </view>
-    </block>
-  </scroll-view>
-</movable-area>
+    </view>
+  </block>
+</scroll-view>

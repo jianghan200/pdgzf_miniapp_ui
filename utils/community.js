@@ -2,6 +2,7 @@ const log = require('./log')
 const requests = require('./request')
 const utils = require('./util')
 const constants = require('./constants')
+const app = getApp()
 
 // 为小区详情页准备好所有数据
 const loadDataForCommunity = function(pid) {
@@ -86,7 +87,7 @@ const loadDataForCommunity = function(pid) {
         if (project.raw.wp_url && project.raw.wp_url.trim() != '') {
           log.info(`找到了文章链接：${project.raw.wp_url}（${project.pId}）`)
 
-          articleUrl = project.raw.wp_url
+          articleUrl = project.raw.wp_url + '?weixin_user_id=' + app.globalData.userinfo.unionId
         }
         // 整理好各个户型最近出现房间的统计数据
         const statsOfRecentHousesOfAllTypes = populateStatsForAllHouseTypes(project, res)

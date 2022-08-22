@@ -1,4 +1,0 @@
-<view class="movable-container" bindtap="gotoReport">
-  <text class="cuIcon-{{cuIcon}} text-gray" style="font-size: x-large;"></text>
-  <text class="text-bold text-gray" style="font-size: x-small;">{{name}}</text>
-</view>

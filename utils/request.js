@@ -826,120 +826,6 @@ const getMonthlyHouseCount = function() {
   })
 }
 
-// Post用户的反馈
-const postFeedback = function(jiraType, desc, email) {
-  log.info(`准备post反馈（${jiraType}, ${desc}, ${email}）`)
-
-  const url = constants.prodFeedbackServer + '/wp-json/wp/v2/posts'
-  const unionId = app.globalData.userinfo.unionId
-  const nickname = app.globalData.userinfo.nickname
-  const token = utils.base64_encode(constants.wordpressFeedbackUsername + ':' + constants.wordpressFeedbackPassword)
-  const header = {
-    'Authorization' : 'Basic ' + token
-  }
-  var data = {
-    'title' : '意见反馈' + ': ' + jiraType + '(' + nickname + ': ' + unionId + ')' + '(' + email + ')',
-    'content' : desc,
-    'status': 'publish',
-    'meta' : {
-      'unionId' : unionId,
-      'email' : email
-    }
-  }
-  return new Promise((resolve, reject) => {
-    wx.request({
-      url : url,
-      header : header,
-      data : data,
-      method: 'POST',
-      success : function(res) {
-        log.info('成功上传反馈（描述）')
-
-        resolve(res.data.id)
-      },
-      fail : function(err) {
-        log.error('反馈上传（描述）失败')
-        log.error(err)
-        
-        resolve(-1)
-      }
-    })
-  })
-}
-
-// 上传反馈用到的图片（s）
-const sendAllFeedbackImgs = function(imgUrls, postId) {
-  log.info(`准备上传（${imgUrls.length}）张图片到postId：${postId}`)
-
-  let promises = 
-    imgUrls.map(url => {
-      return sendFeedbackImg(url, postId)
-    })
-
-  return Promise.all(promises).then((res) => {
-    log.info(`成功上传全部（${imgUrls.length}）张图片到postId：${postId}`)
-
-    return Promise.resolve(true)
-  }).catch(err => {
-    log.error(err)
-
-    return Promise.resolve(false)
-  })
-}
-
-// 发送一张图片到wordpress
-const sendFeedbackImg = function(imgUrl, postId) {
-  log.info(`准备上传图片：${imgUrl}到post id：${postId}`)
-  
-  // 获取图片文件后缀
-  const index= imgUrl.lastIndexOf(".");
-  const ext = imgUrl.substr(index + 1);
-  // 获取文件名
-  const filename = imgUrl.substr(imgUrl.lastIndexOf('/') + 1)
-
-  var fs = wx.getFileSystemManager()
-  
-  const url = constants.prodFeedbackServer + '/wp-json/wp/v2/media' + '?post=' + postId
-  const token = utils.base64_encode(constants.wordpressFeedbackUsername + ':' + constants.wordpressFeedbackPassword)
-  const header = {
-    'Authorization' : 'Basic ' + token,
-    'content-type' : 'image/' + ext,
-    'Content-Disposition' : `attachment; filename=${filename}`,
-    'cache-control' : 'no-cache'
-  }
-
-  return new Promise((resolve, reject) => {
-    wx.request({
-      url : url,
-      header : header,
-      // 这里的编码方式只能是默认的
-      data : fs.readFileSync(imgUrl),
-      method : 'POST',
-      success : function(res) {
-        if (res.statusCode == 201 || res.statusCode == 200) {
-          // 说明post成功了，通常为201
-          log.info(`图片上传成功(${imgUrl})`)
-
-          resolve(true)
-        } else {
-          log.error(`图片上传失败(${imgUrl})`)
-          log.error(res)
-          console.log(res)
-
-          reject(res)
-        }
-      },
-      fail : function(err) {
-        log.error(`图片上传失败(${imgUrl})`)
-        log.error(err)
-        console.log(err)
-
-        reject(err)
-      }
-    })
-  })
-}
-
 // 向腾讯云后台get用户的头像和昵称
 const getAvatarAndNickname = function() {
   log.info('向云后台请求用户的头像和昵称')
@@ -1256,6 +1142,31 @@ const getConsultStatus = function() {
   })
 }
 
+// python接口获得mode
+const getAppMode = function() {
+  log.info('请求app的mode')
+
+  const url = constants.server + '/config'
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      success: res => {
+        log.info(`App的mode为: ${res.data.result.isNormalMode}`)
+
+        app.globalData.isNormalMode = res.data.result.isNormalMode
+        resolve(true)
+      },
+      fail: err => {
+        console.log(err)
+        log.error(err)
+  
+        app.globalData.isNormalMode = false
+        resolve(false)
+      }
+    })
+  })
+}
+
 module.exports = {
   login : login,
   getSubscriptions : getSubscriptions,
@@ -1280,12 +1191,11 @@ module.exports = {
   getCandidatesCounts : getCandidatesCounts,
   getValidCandidatesCounts : getValidCandidatesCounts,
   getMonthlyHouseCount : getMonthlyHouseCount,
-  postFeedback : postFeedback,
-  sendAllFeedbackImgs : sendAllFeedbackImgs,
   sendCommentOnSomeProject : sendCommentOnSomeProject,
   getAvatarAndNickname : getAvatarAndNickname,
   getCommentsOf : getCommentsOf,
   getBroadcastMsgs : getBroadcastMsgs,
   getConsultStatus : getConsultStatus,
-  getConsultingPaymentInfo : getConsultingPaymentInfo
+  getConsultingPaymentInfo : getConsultingPaymentInfo,
+  getAppMode: getAppMode
 }

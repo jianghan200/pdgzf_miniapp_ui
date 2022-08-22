@@ -76,8 +76,6 @@ const rentableCountLimits = function(category) {
 
 const vipJiraTypes = ['新功能', '改进', '举报Bug']
 const commonJiratypes = ['改进', '举报Bug']
-const wordpressFeedbackUsername = 'pdgzf_feedback'
-const wordpressFeedbackPassword = '10dH 2e8r dUeC OHL2 qffa w8S0'
 
 // 微信号
 const consultant = 'meo365'
@@ -131,8 +129,6 @@ module.exports = {
   vipJiraTypes : vipJiraTypes,
   commonJiratypes : commonJiratypes,
   prodFeedbackServer : prodFeedbackServer,
-  wordpressFeedbackUsername : wordpressFeedbackUsername,
-  wordpressFeedbackPassword : wordpressFeedbackPassword,
   consultant : consultant,
   officeCoordinate: officeCoordinate,
   randomUserName: randomUserName,

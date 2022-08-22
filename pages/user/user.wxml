@@ -61,15 +61,6 @@
         <text class="text-bold">关于PD公租房</text>
       </view>
     </view>
-
-    <!-- 意见反馈 -->
-    <view class="cu-item arrow" bindtap="goToReport">
-      <view class="content">
-        <text class="cuIcon-questionfill text-bold"></text>
-        <text class="text-bold">意见反馈</text>
-      </view>
-    </view>
-
   </view>
 </movable-area>
 

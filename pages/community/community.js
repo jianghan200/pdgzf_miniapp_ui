@@ -353,7 +353,7 @@ Page({
   // 跳转到有奖征集图片/视频的标准页
   goToRewardPage(e) {
     wx.navigateTo({
-      url: '/pages/article/article?url=' + imageAndVideoCollectingDescriptionUrl,
+      url: '/pages/article/article?url=' + imageAndVideoCollectingDescriptionUrl + '?weixin_user_id=' + app.globalData.userinfo.unionId,
     })
   },
 

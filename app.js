@@ -49,19 +49,6 @@ App({
         },
         fail: (result) => {}
       })
-
-      wx.cloud.callFunction({ name: 'getAdminMode' }).then(res => {
-        const mode = res.result.isNormalMode
-
-        log.info(`程序的管理模式为: ${mode}`)
-
-        this.globalData.isNormalMode = mode
-      }).catch(err => {
-        log.error(`未能拿到程序的管理模式`)
-        log.error(err)
-
-        this.globalData.isNormalMode = false
-      })
     }
   },
 
