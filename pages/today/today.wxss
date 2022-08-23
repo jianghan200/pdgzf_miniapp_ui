@@ -20,3 +20,6 @@
   white-space: nowrap;
   letter-spacing: 2px;
 }
+.wide-btn {
+  width: 100px!important;
+}
