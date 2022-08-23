@@ -359,7 +359,7 @@ Page({
 
   // 跳转到vip页
   goToVipPage(e) {
-    wx.navigateTo({ url: '/pages/vip/vip' })
+    wx.navigateTo({ url: '/pages/rights/rights' })
   },
 
   // 预览某一个图片
