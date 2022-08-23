@@ -42,10 +42,7 @@ Page({
         log.error(err)
         console.log(err)
 
-        wx.showToast({
-          title: '微信有bug',
-          icon: 'error'
-        })
+        wx.showToast({ title: '服务器错误', icon: 'error' })
       })
   }
 })

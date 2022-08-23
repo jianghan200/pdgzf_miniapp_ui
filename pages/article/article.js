@@ -1,5 +1,6 @@
 // pages/article/article.js
 const log = require('./../../utils/log')
+const app = getApp()
 Page({
   data: {
     url : ''
@@ -11,9 +12,12 @@ Page({
     if (options.url) {
       log.info(options)
 
-      this.setData({
-        url : options.url + '?mode=mini'
-      })
+      // WP的域名需要将用户的unionId添加到url中
+      if (options.url.indexOf('pd.vencloud.cn') === -1) {
+        this.setData({ url: options.url + '?mode=mini' })
+      } else {
+        this.setData({ url: options.url + '?weixin_user_id=' + app.globalData.userinfo.unionId + '&mode=mini' })
+      }
     }
   },
 

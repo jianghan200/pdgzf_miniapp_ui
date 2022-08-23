@@ -197,9 +197,9 @@ const loadAllData = function(options) {
 
         log.info("redirect to new url: " + newDirect)
 
-        wx.switchTab({ url: newDirect,success:function(e){
-          let parm = util.getReqParam(newDirect)
-          getCurrentPages().pop().onLoad(parm)
+        wx.switchTab({ url: newDirect, success: function(e) {
+          const param = util.getReqParam(newDirect)
+          getCurrentPages().pop().onLoad(param)
         } })
       } else {
         // 对于不同的用户，“首页”是不同的.

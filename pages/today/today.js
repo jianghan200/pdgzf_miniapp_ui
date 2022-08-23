@@ -79,10 +79,6 @@ Page({
       .then((res) => {
         log.info(`获得${res.length}条公告`)
 
-        res.forEach(msg => {
-          msg.link = msg.link + '?weixin_user_id=' + app.globalData.userinfo.unionId
-        })
-
         self.setData({
           broadcastMsgs : res
         })
