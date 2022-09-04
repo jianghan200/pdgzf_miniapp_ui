@@ -1,7 +1,7 @@
 // pages/newbee/newbee.js
 const app = getApp()
 const log = require('./../../utils/log')
-const requests = require('./../../utils/request')
+const userInfoHelper = require('../../utils/user')
 
 Page({
   data: {
@@ -29,32 +29,19 @@ Page({
     }
 
     // open-id被禁用，只能向用户请求权限
-    if (!app.globalData.nickname || app.globalData.nickname == null) {
-      const self = this
-      requests.getAvatarAndNickname().then(res => {
-        if (res) {
-          // 成功获得
-          self.setData({
-            nickname: app.globalData.nickname,
-            avatarUrl: app.globalData.avatarUrl
-          })
-        }
-      })
-    } else {
-      this.setData({
-        nickname: app.globalData.nickname,
-        avatarUrl: app.globalData.avatarUrl
-      })
-    }
+    const self = this
+    userInfoHelper.get_tencent_nicknameAndAvatar().then(res => {
+      if (res !== null) {
+        self.setData({ nickname: res.wxNickName, avatarUrl: res.wxAvatarUrl })
+      }
+    })
   },
 
   // 导航至某个页面
   goTo(e) {
-    let page = e.currentTarget.dataset.page
-    let url = `/pages/${page}/${page}`
-    wx.navigateTo({
-      url: url,
-    })
+    const page = e.currentTarget.dataset.page
+    const url = `/pages/${page}/${page}`
+    wx.navigateTo({ url: url })
   },
 
   // Top Bar的重定向方法

@@ -4,6 +4,7 @@ const paymentHelper = require('../../utils/pay')
 const log = require('../../utils/log')
 const requestHelper = require('../../utils/request')
 const constants = require('../../utils/constants')
+const userInfoHelper = require('../../utils/user')
 
 Page({
   data: {
@@ -73,23 +74,12 @@ Page({
     }
 
     // open-id被禁用，只能向用户请求权限
-    if (!app.globalData.nickname || app.globalData.nickname == null) {
-      const self = this
-      requests.getAvatarAndNickname().then(res => {
-        if (res) {
-          // 成功获得
-          self.setData({
-            nickname: app.globalData.nickname,
-            avatarUrl: app.globalData.avatarUrl
-          })
-        }
-      })
-    } else {
-      this.setData({
-        nickname: app.globalData.nickname,
-        avatarUrl: app.globalData.avatarUrl
-      })
-    }
+    const self = this
+    userInfoHelper.get_tencent_nicknameAndAvatar().then(res => {
+      if (res !== null) {
+        self.setData({ nickname: res.wxNickName, avatarUrl: res.wxAvatarUrl })
+      }
+    })
   },
 
   // 支付
@@ -104,34 +94,23 @@ Page({
         if (res) {
           // 付款成功  
           wx.hideLoading()
-          wx.showToast({
-            title: '支付成功',
-            icon: 'success'
-          })
+          wx.showToast({ title: '支付成功', icon: 'success' })
 
           app.globalData.userinfo.openConsult = true
-          wx.redirectTo({
-            url: '/pages/user/user',
-          })
+          wx.redirectTo({ url: '/pages/user/user' })
         } else {
           // 付款失败
           log.error('付款失败')
 
           wx.hideLoading()
-          wx.showToast({
-            title: '支付失败',
-            icon: 'error'
-          })
+          wx.showToast({ title: '支付失败', icon: 'error' })
         }
       }).catch((err) => {
         log.error('付款失败')
         log.error(err)
 
         wx.hideLoading()
-        wx.showToast({
-          title: '支付失败',
-          icon: 'error'
-        })
+        wx.showToast({ title: '支付失败', icon: 'error' })
       })
   },
 

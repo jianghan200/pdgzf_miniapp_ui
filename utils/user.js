@@ -1,7 +1,6 @@
 const app = getApp()
 const log = require('./log')
-const utils = require('./util')
-const forumHelper = require('./forum')
+const constants = require('./constants')
 
 // 通过用户的userinfo判断该用户是否有资格日或者资格日是模拟的
 // 0：是个VIP；1：模拟过资格日；-1：不是vip也没有模拟资格日
@@ -21,190 +20,137 @@ const hasStartDate = function() {
   }
 }
 
-// 获得某个用户发布过的所有文章
-const getAllMyPosts = function() {
-  return wx.cloud.callFunction({
-    name: 'getArticle',
-    data: {
-      action: 'BY_UID',
-      uid: app.globalData.userinfo.unionId
-    }
-  })
+// 判断后端是否有用户的微信昵称和头像
+// 不是undefined，不是null，不是空字符串
+const has_weixin_nickNameAndAvatar = function() {
+  return app.globalData.userinfo.wxNickName && app.globalData.userinfo.wxNickName !== null && app.globalData.userinfo.wxNickName.trim() !== '' && app.globalData.userinfo.wxAvatarUrl && app.globalData.userinfo.wxAvatarUrl !== null && app.globalData.userinfo.wxAvatarUrl.trim() !== ''
 }
 
-// 获取某个用户发布过的所有评论
-const getAllMyComments = function() {
-  return wx.cloud.callFunction({
-    name: 'comment',
-    data: {
-      action: 'GET_USER_COMMENTS',
-      uid: app.globalData.userinfo.unionId
-    }
-  })
-}
-
-// 获取某个用户所有的回复
-const getAllReplies = function() {
-  return wx.cloud.callFunction({
-    name: 'comment',
-    data: {
-      action: 'GET_REPLY',
-      uid: app.globalData.userinfo.unionId
-    }
-  })
-}
-
-// 拿到自己所有的unread的评论 (type: A, 别人评论我的文章, type: C, 别人回复我)
-const getUnreadComments = function() {
-  return wx.cloud.callFunction({
-    name: 'unread',
-    data: {
-      uid: app.globalData.userinfo.unionId
-    }
-  })
-}
-
-// 将未读信息标记为已读
-const markAsRead = function(unread_id) {
-  return wx.cloud.callFunction({
-    name: 'mark_as_read',
-    data: {
-      unread_id: unread_id
-    }
-  }).then(() => {
-    log.info(`将_id为: ${unread_id}的unread标记为已读`)
-    
-    // 更新storage中的unread
-    const interactions = wx.getStorageSync('interactions')
-
-    interactions.unread = interactions.unread.filter(msg => msg._id != unread_id)
-    
-    wx.setStorageSync('interactions', interactions)
-    app.globalData.unread --
-  })
-}
-
-// 获取某个用户在论坛中的互动信息
-const getUserInteractions = function() {
-  return Promise.all([getAllMyPosts(), getAllMyComments(), getAllReplies(), getUnreadComments()]).then(res => {
-    const posts = res[0].result.articles
-    // 为文章添加信息
-    posts.forEach(article => {
-      article['timedistance'] = utils.getTimeDistance(article.create_gmt)
-    })
-    
-    // 过滤出去一些测试时遗留的数据
-    const comments = res[1].result.data.filter(comment => {
-      return comment.aid && comment.aid != null
-    })
-    comments.forEach(comment => {
-      comment['timedistance'] = utils.getTimeDistance(comment.update_gmt)
-    })
-
-    // 别人回复用户的
-    const replies = res[2].result.data
-    replies.forEach(reply => {
-      reply['timedistance'] = utils.getTimeDistance(reply.update_gmt)
-    })
-
-    // 由于历史原因，这个方法也会query出来用户创建的没有添加author_id的文章，所以在model level进行过滤
-    const unread = res[3].result.data.filter(msg => msg.type == 'CUCA')
-    unread.forEach(msg => {
-      msg['timedistance'] = utils.getTimeDistance(msg.update_gmt)
-    })
-
-    // 方便其他Page / Component显示未读信息数量
-    app.globalData.unread = unread.length
-
-    return Promise.resolve({
-      posts: posts,
-      comments: comments,
-      replies: replies,
-      unread: unread
-    })
-  }).then(userInteractions => {
-    // 需要为每个comment找到对应的文章（aid）
-    // 用户的所有回复（comment）, 别人对用户的回复（reply）, 用户未读的消息（unread）本质都是comment
-    const allProjectsFromStorage = wx.getStorageSync('allProjects')
-    const allPidsAndNames = []
-    allProjectsFromStorage.forEach(area => {
-      area.projects.forEach(project => {
-        allPidsAndNames.push({ id: project.pId, name: project.pName})
-      })
-    })
-
-    return Promise.all([
-      getArticlesForComments(userInteractions.comments, allPidsAndNames),
-      getArticlesForComments(userInteractions.replies, allPidsAndNames),
-      getArticlesForComments(userInteractions.unread, allPidsAndNames)
-    ]).then(res => {
-      // 需要过滤掉没有pname或者没有article reference的，即aid异常的
-      userInteractions.comments = res[0].filter(comment => comment.pname || comment.article)
-      userInteractions.replies = res[1].filter(comment => comment.pname || comment.article)
-      userInteractions.unread = res[2].filter(comment => comment.pname || comment.article)
-
-      // 方便其他Page使用用户的互动信息
-      wx.setStorageSync('interactions', userInteractions)
-
-      return Promise.resolve(userInteractions)
-    })
-  })
-}
-
-// 为所有的comments找到他们的文章
-const getArticlesForComments = function(comments, allPidsAndNames) {
-  const commentsOnUserArticles = []
-  // 遍历所有小区留言板，找到小区的名称
-  comments.forEach(comment => {
-    if (comment.aid && comment.aid != null) {
-      // 由于历史原因有的comment是没有aid或者aid为null的
-      if (comment.aid.indexOf('pdgzf_project_') != -1) {
-        // 属于小区留言板
-        const pid = comment.aid.split('_')[comment.aid.split('_').length - 1]
-        
-        if (!pid || pid == -1 || pid == 'undefined') {
-          // 由于历史原因，有的pid是-1或者undefined，这样的comment我们不能显示
-          log.warn(`遇到pid异常，此comment的aid为：${comment.aid}`)
+// 向用户索要微信昵称和头像
+const ask_for_weixin_nickNameAndAvatar = function() {
+  let res = null
+  return new Promise((resolve) => {
+    wx.showModal({
+      title: '需要您的昵称和头像才能使用',
+      content: '请点击同意按钮开始使用本程序',
+      success: function(res) {
+        log.info(res)
+        log.info('用户点击了授权弹窗中的按钮')
+  
+        if (res.confirm) {
+          // 用户点击了“同意”
+          log.info('用户点击了同意')
+          // 调用getUserProfile接口获得用户的头像和昵称
+          wx.getUserProfile({
+            desc: '需要您的昵称和头像',
+            success : function(res) {
+              // 用户同意提供昵称和头像
+              const nickname = res.userInfo.nickName
+              const avatarUrl = res.userInfo.avatarUrl
+              res = { 'wxNickName': nickname, 'wxAvatarUrl': avatarUrl }
+              resolve(res)
+            },
+            fail: function(err) {
+              log.error('用户拒绝了授权')
+              log.error(err)
+              console.log(err)
+              // Profile获取失败
+              wx.showToast({ title: '很遗憾', icon: 'error' })
+  
+              resolve(res)
+            }
+          })
         } else {
-          // pid正常的情况
-          const pname = allPidsAndNames.find(pair => pair.id == pid).name
-          comment['pname'] = pname
+          log.error('用户拒绝了授权（Modal中点击了cancel）')
+          // Profile获取失败
+          wx.showToast({ title: '很遗憾', icon: 'error' })
+  
+          resolve(res)
         }
-      } else {
-        // 属于用户创建的文章
-        commentsOnUserArticles.push(comment)
+      },
+      fail: function(err) {
+        log.error('程序错误，wx.showModal未能成功')
+        log.error(err)
+        wx.showToast({ title: '微信接口报错', icon: 'error' })
+  
+        resolve(res)
       }
-    } else {
-      log.warn(`发现有的comment的aid不存在或者为null`)
-    }
-  })
-
-  log.info(`准备加载${commentsOnUserArticles.length}篇文章`)
-
-  // 如果aid以pdgzf_project开头，则为小区留言板，小区留言板不会被返回
-  return forumHelper.getArticlesByIds(commentsOnUserArticles.map(comment => comment.aid)).then(res => {
-      const articles = res.result.articles.data
-      // 遍历所有非留言板上的评论，并为之匹配文章(多个评论可能属于同一篇文章)
-      commentsOnUserArticles.forEach(comment => {
-          const article = articles.find(article => article._id == comment.aid)
-          if (article) {
-              comment['article'] = article
-          } else {
-              log.error(`comment: ${comment._id} 虽然不是留言板的评论，但未找到文章`)
-          }
-      })
-
-      return Promise.resolve(comments)
+    })
   })
 }
 
+// 向后端上传用户的微信昵称和头像
+const upload_weixin_nickNameAndAvatar = function(nickName, avatar) {
+  log.info(`向后端上传用户的微信昵称: ${nickName}和头像的url: ${avatar}`)
+
+  const url = constants.userinfoServer + '/api/user/update'
+  const token = app.globalData.userinfo.tokenStr
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      header: { 'token' : token, 'content-type' : 'application/x-www-form-urlencoded' },
+      method: 'POST',
+      data: { 'wxNickName' : nickName, 'wxAvatarUrl': avatar },
+      success: function(res) {
+        if (res.data.status == 0) {
+          log.info('信息上传成功！')
+
+          resolve(true)
+        } else {
+          log.error(`接口调用失败，后端返回${res.data}`)
+          console.log(res.data)
+          reject(res.data)
+        }
+      },
+      fail: function(err) {
+        log.error(`微信request接口报错!`)
+        console.log(err)
+        reject(err)
+      }
+    })
+  })
+}
+
+// 向后端请求用户的头像和昵称，如果没有，则请求用户授权
+const get_tencent_nicknameAndAvatar = function() {
+  log.info('请求获取用户的头像和昵称')
+
+  return new Promise((resolve) => {
+    if (!has_weixin_nickNameAndAvatar()) {
+      // 说明没有微信昵称和头像
+      log.info('没有该用户的昵称和头像，需要用户授权')
+      ask_for_weixin_nickNameAndAvatar().then(wxNickNameAndAvatar_from_user_auth => {
+        if (wxNickNameAndAvatar_from_user_auth === null) {
+          log.info('用户拒绝了授权或者出现了报错')
+          resolve(null)
+        } else {
+          log.info('用户完成了授权')
+          const { wxNickName, wxAvatarUrl } = wxNickNameAndAvatar_from_user_auth
+          // 将用户的微信头像和昵称url上传到后端
+          upload_weixin_nickNameAndAvatar(wxNickName, wxAvatarUrl).then(() => {
+            // 用户信息上传成功，完成了用户信息采集
+            resolve(wxNickNameAndAvatar_from_user_auth)
+            log.info(`完成了微信昵称和头像的采集`)
+          }).catch(err => {
+            console.log(err)
+            log.error(`Future返回了错误: ${err}`)
+            wx.showToast({ title: '服务器报错', icon: 'error' })
+  
+            resolve(null)
+          })
+        }
+      })
+    } else {
+      log.info('该用户已经拥有微信昵称和头像')
+      resolve({ 
+        'wxNickName' : app.globalData.userinfo.wxNickName, 
+        'wxAvatarUrl': app.globalData.userinfo.wxAvatarUrl 
+      })
+    }
+  })
+}
 
 module.exports = {
   hasStartDate : hasStartDate,
-  getAllMyPosts: getAllMyPosts,
-  getAllMyComments: getAllMyComments,
-  getAllReplies: getAllReplies,
-  getUserInteractions: getUserInteractions,
-  getUnreadComments: getUnreadComments,
-  markAsRead: markAsRead
+  get_tencent_nicknameAndAvatar: get_tencent_nicknameAndAvatar
 }

@@ -1,10 +1,9 @@
 // pages/email/email.js
-const constants = require('../../utils/constants')
 const requests = require('../../utils/request')
-const payHelper = require('../../utils/pay')
 const app = getApp()
 const util = require('../../utils/util')
 const log = require('./../../utils/log')
+const userInfoHelper = require('../../utils/user')
 
 Page({
   data: {
@@ -72,39 +71,24 @@ Page({
     })
 
     // open-id被禁用，只能向用户请求权限
-    if (!app.globalData.nickname || app.globalData.nickname == null) {
-      const self = this
-      requests.getAvatarAndNickname().then(res => {
-        if (res) {
-          // 成功获得
-          self.setData({
-            nickname: app.globalData.nickname,
-            avatarUrl: app.globalData.avatarUrl
-          })
-        }
-      })
-    } else {
-      this.setData({
-        nickname: app.globalData.nickname,
-        avatarUrl: app.globalData.avatarUrl
-      })
-    }
+    const self = this
+    userInfoHelper.get_tencent_nicknameAndAvatar().then(res => {
+      if (res !== null) {
+        self.setData({ nickname: res.wxNickName, avatarUrl: res.wxAvatarUrl })
+      }
+    })
   },
 
   // 点击小铃铛开启订阅
   register() {
     log.info('点击小铃铛')
 
-    this.setData({
-      showRegisterModal : true
-    })
+    this.setData({ showRegisterModal : true })
   },
 
   // 关闭Modal
   hideModal() {
-    this.setData({
-      showRegisterModal : false
-    })
+    this.setData({ showRegisterModal : false })
   },
 
   // 记录用户输入的email, 由于双向绑定，这只是一个placeholder
@@ -115,34 +99,27 @@ Page({
     log.info('postPayment email subscription')
     log.info('想后端更新用户的信息')
 
-    let self = this
+    const self = this
     // 用户可能已经用昵称作为自己的用户名
-    let oldUsername = app.globalData.userinfo.name == null ? '' : app.globalData.userinfo.name
+    const oldUsername = app.globalData.userinfo.name == null ? '' : app.globalData.userinfo.name
     requests
       .updateUserInfo(oldUsername, self.data.email, '', '')
-      .then((res) => {
+      .then(() => {
         log.info('updateUserInfo 成功更新用户信息')
         // 微信支付成功
-        wx.showToast({
-          title: '支付成功',
-          icon: 'success'
-        })
+        wx.showToast({ title: '支付成功', icon: 'success' })
         // 关掉弹窗
         self.hideModal()
         app.globalData.userinfo.type = 1
         app.globalData.userinfo.email = self.data.email
         // 必须redirect，否则不会触发onLoad
-        wx.redirectTo({
-          url: './../../pages/user/user',
-        })
+        wx.redirectTo({ url: './../../pages/user/user' })
       })
       .catch((err) => {
         log.error('updateUserInfo 失败')
         log.error(err)
 
-        wx.showToast({
-          title: err
-        })
+        wx.showToast({ title: err })
         self.hideModal()
       })
   },
@@ -153,32 +130,12 @@ Page({
 
     if (util.validateEmail(this.data.email)) {
       log.info('开始支付')
-      // 邮件验证通过
-      // 开始支付
-      // let self = this
-      // payHelper.pay(0).then((res) => {
-      //   log.info('支付成功')
-
-      //   self.postPayment()
-      // }).catch((err) => {
-      //   log.error('支付失败')
-      //   log.error(err)
-      //   // 微信支付失败
-      //   wx.showToast({
-      //     title: '支付失败',
-      //     icon: 'error'
-      //   })
-      //   self.hideModal()
-      // })
 
       self.postPayment()
     } else {
       log.error('用户填写的Email不合法')
       // 检查未通过
-      wx.showToast({
-        title: '电邮填写有误',
-        icon: 'error'
-      })
+      wx.showToast({ title: '电邮填写有误', icon: 'error' })
     }
   },
 
@@ -194,23 +151,15 @@ Page({
       .then((res) => {
         log.info('成功更新了邮件订阅的状态')
 
-        self.setData({
-          openSubscription : e.detail.value
-        })
+        self.setData({ openSubscription : e.detail.value })
         app.globalData.userinfo.emailSubscription = afterStatusCode
 
-        wx.showToast({
-          title: '更新成功',
-          icon: 'success'
-        })
+        wx.showToast({ title: '更新成功', icon: 'success' })
       }).catch((err) => {
         log.error('更新邮件订阅状态失败')
         console.log(err)
 
-        wx.showToast({
-          title: '更新失败',
-          icon: 'error'
-        })
+        wx.showToast({ title: '更新失败', icon: 'error' })
       })
   }
 })
