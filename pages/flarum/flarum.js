@@ -14,12 +14,12 @@ Page({
     if(options && options.url){
       console.log("option has url")
 
-      this.setData({ url:options.url })
+      this.setData({ url: options.url })
     }
 
     const self = this
     userInfoHelper.get_tencent_nicknameAndAvatar().then(res => {
-      if (res !== null) {
+      if (res === null) {
         // 用户没有授权头像和昵称
         log.warn(`用户没有授权头像和昵称`)
 
