@@ -1,4 +1,11 @@
 <view>
+  <!-- 页面标题 -->
+  <view style="height: {{ CustomBar }}px; display: flex; flex-direction: row; align-items: center;">
+    <view class="title" style="margin-top: 30px;">
+      <text class="cuIcon-discover text-bold"></text>
+      <text class="text-bold" style="margin-left: 10px;">公租房新鲜事</text>
+    </view>
+  </view>
   <scroll-view class="nav bg-white text-center" scroll-x scroll-with-animation>
     <view class="cu-item {{ curComponentId == 0 ? 'text-black cur text-bold' : '' }}" data-id="0" bindtap="selectTab">
       信息流
@@ -12,7 +19,7 @@
   </scroll-view>
 
   <!-- 信息流 -->
-  <scroll-view wx:if="{{ curComponentId == 0 }}" style="height: calc(100vh - 90rpx);" scroll-y scroll-with-animation>
+  <scroll-view wx:if="{{ curComponentId == 0 }}" style="height: calc(100vh - 90rpx - {{ CustomBar }}px);" scroll-y scroll-with-animation>
     <view wx:for="{{ articles }}" wx:for-item="article" wx:key="id">
       <view class="cu-card article" bindtap="openArticle" data-link="{{ article.link }}" data-isVip="{{ article.isVipArticle }}">
         <view class="cu-item shadow" style="background-color: {{article.isVipArticle ? 'currentColor' : 'white'}};">
@@ -37,7 +44,7 @@
   </scroll-view>
 
   <!-- VIP内容 -->
-  <scroll-view wx:if="{{ curComponentId == 1 }}" style="height: calc(100vh - 90rpx);" scroll-y scroll-with-animation>
+  <scroll-view wx:if="{{ curComponentId == 1 }}" style="height: calc(100vh - 90rpx - {{ CustomBar }}px);" scroll-y scroll-with-animation>
     <view wx:for="{{ vipArticles }}" wx:for-item="article" wx:key="id">
       <view class="cu-card article" bindtap="openArticle" data-link="{{ article.link }}" data-isVip="{{ true }}">
         <view class="cu-item shadow" style="background-color: currentColor;">
@@ -62,7 +69,7 @@
   </scroll-view>
 
   <!-- 新手村 -->
-  <view wx:if="{{ curComponentId == 2 }}" style="height: calc(100vh - 90rpx);">
+  <view wx:if="{{ curComponentId == 2 }}" style="height: calc(100vh - 90rpx - {{ CustomBar }}px);">
     <view style="height: 2.5rem;"></view>
 
     <!-- 标题 -->

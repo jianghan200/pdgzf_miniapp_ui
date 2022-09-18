@@ -7,6 +7,7 @@ const constants = require('../../utils/constants')
 
 Page({
   data: {
+    CustomBar: app.globalData.CustomBar,
     pageNum: 1,
     vipPageNum: 1,
     articles: [],

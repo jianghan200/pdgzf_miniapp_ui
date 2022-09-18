@@ -1,4 +1,9 @@
 /* pages/newbee/newbee.wxss */
+.title {
+  font-size: larger;
+  font-weight: 700;
+  padding: 1rem;
+}
 
 .card-title {
   font-size: 30rpx;
