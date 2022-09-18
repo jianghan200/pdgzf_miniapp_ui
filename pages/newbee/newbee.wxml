@@ -1,44 +1,42 @@
 <!--pages/newbee/newbee.wxml-->
 <view style="height: 2.5rem;"></view>
 
-<movable-area class="movable-area" style="height: 100%;">
-  <!-- 标题 -->
-  <view class="userinfo">
-    <image class="{{vipInfo.type == 2 ? 'vip-' : ''}}avatar" src="{{avatarUrl}}" mode="aspectFill"></image>
-    <view class="{{vipInfo.type == 2 ? 'vip-' : ''}}nickname">{{ nickname }}</view>
-    <view class="text-bold">欢迎来到公租房新手村</view>
+<!-- 标题 -->
+<view class="userinfo">
+  <image class="{{vipInfo.type == 2 ? 'vip-' : ''}}avatar" src="{{avatarUrl}}" mode="aspectFill"></image>
+  <view class="{{vipInfo.type == 2 ? 'vip-' : ''}}nickname">{{ nickname }}</view>
+  <view class="text-bold">欢迎来到公租房新手村</view>
+</view>
+
+<view style="height: 50px;"></view>
+
+<view class="cu-list grid col-2 no-border">
+  <view class="cu-item" bindtap="goTo" data-page="timeline">
+    <view class="cuIcon-time"></view>
+    <text>流程时间线</text>
+  </view>
+  <view class="cu-item" bindtap="goTo" data-page="policy">
+    <view class="cuIcon-read"></view>
+    <text>信息&心得</text>
   </view>
 
-  <view style="height: 50px;"></view>
-
-  <view class="cu-list grid col-2 no-border">
-    <view class="cu-item" bindtap="goTo" data-page="timeline">
-      <view class="cuIcon-time"></view>
-      <text>流程时间线</text>
-    </view>
-    <view class="cu-item" bindtap="goTo" data-page="policy">
-      <view class="cuIcon-read"></view>
-      <text>信息&心得</text>
-    </view>
-
-    <view class="cu-item" bindtap="goTo" data-page="qualification">
-      <view class="cuIcon-ticket"></view>
-      <text>申请资格</text>
-    </view>
-
-    <view class="cu-item" bindtap="goTo" data-page="materials">
-      <view class="cuIcon-form"></view>
-      <text>申请材料</text>
-    </view>
-
-    <view class="cu-item" bindtap="goTo" data-page="stats">
-      <view class="cuIcon-rank"></view>
-      <text>公租房统计数据</text>
-    </view>
-
-    <view class="cu-item" bindtap="goTo" data-page="links">
-      <view class="cuIcon-choiceness"></view>
-      <text>公租房干货</text>
-    </view>
+  <view class="cu-item" bindtap="goTo" data-page="qualification">
+    <view class="cuIcon-ticket"></view>
+    <text>申请资格</text>
   </view>
-</movable-area>
+
+  <view class="cu-item" bindtap="goTo" data-page="materials">
+    <view class="cuIcon-form"></view>
+    <text>申请材料</text>
+  </view>
+
+  <view class="cu-item" bindtap="goTo" data-page="stats">
+    <view class="cuIcon-rank"></view>
+    <text>公租房统计数据</text>
+  </view>
+
+  <view class="cu-item" bindtap="goTo" data-page="links">
+    <view class="cuIcon-choiceness"></view>
+    <text>公租房干货</text>
+  </view>
+</view>

@@ -51,10 +51,10 @@
       "text": "全部房源"
     },
     {
-      "pagePath": "pages/newbee/newbee",
+      "pagePath": "pages/stream/stream",
       "iconPath": "/assets/discoverfill_grey.png",
       "selectedIconPath": "/assets/discoverfill.png",
-      "text": "新手村"
+      "text": "发现"
     },
     {
       "pagePath": "pages/flarum/flarum",

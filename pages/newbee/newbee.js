@@ -19,7 +19,7 @@ Page({
     if (options['tab'] && options['tab'] != '') {
       let tab = options['tab']
       let articleUrl = ''
-      if(options['articleUrl'] && options['articleUrl'] != '') {
+      if (options['articleUrl'] && options['articleUrl'] != '') {
         articleUrl = '?articleUrl=' + options['articleUrl']
       }
       // 来自分享

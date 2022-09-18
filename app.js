@@ -3,7 +3,6 @@ var log = require('./utils/log')
 App({
   onLaunch: function (options) {
     log.info(options)
-    console.log(options)
     this.globalData.scene = options.scene
 
     log.info('用户onLaunch')

@@ -150,7 +150,13 @@ const get_tencent_nicknameAndAvatar = function() {
   })
 }
 
+// 一个用户是否为新人？
+const isNewUser = function() {
+  return app.globalData.userinfo.type == 0 && app.globalData.userinfo.email == null && app.globalData.userinfo.startDate == null
+}
+
 module.exports = {
   hasStartDate : hasStartDate,
-  get_tencent_nicknameAndAvatar: get_tencent_nicknameAndAvatar
+  get_tencent_nicknameAndAvatar: get_tencent_nicknameAndAvatar,
+  isNewUser: isNewUser
 }

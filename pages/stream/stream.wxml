@@ -1,2 +1,108 @@
-<!--pages/stream/stream.wxml-->
-<text>pages/stream/stream.wxml</text>
+<view>
+  <scroll-view class="nav bg-white text-center" scroll-x scroll-with-animation>
+    <view class="cu-item {{ curComponentId == 0 ? 'text-black cur text-bold' : '' }}" data-id="0" bindtap="selectTab">
+      信息流
+    </view>
+    <view class="cu-item {{ curComponentId == 1 ? 'text-black cur text-bold' : '' }}" data-id="1" bindtap="selectTab">
+      VIP内容
+    </view>
+    <view class="cu-item {{ curComponentId == 2 ? 'text-black cur text-bold' : '' }}" data-id="2" bindtap="selectTab">
+      新手村
+    </view>
+  </scroll-view>
+
+  <!-- 信息流 -->
+  <scroll-view wx:if="{{ curComponentId == 0 }}" style="height: calc(100vh - 90rpx);" scroll-y scroll-with-animation>
+    <view wx:for="{{ articles }}" wx:for-item="article" wx:key="id">
+      <view class="cu-card article" bindtap="openArticle" data-link="{{ article.link }}" data-isVip="{{ article.isVipArticle }}">
+        <view class="cu-item shadow" style="background-color: {{article.isVipArticle ? 'currentColor' : 'white'}};">
+          <view class="card-title" style="color: {{article.isVipArticle ? 'goldenrod' : 'black'}};">{{ article.title.rendered }}</view>
+          <view class="content">
+            <view class="desc">
+              <view>
+                <view class="cu-tag {{article.isVipArticle ? '' : 'bg-blue light'}} round">{{ article.category_name }}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 加载更多的按钮 -->
+    <view style="display: flex; flex-direction: column; align-items: center;">
+      <button class="cu-btn bg-white round shadow text-bold lg margin" style="width: 60%;" bindtap="loadMoreArticles" data-aType="0">
+        <text>加载更多</text>
+      </button>
+    </view>
+  </scroll-view>
+
+  <!-- VIP内容 -->
+  <scroll-view wx:if="{{ curComponentId == 1 }}" style="height: calc(100vh - 90rpx);" scroll-y scroll-with-animation>
+    <view wx:for="{{ vipArticles }}" wx:for-item="article" wx:key="id">
+      <view class="cu-card article" bindtap="openArticle" data-link="{{ article.link }}" data-isVip="{{ true }}">
+        <view class="cu-item shadow" style="background-color: currentColor;">
+          <view class="card-title" style="color: goldenrod;">{{ article.title.rendered }}</view>
+          <view class="content">
+            <view class="desc">
+              <view>
+                <view class="cu-tag round">{{ article.category_name }}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 加载更多的按钮 -->
+    <view style="display: flex; flex-direction: column; align-items: center;">
+      <button class="cu-btn bg-black round shadow text-bold lg margin" style="width: 60%;" bindtap="loadMoreArticles" data-aType="18">
+        <text style="color: goldenrod;">加载更多</text>
+      </button>
+    </view>
+  </scroll-view>
+
+  <!-- 新手村 -->
+  <view wx:if="{{ curComponentId == 2 }}" style="height: calc(100vh - 90rpx);">
+    <view style="height: 2.5rem;"></view>
+
+    <!-- 标题 -->
+    <view class="userinfo">
+      <image class="{{vipInfo.type == 2 ? 'vip-' : ''}}avatar" src="{{avatarUrl}}" mode="aspectFill"></image>
+      <view class="{{vipInfo.type == 2 ? 'vip-' : ''}}nickname">{{ nickname }}</view>
+      <view class="text-bold">欢迎来到公租房新手村</view>
+    </view>
+
+    <view style="height: 50px;"></view>
+
+    <view class="cu-list grid col-2 no-border">
+      <view class="cu-item" bindtap="goToNewbeePage" data-page="timeline">
+        <view class="cuIcon-time"></view>
+        <text>流程时间线</text>
+      </view>
+      <view class="cu-item" bindtap="goToNewbeePage" data-page="policy">
+        <view class="cuIcon-read"></view>
+        <text>信息&心得</text>
+      </view>
+
+      <view class="cu-item" bindtap="goToNewbeePage" data-page="qualification">
+        <view class="cuIcon-ticket"></view>
+        <text>申请资格</text>
+      </view>
+
+      <view class="cu-item" bindtap="goToNewbeePage" data-page="materials">
+        <view class="cuIcon-form"></view>
+        <text>申请材料</text>
+      </view>
+
+      <view class="cu-item" bindtap="goToNewbeePage" data-page="stats">
+        <view class="cuIcon-rank"></view>
+        <text>公租房统计数据</text>
+      </view>
+
+      <view class="cu-item" bindtap="goToNewbeePage" data-page="links">
+        <view class="cuIcon-choiceness"></view>
+        <text>公租房干货</text>
+      </view>
+    </view>
+  </view>
+</view>

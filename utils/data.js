@@ -3,6 +3,7 @@ const util = require('./util')
 const app = getApp()
 const constants = require('./constants')
 const log = require('./log')
+const userHelper = require('./user')
 
 // 处理今日小区的rawData
 const handleTodayProjects = function(projectsRawData, housesRawData, stats, subscriptionsRawData) {
@@ -204,10 +205,10 @@ const loadAllData = function(options) {
       } else {
         // 对于不同的用户，“首页”是不同的.
         // 新用户（userinfo中没有startDate也没有email）
-        if (app.globalData.userinfo.type == 0 && app.globalData.userinfo.email == null && app.globalData.userinfo.startDate == null) {
-          log.info('新用户，首页为新手村')
+        if (userHelper.isNewUser()) {
+          log.info('新用户，首页为发现')
 
-          wx.switchTab({ url: '/pages/newbee/newbee' })
+          wx.switchTab({ url: '/pages/stream/stream' })
         } else {
           log.info('老用户，首页为今日房源页')
           // 老用户
