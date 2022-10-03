@@ -22,6 +22,7 @@ Page({
   },
 
   onLoad(options) {
+    // 继承自newbee页面
     if (options['tab'] && options['tab'] != '') {
       const tab = options['tab']
       let articleUrl = ''
@@ -32,6 +33,7 @@ Page({
       wx.navigateTo({ url: `/pages/${tab}/${tab}` + articleUrl })
     }
 
+    // 不同身份看到的初始tab是不同的
     if (userInfoHelper.isNewUser()) {
       log.info('发现新用户，默认tab为新手村')
       // 新人，进入新手村tab

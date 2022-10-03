@@ -17,6 +17,11 @@ Page({
       this.setData({ url: options.url })
     }
 
+    this.ask_for_wx_nickname_and_avatar()
+  },
+
+  // 向用户索要用户名和头像
+  ask_for_wx_nickname_and_avatar() {
     const self = this
     userInfoHelper.get_tencent_nicknameAndAvatar().then(res => {
       if (res === null) {
@@ -34,7 +39,7 @@ Page({
             if (res.confirm) {
               log.info('用户最终同意授权头像和昵称')
 
-              self.setUrl()
+              self.ask_for_wx_nickname_and_avatar()
             } else {
               log.warn(`用户始终没有同意授权头像和昵称, 跳转至today`)
 

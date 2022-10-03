@@ -95,9 +95,7 @@ Page({
         // 更新一下globalData中的vip相关的数据
         app.globalData.userinfo.emailExpireDate = info.emailExpireDate
         app.globalData.userinfo.type = info.type
-        self.setData({
-          vipInfo : info
-        })
+        self.setData({ vipInfo : info })
       })
       .catch((err) => {
         log.error('未成功获得用户的vip信息')
