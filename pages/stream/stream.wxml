@@ -28,7 +28,7 @@
   </view> -->
 
   <!-- 打开筛选器 -->
-  <view class="cu-bar bg-white" wx:if="{{ curComponentId != 2 }}">
+  <view class="cu-bar bg-white" wx:if="{{ curComponentId == 0 }}">
     <view class="action">
       <button 
         class="cu-btn bg-green shadow" 
@@ -64,7 +64,7 @@
   </scroll-view>
 
   <!-- VIP内容 -->
-  <scroll-view wx:if="{{ curComponentId == 1 }}" style="height: calc(100vh - 190rpx - {{ CustomBar }}px);" scroll-y scroll-with-animation>
+  <scroll-view wx:if="{{ curComponentId == 1 }}" style="height: calc(100vh - 90rpx - {{ CustomBar }}px);" scroll-y scroll-with-animation>
     <view wx:for="{{ vipArticles }}" wx:for-item="article" wx:key="id">
       <view class="cu-card article" bindtap="openArticle" data-link="{{ article.link }}" data-isVip="{{ true }}">
         <view class="cu-item shadow" style="background-color: currentColor;">
