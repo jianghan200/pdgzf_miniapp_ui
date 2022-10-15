@@ -4,6 +4,7 @@ const wpHelper = require('../../utils/wp')
 const log = require('../../utils/log')
 const userInfoHelper = require('../../utils/user')
 const constants = require('../../utils/constants')
+const utils = require('../../utils/util')
 
 Page({
   data: {
@@ -18,7 +19,16 @@ Page({
     vipInfo: null,
     // 用户的头像和昵称
     nickname: '未知用户',
-    avatarUrl: ''
+    avatarUrl: '',
+    // 筛选器抽屉
+    openDrawer: false,
+    // 筛选器
+    selected_categories: [],
+    all_categories: [],
+    // 用于name2id，保留了WP支持的类目的全集，且为原始数据
+    full_set_of_wp_categories: [],
+    // 打开筛选器之前的selected_categories
+    before_selected_categories: []
   },
 
   onLoad(options) {
@@ -39,19 +49,40 @@ Page({
       // 新人，进入新手村tab
       this.setData({ curComponentId: 2 })
     }
-    this.loadArticles(this.data.pageNum, 0)
-    this.loadArticles(this.data.vipPageNum, constants.vip_wp_category)
+    this.initCategories()
+    this.loadArticles(this.data.pageNum, [])
+    this.loadArticles(this.data.vipPageNum, [constants.vip_wp_category])
     this.initNewbee()
+  },
+  
+  // init categories
+  initCategories() {
+    const self = this
+    wpHelper.wp_article_categories().then(categories => {
+      const category_names = 
+        categories.filter(c => {
+          return c.count > 0 && constants.excluded_wp_category_ids.indexOf(c.id) == -1
+        }).map(c => c.id == 1 ? '通用' : c.name)
+
+      self.setData({ 
+        full_set_of_wp_categories: categories,
+        all_categories: category_names, 
+        selected_categories: category_names.concat([]) 
+      })
+    }).catch(err => {
+      console.log(err)
+    })
   },
 
   // 从wp端读取文章列表
-  loadArticles(pageNum, categoryType) {
-    log.info(`正在读取文章(pageNum: ${pageNum}, categoryType: ${categoryType})`)
+  loadArticles(pageNum, categoryIds) {
+    log.info(`正在读取文章(pageNum: ${pageNum}, categoryIds: ${categoryIds})`)
     wx.showLoading({ title: '加载中...' })
 
     const self = this
-    wpHelper.get_WP_articles(pageNum, categoryType).then(res => {
-      if (categoryType == 0) {
+    wpHelper.get_WP_articles(pageNum, categoryIds).then(res => {
+      // 如果categoryIds为空，则为无差别读取
+      if (categoryIds.length == 0) {
         // 在读取一般内容
         const newArticles = self.data.articles.concat(res)
         newArticles.forEach(article => {
@@ -64,10 +95,14 @@ Page({
           }
         })
         self.setData({ articles: newArticles, pageNum: pageNum })
-      } else if (categoryType == constants.vip_wp_category) {
+      } else if (categoryIds.length == 1 && categoryIds[0] == constants.vip_wp_category) {
         // 在读取VIP内容
         const newArticles = self.data.vipArticles.concat(res)
         self.setData({ vipArticles: newArticles, vipPageNum: pageNum })
+      } else {
+        // 既不是在无差别加载，也不是在加载VIP文章
+        const newArticles = self.data.articles.concat(res)
+        self.setData({ articles: newArticles, pageNum: pageNum })
       }
       wx.hideLoading()
     }).catch(err => {
@@ -85,10 +120,10 @@ Page({
     if (e.currentTarget.dataset.atype) {
       if (e.currentTarget.dataset.atype == 0) {
         // 加载另一页一般文章
-        this.loadArticles(this.data.pageNum + 1, 0)
+        this.loadArticles(this.data.pageNum + 1, [])
       } else if (e.currentTarget.dataset.atype == constants.vip_wp_category) {
         // 加载另一页vip文章
-        this.loadArticles(this.data.vipPageNum + 1, constants.vip_wp_category)
+        this.loadArticles(this.data.vipPageNum + 1, [constants.vip_wp_category])
       }
     }
   },
@@ -139,6 +174,98 @@ Page({
   // 点击TabItem触发的handler
   selectTab(e) {
     this.setData({ curComponentId: e.currentTarget.dataset.id })
+  },
+
+  // 搜索文章名
+  searchArticle(e) {
+    console.log(e.detail.value)
+  },
+
+  // 打开筛选器
+  openFilterDrawer(e) {
+    if (e.currentTarget.dataset.beforecategorynames) {
+      this.setData({ before_selected_categories: e.currentTarget.dataset.beforecategorynames })
+    }
+    this.setData({ openDrawer: true })
+  },
+
+  // 关闭筛选器
+  closeFilterDrawer(e) {
+    // 如果用户的selected_categories没有任何变化，不需要做任何操作，关闭drawer即可
+    if (e.currentTarget.dataset.selectedcategorynames) {
+      const after_selected_category_names = e.currentTarget.dataset.selectedcategorynames
+      if (!utils.equ_array(after_selected_category_names, this.data.before_selected_categories)) {
+        this.applyFilter()
+      }
+    }
+    this.setData({ openDrawer: false })
+  },
+
+  // 应用筛选器
+  applyFilter() {
+    // 根据用户选择的类别重新获取WP文章
+    const selected_categoryIds = 
+      this.data.selected_categories.map(cname => this.category_name2id(cname)).filter(id => id != -1)
+    const self = this
+    if (selected_categoryIds.length == 0) {
+      // 用户有可能没有选择任何类别，然后apply了filter，此时应该默认用户是误操作，将状态reset成初始状态，然后加载文章
+      self.setData({ selected_categories: self.data.all_categories, articles: [] })
+      self.loadArticles(1, [])
+    } else {
+      // pageNum需要被reset成1, 文章列表也要被清空
+      this.setData({ articles: [] })
+      this.loadArticles(1, selected_categoryIds)
+    }
+  },
+
+  // 根据类目名称找到类目ID
+  category_name2id(categoryName) {
+    if (categoryName.trim() == '通用') {
+      // 由于显示原因，我们对Uncategory做了处理，显示为“通用”。
+      return constants.vip_wp_category
+    } else {
+      const candidates = 
+        this.data.full_set_of_wp_categories.filter(c => {
+          if (c.name.indexOf(categoryName) == -1) {
+            return false
+          } else {
+            return true
+          }
+        })
+      if (candidates.length > 0) {
+        return candidates[0].id
+      } else {
+        return -1
+      }
+    }
+  },
+
+  // 选择了文章类别
+  tapCategory(e) {
+    const tappedCategoryName = e.currentTarget.dataset.categoryname
+    if (tappedCategoryName == 'all') {
+      // 选择了全部类别
+      // 可能是deselect All或者select All
+      if (this.data.all_categories.length != this.data.selected_categories.length) {
+        // 有部分未选中的，此时点击all，即为select All
+        this.setData({ selected_categories : this.data.all_categories })
+      } else {
+        // 全选中，此时点击all，即为deselect All
+        this.setData({ selected_categories : [] })
+      }
+    } else {
+      // tap的并不是all
+      const cur_selected_categories = this.data.selected_categories.concat([])
+      if (cur_selected_categories.indexOf(tappedCategoryName) == -1) {
+        // 是选中
+        cur_selected_categories.push(tappedCategoryName)
+        this.setData({ selected_categories : cur_selected_categories })
+      } else {
+        // 是deselect
+        cur_selected_categories.splice(cur_selected_categories.indexOf(tappedCategoryName), 1)
+        this.setData({ selected_categories : cur_selected_categories })
+      }
+    }
   },
 
   // 新手村导航至某个页面

@@ -34,11 +34,11 @@ const getBroadcastMsgs = function() {
 }
 
 // 获得WP的所有问题
-const get_WP_articles = function(pageNum, categoryType) {
-  log.info(`试图获取WP文章列表(pageNum: ${pageNum}, categoryType: ${categoryType})`)
+const get_WP_articles = function(pageNum, categoryIds) {
+  log.info(`试图获取WP文章列表(pageNum: ${pageNum}, categoryIds: ${categoryIds})`)
 
-  // 如果categoryType为0，则不需要添加这个参数到请求中
-  const categoryParam = categoryType == 0 ? '' : `&categories=${categoryType}`
+  // 如果categoryIds为空，则不需要添加这个参数到请求中
+  const categoryParam = categoryIds.length == 0 ? '' : `&categories=${categoryIds.join(',')}`
 
   const url = constants.prodFeedbackServer + '/wp-json/wp/v2/posts?per_page=5&page=' + pageNum + categoryParam
   return new Promise((resolve, reject) => {
@@ -58,8 +58,28 @@ const get_WP_articles = function(pageNum, categoryType) {
   })
 }
 
+// 所有wp文章类别
+const wp_article_categories = function() {
+  const url = constants.prodFeedbackServer + '/wp-json/wp/v2/categories'
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      method: 'GET',
+      success: res => {
+        return resolve(res.data)
+      },
+      fail: err => {
+        console.log(err)
+        log.error(`请求文章全类别失败. ${err}`)
+  
+        return reject(err)
+      }
+    })
+  })
+}
 
 module.exports = {
   getBroadcastMsgs: getBroadcastMsgs,
-  get_WP_articles: get_WP_articles
+  get_WP_articles: get_WP_articles,
+  wp_article_categories: wp_article_categories
 }

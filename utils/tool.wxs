@@ -11,6 +11,7 @@ function sliceOf(str) {
     return str
   }
 }
+
 module.exports = {
   indexOf : indexOf,
   sliceOf : sliceOf

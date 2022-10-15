@@ -461,6 +461,21 @@ const getReqParam = function(urlStr) {
   return theRequest
 }
 
+// 判断两个数组的内容是否相等
+function equ_array(a, b) {
+  // 判断数组的长度
+  if (a.length !== b.length) {
+    return false
+  } else {
+    // 循环遍历数组的值进行比较
+    for (let i = 0; i < a.length; i++) {
+        if (a[i] !== b[i]) {
+            return false
+        }
+    }
+    return true;
+  }
+}
 
 module.exports = {
   formatTime,
@@ -492,4 +507,5 @@ module.exports = {
   copyToClipboard: copyToClipboard,
   generate_flarum_url: generate_flarum_url,
   getReqParam: getReqParam,
+  equ_array: equ_array
 }
