@@ -33,6 +33,10 @@ Page({
 
   onLoad(options) {
     // 继承自newbee页面
+    if (options['curComponentId'] && options['curComponentId'] != '') {
+      this.setData({ curComponentId: options['curComponentId'] })
+      this.initCategories()
+    }
     if (options['tab'] && options['tab'] != '') {
       const tab = options['tab']
       let articleUrl = ''
@@ -157,7 +161,7 @@ Page({
         if (app.globalData.userinfo.type == 2) {
           log.info('是VIP，打开文章内容')
           // 是VIP打开文章
-          wx.navigateTo({ url: '/pages/article/article?url=' + e.currentTarget.dataset.link })
+          wx.navigateTo({ url: '/pages/article/article?url=' + e.currentTarget.dataset.link + '&curComponentId=' + this.data.curComponentId})
         } else {
           log.info('非VIP，进入VIP权益页')
           // 非VIP，进入权益页
@@ -166,7 +170,7 @@ Page({
       } else {
         log.info('非VIP内容，打开文章内容')
         // 非VIP内容，打开文章
-        wx.navigateTo({ url: '/pages/article/article?url=' + e.currentTarget.dataset.link })
+        wx.navigateTo({ url: '/pages/article/article?url=' + e.currentTarget.dataset.link + '&curComponentId=' + this.data.curComponentId})
       }
     }
   },
@@ -271,15 +275,15 @@ Page({
   // 新手村导航至某个页面
   goToNewbeePage(e) {
     const page = e.currentTarget.dataset.page
-    const url = `/pages/${page}/${page}`
+    const url = `/pages/${page}/${page}?curComponentId=${this.data.curComponentId}`
     wx.navigateTo({ url: url })
   },
 
   // 转发
   onShareAppMessage: function(options) {
-    const path = '/pages/stream/stream'
+    const path = '/pages/stream/stream?curComponentId=' + this.data.curComponentId
     return {
-      title : 'PD公租房',
+      title : '公租房新鲜事',
       path : '/pages/login/login?redirect=' + encodeURIComponent(path),
       imageUrl : '',
       success : function(res) {

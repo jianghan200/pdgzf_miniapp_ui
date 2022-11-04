@@ -19,12 +19,16 @@ Page({
     showTip5 : false,
     a6 : '',
     tip6: '',
-    showTip6 : false
+    showTip6 : false,
+    curComponentId: 0
   },
 
   onLoad: function (options) {
     log.info('onLoad qualification')
 
+    if(options.curComponentId) {
+      this.setData({curComponentId: options.curComponentId})
+    }
     this.setData({
       a1 : '',
       tip1: '',
@@ -133,10 +137,10 @@ Page({
 
   // 转发
   onShareAppMessage: function(options) {
-    var path = '/pages/newbee/newbee?tab=qualification'
+    var path = '/pages/stream/stream?tab=qualification&curComponentId=' + this.data.curComponentId
     let self = this
     return {
-      title : 'PD公租房',
+      title : '申请资格',
       path : '/pages/login/login?redirect=' + encodeURIComponent(path),
       imageUrl : '',
       success : function(res) {

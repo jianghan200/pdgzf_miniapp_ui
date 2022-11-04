@@ -10,11 +10,16 @@ Page({
   data: {
     // 导航栏相关
     curTab : 0,
-    scrollLeft : 0
+    scrollLeft : 0,
+    curComponentId: 0
   },
 
   onLoad: function (options) {
     log.info('onLoad policy页')
+
+    if(options.curComponentId) {
+      this.setData({curComponentId: options.curComponentId})
+    }
   },
 
   // 导航栏上选择不同的tab
@@ -78,10 +83,10 @@ Page({
 
   // 转发
   onShareAppMessage: function(options) {
-    var path = '/pages/newbee/newbee?tab=policy'
+    var path = '/pages/stream/stream?tab=policy&curComponentId=' + this.data.curComponentId
     let self = this
     return {
-      title : 'PD公租房',
+      title : '信息&心得',
       path : '/pages/login/login?redirect=' + encodeURIComponent(path),
       imageUrl : '',
       success : function(res) {

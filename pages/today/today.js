@@ -307,7 +307,7 @@ Page({
   onShareAppMessage: function(options) {
     let self = this
     return {
-      title : 'PD公租房',
+      title : '今日房源',
       path : '/pages/login/login',
       imageUrl : '',
       success : function(res) {

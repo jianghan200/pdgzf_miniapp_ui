@@ -416,7 +416,7 @@ Page({
   onShareAppMessage: function(options) {
     var path = '/pages/allProjects/allProjects'
     return {
-      title : 'PD公租房',
+      title : '全部房源',
       path : '/pages/login/login?redirect=' + encodeURIComponent(path),
       imageUrl : '',
       success : function(res) {

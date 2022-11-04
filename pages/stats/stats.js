@@ -92,18 +92,23 @@ Page({
     },
     ec3 : {
       onInit: initChart3
-    }
+    },
+    curComponentId: 0
   },
   onLoad(options) {
     log.info('onLoad stats')
+
+    if(options.curComponentId) {
+      this.setData({curComponentId: options.curComponentId})
+    }
   },
   
   // 转发
   onShareAppMessage: function(options) {
-    var path = '/pages/newbee/newbee?tab=stats'
+    var path = '/pages/stream/stream?tab=stats&curComponentId=' + this.data.curComponentId
     let self = this
     return {
-      title : 'PD公租房',
+      title : '公租房统计数据',
       path : '/pages/login/login?redirect=' + encodeURIComponent(path),
       imageUrl : '',
       success : function(res) {
