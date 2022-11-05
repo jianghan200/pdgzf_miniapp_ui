@@ -7,6 +7,7 @@ const requestsUtil = require('../../utils/request')
 const constants = require('../../utils/constants')
 const log = require('./../../utils/log')
 const userHelper = require('./../../utils/user')
+const wpHelper = require('../../utils/wp')
 
 Page({
   data: {
@@ -74,14 +75,10 @@ Page({
   // 活动公告
   getBroadcastMsgs() {
     let self = this
-    requestsUtil
+    wpHelper
       .getBroadcastMsgs()
       .then((res) => {
         log.info(`获得${res.length}条公告`)
-
-        res.forEach(msg => {
-          msg.link = msg.link + '?weixin_user_id=' + app.globalData.userinfo.unionId
-        })
 
         self.setData({
           broadcastMsgs : res
@@ -310,7 +307,7 @@ Page({
   onShareAppMessage: function(options) {
     let self = this
     return {
-      title : 'PD公租房',
+      title : '今日房源',
       path : '/pages/login/login',
       imageUrl : '',
       success : function(res) {

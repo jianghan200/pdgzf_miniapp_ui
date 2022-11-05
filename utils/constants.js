@@ -116,6 +116,12 @@ const randomUserName = function() {
 // 公众号的名称
 const officialAccount = 'PD生活'
 
+// WP文章中VIP内容的ID
+const vip_wp_category = 18
+
+// WP文章中不能显示的类别
+const do_not_display_wp_category_ids = [8, 5, 2, 18]
+
 module.exports = {
   server: prodServer,
   userinfoServer: userinfoProdServer,
@@ -132,5 +138,7 @@ module.exports = {
   consultant : consultant,
   officeCoordinate: officeCoordinate,
   randomUserName: randomUserName,
-  officialAccount: officialAccount
+  officialAccount: officialAccount,
+  vip_wp_category: vip_wp_category,
+  excluded_wp_category_ids: do_not_display_wp_category_ids
 }

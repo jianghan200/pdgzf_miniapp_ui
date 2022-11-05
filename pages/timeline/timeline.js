@@ -2,11 +2,14 @@
 const log = require('./../../utils/log')
 Page({
   data: {
-
+    curComponentId: 0
   },
 
   onLoad: function (options) {
     log.info('onLoad timeline')
+    if(options.curComponentId) {
+      this.setData({curComponentId: options.curComponentId})
+    }
   },
 
   goTo(e) {
@@ -19,10 +22,10 @@ Page({
 
   // 转发
   onShareAppMessage: function(options) {
-    var path = '/pages/newbee/newbee?tab=timeline'
+    var path = '/pages/stream/stream?tab=timeline&curComponentId=' + this.data.curComponentId
     let self = this
     return {
-      title : 'PD公租房',
+      title : '流程时间线',
       path : '/pages/login/login?redirect=' + encodeURIComponent(path),
       imageUrl : '',
       success : function(res) {

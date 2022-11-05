@@ -1,0 +1,51 @@
+/* pages/newbee/newbee.wxss */
+.title {
+  font-size: larger;
+  font-weight: 700;
+  padding: 1rem;
+}
+
+.card-title {
+  font-size: 30rpx;
+  font-weight: 900;
+  color: var(--black);
+  padding: 30rpx;
+}
+
+.userinfo {
+  display: flex; 
+  flex-direction: column; 
+  padding: 10rpx; 
+  align-items: center;
+}
+
+.avatar {
+  overflow: hidden; 
+  width: 150rpx; 
+  height: 150rpx; 
+  border-radius: 50%; 
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.nickname {
+  font-size: x-large; 
+  font-family: serif;
+  padding: .5rem;
+}
+
+.vip-avatar {
+  overflow: hidden; 
+  width: 150rpx; 
+  height: 150rpx; 
+  border-radius: 50%; 
+  box-shadow: 3px 3px 10px rgba(218, 165, 32, 0.959);
+  border: 5px solid goldenrod;
+}
+
+.vip-nickname {
+  color: goldenrod;
+  font-weight: 500;
+  font-size: x-large; 
+  font-family: serif;
+  padding: .5rem;
+}

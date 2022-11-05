@@ -17,13 +17,13 @@
     "pages/qualification/qualification",
     "pages/rights/rights",
     "pages/stats/stats",
+    "pages/stream/stream",
     "pages/subdetail/subdetail",
     "pages/success/success",
     "pages/subscribe/subscribe",
     "pages/timeline/timeline",
     "pages/today/today",
     "pages/user/user",
-    "pages/userArticles/userArticles",
     "pages/versions/versions",
     "pages/vip/vip",
     "pages/preview-media-desc/item/item-index",
@@ -51,10 +51,10 @@
       "text": "全部房源"
     },
     {
-      "pagePath": "pages/newbee/newbee",
+      "pagePath": "pages/stream/stream",
       "iconPath": "/assets/discoverfill_grey.png",
       "selectedIconPath": "/assets/discoverfill.png",
-      "text": "新手村"
+      "text": "发现"
     },
     {
       "pagePath": "pages/flarum/flarum",

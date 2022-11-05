@@ -1,0 +1,163 @@
+<wxs src="../../utils/tool.wxs" module="tools" />
+<view>
+  <!-- 页面标题 -->
+  <view style="height: {{ CustomBar }}px; display: flex; flex-direction: row; align-items: center;">
+    <view class="title" style="margin-top: 30px;">
+      <text class="cuIcon-discover text-bold"></text>
+      <text class="text-bold" style="margin-left: 10px;">公租房新鲜事</text>
+    </view>
+  </view>
+  <scroll-view class="nav bg-white text-center" scroll-x scroll-with-animation>
+    <view class="cu-item {{ curComponentId == 0 ? 'text-black cur text-bold' : '' }}" data-id="0" bindtap="selectTab">
+      信息流
+    </view>
+    <view class="cu-item {{ curComponentId == 1 ? 'text-black cur text-bold' : '' }}" data-id="1" bindtap="selectTab">
+      VIP内容
+    </view>
+    <view class="cu-item {{ curComponentId == 2 ? 'text-black cur text-bold' : '' }}" data-id="2" bindtap="selectTab">
+      新手村
+    </view>
+  </scroll-view>
+
+  <!-- 搜索栏 -->
+  <!-- <view class="cu-bar bg-white search" wx:if="{{ curComponentId != 2 }}">
+    <view class="search-form round">
+      <text class="cuIcon-search"></text>
+      <input type="text" placeholder="搜索文章名字" confirm-type="search" bindinput="searchArticle"></input>
+    </view>
+  </view> -->
+
+  <!-- 打开筛选器 -->
+  <view class="cu-bar bg-white" wx:if="{{ curComponentId == 0 }}">
+    <view class="action">
+      <button 
+        class="cu-btn bg-green shadow" 
+        bindtap="openFilterDrawer" 
+        data-beforeCategoryNames="{{ selected_categories }}"
+      >筛选</button>
+    </view>
+  </view>
+
+  <!-- 信息流 -->
+  <scroll-view wx:if="{{ curComponentId == 0 }}" style="height: calc(100vh - 190rpx - {{ CustomBar }}px);" scroll-y scroll-with-animation>
+    <view wx:for="{{ articles }}" wx:for-item="article" wx:key="id">
+      <view class="cu-card article" bindtap="openArticle" data-link="{{ article.link }}" data-isVip="{{ article.isVipArticle }}">
+        <view class="cu-item shadow" style="background-color: {{article.isVipArticle ? 'currentColor' : 'white'}};">
+          <view class="card-title" style="color: {{article.isVipArticle ? 'goldenrod' : 'black'}};">{{ article.title.rendered }}</view>
+          <view class="content">
+            <view class="desc">
+              <view>
+                <view class="cu-tag {{article.isVipArticle ? '' : 'bg-blue light'}} round">{{ article.category_name }}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 加载更多的按钮 -->
+    <view style="display: flex; flex-direction: column; align-items: center;">
+      <button class="cu-btn bg-white round shadow text-bold lg margin" style="width: 60%;" bindtap="loadMoreArticles" data-aType="0">
+        <text>加载更多</text>
+      </button>
+    </view>
+  </scroll-view>
+
+  <!-- VIP内容 -->
+  <scroll-view wx:if="{{ curComponentId == 1 }}" style="height: calc(100vh - 90rpx - {{ CustomBar }}px);" scroll-y scroll-with-animation>
+    <view wx:for="{{ vipArticles }}" wx:for-item="article" wx:key="id">
+      <view class="cu-card article" bindtap="openArticle" data-link="{{ article.link }}" data-isVip="{{ true }}">
+        <view class="cu-item shadow" style="background-color: currentColor;">
+          <view class="card-title" style="color: goldenrod;">{{ article.title.rendered }}</view>
+          <view class="content">
+            <view class="desc">
+              <view>
+                <view class="cu-tag round">{{ article.category_name }}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 加载更多的按钮 -->
+    <view style="display: flex; flex-direction: column; align-items: center;">
+      <button class="cu-btn bg-black round shadow text-bold lg margin" style="width: 60%;" bindtap="loadMoreArticles" data-aType="18">
+        <text style="color: goldenrod;">加载更多</text>
+      </button>
+    </view>
+  </scroll-view>
+
+  <!-- 新手村 -->
+  <view wx:if="{{ curComponentId == 2 }}" style="height: calc(100vh - 90rpx - {{ CustomBar }}px);">
+    <view style="height: 2.5rem;"></view>
+
+    <!-- 标题 -->
+    <view class="userinfo">
+      <image class="{{vipInfo.type == 2 ? 'vip-' : ''}}avatar" src="{{avatarUrl}}" mode="aspectFill"></image>
+      <view class="{{vipInfo.type == 2 ? 'vip-' : ''}}nickname">{{ nickname }}</view>
+      <view class="text-bold">欢迎来到公租房新手村</view>
+    </view>
+
+    <view style="height: 50px;"></view>
+
+    <view class="cu-list grid col-2 no-border">
+      <view class="cu-item" bindtap="goToNewbeePage" data-page="timeline">
+        <view class="cuIcon-time"></view>
+        <text>流程时间线</text>
+      </view>
+      <view class="cu-item" bindtap="goToNewbeePage" data-page="policy">
+        <view class="cuIcon-read"></view>
+        <text>信息&心得</text>
+      </view>
+
+      <view class="cu-item" bindtap="goToNewbeePage" data-page="qualification">
+        <view class="cuIcon-ticket"></view>
+        <text>申请资格</text>
+      </view>
+
+      <view class="cu-item" bindtap="goToNewbeePage" data-page="materials">
+        <view class="cuIcon-form"></view>
+        <text>申请材料</text>
+      </view>
+
+      <view class="cu-item" bindtap="goToNewbeePage" data-page="stats">
+        <view class="cuIcon-rank"></view>
+        <text>公租房统计数据</text>
+      </view>
+
+      <view class="cu-item" bindtap="goToNewbeePage" data-page="links">
+        <view class="cuIcon-choiceness"></view>
+        <text>公租房干货</text>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 筛选器弹窗 -->
+<view 
+  class="cu-modal drawer-modal justify-start {{ openDrawer ? 'show' : '' }}"
+  data-selectedCategoryNames="{{ selected_categories }}"
+  bindtap="closeFilterDrawer"
+>
+  <view class="cu-dialog basis-lg" catchtap style="top: {{CustomBar}}px; height:calc(100vh - {{CustomBar}}px)">
+    <!-- 弹窗内容 -->
+    <view class="text-bold filter-subtitle">选择类别</view>
+    <view style="padding: 10rpx; display: flex; flex-wrap: wrap;">
+      <view 
+        class="cu-tag round bg-{{ all_categories.length == selected_categories.length ? 'black' : 'grey' }}" 
+        data-categoryName="all" 
+        bindtap="tapCategory"
+        style="margin: 5rpx;"
+      >全选</view>
+      <block wx:for="{{all_categories}}" wx:for-item="category" wx:key="*this">
+        <view 
+          class="cu-tag round bg-{{ tools.indexOf(selected_categories, category) == -1 ? 'grey' : 'black' }}"
+          data-categoryName="{{ category }}" 
+          bindtap="tapCategory"
+          style="margin: 5rpx;"
+        >{{ category }}</view>
+      </block>
+    </view>
+  </view>
+</view>

@@ -4,7 +4,7 @@ const requests = require('../../utils/request')
 const utils = require('../../utils/util')
 const log = require('./../../utils/log')
 const today = utils.formatDate(new Date())
-const userHelper = require('./../../utils/user')
+const userInfoHelper = require('./../../utils/user')
 
 Page({
   /**
@@ -36,7 +36,7 @@ Page({
     this.getVipInfo()
     let userinfo = app.globalData.userinfo
     // 判断用户的资格日
-    let hasStartDateCode = userHelper.hasStartDate()
+    let hasStartDateCode = userInfoHelper.hasStartDate()
     this.setData({
       userinfo: userinfo,
       startDate: this.resolveStartDate(hasStartDateCode),
@@ -46,29 +46,16 @@ Page({
 
     if (options['tab'] != undefined && options['tab'] != '' &&  options['tab'] == 'rights') {
       // 来自分享
-      wx.navigateTo({
-        url: `../rights/rights`
-      })
+      wx.navigateTo({ url: `../rights/rights` })
     }
 
     // open-id被禁用，只能向用户请求权限
-    if (!app.globalData.nickname || app.globalData.nickname == null) {
-      const self = this
-      requests.getAvatarAndNickname().then(res => {
-        if (res) {
-          // 成功获得
-          self.setData({
-            nickname: app.globalData.nickname,
-            avatarUrl: app.globalData.avatarUrl
-          })
-        }
-      })
-    } else {
-      this.setData({
-        nickname: app.globalData.nickname,
-        avatarUrl: app.globalData.avatarUrl
-      })
-    }
+    const self = this
+    userInfoHelper.get_tencent_nicknameAndAvatar().then(res => {
+      if (res !== null) {
+        self.setData({ nickname: res.wxNickName, avatarUrl: res.wxAvatarUrl })
+      }
+    })
   },
 
   // 根据hasStartDateCode解析资格日
@@ -108,9 +95,7 @@ Page({
         // 更新一下globalData中的vip相关的数据
         app.globalData.userinfo.emailExpireDate = info.emailExpireDate
         app.globalData.userinfo.type = info.type
-        self.setData({
-          vipInfo : info
-        })
+        self.setData({ vipInfo : info })
       })
       .catch((err) => {
         log.error('未成功获得用户的vip信息')
@@ -231,7 +216,7 @@ Page({
         })
         // 更新本地的数据
         app.globalData.userinfo.manualStartDate = selectedDate
-        let hasStartDateCode = userHelper.hasStartDate()
+        let hasStartDateCode = userInfoHelper.hasStartDate()
         self.setData({
           startDate : selectedDate,
           // vip无法看到这个方法

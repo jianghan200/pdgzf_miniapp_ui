@@ -1,5 +1,6 @@
 const requests = require('./request')
 const log = require('./log')
+const userInfoHelper = require('./user')
 
 // 付款
 const actualPayment = function(payment_info) {
@@ -40,31 +41,25 @@ const pay = function(userType) {
 
 // 付费咨询
 const payConsultFee = function() {
-  return requests
-    .getAvatarAndNickname()
-    .then((done) => {
-      if (done) {
-        log.info('已经获得用户的昵称')
+  return userInfoHelper.get_tencent_nicknameAndAvatar().then(res => {
+    if (res !== null) {
+      log.info('已经获得用户的昵称')
 
-        return requests
-          .getConsultingPaymentInfo()
-          .then((info) => {
-            log.info('获得付款信息！')
-            log.info(info)
+      return requests
+        .getConsultingPaymentInfo()
+        .then((info) => {
+          log.info('获得付款信息！')
+          log.info(info)
 
-            return actualPayment(info)
-          })
-      } else {
-        log.info('用户拒绝提供昵称')
-        
-        wx.showToast({
-          title: '很遗憾',
-          icon: 'error'
+          return actualPayment(info)
         })
+    } else {
+      log.info('用户拒绝提供昵称')
+      wx.showToast({ title: '很遗憾', icon: 'error' })
 
-        return Promise.reject()
-      }
-    })
+      return Promise.reject()
+    }
+  })
 }
 
 module.exports = {

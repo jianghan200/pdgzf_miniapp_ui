@@ -3,7 +3,7 @@ const log = require('./../../utils/log')
 Page({
 
   data: {
-
+    curComponentId: 0
   },
 
   onLoad: function (options) {
@@ -13,6 +13,10 @@ Page({
       wx.navigateTo({
         url: '/pages/article/article?url=' + url,
       })
+    }
+
+    if(options.curComponentId) {
+      this.setData({curComponentId: options.curComponentId})
     }
   },
 
@@ -32,10 +36,10 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-    var path = '/pages/newbee/newbee?tab=links'
+    var path = '/pages/stream/stream?tab=links&curComponentId=' + this.data.curComponentId
     let self = this
     return {
-      title : 'PD公租房',
+      title : '公租房干货',
       path : '/pages/login/login?redirect=' + encodeURIComponent(path),
       imageUrl : '',
       success : function(res) {

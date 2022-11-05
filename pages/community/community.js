@@ -600,7 +600,7 @@ Page({
     var params = utils.getParams(self)
     path = path + '?' + params
     return {
-      title : 'PD公租房',
+      title : utils.sliceOf(self.data.pName),
       path : '/pages/login/login?redirect=' + encodeURIComponent(path),
       imageUrl : '',
       success : function(res) {

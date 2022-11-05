@@ -1,7 +1,7 @@
 const app = getApp()
-const requestHelper = require('../../utils/request')
 const log = require('../../utils/log')
 const utils = require('../../utils/util')
+const userInfoHelper = require('../../utils/user')
 Page({
 
   data: {
@@ -13,19 +13,18 @@ Page({
     log.info(`用户进入论坛 onShow`,options)
     if(options && options.url){
       console.log("option has url")
-      this.setData({
-        url:options.url
-      })
+
+      this.setData({ url: options.url })
     }
 
-    const self = this
-    requestHelper.getAvatarAndNickname().then((response) => {
-      if (response) {
-        // 用户授权了头像和昵称
-        log.info(`用户授权了头像和昵称`)
+    this.ask_for_wx_nickname_and_avatar()
+  },
 
-        self.setUrl()
-      } else {
+  // 向用户索要用户名和头像
+  ask_for_wx_nickname_and_avatar() {
+    const self = this
+    userInfoHelper.get_tencent_nicknameAndAvatar().then(res => {
+      if (res === null) {
         // 用户没有授权头像和昵称
         log.warn(`用户没有授权头像和昵称`)
 
@@ -40,16 +39,19 @@ Page({
             if (res.confirm) {
               log.info('用户最终同意授权头像和昵称')
 
-              self.setUrl()
+              self.ask_for_wx_nickname_and_avatar()
             } else {
               log.warn(`用户始终没有同意授权头像和昵称, 跳转至today`)
 
-              wx.switchTab({
-                url: '/pages/today/today',
-              })
+              wx.switchTab({ url: '/pages/today/today' })
             }
           }
         })
+      } else {
+        // 用户授权了头像和昵称
+        log.info(`用户授权了头像和昵称`)
+
+        self.setUrl()
       }
     })
   },
@@ -60,10 +62,7 @@ Page({
 
     log.info(`生成了论坛的url为: ${url}`)
 
-    this.setData({ 
-      unreadCount: app.globalData.unread,
-      url: url
-    })
+    this.setData({ unreadCount: app.globalData.unread, url: url })
   },
 
   // Bottom Bar的功能
@@ -85,21 +84,14 @@ Page({
       success : function(res) {
         if (res.errMsg == 'shareAppMessage:ok') {
           // 用户转发成功
-          wx.showToast({
-            title: '转发成功',
-            icon: 'success'
-          })
+          wx.showToast({ title: '转发成功', icon: 'success' })
         }
       },
       fail : function(err) {
         if (err.errMsg == 'shareAppMessage:fail cancel') {
-          wx.showToast({
-            title: '转发已取消',
-          })
+          wx.showToast({ title: '转发已取消' })
         } else {
-          wx.showToast({
-            title: '转发失败',
-          })
+          wx.showToast({ title: '转发失败' })
         }
       }
     }
@@ -107,19 +99,17 @@ Page({
 
   bindmessage(e) {//接收web-view传递的参数
     console.log(e)
-    var length = e.detail.data.length;
-    if( length == 0){
-      this.setData({//存储状态
-        title: "PD公租房社区"
-      })
+    const length = e.detail.data.length;
+    if (length == 0){
+      //存储状态
+      this.setData({ title: "PD公租房社区" })
     } else {
-      this.setData({//存储状态
-        title: e.detail.data[length-1].title
-      })
+      //存储状态
+      this.setData({ title: e.detail.data[length-1].title })
     }
   },
 
-  webviewReady: function (params) {
+  webviewReady: function(params) {
     console.log("tab webview ready");
   },
 })

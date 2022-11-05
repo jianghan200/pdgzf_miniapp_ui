@@ -26,7 +26,7 @@ const login = function(jscode) {
         }
       },
       fail: (err) => {
-        log.error('用户login失败')
+        log.error('用户login失败, 可能因为网络原因')
         console.log(err)
 
         reject(err)
@@ -826,144 +826,6 @@ const getMonthlyHouseCount = function() {
   })
 }
 
-// 向腾讯云后台get用户的头像和昵称
-const getAvatarAndNickname = function() {
-  log.info('向云后台请求用户的头像和昵称')
-
-  // 1. 先GET云后台的的头像和昵称
-  // 2.1 后台有该用户的头像和昵称，返回
-  // 2.2 后台没有该用户的头像和昵称，prompt用户授权头像和昵称
-  // 3.1 用户授权自己的头像和昵称，可以使用
-  // 3.2 用户不授权自己的头像和昵称，不能使用
-  return new Promise((resolve, reject) => {
-    wx.cloud.callFunction({
-      name : 'user',
-      data : {
-        action : 'GET'
-      },
-      success: function(res) {
-        log.info(res)
-
-        // 用户信息中不能没有用户名和头像
-        if (!res.result || res.result == null || !res.result.nickName || !res.result.avatarUrl) {
-          log.info('云后台未存储用户的头像和昵称')
-          log.info('向用户索要昵称和头像url')
-          // 没有这个用户的头像和昵称
-          wx.showModal({
-            title: '需要您的昵称和头像才能使用',
-            content: '请点击同意按钮开始使用本程序',
-            success: function(res) {
-              log.info(res)
-              log.info('用户点击了授权弹窗中的按钮')
-
-              if (res.confirm) {
-                // 用户点击了“同意”
-                log.info('用户点击了同意')
-                // 调用getUserProfile接口获得用户的头像和昵称
-                wx.getUserProfile({
-                  desc: '需要您的昵称和头像',
-                  success : function(res) {
-                    // 用户同意提供昵称和头像
-                    let nickname = res.userInfo.nickName
-                    let avatarUrl = res.userInfo.avatarUrl
-                    // 像后端post用户的昵称和头像
-                    wx.cloud.callFunction({
-                      name : 'user',
-                      data : {
-                        'action' : 'POST',
-                        'userInfo' : {
-                          'nickName' : nickname,
-                          'avatarUrl' : avatarUrl
-                        }
-                      }
-                    }).then((res) => {
-                      log.info('成功向云后台post用户的昵称和头像')
-      
-                      // 在globalData中写入用户的昵称和头像
-                      app.globalData.nickname = nickname
-                      app.globalData.avatarUrl = avatarUrl
-      
-                      wx.showToast({
-                        title: '信息更新成功',
-                        icon: 'success'
-                      })
-      
-                      resolve(true)
-                    }).catch((err) => {
-                      console.log(err)
-                      log.error('未能成功向云后台post用户的昵称和头像')
-                      log.error(err)
-      
-                      wx.showToast({
-                        title: '信息更新失败',
-                        icon: 'error'
-                      })
-                      
-                      resolve(false)
-                    })
-                  },
-                  fail: function(err) {
-                    log.error('用户拒绝了授权')
-                    log.error(err)
-                    console.log(err)
-                    // Profile获取失败
-                    wx.showToast({
-                      title: '很遗憾',
-                      icon: 'error'
-                    })
-      
-                    resolve(false)
-                  }
-                })
-              } else {
-                log.error('用户拒绝了授权（Modal中点击了cancel）')
-                // Profile获取失败
-                wx.showToast({
-                  title: '很遗憾',
-                  icon: 'error'
-                })
-  
-                resolve(false)
-              }
-            },
-            fail: function(err) {
-              log.error('程序错误，wx.showModal未能成功')
-              log.error(err)
-
-              wx.showToast({
-                title: '微信错误',
-                icon: 'error'
-              })
-
-              resolve(false)
-            }
-          })
-        } else {
-          // 拿到了用户的头像和昵称
-          log.info('在后端找到了用户的昵称和头像并成功返回')
-          log.info(res)
-
-          app.globalData.avatarUrl = res.result.avatarUrl
-          app.globalData.nickname = res.result.nickName
-          resolve(true)
-        }
-      },
-      fail: function(err) {
-        log.error(`调用云函数失败（GET user）`)
-        log.error(err)
-        console.log(err)
-
-        wx.showToast({
-          title: '信息获取失败',
-          icon: 'error'
-        })
-
-        reject(err)
-      }
-    })
-  })
-}
-
 // 评论
 const generateArticleIdOf = function(pid) {
   return `pdgzf_project_${pid}`
@@ -1049,39 +911,6 @@ const getCommentsOf = function(pid) {
     })
   })
 }
-
-// 获取公告
-const getBroadcastMsgs = function() {
-  log.info('准备获取公告信息')
-
-  const url = constants.prodFeedbackServer + '/wp-json/wp/v2/posts?categories=7&_fields=author,id,content,title,link'
-
-  return new Promise((resolve, reject) => {
-    wx.request({
-      url: url,
-      success: function(res) {
-        if (res.statusCode == 200 || res.statusCode == 201) {
-          log.info('公告获取成功')
-          log.info(res)
-
-          resolve(res.data)
-        } else {
-          log.error('公告获取失败，WP返回error')
-          log.error(res)
-
-          resolve([])
-        }
-      },
-      fail: function(err) {
-        log.error('公告获取出现错误')
-        log.error(err)
-
-        resolve([])
-      }
-    })
-  })
-}
-
 // 获得付费咨询信息
 const getConsultStatus = function() {
   log.info(`获取是否付费咨询的信息`)
@@ -1192,9 +1021,7 @@ module.exports = {
   getValidCandidatesCounts : getValidCandidatesCounts,
   getMonthlyHouseCount : getMonthlyHouseCount,
   sendCommentOnSomeProject : sendCommentOnSomeProject,
-  getAvatarAndNickname : getAvatarAndNickname,
   getCommentsOf : getCommentsOf,
-  getBroadcastMsgs : getBroadcastMsgs,
   getConsultStatus : getConsultStatus,
   getConsultingPaymentInfo : getConsultingPaymentInfo,
   getAppMode: getAppMode

@@ -95,9 +95,7 @@ Page({
   // 关闭筛选器抽屉
   closeFilterDrawer(e) {
     this.applyFilters()
-    this.setData({
-      openDrawer : false
-    })
+    this.setData({ openDrawer : false })
   },
 
   // 根据最新的筛选器对当前的房源进行筛选
@@ -113,9 +111,7 @@ Page({
         if (chosenAreas.indexOf(areaName) == -1) {
           // 这个社区不需要显示
           thisArea['display'] = false
-          thisArea.projects.forEach(project => {
-            project['display'] = false
-          })
+          thisArea.projects.forEach(project => { project['display'] = false })
         } else {
           // 这个社区需要显示，逐个检查它的每个小区
           let needToDisplayThisArea = false
@@ -420,7 +416,7 @@ Page({
   onShareAppMessage: function(options) {
     var path = '/pages/allProjects/allProjects'
     return {
-      title : 'PD公租房',
+      title : '全部房源',
       path : '/pages/login/login?redirect=' + encodeURIComponent(path),
       imageUrl : '',
       success : function(res) {

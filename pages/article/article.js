@@ -1,8 +1,10 @@
 // pages/article/article.js
 const log = require('./../../utils/log')
+const app = getApp()
 Page({
   data: {
-    url : ''
+    url : '',
+    curComponentId: 0
   },
 
   onLoad: function (options) {
@@ -11,16 +13,30 @@ Page({
     if (options.url) {
       log.info(options)
 
-      this.setData({
-        url : options.url + '?mode=mini'
-      })
+      // WP的域名需要将用户的unionId添加到url中
+      if (options.url.indexOf('pd.vencloud.cn') === -1) {
+        this.setData({ url: options.url + '?mode=mini' })
+      } else {
+        this.setData({ url: options.url + '?weixin_user_id=' + app.globalData.userinfo.unionId + '&mode=mini' })
+      }
+    } else if (options['articleUrl'] && options['articleUrl'] != '') {
+      let url = options['articleUrl']
+      log.info(`分享文章链接是: ${url}`)
+      this.setData({ url: url + '?mode=mini'})
+    }
+
+    if(options.curComponentId) {
+      this.setData({curComponentId: options.curComponentId})
     }
   },
 
-  
+  extractUrl: function(url) {
+    var urlAndParam = url.split('?');
+    return urlAndParam[0]
+  },
   onShareAppMessage: function () {
     let self = this
-    var path = '/pages/newbee/newbee?tab=links&articleUrl=' + self.data.url
+    var path = '/pages/stream/stream?tab=article&articleUrl=' + self.extractUrl(self.data.url) + '&curComponentId=' + self.data.curComponentId
     return {
       title : 'PD公租房',
       path : '/pages/login/login?redirect=' + encodeURIComponent(path),

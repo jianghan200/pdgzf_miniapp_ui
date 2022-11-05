@@ -19,7 +19,8 @@ Page({
     hasNonageChildren : true,
     // 预览列表
     showPreviewModal : false,
-    previewList : []
+    previewList : [],
+    curComponentId: 0
   },
 
   // 导航栏上选择不同的tab
@@ -189,14 +190,17 @@ Page({
 
   onLoad: function (options) {
     log.info('onLoad materials')
+    if(options.curComponentId) {
+      this.setData({curComponentId: options.curComponentId})
+    }
   },
   
   // 转发
   onShareAppMessage: function(options) {
-    var path = '/pages/newbee/newbee?tab=materials'
+    var path = '/pages/stream/stream?tab=materials&curComponentId=' + this.data.curComponentId
     let self = this
     return {
-      title : 'PD公租房',
+      title : '申请材料',
       path : '/pages/login/login?redirect=' + encodeURIComponent(path),
       imageUrl : '',
       success : function(res) {
