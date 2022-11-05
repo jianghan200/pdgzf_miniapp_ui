@@ -78,8 +78,9 @@ Page({
     // options.webViewUrl
     var path = '/pages/flarum/flarum?url=' + options.webViewUrl
     return {
-      title: 'PD公租房',
+      title: this.data.title,
       path : '/pages/login/login?redirect=' + encodeURIComponent(path),
+      // path: 'pages/article/webview?url=' + options.webViewUrl 
       imageUrl : '',
       success : function(res) {
         if (res.errMsg == 'shareAppMessage:ok') {
@@ -96,8 +97,9 @@ Page({
       }
     }
   },
-
-  bindmessage(e) {//接收web-view传递的参数
+  
+  //接收web-view传递的页面标题参数
+  bindmessage(e) {
     console.log(e)
     const length = e.detail.data.length;
     if (length == 0){
@@ -112,4 +114,5 @@ Page({
   webviewReady: function(params) {
     console.log("tab webview ready");
   },
+
 })
