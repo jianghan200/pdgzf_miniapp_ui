@@ -26,20 +26,22 @@ const has_weixin_nickNameAndAvatar = function() {
   return app.globalData.userinfo.wxNickName && app.globalData.userinfo.wxNickName !== null && app.globalData.userinfo.wxNickName.trim() !== '' && app.globalData.userinfo.wxAvatarUrl && app.globalData.userinfo.wxAvatarUrl !== null && app.globalData.userinfo.wxAvatarUrl.trim() !== ''
 }
 
-// 向用户索要微信昵称和头像
+// 使用弹窗以及调用微信的接口向用户索要微信昵称和头像
 const ask_for_weixin_nickNameAndAvatar = function() {
-  let res = null
+  log.info(`即将向用户索要微信名和头像`)
+
   return new Promise((resolve) => {
     wx.showModal({
       title: '需要您的昵称和头像才能使用',
       content: '请点击同意按钮开始使用本程序',
       success: function(res) {
+        log.info('授权弹窗成功出现, 用户点击的结果如下')
         log.info(res)
-        log.info('用户点击了授权弹窗中的按钮')
   
         if (res.confirm) {
           // 用户点击了“同意”
           log.info('用户点击了同意')
+          log.info('调用微信getUserProfile, 需要用户二次点击同意')
           // 调用getUserProfile接口获得用户的头像和昵称
           wx.getUserProfile({
             desc: '需要您的昵称和头像',
@@ -47,8 +49,10 @@ const ask_for_weixin_nickNameAndAvatar = function() {
               // 用户同意提供昵称和头像
               const nickname = res.userInfo.nickName
               const avatarUrl = res.userInfo.avatarUrl
-              res = { 'wxNickName': nickname, 'wxAvatarUrl': avatarUrl }
-              resolve(res)
+
+              log.info(`用户同意授权了昵称: ${nickname}和头像: ${avatarUrl}`)
+
+              resolve({ 'wxNickName': nickname, 'wxAvatarUrl': avatarUrl })
             },
             fail: function(err) {
               log.error('用户拒绝了授权')
@@ -57,7 +61,7 @@ const ask_for_weixin_nickNameAndAvatar = function() {
               // Profile获取失败
               wx.showToast({ title: '很遗憾', icon: 'error' })
   
-              resolve(res)
+              resolve(null)
             }
           })
         } else {
@@ -65,7 +69,7 @@ const ask_for_weixin_nickNameAndAvatar = function() {
           // Profile获取失败
           wx.showToast({ title: '很遗憾', icon: 'error' })
   
-          resolve(res)
+          resolve(null)
         }
       },
       fail: function(err) {
@@ -73,7 +77,7 @@ const ask_for_weixin_nickNameAndAvatar = function() {
         log.error(err)
         wx.showToast({ title: '微信接口报错', icon: 'error' })
   
-        resolve(res)
+        resolve(null)
       }
     })
   })
@@ -134,14 +138,14 @@ const get_tencent_nicknameAndAvatar = function() {
           }).catch(err => {
             console.log(err)
             log.error(`Future返回了错误: ${err}`)
-            wx.showToast({ title: '服务器报错', icon: 'error' })
+            wx.showToast({ title: '信息上传失败', icon: 'error' })
   
             resolve(null)
           })
         }
       })
     } else {
-      log.info('该用户已经拥有微信昵称和头像')
+      log.info('该用户已经拥有微信昵称和头像, 继续')
       resolve({ 
         'wxNickName' : app.globalData.userinfo.wxNickName, 
         'wxAvatarUrl': app.globalData.userinfo.wxAvatarUrl 
