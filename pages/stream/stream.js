@@ -85,28 +85,33 @@ Page({
 
     const self = this
     wpHelper.get_WP_articles(pageNum, categoryIds).then(res => {
-      // 如果categoryIds为空，则为无差别读取
-      if (categoryIds.length == 0) {
-        // 在读取一般内容
-        const newArticles = self.data.articles.concat(res)
-        newArticles.forEach(article => {
-          if (article['categories'].indexOf(constants.vip_wp_category) == -1) {
-            // 一般文章
-            article['isVipArticle'] = false
-          } else {
-            // VIP文章
-            article['isVipArticle'] = true
-          }
-        })
-        self.setData({ articles: newArticles, pageNum: pageNum })
-      } else if (categoryIds.length == 1 && categoryIds[0] == constants.vip_wp_category) {
-        // 在读取VIP内容
-        const newArticles = self.data.vipArticles.concat(res)
-        self.setData({ vipArticles: newArticles, vipPageNum: pageNum })
+      if (res == null) {
+        // resolve了但是为null，说明request得到了响应，但是后端出现了一些问题
+        wx.showToast({ title: '服务器出错', icon: 'none' })
+      } else if (res.length == 0) {
+        // resolve了但是结果为空[], 说明request得到了响应，但是找不到更多的文章了
+        wx.showToast({ title: '找不到更多内容了', icon: 'none' })
       } else {
-        // 既不是在无差别加载，也不是在加载VIP文章
-        const newArticles = self.data.articles.concat(res)
-        self.setData({ articles: newArticles, pageNum: pageNum })
+        // 正常，有文章返回
+        if (categoryIds.length == 1 && categoryIds[0] == constants.vip_wp_category) {
+          // 在读取VIP内容
+          const newArticles = self.data.vipArticles.concat(res)
+          self.setData({ vipArticles: newArticles, vipPageNum: pageNum })
+        } else {
+          // 在读取一般内容
+          const newArticles = self.data.articles.concat(res)
+          // vip文章有可能带着别的类别，所以还是要甄别一下。
+          newArticles.forEach(article => {
+            if (article['categories'].indexOf(constants.vip_wp_category) == -1) {
+              // 一般文章
+              article['isVipArticle'] = false
+            } else {
+              // VIP文章
+              article['isVipArticle'] = true
+            }
+          })
+          self.setData({ articles: newArticles, pageNum: pageNum })
+        }
       }
       wx.hideLoading()
     }).catch(err => {
@@ -124,7 +129,14 @@ Page({
     if (e.currentTarget.dataset.atype) {
       if (e.currentTarget.dataset.atype == 0) {
         // 加载另一页一般文章
-        this.loadArticles(this.data.pageNum + 1, [])
+        // 根据用户选择的类别重新获取WP文章
+        const selected_categoryIds = 
+          this.data.selected_categories.map(cname => this.category_name2id(cname)).filter(id => id != -1)
+        if (selected_categoryIds.length == 0) {
+          this.loadArticles(this.data.pageNum + 1, [])
+        } else {
+          this.loadArticles(this.data.pageNum + 1, selected_categoryIds)
+        }
       } else if (e.currentTarget.dataset.atype == constants.vip_wp_category) {
         // 加载另一页vip文章
         this.loadArticles(this.data.vipPageNum + 1, [constants.vip_wp_category])

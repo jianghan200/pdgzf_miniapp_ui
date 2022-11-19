@@ -433,8 +433,8 @@ const copyToClipboard = function(str) {
 const generate_flarum_url = function(webUrl) {
   const url = 'https://pdbbs.vencloud.cn/api/wechatl?unionId=' + 
                 app.globalData.userinfo.unionId + 
-                '&nickname=' + app.globalData.nickname + 
-                '&avatarUrl=' + app.globalData.avatarUrl +
+                '&nickname=' + app.globalData.userinfo.wxNickName + 
+                '&avatarUrl=' + app.globalData.userinfo.wxAvatarUrl +
                 '&url=' + webUrl
   return url
 }

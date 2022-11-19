@@ -46,7 +46,21 @@ const get_WP_articles = function(pageNum, categoryIds) {
       url: url,
       method: 'GET',
       success: res => {
-        return resolve(res.data)
+        log.info(res)
+
+        if (res.statusCode == 200) {
+          log.info('成功返回文章')
+          // request成功返回并且结果符合预期
+          return resolve(res.data)
+        } else if (res.statusCode == 400) {
+          log.info('找不到更多内容了')
+          // 后端已经找不到更多内容了
+          return resolve([])
+        } else {
+          log.error(`请求得到响应，但是后端返回statusCode: ${res.statusCode}`)
+          // 虽然成功返回，但是遭遇了未知的问题
+          return resolve(null)
+        }
       },
       fail: err => {
         console.log(err)
@@ -60,7 +74,7 @@ const get_WP_articles = function(pageNum, categoryIds) {
 
 // 所有wp文章类别
 const wp_article_categories = function() {
-  const url = constants.prodFeedbackServer + '/wp-json/wp/v2/categories'
+  const url = constants.prodFeedbackServer + '/wp-json/wp/v2/categories/?per_page=100&orderby=count'
   return new Promise((resolve, reject) => {
     wx.request({
       url: url,
