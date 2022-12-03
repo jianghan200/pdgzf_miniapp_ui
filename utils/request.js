@@ -831,86 +831,6 @@ const generateArticleIdOf = function(pid) {
   return `pdgzf_project_${pid}`
 }
 
-// 向腾讯云后台上传用户在某个小区下的评论
-const sendCommentOnSomeProject = function(pid, comments) {
-  log.info(`向云后台发布评论：${comments} (${pid})`)
-  
-  return new Promise((resolve, reject) => {
-    wx.cloud.callFunction({
-      name : 'comment',
-      data : {
-        action: "NEW",
-        uid: app.globalData.userinfo.unionId,
-        aid: pid, 
-        comment: comments,
-        avatarUrl: app.globalData.avatarUrl,
-        nickName: app.globalData.nickname,
-      },
-      success: function(res) {
-        // request发送成功
-        log.info(res)
-        if (res.result.code == 200 || res.result.code == 201) {
-          log.info('评论发布成功！')
-
-          resolve(true)
-        } else {
-          log.error('评论发布失败')
-          log.error(res)
-          
-          resolve(false)
-        }
-        resolve(true)
-      },
-      fail: function(err) {
-        log.error('评论发送失败')
-        log.error(err)
-
-        resolve(false)
-      }
-    })
-  })
-}
-
-// 获取某个小区的全部评论
-const getCommentsOf = function(pid) {
-  log.info(`向云后台索要${pid}的全部评论`)
-
-  return new Promise((resolve, reject) => {
-    wx.cloud.callFunction({
-      name: 'comment',
-      data: {
-        action: "GET_LIST",
-        aid: pid
-      },
-      success: function(res) {
-        log.info('收到云后台回复')
-        log.info(res)
-        
-        if (res.result.code == 200 || res.result.code == 201) {
-          log.info(`成功获得评论列表(${res.result.data.length})`)
-  
-          resolve(res.result.data)
-        } else {
-          log.error(`未能获得评论列表，云后台出现错误`)
-          log.error(res)
-          
-          wx.showToast({
-            title: '微信错误',
-            icon: 'error'
-          })
-  
-          resolve([])
-        }
-      },
-      fail: function(err) {
-        log.error(`未能获得评论列表（${pid}）`)
-        log.error(err)
-  
-        reject([])
-      }
-    })
-  })
-}
 // 获得付费咨询信息
 const getConsultStatus = function() {
   log.info(`获取是否付费咨询的信息`)
@@ -1020,8 +940,6 @@ module.exports = {
   getCandidatesCounts : getCandidatesCounts,
   getValidCandidatesCounts : getValidCandidatesCounts,
   getMonthlyHouseCount : getMonthlyHouseCount,
-  sendCommentOnSomeProject : sendCommentOnSomeProject,
-  getCommentsOf : getCommentsOf,
   getConsultStatus : getConsultStatus,
   getConsultingPaymentInfo : getConsultingPaymentInfo,
   getAppMode: getAppMode

@@ -11,44 +11,32 @@ App({
     /*
       在程序刚刚launch的时候画导航栏
     */
-    if (!wx.cloud) {
-      log.error('用户的微信版本过低，不支持云函数功能。')
-
-      wx.showModal({
-        'title' : '微信版本过低',
-        'content' : '请升级微信然后重新进入小程序'
-      })
-    } else {
-      // init云函数
-      wx.cloud.init({ env : 'cloud1-5gtv3q024bdc282e', traceUser : true })
-
-      wx.getSystemInfo({
-        success: (result) => {
-          this.globalData.StatusBar = result.statusBarHeight;
-          /*
-            通过 wx.qy.getMenuButtonBoundingClientRect() 获取胶囊按钮的信息 
-            capsule: 胶囊
-          */
-          let capsule = wx.getMenuButtonBoundingClientRect();
-          if (capsule) {
-            this.globalData.Custom = capsule;
-            // (capsule.top - result.statusBarHeight)过小，本来要乘2，为了让其饱满一些，乘四
-            this.globalData.CustomBar = result.statusBarHeight + capsule.height + (capsule.top - result.statusBarHeight) * 4;
-          } else {
-            this.globalData.CustomBar = result.statusBarHeight + 50;
-          }
-          /*
-            在小程序中需要使用大量图片，为了加速图片的加载，在非IOS的环境中将使用webp格式的图片。
-          */
-          log.info(result.system)
-          
-          if (result.system.indexOf('iOS') != -1) {
-            this.globalData.IOS = true
-          }
-        },
-        fail: (result) => {}
-      })
-    }
+    wx.getSystemInfo({
+      success: (result) => {
+        this.globalData.StatusBar = result.statusBarHeight;
+        /*
+          通过 wx.qy.getMenuButtonBoundingClientRect() 获取胶囊按钮的信息 
+          capsule: 胶囊
+        */
+        let capsule = wx.getMenuButtonBoundingClientRect();
+        if (capsule) {
+          this.globalData.Custom = capsule;
+          // (capsule.top - result.statusBarHeight)过小，本来要乘2，为了让其饱满一些，乘四
+          this.globalData.CustomBar = result.statusBarHeight + capsule.height + (capsule.top - result.statusBarHeight) * 4;
+        } else {
+          this.globalData.CustomBar = result.statusBarHeight + 50;
+        }
+        /*
+          在小程序中需要使用大量图片，为了加速图片的加载，在非IOS的环境中将使用webp格式的图片。
+        */
+        log.info(result.system)
+        
+        if (result.system.indexOf('iOS') != -1) {
+          this.globalData.IOS = true
+        }
+      },
+      fail: (result) => {}
+    })
   },
 
   // 检查版本，prompt用户下载新版本
