@@ -5,6 +5,7 @@ const dataHelper = require('../../utils/data')
 const subHelper = require('../../utils/subscripton')
 const contants = require('../../utils/constants')
 const constants = require('../../utils/constants')
+const pinyinMatch = require('pinyin-match')
 
 Page({
   data: {
@@ -236,27 +237,42 @@ Page({
   },
 
   // 搜索小区的名字
-  searchPname(e) {
-    let key = e.detail.value
+  searchProject(e) {
+    const key = e.detail.value
     let newList = this.data.list
-    for (let areaIdx = 0; areaIdx < newList.length; areaIdx++) {
-      let areaDisplay = false
-      let projectOfThisArea = newList[areaIdx].projects
-      for (let pIdx = 0; pIdx < projectOfThisArea.length; pIdx++) {
-        if (projectOfThisArea[pIdx].pName.search(key) != -1) {
-          // 有这个关键字
-          newList[areaIdx].projects[pIdx].display = true
-          areaDisplay = true
-        } else {
-          newList[areaIdx].projects[pIdx].display = false
+    if (key.trim() !== '') {
+      // 遍历社区
+      for (let areaIdx = 0; areaIdx < newList.length; areaIdx++) {
+        let areaDisplay = false
+        // 某个社区的小区
+        const projectsOfThisArea = newList[areaIdx].projects
+        // 遍历小区
+        for (let pIdx = 0; pIdx < projectsOfThisArea.length; pIdx++) {
+          const targetString = projectsOfThisArea[pIdx].pName
+          const testRes = pinyinMatch.match(targetString, key)
+          if (testRes === false) {
+            // 没匹配成功
+            newList[areaIdx].projects[pIdx].display = false
+          } else {
+            // 有这个关键字
+            newList[areaIdx].projects[pIdx].display = true
+            areaDisplay = true
+          }
         }
+        newList[areaIdx].display = areaDisplay
       }
-      newList[areaIdx].display = areaDisplay
-    }
 
-    this.setData({
-      list : newList
-    })
+      this.setData({ list : newList })
+    } else {
+      // 输入空字符或者remove了搜索输入
+      for (let areaIdx = 0; areaIdx < newList.length; areaIdx++) {
+        for (let pIdx = 0; pIdx < newList[areaIdx].projects.length; pIdx++) {
+          newList[areaIdx].projects[pIdx].display = true
+        }
+        newList[areaIdx].display = true
+      }
+      this.setData({ list : newList })
+    }
   },
 
   // 导航到某个小区

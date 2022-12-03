@@ -308,12 +308,12 @@
                   <text>选中人资格</text>
                 </view>
                 <view class="cu-item">
-                  <text class="text-bold" wx:if="{{ isVip }}">{{ info.ownerWaitingDays }}</text>
+                  <text class="text-bold" wx:if="{{ isVip }}">{{ info.ownerWaitingDays }}天</text>
                   <text class="text-bold" bindtap="promptUsersToBecomeVip" style="color: goldenrod;" wx:else>VIP内容</text>
                   <text>等待时长</text>
                 </view>
                 <view class="cu-item">
-                  <text class="text-bold" wx:if="{{ isVip }}">{{ info.hotIndexOnPickedDate }}</text>
+                  <text class="text-bold" wx:if="{{ isVip }}">{{ info.hotIndexOnPickedDate }}人参与排队</text>
                   <text class="text-bold" bindtap="promptUsersToBecomeVip" style="color: goldenrod;" wx:else>VIP内容</text>
                   <text>选中日热度</text>
                 </view>

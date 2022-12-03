@@ -23,7 +23,7 @@
   <view class="cu-bar bg-white search">
     <view class="search-form round">
       <text class="cuIcon-search"></text>
-      <input type="text" placeholder="搜索小区名字 / 地址" confirm-type="search" bindinput="searchPname"></input>
+      <input type="text" placeholder="搜索小区名字 / 地址 (支持如: ady -> 艾东苑)" confirm-type="search" bindinput="searchProject"></input>
     </view>
   </view>
 </view>
@@ -38,7 +38,7 @@
     <view
       wx:for="{{list}}"
       wx:for-item="area"
-      wx:key="*this"
+      wx:key="areaId"
       id="main-{{index}}"
     >
       <!-- 社区名称 -->
@@ -53,7 +53,7 @@
       <block
         wx:for="{{area.projects}}"
         wx:for-item="project"
-        wx:key="*this"
+        wx:key="pId"
       >
         <view 
           class="cu-item arrow" 

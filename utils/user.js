@@ -21,9 +21,9 @@ const hasStartDate = function() {
 }
 
 // 判断后端是否有用户的微信昵称和头像
-// 不是undefined，不是null，不是空字符串
+// 不是undefined，不是null，不是空字符串, 不是叫"undefined"的字符串
 const has_weixin_nickNameAndAvatar = function() {
-  return app.globalData.userinfo.wxNickName && app.globalData.userinfo.wxNickName !== null && app.globalData.userinfo.wxNickName.trim() !== '' && app.globalData.userinfo.wxAvatarUrl && app.globalData.userinfo.wxAvatarUrl !== null && app.globalData.userinfo.wxAvatarUrl.trim() !== ''
+  return app.globalData.userinfo.wxNickName && app.globalData.userinfo.wxNickName !== null && app.globalData.userinfo.wxNickName.trim() !== '' && app.globalData.userinfo.wxAvatarUrl && app.globalData.userinfo.wxAvatarUrl !== null && app.globalData.userinfo.wxAvatarUrl.trim() !== '' && app.globalData.userinfo.wxAvatarUrl.trim() !== 'undefined' && app.globalData.userinfo.wxNickName.trim() !== 'undefined'
 }
 
 // 使用弹窗以及调用微信的接口向用户索要微信昵称和头像
