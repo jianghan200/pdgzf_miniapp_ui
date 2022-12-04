@@ -12,7 +12,12 @@ function sliceOf(str) {
   }
 }
 
+function id2RoomType(id) {
+  return ["未知", "一室", "一室一厅", "两室", "两室一厅", "三室", "三室一厅", "四室", "五室"][id]
+}
+
 module.exports = {
   indexOf : indexOf,
-  sliceOf : sliceOf
+  sliceOf : sliceOf,
+  id2RoomType: id2RoomType
 }

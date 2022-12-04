@@ -139,5 +139,26 @@
         >{{category}}</view>
       </block>
     </view>
+
+    <!-- 户型 -->
+    <view class="text-bold filter-subtitle">户型</view>
+    <view style="padding: 10rpx; display: flex; flex-wrap: wrap;">
+      <view 
+        class="cu-tag round bg-{{ roomTypes.length == chosenRoomTypes.length ? 'black' : 'grey' }}" 
+        data-rtid="all"
+        style="margin: 5rpx;" 
+        bindtap="tapRoomTypes"
+      >全选</view>
+      <block wx:for="{{roomTypes}}" wx:for-item="roomType" wx:key="*this">
+        <view 
+          class="cu-tag round bg-{{ tools.indexOf(chosenRoomTypes, roomType) == -1 ? 'grey' : 'black' }}" 
+          data-rtid="{{roomType}}"
+          style="margin: 5rpx;" 
+          bindtap="tapRoomTypes"
+        >{{ tools.id2RoomType(roomType) }}</view>
+      </block>
+    </view>
+
+    金额
   </view>
 </view>

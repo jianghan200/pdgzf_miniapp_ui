@@ -129,14 +129,18 @@ const handleAllProjects = function(projects, info, subscriptionsRawData) {
     areas.map(group => {
       let sampleElem = group[0]
       // 社区名称
-      let areaName = sampleElem.townshipName
-      
+      let areaName = sampleElem.townshipName == null ? '未知街道' : sampleElem.townshipName
       let projects = 
         group.map(elem => {
           // 判断该小区是否已经被订阅
-          let subscriptionOpt = subscriptionsRawData.find(sub => sub.projectId == elem.id)
+          const subscriptionOpt = subscriptionsRawData.find(sub => sub.projectId == elem.id)
           // 判断该小区是否有房屋信息
-          let houseInfoOpt = houseInfoInGroups.find(g => g.pId == elem.id)
+          const houseInfoOpt = houseInfoInGroups.find(g => g.pId == elem.id)
+          // 小区存在户型
+          const available_room_type_ids = elem.room_types == undefined ? [] : JSON.parse(elem.room_types)
+          // 小区房间当前的价格区间
+          const cap = elem.price_cap == undefined ? -1 : elem.price_cap
+          const floor = elem.price_floor == undefined ? -1: elem.price_floor
           let project = {
             pId: elem.id,
             pName: elem.name,
@@ -145,6 +149,9 @@ const handleAllProjects = function(projects, info, subscriptionsRawData) {
             isSubscribed: subscriptionOpt == undefined ? false : true,
             ruleId: subscriptionOpt == undefined ? '' : subscriptionOpt.id,
             houseInfo: houseInfoOpt == undefined ? [] : houseInfoOpt.houseInfo,
+            available_room_type_ids: available_room_type_ids,
+            cap: cap,
+            floor: floor,
             raw: elem
           }
           return project

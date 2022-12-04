@@ -14,14 +14,19 @@ Page({
     reqSuccessful: false,
     // 筛选器抽屉
     openDrawer: false,
-    // 筛选器
+    // 以下均为筛选器
     // 全部的areaName
     areas : [],
-    // 选择的areaName
     chosenAreas : [],
-    // 房源数量的category
+    // 按照小区房源数量筛选
     rentableCountCategory : [],
-    chosenRentableCountCategory : []
+    chosenRentableCountCategory : [],
+    // 按照小区可选的户型筛选
+    roomTypes: [],
+    chosenRoomTypes: [],
+    // 按照价格筛选
+    chosenPriceFloor: 0,
+    chosenPriceCap: null // 需要根据现有数据计算
   },
 
   onLoad: function (options) {
@@ -37,13 +42,10 @@ Page({
     let self = this
     dataHelper
       .loadAllProjectsData()
-      .then((res) => {
+      .then(() => {
         log.info('loadAllProjectsData 成功')
 
-        wx.showToast({
-          title: '数据读取成功！',
-          icon: 'success'
-        })
+        wx.showToast({ title: '数据读取成功！', icon: 'success' })
         // 跟onload一样
         self.useAllProjectsInStorage()
       })
@@ -52,10 +54,7 @@ Page({
         log.error(err)
         console.log(err)
 
-        wx.showToast({
-          title: '数据获取失败',
-          icon: 'error'
-        })
+        wx.showToast({ title: '数据获取失败', icon: 'error' })
       })
   },
 
@@ -67,8 +66,8 @@ Page({
       log.info('allProjects 获取成功')
 
       const newList = self.preproccess(allProjects)
-      let areaNames = newList.map(area => area.areaName == null ? '未知街道' : area.areaName)
-      let rentableCountCategoryNames = contants.rentableCountCategory
+      const areaNames = newList.map(area => area.areaName == null ? '未知街道' : area.areaName)
+      const rentableCountCategoryNames = contants.rentableCountCategory
       self.setData({
         list : newList,
         // 默认全选中
@@ -76,6 +75,8 @@ Page({
         chosenAreas : areaNames.concat([]),
         rentableCountCategory : rentableCountCategoryNames,
         chosenRentableCountCategory : rentableCountCategoryNames.concat([]),
+        roomTypes: constants.allRoomTypes,
+        chosenRoomTypes: constants.allRoomTypes.concat([]),
         reqSuccessful : true
       })
     } else {
@@ -88,9 +89,7 @@ Page({
 
   // 点开筛选器抽屉
   openFilterDrawer(e) {
-    this.setData({
-      openDrawer : true
-    })
+    this.setData({ openDrawer : true })
   },
 
   // 关闭筛选器抽屉
@@ -108,8 +107,7 @@ Page({
       // 逐个检查社区 / 小区是否需要显示
       for (let aIdx = 0; aIdx < allProjects.length; aIdx++) {
         let thisArea = allProjects[aIdx]
-        let areaName = thisArea.areaName == null ? '未知街道' : thisArea.areaName
-        if (chosenAreas.indexOf(areaName) == -1) {
+        if (chosenAreas.indexOf(thisArea.areaName) == -1) {
           // 这个社区不需要显示
           thisArea['display'] = false
           thisArea.projects.forEach(project => { project['display'] = false })
@@ -118,7 +116,7 @@ Page({
           let needToDisplayThisArea = false
           for (let pIdx = 0; pIdx < thisArea.projects.length; pIdx++) {
             let thisProject = thisArea.projects[pIdx]
-            if (this.ofChosenRentableCountCategory(thisProject.rentableCount)) {
+            if (this.eligible_for_rentableCounts(thisProject.rentableCount) && this.eligible_for_room_type(thisProject.available_room_type_ids)) {
               // 这个小区需要显示
               thisProject['display'] = true
               needToDisplayThisArea = true
@@ -130,14 +128,12 @@ Page({
           thisArea['display'] = needToDisplayThisArea
         }
       }
-      this.setData({
-        list : allProjects
-      })
+      this.setData({ list : allProjects })
     }
   },
 
-  // Given a count, decide whether this count fallas into any chosen rentable count category
-  ofChosenRentableCountCategory(count) {
+  // Given a count, decide whether this count falls into any chosen rentable count category
+  eligible_for_rentableCounts(count) {
     let res = false
     const chosenCategory = this.data.chosenRentableCountCategory
 
@@ -150,6 +146,20 @@ Page({
           res = true
           break;
         }
+      }
+    }
+    return res
+  },
+
+  // 根据户型筛选, 返回boolean
+  eligible_for_room_type(roomTypeArray) {
+    let res = false
+    for (let i = 0; i < roomTypeArray.length; i++) {
+      const roomType = roomTypeArray[i]
+      if (this.data.chosenRoomTypes.indexOf(roomType) !== -1) {
+        // 这个小区存在用户选中的户型
+        res = true
+        break;
       }
     }
     return res
@@ -193,18 +203,14 @@ Page({
 
   // 筛选器中选择小区房源数量
   tapRentableCounts(e) {
-    let tappedCategory = e.currentTarget.dataset.category
+    const tappedCategory = e.currentTarget.dataset.category
     if (tappedCategory == 'all') {
       if (this.data.rentableCountCategory.length != this.data.chosenRentableCountCategory.length) {
         // 有部分未选中的，此时点击all，即为select All
-        this.setData({
-          chosenRentableCountCategory : this.data.rentableCountCategory
-        })
+        this.setData({ chosenRentableCountCategory : this.data.rentableCountCategory })
       } else {
         // 全选中，此时点击all，即为deselect All
-        this.setData({
-          chosenRentableCountCategory : []
-        })
+        this.setData({ chosenRentableCountCategory : [] })
       }
     } else {
       // tap的并不是all
@@ -212,27 +218,48 @@ Page({
       if (curRentableCountCategory.indexOf(tappedCategory) == -1) {
         // 是选中
         curRentableCountCategory.push(tappedCategory)
-        this.setData({
-          chosenRentableCountCategory : curRentableCountCategory
-        })
+        this.setData({ chosenRentableCountCategory : curRentableCountCategory })
       } else {
         // 是deselect
         curRentableCountCategory.splice(curRentableCountCategory.indexOf(tappedCategory), 1)
-        this.setData({
-          chosenRentableCountCategory : curRentableCountCategory
-        })
+        this.setData({ chosenRentableCountCategory : curRentableCountCategory })
+      }
+    }
+  },
+
+  // 筛选器中选择户型
+  tapRoomTypes(e) {
+    const tappedRoomType = e.currentTarget.dataset.rtid
+    if (tappedRoomType == 'all') {
+      if (this.data.roomTypes.length != this.data.chosenRoomTypes.length) {
+        // 有部分未选中的，此时点击all，即为select All
+        this.setData({ chosenRoomTypes: this.data.roomTypes })
+      } else {
+        // 全选中，此时点击all，即为deselect All
+        this.setData({ chosenRoomTypes: [] })
+      }
+    } else {
+      // tap的并不是all
+      let curRoomTypes = this.data.chosenRoomTypes.concat([])
+      if (curRoomTypes.indexOf(tappedRoomType) == -1) {
+        // 是选中
+        curRoomTypes.push(tappedRoomType)
+        this.setData({ chosenRoomTypes: curRoomTypes })
+      } else {
+        // 是deselect
+        curRoomTypes.splice(curRoomTypes.indexOf(tappedRoomType), 1)
+        this.setData({ chosenRoomTypes: curRoomTypes })
       }
     }
   },
 
   // 为了方便显示，对allProjects进行加工
   preproccess(allProjects) {
+    // 针对小区的可见度
     allProjects.forEach(area => {
       area['display'] = true
-      area.projects.forEach(project => {
-        project['display'] = true
-      });
-    });
+      area.projects.forEach(project => { project['display'] = true });
+    })
     return allProjects
   },
 
@@ -277,18 +304,12 @@ Page({
 
   // 导航到某个小区
   navToProject(e) {
-    let pId = e.currentTarget.dataset.pid
-    let url = '../community/community?pid=' + pId
-    wx.navigateTo({
-      url: url,
-    })
+    wx.navigateTo({ url: '../community/community?pid=' + e.currentTarget.dataset.pid })
   },
 
   // 在地图上查看所有房源
   openMap(e) {
-    wx.navigateTo({
-      url: '/pages/map/map?mode=all',
-    })
+    wx.navigateTo({ url: '/pages/map/map?mode=all' })
   },
 
   // 判断这个用户是否需要授权我们获得ta的昵称

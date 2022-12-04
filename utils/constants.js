@@ -52,6 +52,7 @@ const vipSampleProjectId = 349481
 // 2021-04-26
 const vipStartDate = new Date(2021, 3, 26)
 
+// allProjects页使用的小区房间数区间
 const rentableCountCategory = ['小于10', '10 ~ 50', '50 ~ 100', '大于100']
 const rentableCountLimits = function(category) {
   let res = []
