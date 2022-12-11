@@ -267,7 +267,7 @@ Page({
     } else if (prevPageRoute == 'pages/allProjects/allProjects') {
       log.info('从社区页返回allProjects')
 
-      prevPage.useAllProjectsInStorage()
+      prevPage.preprocess()
     }
     
     wx.navigateBack({ delta: 1 })
@@ -528,10 +528,8 @@ Page({
 
   // hide / unhide日历
   changeCalendarState(e) {
-    let beforeChange = this.data.calendarHidden
-    this.setData({
-      calendarHidden : !beforeChange
-    })
+    const beforeChange = this.data.calendarHidden
+    this.setData({ calendarHidden : !beforeChange })
   },
 
   // 订阅 / 取消订阅

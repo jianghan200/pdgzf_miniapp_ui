@@ -18,21 +18,25 @@ Page({
     // 全部的areaName
     areas : [],
     chosenAreas : [],
+    hideAreaFilter: true,
     // 按照小区房源数量筛选
     rentableCountCategory : [],
     chosenRentableCountCategory : [],
+    hideRentableCountFilter: true,
     // 按照小区可选的户型筛选
     roomTypes: [],
     chosenRoomTypes: [],
+    hideRoomTypesFilter: true,
     // 按照价格筛选
-    chosenPriceFloor: 0,
-    chosenPriceCap: null // 需要根据现有数据计算
+    priceIntervals: [],
+    chosenPriceIntervals: [],
+    hidePriceFilter: true
   },
 
   onLoad: function (options) {
     log.info('onLoad allProjects')
 
-    this.useAllProjectsInStorage()
+    this.preprocess()
   },
 
   // 重新请求全部房源的数据。
@@ -47,7 +51,7 @@ Page({
 
         wx.showToast({ title: '数据读取成功！', icon: 'success' })
         // 跟onload一样
-        self.useAllProjectsInStorage()
+        self.preprocess()
       })
       .catch((err) => {
         log.error('loadAllProjectsData 失败')
@@ -59,31 +63,75 @@ Page({
   },
 
   // 重新读取缓存中的allProjects
-  useAllProjectsInStorage() {
+  preprocess() {
     const self = this
     const allProjects = wx.getStorageSync('allProjects')
     if (allProjects && allProjects.length > 0) {
-      log.info('allProjects 获取成功')
+      log.info('allProjects获取成功')
 
-      const newList = self.preproccess(allProjects)
-      const areaNames = newList.map(area => area.areaName == null ? '未知街道' : area.areaName)
+      allProjects.forEach(area => {
+        area['display'] = true
+        area.projects.forEach(project => { project['display'] = true });
+      })
+      const areaNames = allProjects.map(area => area.areaName == null ? '未知街道' : area.areaName)
       const rentableCountCategoryNames = contants.rentableCountCategory
+      const priceCapOfAll = self.priceCapFloorOfAllProjects(allProjects)[0]
+      const priceFloorOfAll = self.priceCapFloorOfAllProjects(allProjects)[1]
+      const priceIntervals = self.generatePriceIntervals(priceFloorOfAll, priceCapOfAll)
       self.setData({
-        list : newList,
-        // 默认全选中
+        list : allProjects,
         areas : areaNames,
         chosenAreas : areaNames.concat([]),
         rentableCountCategory : rentableCountCategoryNames,
         chosenRentableCountCategory : rentableCountCategoryNames.concat([]),
         roomTypes: constants.allRoomTypes,
         chosenRoomTypes: constants.allRoomTypes.concat([]),
-        reqSuccessful : true
+        reqSuccessful : true,
+        priceIntervals: priceIntervals,
+        chosenPriceIntervals: priceIntervals.concat([])
       })
     } else {
       log.error('allProjects 获取失败')
       // 请求失败了，需要特殊处理，立一个flag
 
       this.setData({ reqSuccessful : false })
+    }
+  },
+
+  // 找到最高和最低价格
+  priceCapFloorOfAllProjects(list) {
+    const priceCaps = []
+    const priceFloors = []
+    list.forEach(element => { element.projects.forEach(p => { 
+      if (p.cap > 0) { priceCaps.push(p.cap) }
+      if (p.floor > 0) { priceFloors.push(p.floor) }
+    })})
+    return [Math.max(...priceCaps), Math.min(...priceCaps)]
+  },
+
+  // 生成房屋价格区间
+  generatePriceIntervals(priceFloor, priceCap) {
+    const intervals = []
+    const intervalsInText = []
+    if (priceFloor <= 2000) {
+      intervals.push(priceFloor)
+      intervals.push(2000)
+    }
+    for (let newCapOfThisInterval = 4000; newCapOfThisInterval < priceCap; newCapOfThisInterval += 2000) {
+      intervals.push(newCapOfThisInterval)
+    }
+    intervals.push(priceCap)
+    if (intervals.length < 2) {
+      log.error(`未能正确生成价格区间，floor: ${priceFloor}, cap: ${priceCap}`)
+      
+      return []
+    } else {
+      for (let i = 1; i < intervals.length; i++) {
+        const cur_floor = intervals[i - 1]
+        const cur_cap = intervals[i]
+        intervalsInText.push([cur_floor, cur_cap])
+      }
+      return intervalsInText
     }
   },
 
@@ -98,12 +146,49 @@ Page({
     this.setData({ openDrawer : false })
   },
 
+  // hide/unhide社区筛选器
+  changeAreaFilterDisplayStatus(e) {
+    const curStatus = this.data.hideAreaFilter
+    this.setData({ hideAreaFilter: !curStatus })
+  },
+
+  // hide/unhide房源数量筛选器
+  changeRentableCountsFilterDisplayStatus(e) {
+    const curStatus = this.data.hideRentableCountFilter
+    this.setData({ hideRentableCountFilter: !curStatus })
+  },
+
+  // hide/unhide户型筛选器
+  changeRoomTypesFilterDisplayStatus(e) {
+    const curStatus = this.data.hideRoomTypesFilter
+    this.setData({ hideRoomTypesFilter: !curStatus })
+  },
+
+  // hide/unhide价格筛选器
+  changePriceFilterDisplayStatus(e) {
+    const curStatus = this.data.hidePriceFilter
+    this.setData({ hidePriceFilter: !curStatus })
+  },
+
+  // 重置所有的筛选器
+  resetFilter(e) {
+    log.info('重置筛选器')
+
+    this.setData({
+      chosenAreas: this.data.areas,
+      chosenRentableCountCategory: this.data.rentableCountCategory,
+      chosenRoomTypes: this.data.roomTypes,
+      chosenPriceIntervals: this.data.priceIntervals
+    })
+  },
+
   // 根据最新的筛选器对当前的房源进行筛选
   applyFilters() {
     const chosenAreas = this.data.chosenAreas
     // 每次apply Filter的起点都是原始的allProjects
     let allProjects = wx.getStorageSync('allProjects')
     if (allProjects) {
+      let displayed_project_counts = 0
       // 逐个检查社区 / 小区是否需要显示
       for (let aIdx = 0; aIdx < allProjects.length; aIdx++) {
         let thisArea = allProjects[aIdx]
@@ -116,10 +201,11 @@ Page({
           let needToDisplayThisArea = false
           for (let pIdx = 0; pIdx < thisArea.projects.length; pIdx++) {
             let thisProject = thisArea.projects[pIdx]
-            if (this.eligible_for_rentableCounts(thisProject.rentableCount) && this.eligible_for_room_type(thisProject.available_room_type_ids)) {
+            if (this.eligible_for_rentableCounts(thisProject.rentableCount) && this.eligible_for_room_type(thisProject.available_room_type_ids) && this.eligible_for_price_intervals(thisProject.floor, thisProject.cap)) {
               // 这个小区需要显示
               thisProject['display'] = true
               needToDisplayThisArea = true
+              displayed_project_counts++
             } else {
               // 这个小区不能显示
               thisProject['display'] = false
@@ -128,6 +214,8 @@ Page({
           thisArea['display'] = needToDisplayThisArea
         }
       }
+      wx.showToast({ title: `找到${displayed_project_counts}个小区` })
+
       this.setData({ list : allProjects })
     }
   },
@@ -165,6 +253,21 @@ Page({
     return res
   },
 
+  // 根据价格筛选，返回boolean
+  eligible_for_price_intervals(floor, cap) {
+    let res = false
+    for (let i = 0; i < this.data.chosenPriceIntervals.length; i++) {
+      const curPriceInterval = this.data.chosenPriceIntervals[i]
+      const low = curPriceInterval[0]
+      const high = curPriceInterval[1]
+      if (!(floor > high || cap < low)) {
+        res = true
+        break
+      }
+    }
+    return res
+  },
+
   // 筛选器中选择社区
   tapArea(e) {
     let tappedAreaName = e.currentTarget.dataset.areaname
@@ -173,14 +276,10 @@ Page({
       // 可能是deselect All或者select All
       if (this.data.areas.length != this.data.chosenAreas.length) {
         // 有部分未选中的，此时点击all，即为select All
-        this.setData({
-          chosenAreas : this.data.areas
-        })
+        this.setData({ chosenAreas : this.data.areas })
       } else {
         // 全选中，此时点击all，即为deselect All
-        this.setData({
-          chosenAreas : []
-        })
+        this.setData({ chosenAreas : [] })
       }
     } else {
       // tap的并不是all
@@ -188,15 +287,11 @@ Page({
       if (curChosenAreas.indexOf(tappedAreaName) == -1) {
         // 是选中
         curChosenAreas.push(tappedAreaName)
-        this.setData({
-          chosenAreas : curChosenAreas
-        })
+        this.setData({ chosenAreas : curChosenAreas })
       } else {
         // 是deselect
         curChosenAreas.splice(curChosenAreas.indexOf(tappedAreaName), 1)
-        this.setData({
-          chosenAreas : curChosenAreas
-        })
+        this.setData({ chosenAreas : curChosenAreas })
       }
     }
   },
@@ -253,18 +348,37 @@ Page({
     }
   },
 
-  // 为了方便显示，对allProjects进行加工
-  preproccess(allProjects) {
-    // 针对小区的可见度
-    allProjects.forEach(area => {
-      area['display'] = true
-      area.projects.forEach(project => { project['display'] = true });
-    })
-    return allProjects
+  // 筛选器选中了价格区间
+  tapPriceIntervals(e) {
+    const tappedPriceFloor = e.currentTarget.dataset.floor
+    const tappedPriceCap = e.currentTarget.dataset.cap
+    if (tappedPriceCap == 'all') {
+      if (this.data.priceIntervals.length != this.data.chosenPriceIntervals.length) {
+        // 有部分未选中的，此时点击all，即为select All
+        this.setData({ chosenPriceIntervals: this.data.priceIntervals })
+      } else {
+        // 全选中，此时点击all，即为deselect All
+        this.setData({ chosenPriceIntervals: [] })
+      }
+    } else {
+      // tap的并不是all
+      let curPriceIntervals = this.data.chosenPriceIntervals.concat([])
+      if (curPriceIntervals.filter(interval => interval[0] == tappedPriceFloor).length == 0) {
+        // 是选中
+        curPriceIntervals.push([tappedPriceFloor, tappedPriceCap])
+        this.setData({ chosenPriceIntervals: curPriceIntervals })
+      } else {
+        // 是deselect
+        const selectedInterval = curPriceIntervals.filter(interval => interval[0] == tappedPriceFloor)[0]
+        curPriceIntervals.splice(curPriceIntervals.indexOf(selectedInterval), 1)
+        this.setData({ chosenPriceIntervals: curPriceIntervals })
+      }
+    }
   },
 
   // 搜索小区的名字
   searchProject(e) {
+    this.resetFilter()
     const key = e.detail.value
     let newList = this.data.list
     if (key.trim() !== '') {
@@ -322,11 +436,11 @@ Page({
   subscribe(e) {
     log.info('用户点击订阅')
     // 从event中获取定位数据
-    let pid = e.currentTarget.dataset.pid
-    let pname = e.currentTarget.dataset.pname
-    let aid = e.currentTarget.dataset.aid
+    const pid = e.currentTarget.dataset.pid
+    const pname = e.currentTarget.dataset.pname
+    const aid = e.currentTarget.dataset.aid
     // 如果这个用户是初次使用【订阅】功能的普通用户，需要授权我们使用他的昵称
-    let self = this
+    const self = this
     if (self.needToGetUserProfile()) {
       log.info('未找到用户的昵称，需要ask用户提供昵称权限')
 
@@ -348,10 +462,7 @@ Page({
               log.error(err)
               console.log(err)
 
-              wx.showToast({
-                title: '未能成功录入昵称',
-                icon: 'error'
-              })
+              wx.showToast({ title: '未能成功录入昵称', icon: 'error' })
             })
         },
         fail: (err) => {
@@ -359,10 +470,7 @@ Page({
           log.error(err)
           console.log(err)
           
-          wx.showToast({
-            title: '没有昵称，无法收藏',
-            icon: 'error'
-          })
+          wx.showToast({ title: '没有昵称，无法收藏', icon: 'error' })
         }
       })
     } else {
@@ -375,12 +483,12 @@ Page({
   doSubscribe(pid, pname, aid) {
     log.info(`用户subscribe: pid: ${pid}, pname: ${pname}, aid: ${aid}`)
 
-    let self = this
+    const self = this
     // 找所属到街道
     let area = 
       self.data.list.find(area => {
         // 数据可能出现areaId为空的情况或者小区Id为空的情况
-        let projectOpt = area.projects.find(p => p.pId == pid)
+        const projectOpt = area.projects.find(p => p.pId == pid)
         return projectOpt && area.areaId == aid
       })
     let indexOfThisArea = self.data.list.indexOf(area)
@@ -401,7 +509,7 @@ Page({
           projectOnChange.isSubscribed = true
           projectOnChange.ruleId = rid
           projectsOfThisArea[indexOfProjectOnChange] = projectOnChange
-          let updatedArea = {
+          const updatedArea = {
             id: area.id,
             areaId: aid,
             areaName: area.areaName,
@@ -409,9 +517,7 @@ Page({
             display: true
           }
           // 更新list
-          self.setData({
-            ['list[' + indexOfThisArea + ']'] : updatedArea
-          })
+          self.setData({ ['list[' + indexOfThisArea + ']']: updatedArea })
         })
         .catch((err) => {
           log.error('subscribeThenSyncUp 失败')
@@ -429,7 +535,7 @@ Page({
           projectOnChange.isSubscribed = false
           projectOnChange.ruleId = ''
           projectsOfThisArea[indexOfProjectOnChange] = projectOnChange
-          let updatedArea = {
+          const updatedArea = {
             id: area.id,
             areaId: aid,
             areaName: area.areaName,
@@ -437,9 +543,7 @@ Page({
             display: true
           }
           // 更新list
-          self.setData({
-            ['list[' + indexOfThisArea + ']'] : updatedArea
-          })
+          self.setData({ ['list[' + indexOfThisArea + ']']: updatedArea })
         })
         .catch((err) => {
           log.error('unsubscribeThenSyncUp 失败')
@@ -451,7 +555,7 @@ Page({
 
   // 转发
   onShareAppMessage: function(options) {
-    var path = '/pages/allProjects/allProjects'
+    const path = '/pages/allProjects/allProjects'
     return {
       title : '全部房源',
       path : '/pages/login/login?redirect=' + encodeURIComponent(path),
@@ -459,21 +563,14 @@ Page({
       success : function(res) {
         if (res.errMsg == 'shareAppMessage:ok') {
           // 用户转发成功
-          wx.showToast({
-            title: '转发成功',
-            icon: 'success'
-          })
+          wx.showToast({ title: '转发成功', icon: 'success' })
         }
       },
       fail : function(err) {
         if (err.errMsg == 'shareAppMessage:fail cancel') {
-          wx.showToast({
-            title: '转发已取消',
-          })
+          wx.showToast({ title: '转发已取消' })
         } else {
-          wx.showToast({
-            title: '转发失败',
-          })
+          wx.showToast({ title: '转发失败' })
         }
       }
     }

@@ -16,8 +16,20 @@ function id2RoomType(id) {
   return ["未知", "一室", "一室一厅", "两室", "两室一厅", "三室", "三室一厅", "四室", "五室"][id]
 }
 
+function interval_is_selected(intervals, interval) {
+  var res = false
+  for (var i = 0; i < intervals.length; i++) {
+    if (intervals[i][0] == interval[0]) {
+      res = true
+      break
+    }
+  }
+  return res
+}
+
 module.exports = {
   indexOf : indexOf,
   sliceOf : sliceOf,
-  id2RoomType: id2RoomType
+  id2RoomType: id2RoomType,
+  interval_is_selected: interval_is_selected
 }

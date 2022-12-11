@@ -53,11 +53,11 @@ const vipSampleProjectId = 349481
 const vipStartDate = new Date(2021, 3, 26)
 
 // allProjects页使用的小区房间数区间
-const rentableCountCategory = ['小于10', '10 ~ 50', '50 ~ 100', '大于100']
+const rentableCountCategory = ['小于10套', '10 ~ 50', '50 ~ 100', '大于100套']
 const rentableCountLimits = function(category) {
   let res = []
   switch(category) {
-    case '小于10':
+    case '小于10套':
       res = [0, 10]
       break;
     case '10 ~ 50':
@@ -66,7 +66,7 @@ const rentableCountLimits = function(category) {
     case '50 ~ 100':
       res = [50, 100]
       break;
-    case '大于100':
+    case '大于100套':
       res = [100, 10000]
       break;
     default:

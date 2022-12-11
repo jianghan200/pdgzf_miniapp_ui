@@ -7,11 +7,11 @@
   <view style="display: flex; flex-direction: row; align-items: center;">
     <text class="title">全部房源</text>
     <!-- 请求成功展示地图按钮 -->
-    <button class="bg-white cu-btn icon shadow margin-right" bindtap="openMap" wx:if="{{reqSuccessful}}">
-      <text class="cuIcon-locationfill text-red text-bold"></text>
+    <button class="bg-white cu-btn shadow margin-right round" bindtap="openMap" wx:if="{{reqSuccessful}}">
+      <text class="cuIcon-locationfill text-red text-bold"></text>地图
     </button>
-    <button class="bg-white cu-btn icon shadow" bindtap="openFilterDrawer" wx:if="{{reqSuccessful}}">
-      <text class="cuIcon-filter text-blue text-bold"></text>
+    <button class="bg-white cu-btn shadow round" bindtap="openFilterDrawer" wx:if="{{reqSuccessful}}">
+      <text class="cuIcon-filter text-blue text-bold"></text>筛选
     </button>
     <!-- 请求失败展示刷新按钮 -->
     <button class="bg-green cu-btn icon shadow" bindtap="refresh" wx:if="{{!reqSuccessful}}">
@@ -23,24 +23,15 @@
   <view class="cu-bar bg-white search">
     <view class="search-form round">
       <text class="cuIcon-search"></text>
-      <input type="text" placeholder="搜索小区名字 / 地址 (支持如: ady -> 艾东苑)" confirm-type="search" bindinput="searchProject"></input>
+      <input type="text" placeholder="搜索小区名字 / 地址 (支持如: ady -> 艾东苑)" confirm-type="search" bindinput="searchProject" />
     </view>
   </view>
 </view>
 
 <view wx:if="{{reqSuccessful}}">
-  <scroll-view
-    scroll-y 
-    scroll-with-animation
-    style="background-color: #f1f1f1; height: 100%"
-  >
+  <scroll-view scroll-y scroll-with-animation style="background-color: #f1f1f1; height: 100%">
     <!-- 遍历社区 -->
-    <view
-      wx:for="{{list}}"
-      wx:for-item="area"
-      wx:key="areaId"
-      id="main-{{index}}"
-    >
+    <view wx:for="{{list}}" wx:for-item="area" wx:key="areaId" id="main-{{index}}">
       <!-- 社区名称 -->
       <view class='cu-bar solid-bottom bg-white' wx:if="{{area.display}}">
         <view class='action'>
@@ -50,39 +41,22 @@
 
       <!-- 遍历社区的小区 -->
       <view class="cu-list menu">
-      <block
-        wx:for="{{area.projects}}"
-        wx:for-item="project"
-        wx:key="pId"
-      >
-        <view 
-          class="cu-item arrow" 
-          style="min-height: 80rpx;" 
-          bindtap="navToProject" 
-          data-pId="{{project.pId}}"
-          wx:if="{{project.display}}"
-        >
+      <block wx:for="{{area.projects}}" wx:for-item="project" wx:key="pId">
+        <view class="cu-item arrow" style="min-height: 80rpx;" bindtap="navToProject" data-pId="{{project.pId}}" wx:if="{{project.display}}">
           <view class="content">            
             <view>
-              <view 
-                catchtap="subscribe"
-                data-pid="{{project.pId}}"
-                data-aid="{{area.areaId}}"
-                data-pname="{{project.pName}}"
-              >
+              <!-- 是否订阅了某个小区 -->
+              <view catchtap="subscribe" data-pid="{{project.pId}}" data-aid="{{area.areaId}}" data-pname="{{project.pName}}">
                 <text class="text-red text-bold cuIcon-{{project.isSubscribed ? 'likefill' : 'like'}}"></text>
               </view>
               <!-- 小区名称 -->
               <view>
-                <text class="text-black padding-left {{project.isSubscribed ? 'text-bold' : ''}}"
-                >{{tools.sliceOf(project.pName)}}</text>
-                <text class="text-grey margin-left">{{project.rentableCount}}套</text>
-                <text class="cuIcon-picfill text-grey text-xlg margin-left" wx:if="{{project.raw.hasImage}}"></text>
-                <text class="cuIcon-videofill text-grey text-xlg margin-left" wx:if="{{project.raw.hasVideo}}"></text>
-                <text 
-                  class="cuIcon-post text-grey text-xlg margin-left" 
-                  wx:if="{{project.raw.wp_url && project.raw.wp_url != null && project.raw.wp_url != ''}}"
-                ></text>
+                <text class="text-black padding-left {{project.isSubscribed ? 'text-bold' : ''}}">{{tools.sliceOf(project.pName)}}</text>
+                <text class="text-grey margin-left margin-right">{{project.rentableCount}}套</text>
+                <text class="cuIcon-picfill text-grey text-xlg" wx:if="{{project.raw.hasImage}}"></text>
+                <text class="cuIcon-videofill text-grey text-xlg" wx:if="{{project.raw.hasVideo}}"></text>
+                <text class="cuIcon-post text-grey text-xlg" wx:if="{{project.raw.wp_url && project.raw.wp_url != null && project.raw.wp_url != ''}}"></text>
+                <text class="text-grey margin-left">最低{{ project.floor }}元</text>
               </view>
             </view>
           </view>
@@ -96,20 +70,25 @@
 
 <!-- 筛选器弹窗 -->
 <view class="cu-modal drawer-modal justify-start {{ openDrawer ? 'show' : '' }}" bindtap="closeFilterDrawer">
-  <view 
-    class="cu-dialog basis-lg" 
-    catchtap 
-    style="top: {{CustomBar}}px; height:calc(100vh - {{CustomBar}}px)"
-  >
-  <!-- 弹窗内容 -->
-    <!-- 社区tags -->
-    <view class="text-bold filter-subtitle">选择社区</view>
+  <view class="cu-dialog basis-lg" catchtap>
+    <view class="text-bold" style="padding-top: 20rpx;">房源筛选器</view>
+    <view class="text-bold solid-bottom" style="padding: 20rpx;">点击右侧区域，关闭并应用筛选</view>
+    <!-- 弹窗内容 -->
+    <view class="solid-bottom filter-subtitle" bindtap="changeAreaFilterDisplayStatus">
+      <text class="text-bold cuIcon-location"></text>
+      <view class="text-bold">社区</view>
+      <text class="text-bold cuIcon-{{ hideAreaFilter ? '' : 'un' }}fold" style="font-size: large;">
+      </text>
+      <text class="text-bold">{{ hideAreaFilter ? '（点击展开）' : '（点击隐藏）' }}</text>
+    </view>
+    <!-- Bubbles -->
     <view style="padding: 10rpx; display: flex; flex-wrap: wrap;">
       <view 
         class="cu-tag round bg-{{ areas.length == chosenAreas.length ? 'black' : 'grey' }}" 
         data-areaName="all" 
         bindtap="tapArea"
         style="margin: 5rpx;"
+        hidden="{{ hideAreaFilter }}"
       >全选</view>
       <block wx:for="{{areas}}" wx:for-item="areaName" wx:key="*this">
         <view 
@@ -117,48 +96,96 @@
           data-areaName="{{areaName}}" 
           bindtap="tapArea"
           style="margin: 5rpx;"
+          hidden="{{ hideAreaFilter }}"
         >{{areaName}}</view>
       </block>
     </view>
 
     <!-- 小区房源数量 -->
-    <view class="text-bold filter-subtitle">小区房源数量</view>
+    <view class="solid-bottom filter-subtitle" bindtap="changeRentableCountsFilterDisplayStatus">
+      <text class="text-bold cuIcon-filter"></text>
+      <view class="text-bold">小区房源数量</view>
+      <text class="text-bold cuIcon-{{ hideRentableCountFilter ? '' : 'un' }}fold" style="font-size: large;"></text>
+      <text class="text-bold">{{ hideRentableCountFilter ? '（点击展开）' : '（点击隐藏）' }}</text>
+    </view>
+    <!-- Bubbles -->
     <view style="padding: 10rpx; display: flex; flex-wrap: wrap;">
       <view 
         class="cu-tag round bg-{{ rentableCountCategory.length == chosenRentableCountCategory.length ? 'black' : 'grey' }}" 
         data-category="all"
         style="margin: 5rpx;" 
         bindtap="tapRentableCounts"
+        hidden="{{ hideRentableCountFilter }}"
       >全选</view>
       <block wx:for="{{rentableCountCategory}}" wx:for-item="category" wx:key="*this">
         <view 
-          class="cu-tag round bg-{{ tools.indexOf(chosenRentableCountCategory, category) == -1 ? 'grey' : 'black' }}" 
+          class="cu-tag round bg-{{ tools.indexOf(chosenRentableCountCategory, category) == -1 ? 'grey' : 'olive' }}" 
           data-category="{{category}}"
           style="margin: 5rpx;" 
           bindtap="tapRentableCounts"
+          hidden="{{ hideRentableCountFilter }}"
         >{{category}}</view>
       </block>
     </view>
 
     <!-- 户型 -->
-    <view class="text-bold filter-subtitle">户型</view>
+    <view class="solid-bottom filter-subtitle" bindtap="changeRoomTypesFilterDisplayStatus">
+      <text class="text-bold cuIcon-home"></text>
+      <view class="text-bold">户型</view>
+      <text class="text-bold cuIcon-{{ hideRoomTypesFilter ? '' : 'un' }}fold" style="font-size: large;"></text>
+      <text class="text-bold">{{ hideRoomTypesFilter ? '（点击展开）' : '（点击隐藏）' }}</text>
+    </view>
+    <!-- Bubbles -->
     <view style="padding: 10rpx; display: flex; flex-wrap: wrap;">
       <view 
         class="cu-tag round bg-{{ roomTypes.length == chosenRoomTypes.length ? 'black' : 'grey' }}" 
         data-rtid="all"
         style="margin: 5rpx;" 
         bindtap="tapRoomTypes"
+        hidden="{{ hideRoomTypesFilter }}"
       >全选</view>
       <block wx:for="{{roomTypes}}" wx:for-item="roomType" wx:key="*this">
         <view 
-          class="cu-tag round bg-{{ tools.indexOf(chosenRoomTypes, roomType) == -1 ? 'grey' : 'black' }}" 
+          class="cu-tag round bg-{{ tools.indexOf(chosenRoomTypes, roomType) == -1 ? 'grey' : 'mauve' }}" 
           data-rtid="{{roomType}}"
           style="margin: 5rpx;" 
           bindtap="tapRoomTypes"
+          hidden="{{ hideRoomTypesFilter }}"
         >{{ tools.id2RoomType(roomType) }}</view>
       </block>
     </view>
 
-    金额
+    <!-- 金额 -->
+    <view class="solid-bottom filter-subtitle" bindtap="changePriceFilterDisplayStatus">
+      <text class="text-bold cuIcon-moneybagfill"></text>
+      <view class="text-bold">价格区间</view>
+      <text class="text-bold cuIcon-{{ hidePriceFilter ? '' : 'un' }}fold" style="font-size: large;"></text>
+      <text class="text-bold">{{ hidePriceFilter ? '（点击展开）' : '（点击隐藏）' }}</text>
+    </view>
+    <!-- Bubbles -->
+    <view style="padding: 10rpx; display: flex; flex-wrap: wrap;">
+      <view 
+        class="cu-tag round bg-{{ priceIntervals.length == chosenPriceIntervals.length ? 'black' : 'grey' }}" 
+        data-cap="all"
+        style="margin: 5rpx;" 
+        bindtap="tapPriceIntervals"
+        hidden="{{ hidePriceFilter }}"
+      >全选</view>
+      <block wx:for="{{priceIntervals}}" wx:for-item="interval" wx:key="*this">
+        <view 
+          class="cu-tag round bg-{{ tools.interval_is_selected(chosenPriceIntervals, interval) ? 'yellow' : 'grey' }}" 
+          data-floor="{{interval[0]}}"
+          data-cap="{{interval[1]}}"
+          style="margin: 5rpx;" 
+          bindtap="tapPriceIntervals"
+          hidden="{{ hidePriceFilter }}"
+        >{{ interval[0] }} ~ {{ interval[1] }}</view>
+      </block>
+    </view>
+
+    <!-- 重置所有筛选器 -->
+    <button class="cu-btn bg-white round shadow text-bold lg margin" style="width: 60%;" bindtap="resetFilter">
+      <text class="cuIcon-refresh text-red"></text> 重置
+    </button>
   </view>
 </view>
