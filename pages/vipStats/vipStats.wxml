@@ -1,0 +1,66 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">{{ pName }}</view>
+</cu-custom>
+
+<!-- 攻略 -->
+<view class="intro-container">
+  <view class="text-bold text-grey" style="padding-top: 0.5rem;">
+    ”多算胜，少算不胜，而况于无算乎!“，如今选房竞争已趋于白热化，需要制定合理的预期、目标并安排好自己租房的“档期”。
+  </view>
+  <view class="text-bold text-grey" style="padding-top: 0.5rem;">
+    理解公租房签/解约规则，涨价机制。从历史数据中估计大概率出房源的时间
+  </view>
+  <view class="text-bold text-grey" style="padding-top: 0.5rem;">
+    利用选中人资格历史数据，调整预期、目标甚至策略
+  </view>
+  <view class="text-bold text-grey" style="padding-top: 0.5rem;">
+    更多数据会陆续添加到这个板块
+  </view>
+</view>
+
+<!-- 标题 -->
+<view class="solid-bottom solid-top text-xl padding margin-top: 40px;">
+  <text class="cuIcon-rank text-bold"></text>
+  <text class="text-black text-bold">选中者资格统计（有记录以来）</text>
+</view>
+
+<block wx:for="{{ summaryStats }}" wx:for-item="stats" wx:key="typeName">
+  <view class="cu-card article">
+    <view class="cu-item shadow">
+      <view class="title" style="display: flex; flex-direction: column;">
+        <text class="text-red text-lg">{{ stats.houseTypeName }}</text>
+      </view>
+      <view class="content" style="display: flex; flex-direction: column;">
+        <view class="cu-list grid col-4 solid">
+          <view class="cu-item">
+            <text class="text-bold" style="color: green;" wx:if="{{ isVip }}">{{ stats.mid  }}天</text>
+            <text class="text-bold" bindtap="promptUsersToBecomeVip" style="color: goldenrod;" wx:else>VIP内容</text>
+            <text>中位数</text>
+          </view>
+          <view class="cu-item">
+            <text class="text-bold" style="color: green;" wx:if="{{ isVip }}">{{ stats.avg }} 天</text>
+            <text class="text-bold" bindtap="promptUsersToBecomeVip" style="color: goldenrod;" wx:else>VIP内容</text>
+            <text>平均数</text>
+          </view>
+          <view class="cu-item">
+            <text class="text-bold" wx:if="{{ isVip }}">{{ stats.max }} 天</text>
+            <text class="text-bold" bindtap="promptUsersToBecomeVip" style="color: goldenrod;" wx:else>VIP内容</text>
+            <text>最大值</text>
+          </view>
+          <view class="cu-item">
+            <text class="text-bold" wx:if="{{ isVip }}">{{ stats.min }} 天</text>
+            <text class="text-bold" bindtap="promptUsersToBecomeVip" style="color: goldenrod;" wx:else>VIP内容</text>
+            <text>最小值</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</block>
+
+<!-- 图 -->
+<view class="echart-container">
+  <ec-canvas id="vip-chart1" canvas-id="vip-chart1" ec="{{ ec1 }}"></ec-canvas>
+  <ec-canvas id="vip-chart2" canvas-id="vip-chart2" ec="{{ ec2 }}"></ec-canvas>
+</view>

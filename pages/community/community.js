@@ -6,7 +6,6 @@ const app = getApp()
 const log = require('./../../utils/log')
 const subscribeHelper = require('../../utils/subscripton')
 const imageAndVideoCollectingDescriptionUrl = 'https://pd.vencloud.cn/%e8%a7%86%e9%a2%91%e3%80%81%e5%9b%be%e7%89%87%e3%80%81%e5%b0%8f%e5%8c%ba%e6%83%85%e6%8a%a5%e6%9c%89%e5%81%bf%e5%be%81%e9%9b%86%e6%a0%87%e5%87%86%e5%92%8c%e8%a7%84%e5%88%99/'
-
 import plugin from './../../components/calendar/plugins/index'
 import todo from './../../components/calendar/plugins/todo'
 import selectable from './../../components/calendar/plugins/selectable'
@@ -82,7 +81,7 @@ Page({
     this.init(options)
     this.initScrollerInfo()
   },
-  
+
   // 调用数据接口，populate显示需要的数据
   init(options) {
     const pid = options.pid
@@ -193,14 +192,9 @@ Page({
     }).catch(err => {
       log.error(`处理数据时遇到错误`)
       log.error(err)
-
       console.log(err)
 
-      wx.showToast({
-        title: '数据有误',
-        icon: 'error'
-      })
-
+      wx.showToast({ title: '数据有误', icon: 'error' })
       wx.hideLoading()
     })
   },
@@ -236,21 +230,13 @@ Page({
       content: '成为VIP解锁更多服务',
       showCancel: true,
       confirmText: '看看权益',
-      success: res => {
-        if (res.confirm) {
-          wx.redirectTo({
-            url: '/pages/rights/rights',
-          })
-        }
-      }
+      success: res => { if (res.confirm) { wx.redirectTo({ url: '/pages/rights/rights' }) } }
     })
   },
 
   // 初始化界面滑动相关的数据
   initScrollerInfo() {
-    this.setData({
-      curComponentId: 0
-    })
+    this.setData({ curComponentId: 0 })
   },
 
   // 返回上一页
@@ -275,9 +261,7 @@ Page({
 
   // 点击TabItem触发的handler
   selectTab(e) {
-    this.setData({
-      curComponentId: e.currentTarget.dataset.id
-    })
+    this.setData({ curComponentId: e.currentTarget.dataset.id })
   },
 
   // 选择了某个户型的处理器
@@ -285,10 +269,7 @@ Page({
     const selectedHouseType = e.currentTarget.dataset.type
     const selectedHouse = this.data.recentHouseInfo.find(info => info.type == selectedHouseType)
 
-    this.setData({
-      selectedHouse: selectedHouse,
-      selectedHouseType: selectedHouseType
-    })
+    this.setData({ selectedHouse: selectedHouse, selectedHouseType: selectedHouseType })
   },
 
   // 选择了某个类别的图片
@@ -296,24 +277,14 @@ Page({
     const selectedImageGroupId = e.currentTarget.dataset.group
     const selectedImageGroup = this.data.imageGroups.find(group => group.id == selectedImageGroupId)
 
-    this.setData({
-      selectedImageGroup: selectedImageGroup,
-      selectedImageGroupId: selectedImageGroupId
-    })
+    this.setData({ selectedImageGroup: selectedImageGroup, selectedImageGroupId: selectedImageGroupId })
   },
 
   // 生成地图上的坐标点
   createMarker(coordinate) {
     let marker = []
-    marker.push({
-      id: 0, // marker 点击事件回调会返回此 id
-      latitude: coordinate.lat,
-      longitude: coordinate.lng,
-      title: this.data.pName
-    })
-    this.setData({
-      marker: marker
-    })
+    marker.push({ id: 0, latitude: coordinate.lat, longitude: coordinate.lng, title: this.data.pName })
+    this.setData({ marker: marker })
   },
 
   // 生成地图坐标链接
@@ -328,25 +299,16 @@ Page({
     // 防止用户的微信版本过低
     const wxVersion = wx.getSystemInfoSync().SDKVersion
     if (utils.compareVersion(wxVersion, '2.14.0') < 0) {
-      wx.showToast({
-        title: '当前微信版本过低，无法使用该功能，请升级到最新微信版本后重试。',
-        icon: 'none'
-      })
+      wx.showToast({ title: '当前微信版本过低，无法使用该功能，请升级到最新微信版本后重试。', icon: 'none' })
       return;
     }
-
     const mapCtx = wx.createMapContext('map', this);
-
     mapCtx.openMapApp({
       latitude: this.data.coordinate.lat,
       longitude: this.data.coordinate.lng,
       destination: this.data.pName,
-      success: res => {
-        console.log(res)
-      },
-      fail: err => {
-        console.log(err)
-      }
+      success: res => { console.log(res) },
+      fail: err => { console.log(err) }
     })
   },
 
@@ -360,6 +322,11 @@ Page({
   // 跳转到vip页
   goToVipPage(e) {
     wx.navigateTo({ url: '/pages/rights/rights' })
+  },
+
+  // 跳转到VIP统计图表页
+  goToVipStats(e) {
+    wx.navigateTo({ url: '/pages/vipStats/vipStats?pId=' + this.data.pId + '&pName=' + this.data.pName })
   },
 
   // 预览某一个图片
@@ -424,9 +391,7 @@ Page({
     log.info('用户试图打开视频列表')
 
     if (this.data.isVip) {
-      this.setData({
-        showvideoListDrawer: true
-      })
+      this.setData({ showvideoListDrawer: true })
     } else {
       this.promptUsersToBecomeVip()
     }
@@ -439,15 +404,9 @@ Page({
     if (this.data.isVip) {
       // 文章内容为VIP专享
       if (this.data.isVip) {
-        wx.navigateTo({
-          url: '/pages/article/article?url=' + this.data.articleUrl,
-        })
+        wx.navigateTo({ url: '/pages/article/article?url=' + this.data.articleUrl })
       } else {
-        wx.showModal({
-          title: 'VIP专享',
-          content: '成为 VIP 查看此小区实地看房笔记。 VIP 示例小区可以参考浦江海德。',
-          showCancel: 'false'
-        })
+        wx.showModal({ title: 'VIP专享', content: '成为 VIP 查看此小区实地看房笔记。 VIP 示例小区可以参考浦江海德。', showCancel: 'false' })
       }
     } else {
       this.promptUsersToBecomeVip()
@@ -456,32 +415,22 @@ Page({
 
   // 打开地图
   seePointOnMap(e) {
-    wx.navigateTo({
-      url: this.data.coordUrl,
-    })
+    wx.navigateTo({ url: this.data.coordUrl })
   },
 
   // 关闭所有抽屉 
   closeDrawers(e) {
-    this.setData({
-      showTodaysOutlets: false,
-      showvideoListDrawer: false
-    })
+    this.setData({ showTodaysOutlets: false, showvideoListDrawer: false })
   },
 
   // 打开今日房源抽屉
   openTodayDrawer(e) {
-    this.setData({
-      showTodaysOutlets: true
-    })
+    this.setData({ showTodaysOutlets: true })
   },
 
   // 跳转到某个房源的信息处
   goToThisTodayHouse(e) {
-    this.setData({
-      showTodaysOutlets: false,
-      curComponentId: `today${e.currentTarget.dataset.idx}`
-    })
+    this.setData({ showTodaysOutlets: false, curComponentId: `today${e.currentTarget.dataset.idx}` })
   },
 
   // 日历相关方法
@@ -500,11 +449,6 @@ Page({
     }
   },
 
-  // 日历切换了月份
-  changeMonth(e) {
-    this.renderCalendar()
-  },
-
   // 生成热力日历需要的数据（月度）
   daysColor(heatMap, year, month) {
     let itemsOfThisYearMonth = heatMap.filter(item => item.year == year && item.month == month)
@@ -515,13 +459,7 @@ Page({
         circle: false, // 待办圆圈标记设置（如圆圈标记已签到日期），该设置与点标记设置互斥
         showLabelAlways: true, // 点击时是否显示待办事项（圆点/文字），在 circle 为 true 及当日历配置 showLunar 为 true 时，此配置失效
         dates : itemsOfThisYearMonth.map(item => {
-          return {
-            year: year,
-            month: month,
-            date: item.date,
-            todoText: item.count + '人',
-            color: item.hex // 单独定义代办颜色 (标记点、文字)
-          }
+          return { year: year, month: month, date: item.date, todoText: item.count + '人', color: item.hex }
         })
     }
   },
@@ -546,19 +484,13 @@ Page({
         log.info('成功取消订阅')
         
         self.setData({ subscribed: false })
-        wx.showToast({
-          title: '取消成功',
-          icon: 'success'
-        })
+        wx.showToast({ title: '取消成功', icon: 'success' })
       }).catch(err => {
         console.log(err)
         log.error('取消订阅失败！')
         log.error(err)
 
-        wx.showToast({
-          title: '取消失败',
-          icon: 'error'
-        })
+        wx.showToast({ title: '取消失败', icon: 'error' })
       })
     } else {
       // 要添加订阅
@@ -566,28 +498,20 @@ Page({
         log.info(`成功添加订阅（id：${ruleId}）`)
 
         self.setData({ subscribed: true, ruleId: ruleId })
-        wx.showToast({
-          title: '订阅成功',
-          icon: 'success'
-        })
+        wx.showToast({ title: '订阅成功', icon: 'success' })
       }).catch(err => {
         console.log(err)
         log.error('添加订阅失败！')
         log.error(err)
 
-        wx.showToast({
-          title: '订阅失败',
-          icon: 'error'
-        })
+        wx.showToast({ title: '订阅失败', icon: 'error' })
       })
     }
   },
 
   // 进入社区论坛
   goToForum() {
-    wx.switchTab({
-      url: '/pages/flarum/flarum',
-    })
+    wx.switchTab({ url: '/pages/flarum/flarum' })
   },
 
   // 分享该页面
@@ -604,21 +528,14 @@ Page({
       success : function(res) {
         if (res.errMsg == 'shareAppMessage:ok') {
           // 用户转发成功
-          wx.showToast({
-            title: '转发成功',
-            icon: 'success'
-          })
+          wx.showToast({ title: '转发成功', icon: 'success' })
         }
       },
       fail : function(err) {
         if (err.errMsg == 'shareAppMessage:fail cancel') {
-          wx.showToast({
-            title: '转发已取消',
-          })
+          wx.showToast({ title: '转发已取消' })
         } else {
-          wx.showToast({
-            title: '转发失败',
-          })
+          wx.showToast({ title: '转发失败' })
         }
       }
     }

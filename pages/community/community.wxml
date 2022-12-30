@@ -143,10 +143,7 @@
             data-group="{{ imageGroup.id }}" 
             bindtap="onSelectImageGroup"
           >
-            <text 
-              style="font-size: xx-small;" 
-              class="text-{{ selectedImageGroupId == imageGroup.id ? 'white text-bold' : 'black' }}"
-            >{{ imageGroup.id }}</text>
+            <text style="font-size: xx-small;" class="text-{{ selectedImageGroupId == imageGroup.id ? 'white text-bold' : 'black' }}">{{ imageGroup.id }}</text>
           </button>
         </block>
       </view>
@@ -211,7 +208,7 @@
               </view>
               <!-- 房源基本信息 -->
               <view class="content" style="display: flex; flex-direction: column;">
-                <view class="cu-list grid col-3">
+                <view class="cu-list grid col-3 solid">
                   <view class="cu-item">
                     <text class="text-bold">{{ house.emoveInDate }}</text>
                     <text>预计入住</text>
@@ -255,6 +252,17 @@
       <view class="solid-bottom text-xl padding">
         <text class="text-black text-bold">统计信息</text>
       </view>
+
+      <!-- 统计信息导航栏 -->
+      <view class="cu-list menu sm-border card-menu margin">
+        <view class="cu-item arrow" bindtap="goToVipStats" style="background-color: currentColor;">
+          <view class="content">
+            <text class="cuIcon-rank text-bold" style="color: goldenrod;"></text>
+            <text class="text-bold" style="color: goldenrod;">更多统计信息</text>
+          </view>
+        </view>
+      </view>
+
       <!-- 历史热力日历 -->
       <view class="text-bold" style="margin: 10px;" bindtap="changeCalendarState">
         <text class="cuIcon-calendar" style="font-size: large;"></text> 
@@ -264,19 +272,14 @@
       </view>
       <!-- 小历日历 -->
       <view style="padding: 1rem;" wx:if="{{ isVip }}" hidden="{{ calendarHidden }}">
-        <calendar 
-          id="calendar" 
-          config="{{ calendarConfig }}" 
-          bind:whenChangeMonth="changeMonth" 
-          bind:afterCalendarRender="renderCalendar" 
-        />
+        <calendar id="calendar" config="{{ calendarConfig }}" bind:whenChangeMonth="renderCalendar" bind:afterCalendarRender="renderCalendar"/>
       </view>
 
       <!-- 各户型的历史数据 -->
       <!-- 标题 -->
       <view class="solid-bottom text-xl padding">
         <text class="cuIcon-rank text-bold"></text>
-        <text class="text-black text-bold">各户型的最近历史数据</text>
+        <text class="text-black text-bold">各户型最近1次轮候情况</text>
       </view>
       <!-- 各户型历史数据卡片 -->
       <block wx:for="{{ recentHouseInfo }}" wx:for-item="info" wx:key="type">
@@ -288,7 +291,7 @@
             </view>
             <!-- 房源基本信息 -->
             <view class="content" style="display: flex; flex-direction: column;">
-              <view class="cu-list grid col-3">
+              <view class="cu-list grid col-3 solid">
                 <view class="cu-item">
                   <text class="text-bold" style="color: green;">{{ info.type }}</text>
                   <text>户型</text>
@@ -336,7 +339,7 @@
 	<text class="cuIcon-pullright"></text>
 </view>
 
-<!-- 视频列表(抽屉) -->
+<!-- 视频列表 (抽屉) -->
 <scroll-view 
   scroll-y 
   class="DrawerWindow {{ showvideoListDrawer ? 'show' : '' }}"

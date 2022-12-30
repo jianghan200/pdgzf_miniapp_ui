@@ -7,12 +7,7 @@ const log = require('./../../utils/log')
 
 // 初始化chart1
 function initChart1(canvas, width, height, dpr) {
-  const chart1 = 
-    echarts.init(canvas, null, {
-      width: width,
-      height: height,
-      devicePixelRatio: dpr // new
-    });
+  const chart1 = echarts.init(canvas, null, { width: width, height: height, devicePixelRatio: dpr })
   canvas.setChart(chart1);
 
   // 在全局中试图找到月度的获得资格的人数
@@ -34,12 +29,7 @@ function initChart1(canvas, width, height, dpr) {
 
 // 初始化chart2
 function initChart2(canvas, width, height, dpr) {
-  const chart2 = 
-    echarts.init(canvas, null, {
-      width: width,
-      height: height,
-      devicePixelRatio: dpr // new
-    });
+  const chart2 = echarts.init(canvas, null, { width: width, height: height, devicePixelRatio: dpr });
   canvas.setChart(chart2)
 
   let cacheOpt = app.globalData.validCandidatesCountPerMonth
@@ -61,12 +51,7 @@ function initChart2(canvas, width, height, dpr) {
 
 // 初始化chart3
 function initChart3(canvas, width, height, dpr) {
-  const chart3 = 
-    echarts.init(canvas, null, {
-      width: width,
-      height: height,
-      devicePixelRatio: dpr // new
-    });
+  const chart3 = echarts.init(canvas, null, { width: width, height: height, devicePixelRatio: dpr });
   canvas.setChart(chart3)
 
   let cacheOpt = app.globalData.monthlyHouseData
@@ -84,51 +69,37 @@ function initChart3(canvas, width, height, dpr) {
 
 Page({
   data : {
-    ec1: {
-      onInit: initChart1
-    },
-    ec2 : {
-      onInit: initChart2
-    },
-    ec3 : {
-      onInit: initChart3
-    },
+    ec1: { onInit: initChart1 },
+    ec2 : { onInit: initChart2 },
+    ec3 : { onInit: initChart3 },
     curComponentId: 0
   },
   onLoad(options) {
     log.info('onLoad stats')
 
     if(options.curComponentId) {
-      this.setData({curComponentId: options.curComponentId})
+      this.setData({ curComponentId: options.curComponentId })
     }
   },
   
   // 转发
   onShareAppMessage: function(options) {
     var path = '/pages/stream/stream?tab=stats&curComponentId=' + this.data.curComponentId
-    let self = this
     return {
-      title : '公租房统计数据',
-      path : '/pages/login/login?redirect=' + encodeURIComponent(path),
-      imageUrl : '',
-      success : function(res) {
+      title: '公租房统计数据',
+      path: '/pages/login/login?redirect=' + encodeURIComponent(path),
+      imageUrl: '',
+      success: function(res) {
         if (res.errMsg == 'shareAppMessage:ok') {
           // 用户转发成功
-          wx.showToast({
-            title: '转发成功',
-            icon: 'success'
-          })
+          wx.showToast({ title: '转发成功', icon: 'success' })
         }
       },
-      fail : function(err) {
+      fail: function(err) {
         if (err.errMsg == 'shareAppMessage:fail cancel') {
-          wx.showToast({
-            title: '转发已取消',
-          })
+          wx.showToast({ title: '转发已取消' })
         } else {
-          wx.showToast({
-            title: '转发失败',
-          })
+          wx.showToast({ title: '转发失败' })
         }
       }
     }

@@ -26,6 +26,7 @@
     "pages/user/user",
     "pages/versions/versions",
     "pages/vip/vip",
+    "pages/vipStats/vipStats",
     "pages/preview-media-desc/item/item-index",
     "pages/preview-media-desc/swiper-limited-load/index",
     "pages/preview-media-desc/index"

@@ -1,7 +1,3 @@
-const utils = require('./util')
-const requestHelper = require('./request')
-const app = getApp()
-
 // 设置图1 折线图
 const setChart1 = function(chart1, cacheOpt) {
   const years = Array.from(new Set(cacheOpt.map(obj => obj.year))).sort()
@@ -27,12 +23,7 @@ const setChart1 = function(chart1, cacheOpt) {
       } else {
         completedDataArray = dataOfThisYear.sort((d1, d2) => d1['month'] > d2['month'] ? 1 : -1)
       }
-      return {
-        name: year,
-        type: 'line',
-        stack: 'Total',
-        data: completedDataArray.map(obj => obj.cnt)
-      }
+      return { name: year, type: 'line', stack: 'Total', data: completedDataArray.map(obj => obj.cnt) }
     })
 
   var option = {
