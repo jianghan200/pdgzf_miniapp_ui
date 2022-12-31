@@ -39,12 +39,12 @@
     </view>
 
     <!-- 开通付费咨询 -->
-    <view class="cu-item arrow" bindtap="gotoConsult">
+    <!-- <view class="cu-item arrow" bindtap="gotoConsult">
       <view class="content">
         <text class="cuIcon-service text-bold"></text>
         <text class="text-bold">真人咨询</text>
       </view>
-    </view>
+    </view> -->
 
     <!-- 版本内容 -->
     <view class="cu-item arrow" bindtap="gotoVersions">
