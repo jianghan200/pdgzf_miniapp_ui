@@ -41,25 +41,12 @@
 
   <!-- 房源列表 -->
   <view wx:if="{{list.length > 0}}">
-    <scroll-view
-      scroll-y 
-      scroll-with-animation
-      style="height: 100%"
-    >
+    <scroll-view scroll-y scroll-with-animation style="height: 100%">
       <!-- 遍历社区 -->
       <view class="cu-list menu ">
-        <block
-          wx:for="{{list}}"
-          wx:for-item="area"
-          wx:key="*this"  
-          id="main-{{index}}"
-        >
+        <block wx:for="{{list}}" wx:for-item="area" wx:key="*this" id="main-{{index}}">
           <!-- 遍历社区的小区 -->
-          <block
-            wx:for="{{area.projects}}"
-            wx:for-item="project"
-            wx:key="*this"
-          >
+          <block wx:for="{{area.projects}}" wx:for-item="project" wx:key="*this">
             <view class="cu-item arrow" bindtap="navToProject" data-pId="{{project.pId}}">
               <view class="content padding-tb-sm">
                 <view>

@@ -42,6 +42,14 @@ Page({
     })
   },
 
+  // 普通用户点击VIP范例
+  vipSample(e) {
+    log.info('普通用户点击vip范例')
+
+    let url = '../community/community?pid=' + constants.vipPid + '&mock=true'
+    wx.navigateTo({ url: url })
+  },
+
   // Modal相关
   showConfirmationModal() {
     if (app.globalData.IOS && !this.data.isNormalMode) {

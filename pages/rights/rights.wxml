@@ -41,7 +41,7 @@
   </view>
 
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
-    2. 查看小区统计信息的更多核心指标
+    2. 查看小区统计信息的更多核心指标 (小区详情页 -> 更多统计信息)
   </view>
 
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
@@ -55,6 +55,13 @@
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
     5. 可开启自动排队, 以免遗漏心仪房源（附赠）
   </view>
+
+  <!-- VIP范例 -->
+  <button 
+    wx:if="{{!isVip}}"
+    class="wide-btn cu-btn text-bold cuIcon-vip icon bg-black text-yellow margin-left" 
+    bindtap="vipSample"
+  >VIP权益</button>
 
   <!-- 付款按钮 -->
   <view style="padding: 10rpx;" wx:if="{{!isVip}}">

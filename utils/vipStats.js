@@ -85,6 +85,10 @@ const chart_of_monthly_stats = function(chart1, chart2, projectId) {
           row['yearSet'] = ySet
         })
         const sorted_by_year_month = utils.sortByProperty(rawData, 'yearMonth', utils.dateStrComparator)
+        
+        log.info('将数据使用yearMonth排序')
+        log.info(sorted_by_year_month)
+        
         const refData = {
           'houseTypeId': Number(houseTypeId),
           'yearSet': ySet,

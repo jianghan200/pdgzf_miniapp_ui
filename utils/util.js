@@ -97,9 +97,17 @@ const dateStrComparator = function(dStr1, pivotDateStr) {
   let pivot = new Date(pivotDateStr)
 
   if (date1.getTime() > pivot.getTime()) {
-    return 1
+    if (app.globalData.IOS == undefined) {
+      return 1
+    } else {
+      return -1
+    }
   } else {
-    return -1
+    if (app.globalData.IOS == undefined) {
+      return -1
+    } else {
+      return 1
+    }
   }
 }
 

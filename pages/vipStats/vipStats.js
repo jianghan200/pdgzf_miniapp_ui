@@ -4,6 +4,28 @@ const constants = require('../../utils/constants')
 const app = getApp()
 import * as echarts from '../../components/ec-canvas/echarts' 
 
+// 初始化chart1
+function initChart1(canvas, width, height, dpr) {
+  const chart1 = echarts.init(canvas, null, { width: width, height: height, devicePixelRatio: dpr })
+  canvas.setChart(chart1);
+
+  // 获取数据
+  const pageArr = getCurrentPages()
+  vipStats.buildVipChart1(chart1, pageArr[pageArr.length - 1].data.pId)
+  return chart1
+}
+
+// 初始化chart2
+function initChart2(canvas, width, height, dpr) {
+  const chart2 = echarts.init(canvas, null, { width: width, height: height, devicePixelRatio: dpr })
+  canvas.setChart(chart2);
+
+  // 获取数据
+  const pageArr = getCurrentPages()
+  vipStats.buildVipChart2(chart2, pageArr[pageArr.length - 1].data.pId)
+  return chart2
+}
+
 Page({
   data: {
     isVip: false,
@@ -11,8 +33,8 @@ Page({
     pName: "",
     summaryStats: [],
     // echarts
-    ec1: {},
-    ec2: {}
+    ec1: { onInit: initChart1 },
+    ec2 : { onInit: initChart2 }
   },
 
   onLoad(options) {
@@ -23,19 +45,19 @@ Page({
     this.setData({ 'pId': pId, 'pName': options.pName, 'isVip': isVip }, () => self.getSummaryStats())
   },
 
-  onShow() {
-    const chart1Component = this.selectComponent('#vip-chart1')
-    const chart2Component = this.selectComponent('#vip-chart2')
-    const self = this
-    chart1Component.init((canvas, width, height, dpr) => {
-      const chart1 = echarts.init(canvas, null, { width: width, height: height, devicePixelRatio: dpr })
-      vipStats.buildVipChart1(chart1, self.data.pId)
-    })
-    chart2Component.init((canvas, width, height, dpr) => {
-      const chart2 = echarts.init(canvas, null, { width: width, height: height, devicePixelRatio: dpr })
-      vipStats.buildVipChart2(chart2, self.data.pId)
-    })
-  },
+  // onShow() {
+  //   const chart1Component = this.selectComponent('#vip-chart1')
+  //   const chart2Component = this.selectComponent('#vip-chart2')
+  //   const self = this
+  //   chart1Component.init((canvas, width, height, dpr) => {
+  //     const chart1 = echarts.init(canvas, null, { width: width, height: height, devicePixelRatio: dpr })
+  //     vipStats.buildVipChart1(chart1, self.data.pId)
+  //   })
+  //   chart2Component.init((canvas, width, height, dpr) => {
+  //     const chart2 = echarts.init(canvas, null, { width: width, height: height, devicePixelRatio: dpr })
+  //     vipStats.buildVipChart2(chart2, self.data.pId)
+  //   })
+  // },
 
   // 获取全量数据
   getSummaryStats() {
