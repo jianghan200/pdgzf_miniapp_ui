@@ -6,6 +6,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    CustomBar: app.globalData.CustomBar,
     list: [],
     scaleList: [],
     scaleTempList: [],
@@ -16,6 +17,13 @@ Page({
     lastTapTime: 0,  // 最后一次单击事件点击发生时间
     singleClickFunc: null,
     isFingerMoved: false,
+  },
+
+  // 返回上一页
+  backToParent() {
+    log.info('退出视频预览')
+
+    wx.navigateBack({ delta: 1 })
   },
 
   swiperChange (e) {

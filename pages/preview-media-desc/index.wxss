@@ -1,5 +1,9 @@
 /* pages/preview-image-video/index.wxss */
-
+.title {
+  font-size: larger;
+  font-weight: 700;
+  padding: 1rem;
+}
 .index-title{
   width: 100%;
   display: flex;
