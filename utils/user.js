@@ -133,8 +133,12 @@ const get_tencent_nicknameAndAvatar = function() {
           // 将用户的微信头像和昵称url上传到后端
           upload_weixin_nickNameAndAvatar(wxNickName, wxAvatarUrl).then(() => {
             // 用户信息上传成功，完成了用户信息采集
-            resolve(wxNickNameAndAvatar_from_user_auth)
             log.info(`完成了微信昵称和头像的采集`)
+
+            app.globalData.userinfo.wxNickName = wxNickName
+            app.globalData.userinfo.wxAvatarUrl = wxAvatarUrl
+
+            resolve(wxNickNameAndAvatar_from_user_auth)
           }).catch(err => {
             console.log(err)
             log.error(`Future返回了错误: ${err}`)
