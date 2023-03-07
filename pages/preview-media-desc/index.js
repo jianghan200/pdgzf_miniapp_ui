@@ -12,6 +12,7 @@ Page({
     scaleTempList: [],
     current: 0,
     currentIndex: 0,
+    currentDesc:"",
     swiperDuration: "0",
 
     lastTapTime: 0,  // 最后一次单击事件点击发生时间
@@ -21,15 +22,20 @@ Page({
 
   // 返回上一页
   backToParent() {
-    log.info('退出视频预览')
+    // log.info('退出视频预览')
 
     wx.navigateBack({ delta: 1 })
   },
 
   swiperChange (e) {
     let current = e.detail.current
+    if(current<0 || current>=this.data.list.length){
+      // 避免边界越出
+      return;
+    }
     this.setData({
-      currentIndex: current
+      currentIndex: current,
+      currentDesc: this.data.list[current].desc
     })
   },
 
@@ -136,7 +142,8 @@ Page({
     })
     
     that.setData({
-      current: info.current
+      current: info.current,
+      currentDesc: this.data.list[info.current].desc
     })
     that.setData({
       swiperDuration: '250'

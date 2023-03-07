@@ -17,16 +17,14 @@
 
 <view style="position: relative;">
   <!-- 添加一个退出的button -->
-  <view style="height: {{ CustomBar }}px; display: flex; flex-direction: row; align-items: center; position: absolute; top: 0; left: 0; z-index: 9999;">
-    <view class="title" style="margin-top: 30px;" catchtap="backToParent">
-      <text class="cuIcon-back text-bold" style="color: white;"></text>
-      <text class="text-bold" style="color: white;">返回</text>
+    <view style="height: {{ CustomBar }}px; display: flex; flex-direction: row; align-items: center; position: absolute; top: 0; left: 0; z-index: 9999; ">
+      <view class="title" style="margin-top: 30px;" catchtap="backToParent">
+        <text class="cuIcon-back text-bold" style="color: white;font-size: 18px;"></text>
+        <text class="text" style="color: rgb(216, 212, 212);font-size: 12px;"> {{currentDesc}} ({{func.getIndex(currentIndex, list)}}/{{list.length}})</text>
+      </view>
     </view>
-  </view>
-
-  <!-- 视频集数量进度条 -->
-  <view class="index-title" >{{func.getIndex(currentIndex, list)}}/{{list.length}}</view>
-  
+    <!-- 视频集数量进度条 -->
+    <!-- <view class="index-title" >{{func.getIndex(currentIndex, list)}}/{{list.length}}</view>  -->
   <swiper-limited-load
     class="swiper"
     id="swiper"
