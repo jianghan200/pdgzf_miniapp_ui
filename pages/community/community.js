@@ -363,7 +363,7 @@ Page({
           app.globalData.previewInfo = {
             list: self.data.videos.map(video => {
               const desc = video.url.split('//')[1].split('/').pop().split('.')[0]
-              return { videoUrl: video.url, desc: `>>>（此处滑动退出）${desc}` }
+              return { videoUrl: video.url, desc: ` ${desc}` }
             }),
             current: idx + 1
           }
@@ -374,7 +374,7 @@ Page({
         app.globalData.previewInfo = {
           list: self.data.videos.map(video => {
             const desc = video.url.split('//')[1].split('/').pop().split('.')[0]
-            return { videoUrl: video.url, desc: `>>>（此处滑动退出）${desc}` }
+            return { videoUrl: video.url, desc: `${desc}` }
           }),
           current: self.data.videos.indexOf(self.data.firstVideo) + 1
         }
