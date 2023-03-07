@@ -119,8 +119,8 @@ Page({
     let todayProjects = wx.getStorageSync('todayProjects')
     if (todayProjects) {
       // 计算当前的周期，每天早9:30之前属于前一天的选房周期
-      const now = new Date()
-      const milestone = util.formatDate(new Date())
+      let now = new Date()
+      let milestone = util.formatDate(new Date())
       if (now.getHours() < 9 || (now.getHours() == 9 && now.getMinutes() <= 29)) {
         milestone = util.formatDate(util.yesterday())
       }
