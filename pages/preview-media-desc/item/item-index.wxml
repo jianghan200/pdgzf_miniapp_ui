@@ -18,7 +18,7 @@ wx:if="{{item.videoUrl == null || item.videoUrl == ''}}">
     wx:if="{{currentIndex == item.index || currentIndex == -1 || currentIndex == -2}}"
     class="video"
     id="myVideo" 
-    style="height: {{videoHeight}}px" 
+    style="height: 100%" 
     src="{{item.videoUrl}}" 
     binderror="videoErrorCallback" 
     show-center-play-btn='{{false}}' 
