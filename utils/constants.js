@@ -1,9 +1,9 @@
-const prodServer = 'https://pdgzf.vencloud.cn/api'
-const qaServer = 'https://pdgzfqa.vencloud.cn'
+const prodServer = 'https://pdgzf.zhenghaolu.com/api'
+const qaServer = 'https://pdgzfqa.zhenghaolu.com'
 const hkServer = 'http://hk.han.pm:9908'
-const userinfoQaServer = 'https://api.pdgzfqa.vencloud.cn'
-const userinfoProdServer = 'https://pdgzf.vencloud.cn/user_api'
-const prodFeedbackServer = 'https://pd.vencloud.cn'
+const userinfoQaServer = 'https://api.pdgzfqa.zhenghaolu.com'
+const userinfoProdServer = 'https://pdgzf.zhenghaolu.com/user_api'
+const prodFeedbackServer = 'https://pd.zhenghaolu.com'
 const ROOM_TYPE = ["未知", "一室", "一室一厅", "两室", "两室一厅", "三室", "三室一厅", "四室", "五室"]
 const id2Type = id => {
   let res = ''

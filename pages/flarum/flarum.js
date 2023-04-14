@@ -4,7 +4,7 @@ const userInfoHelper = require('../../utils/user')
 Page({
   data: {
     title: '',
-    url: 'https://pdbbs.vencloud.cn'
+    url: 'https://pdbbs.zhenghaolu.com'
   },
 
   onLoad(options) {
