@@ -439,7 +439,7 @@ const copyToClipboard = function(str) {
 
 // 生成论坛的url
 const generate_flarum_url = function(webUrl) {
-  const url = 'https://pdbbs.zhenghaolu.com/api/wechatl?unionId=' + 
+  const url = 'https://bbs.pdgzf.cn/api/wechatl?unionId=' + 
                 app.globalData.userinfo.unionId + 
                 '&nickname=' + app.globalData.userinfo.wxNickName + 
                 '&avatarUrl=' + app.globalData.userinfo.wxAvatarUrl +
