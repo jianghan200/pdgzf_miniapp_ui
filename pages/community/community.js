@@ -5,7 +5,7 @@ const model = require('../../utils/community')
 const app = getApp()
 const log = require('./../../utils/log')
 const subscribeHelper = require('../../utils/subscripton')
-const imageAndVideoCollectingDescriptionUrl = 'https://pd.zhenghaolu.com/%e8%a7%86%e9%a2%91%e3%80%81%e5%9b%be%e7%89%87%e3%80%81%e5%b0%8f%e5%8c%ba%e6%83%85%e6%8a%a5%e6%9c%89%e5%81%bf%e5%be%81%e9%9b%86%e6%a0%87%e5%87%86%e5%92%8c%e8%a7%84%e5%88%99/'
+const imageAndVideoCollectingDescriptionUrl = 'https://pdgzf.cn/%e8%a7%86%e9%a2%91%e3%80%81%e5%9b%be%e7%89%87%e3%80%81%e5%b0%8f%e5%8c%ba%e6%83%85%e6%8a%a5%e6%9c%89%e5%81%bf%e5%be%81%e9%9b%86%e6%a0%87%e5%87%86%e5%92%8c%e8%a7%84%e5%88%99/'
 import plugin from './../../components/calendar/plugins/index'
 import todo from './../../components/calendar/plugins/todo'
 import selectable from './../../components/calendar/plugins/selectable'

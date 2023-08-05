@@ -14,7 +14,7 @@ Page({
       log.info(options)
 
       // WP的域名需要将用户的unionId添加到url中
-      if (options.url.indexOf('pd.zhenghaolu.com') === -1) {
+      if (options.url.indexOf('pdgzf.cn') === -1) {
         this.setData({ url: options.url + '?mode=mini' })
       } else {
         this.setData({ url: options.url + '?weixin_user_id=' + app.globalData.userinfo.unionId + '&mode=mini' })
