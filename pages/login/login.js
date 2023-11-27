@@ -3,7 +3,6 @@ const app = getApp()
 const requests = require('../../utils/request')
 const dataHelper = require('../../utils/data')
 const log = require('./../../utils/log')
-const userHelper = require('../../utils/user')
 
 Page({
   data: {
@@ -32,7 +31,6 @@ Page({
       .login(jscode)
       .then((userinfo) => {
         app.globalData.userinfo = userinfo
-
         log.info('登陆成功')
         log.info(userinfo)
         // 几乎全部的初始请求
@@ -41,7 +39,6 @@ Page({
       .catch((err) => {
         log.error(err)
         console.log(err)
-
         wx.showToast({ title: '服务器错误', icon: 'error' })
       })
   }

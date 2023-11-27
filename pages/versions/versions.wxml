@@ -11,6 +11,18 @@
     <view class="bg-brown content shadow">
       <view class="cu-capsule radius">
         <view class="cu-tag bg-white text-brown">v2.0.13</view>
+        <view class="cu-tag line-white">2023/08/05</view>
+      </view>
+      <view class="margin-top-sm text-content">
+        <view>1.  启用全新域名 pdgzf.cn </view>
+      </view>
+    </view>   
+  </view>
+
+  <view class="cu-item text-brown">
+    <view class="bg-brown content shadow">
+      <view class="cu-capsule radius">
+        <view class="cu-tag bg-white text-brown">v2.0.13</view>
         <view class="cu-tag line-white">2022/03/27</view>
       </view>
       <view class="margin-top-sm text-content">

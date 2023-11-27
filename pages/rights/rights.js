@@ -12,6 +12,7 @@ Page({
     userinfo : null,
     isIOS: false,
     isNormalMode: false,
+    iosModeMsg: "请联系meo365成为VIP",
     isVip: false,
     // 弹窗相关
     showModal: false,
@@ -28,6 +29,7 @@ Page({
     this.setData({
       isIOS: app.globalData.IOS,
       isNormalMode: app.globalData.isNormalMode,
+      iosModeMsg:app.globalData.iosModeMsg,
       isVip: app.globalData.userinfo.type == 2,
       displayOfficialAccount: utils.displayOfficialAccount(),
       officialAccount: constants.officialAccount
@@ -55,7 +57,7 @@ Page({
     if (app.globalData.IOS && !this.data.isNormalMode) {
       wx.showModal({
         'title' : '苹果税',
-        'content' : '请联系meo365成为VIP'
+        'content' : this.data.iosModeMsg
       })
     } else {
       this.setData({

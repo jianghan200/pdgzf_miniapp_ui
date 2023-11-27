@@ -902,7 +902,9 @@ const getAppMode = function() {
       success: res => {
         log.info(`App的mode为: ${res.data.result.isNormalMode}`)
 
-        app.globalData.isNormalMode = res.data.result.isNormalMode
+        app.globalData.isNormalMode = res.data.result.isNormalMode;
+        app.globalData.iosModeMsg = res.data.result.iosModeMsg;
+        
         resolve(true)
       },
       fail: err => {
