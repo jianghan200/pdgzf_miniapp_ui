@@ -272,10 +272,14 @@ const populateStatsForAllHouseTypes = function(project, queuesForHouseTypes) {
     let ownerStartDate = '暂无数据'
     let hotIndexOnPickedDate = '暂无数据'
     let ownerWaitingDays = '暂无数据'
+    let ownerChooseDate = '暂无数据'
     if (queueOpt && queueOpt.queue.length > 0) {
-      ownerStartDate = utils.formatDate(new Date(queueOpt.queue[0].userStartDate))
+      // 先对queue的position进行排序
+      let sortedQueue = utils.sortByProperty(queueOpt.queue, 'position', utils.numberComparator)
+      ownerStartDate = utils.formatDate(new Date(sortedQueue[0].userStartDate))
+      ownerChooseDate = utils.formatDate(new Date(sortedQueue[0].updateTime))
       hotIndexOnPickedDate = queueOpt.hotIndex
-      ownerWaitingDays = utils.daysInBtw(new Date(queueOpt.queue[0].userStartDate), new Date(house.updateTime))
+      ownerWaitingDays = utils.daysInBtw(new Date(sortedQueue[0].userStartDate), new Date(house.updateTime))
     }
 
     return {
@@ -286,7 +290,8 @@ const populateStatsForAllHouseTypes = function(project, queuesForHouseTypes) {
       tCount : house.typeCount,
       type : constants.id2Type(house.typeName),
       // 这个小区的所有房源最近都是在什么时候出现的。
-      updateTime : utils.formatDate(new Date(house.updateTime)),
+      // updateTime : utils.formatDate(new Date(house.updateTime)),
+      updateTime : ownerChooseDate,
       // 选中人的资格日
       ownerStartDate : ownerStartDate,
       // 选中日当天有多少人参与排队（热度）
