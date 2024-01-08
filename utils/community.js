@@ -279,7 +279,7 @@ const populateStatsForAllHouseTypes = function(project, queuesForHouseTypes) {
       ownerStartDate = utils.formatDate(new Date(sortedQueue[0].userStartDate))
       ownerChooseDate = utils.formatDate(new Date(sortedQueue[0].updateTime))
       hotIndexOnPickedDate = queueOpt.hotIndex
-      ownerWaitingDays = utils.daysInBtw(new Date(sortedQueue[0].userStartDate), new Date(house.updateTime))
+      ownerWaitingDays = utils.daysInBtw(new Date(sortedQueue[0].userStartDate), new Date(sortedQueue[0].updateTime))
     }
 
     return {
