@@ -37,7 +37,7 @@
   </view>
 
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
-    1. 查看各个公租房小区的户型图、看房视频，实地看房笔记（持续更新中～）
+    1. 查看大部分热门公租房小区的看房视频，户型图，部分小区提供实地看房笔记（持续更新中～）
   </view>
 
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
@@ -45,23 +45,17 @@
   </view>
 
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
-    3. 提新功能需求，优先收集VIP关注的房源信息
+    3. 可向真人微信咨询，排坑答疑（每晚统一答复）
   </view>
 
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
-    4. 可向真人微信咨询，排坑答疑（每晚统一答复）
+    4. 提新功能需求，优先收集VIP关注的房源信息
   </view>
 
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
     5. 可开启自动排队, 以免遗漏心仪房源（附赠）
   </view>
 
-  <!-- VIP范例 -->
-  <button 
-    wx:if="{{!isVip}}"
-    class="wide-btn cu-btn text-bold cuIcon-vip icon bg-black text-yellow margin-left" 
-    bindtap="vipSample"
-  >VIP权益</button>
 
   <!-- 付款按钮 -->
   <view style="padding: 10rpx;" wx:if="{{!isVip}}">
@@ -70,16 +64,38 @@
     </button>
   </view>
 
-  <view class="text-bold text-gray" style="padding-top: 0.5rem;">
-    如果官方系统发生技术升级，附赠功能可能会因为技术限制而取消
-  </view>
 
+  <view class="text-bold text-gray text-sm" style="padding-top: 0.5rem;">
+    全部房源页面，小区名旁有图片小图标表示有户型图/照片，有视频小图标，表示有看房视频。
+  </view>
+  <view class="text-bold text-gray text-sm" style="padding-top: 0.5rem;">
+    真人咨询为兼职答复，不保证实时性，也不保证能回答所有问题，仅供参考。如需要 100%准确，请致电公租房官方电话
+  </view>
+  <view class="text-bold text-gray text-sm" style="padding-top: 0.5rem;">
+    如果官方系统发生技术升级，附赠功能可能会因为技术限制而取消，会员费不会退还
+  </view>
   <view class="text-bold text-gray" style="padding-top: 0.5rem;" wx:if="{{isIOS && !isNormalMode}}">
     IOS系统无法支持付费功能，如有问题，请联系：meo365
   </view>
-  <view class="text-bold text-gray" style="padding-top: 0.5rem;" wx:else>
-    当前优惠价格99元，我们正快速迭代，将上线更多新功能！
+  <view class="text-bold text-gray text-sm" style="padding-top: 0.5rem;" wx:else>
+    会员有效期两年，当前优惠价格99元，我们正快速迭代，将上线更多新功能！
   </view>
+
+    <!-- VIP范例 -->
+  <view style="padding: 10rpx;" wx:if="{{!isVip}}">
+    <button 
+      wx:if="{{!isVip}}"
+      class="wide-btn cu-btn text-bold cuIcon-vip bg-black text-yellow margin-auto" 
+      bindtap="vipSample"
+    > <text> 查看 VIP 示例小区页面</text>
+    </button>
+  </view>
+    <!-- <button style="height: 90rpx;" class="bg-black" bindtap="showConfirmationModal">
+    <text class="cuIcon-vip" style="color: gold; font-weight: 500"></text> 开通VIP
+  </button> -->
+
+  
+
 </scroll-view>
 
 <!-- 确认付款弹窗 -->
