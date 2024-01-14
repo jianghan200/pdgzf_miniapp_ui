@@ -1,0 +1,21 @@
+<view style="height: 50px;"></view>
+<view style="display: flex; flex-direction: row; align-items: center;">
+  <view class="cuIcon-back" style="margin-left: 10px;" bindtap="navigateBack">返回  </view>
+  <view class="title text-black" >修改头像、昵称</view>
+</view>
+<button class="avatar-btn" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+  <image class="avatar-img" src="{{avatarUrl}}" role="img"></image>
+</button>
+<text style="margin: 1rem;">点击头像更换头像</text>
+<form>
+  <view class="cu-form-group">
+    <view class="title" style="padding: 0;">昵称</view>
+    <input type="nickname" placeholder="请输入昵称" model:value="{{nickname}}" bindinput="handleNickname"/>
+  </view>
+</form>
+
+<view style="padding: 30rpx;">
+  <button style="height: 90rpx;" class="bg-olive" bindtap="confirmChange">
+    <text style="color: white; font-weight: 500"></text> 确认
+  </button>
+</view>

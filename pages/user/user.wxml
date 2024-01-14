@@ -5,6 +5,11 @@
   <image class="{{vipInfo.type == 2 ? 'vip-' : ''}}avatar" src="{{avatarUrl}}" mode="aspectFill"></image>
   <view class="{{vipInfo.type == 2 ? 'vip-' : ''}}nickname">{{ nickname }}</view>
   <button 
+    class="cu-btn round line-olive text-bold" 
+    style="border: 1px solid; margin-bottom: 5px;" 
+    bind:tap="goToEditUserInfo"
+  >修改头像昵称</button>
+  <button 
     class="cu-btn round line-{{buttonInfo.color}} text-bold" 
     style="border: 1px solid;"
     bindtap="openMaunalStartDateDialog"

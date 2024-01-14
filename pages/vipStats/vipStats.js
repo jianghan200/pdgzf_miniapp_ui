@@ -40,7 +40,7 @@ Page({
   onLoad(options) {
     const self = this
     const pId = options.pId
-    const isVipShowCase = pId == constants.vipSampleProjectId
+    const isVipShowCase = pId == constants.vipPid
     const isVip = (app.globalData.userinfo.type === 2) || isVipShowCase
     this.setData({ 'pId': pId, 'pName': options.pName, 'isVip': isVip }, () => self.getSummaryStats())
   },

@@ -57,7 +57,7 @@ const monthly_stats = function(projectId) {
 
 // 一个用于本文件的helper方法
 const isVip = function(projectId) {
-  return app.globalData.userinfo.type == 2 || projectId == constants.vipSampleProjectId
+  return app.globalData.userinfo.type == 2 || projectId == constants.vipPid
 }
 
 // 初始化echarts以及数据mapping

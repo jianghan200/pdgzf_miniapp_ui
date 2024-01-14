@@ -58,6 +58,12 @@ Page({
     })
   },
 
+  // res = { 'wxNickName': '...', 'wxAvatarUrl': 'http://...' }
+  setAvatarAndNickname(res) {
+    const self = this
+    self.setData({ nickname: res.wxNickName, avatarUrl: res.wxAvatarUrl })
+  },
+
   // 根据hasStartDateCode解析资格日
   resolveStartDate(hasStartDateCode) {
     let startDate = ''
@@ -159,6 +165,13 @@ Page({
   gotoAbout(e) {
     wx.navigateTo({
       url: '/pages/about/about',
+    })
+  },
+
+  // Go to edit-user-info
+  goToEditUserInfo(e) {
+    wx.navigateTo({
+      url: '/pages/user/edit-user-info',
     })
   },
 

@@ -1,0 +1,22 @@
+/* pages/user/edit-user-info.wxss */
+.title {
+  font-size: larger;
+  font-weight: 700;
+  padding: 1rem;
+}
+
+.avatar-btn {
+  padding: 0;
+  width: 56px !important;
+  border-radius: 8px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+.avatar-img {
+  display: block;
+  width: 56px;
+  height: 56px;
+}
+.cu-form-group .title {
+  min-width: calc(4em + 30rpx);
+}

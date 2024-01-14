@@ -438,12 +438,13 @@ const copyToClipboard = function(str) {
 }
 
 // 生成论坛的url
-const generate_flarum_url = function(webUrl) {
+const generate_flarum_url = function() {
+  const bbs_url = 'https://bbs.pdgzf.cn'
   const url = 'https://bbs.pdgzf.cn/api/wechatl?unionId=' + 
                 app.globalData.userinfo.unionId + 
                 '&nickname=' + app.globalData.userinfo.wxNickName + 
                 '&avatarUrl=' + app.globalData.userinfo.wxAvatarUrl +
-                '&url=' + webUrl
+                '&url=' + bbs_url
   return url
 }
 

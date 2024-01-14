@@ -24,6 +24,7 @@
     "pages/timeline/timeline",
     "pages/today/today",
     "pages/user/user",
+    "pages/user/edit-user-info",
     "pages/versions/versions",
     "pages/vip/vip",
     "pages/vipStats/vipStats",

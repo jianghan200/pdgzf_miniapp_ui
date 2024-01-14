@@ -4,11 +4,11 @@ const userInfoHelper = require('../../utils/user')
 Page({
   data: {
     title: '',
-    url: 'https://bbs.pdgzf.cn'
+    url: ''
   },
 
   onLoad(options) {
-    log.info(`用户进入论坛 onShow, ${options}`)
+    log.info(`用户进入论坛 onLoad, ${options}`)
 
     if (options && options.url){
       log.info('进入论坛webview页，options中存在url，代表用户通过分享进入论坛某个文章')
@@ -16,51 +16,85 @@ Page({
       this.setData({ url: options.url })
     }
 
-    this.ask_for_wx_nickname_and_avatar()
+    this.promptUserToSetNicknameAndAvatar()
+  },
+
+  promptUserToSetNicknameAndAvatar() {
+    if (userInfoHelper.has_weixin_nickNameAndAvatar()) {
+      // 用户授权过头像和昵称
+      log.info(`用户授权过头像和昵称`)
+
+      this.setUrl()
+    } else {
+      log.info(`用户没有头像和昵称`)
+
+      wx.showModal({
+        title: '请设置头像和昵称',
+        content: '请设置头像和昵称才可以访问论坛',
+        showCancel: true,
+        cancelText: '暂时不',
+        confirmText: '好的',
+        confirmColor: 'green',
+        complete: (res) => {
+          if (res.confirm) {
+            log.info('即将进入设置头像和昵称的页面')
+
+            wx.navigateTo({
+              url: '/pages/user/edit-user-info?from=forum',
+            })
+          } else {
+            log.warn(`用户始终没有同意授权头像和昵称, 不允许退出`)
+
+            this.promptUserToSetNicknameAndAvatar()
+          }
+        }
+      })
+    }
   },
 
   // 向用户索要用户名和头像
-  ask_for_wx_nickname_and_avatar() {
-    log.info('检查用户是否授权过头像和昵称')
+  // 旧版 API，已经不支持
+  // ask_for_wx_nickname_and_avatar() {
+  //   log.info('检查用户是否授权过头像和昵称')
 
-    const self = this
-    userInfoHelper.get_tencent_nicknameAndAvatar().then(res => {
-      if (res === null) {
-        // 用户没有授权头像和昵称
-        log.warn(`用户没有授权头像和昵称`)
-        log.info('展示弹窗告知用户如果不授权就不能进入论坛')
+  //   const self = this
+  //   userInfoHelper.get_tencent_nicknameAndAvatar().then(res => {
+  //     if (res === null) {
+  //       // 用户没有授权头像和昵称
+  //       log.warn(`用户没有授权头像和昵称`)
+  //       log.info('展示弹窗告知用户如果不授权就不能进入论坛')
 
-        wx.showModal({
-          title: '请授权头像和昵称',
-          content: '需要授权头像和昵称才能进入论坛',
-          showCancel: true,
-          cancelText: '暂时不',
-          confirmText: '好的',
-          confirmColor: 'green',
-          success: (res) => {
-            if (res.confirm) {
-              log.info('用户最终同意授权头像和昵称')
+  //       wx.showModal({
+  //         title: '请授权头像和昵称',
+  //         content: '需要授权头像和昵称才能进入论坛',
+  //         showCancel: true,
+  //         cancelText: '暂时不',
+  //         confirmText: '好的',
+  //         confirmColor: 'green',
+  //         success: (res) => {
+  //           if (res.confirm) {
+  //             log.info('用户最终同意授权头像和昵称')
 
-              self.ask_for_wx_nickname_and_avatar()
-            } else {
-              log.warn(`用户始终没有同意授权头像和昵称, 跳转至today`)
+  //             self.ask_for_wx_nickname_and_avatar()
+  //           } else {
+  //             log.warn(`用户始终没有同意授权头像和昵称, 跳转至today`)
 
-              wx.switchTab({ url: '/pages/today/today' })
-            }
-          }
-        })
-      } else {
-        // 用户授权了头像和昵称
-        log.info(`用户授权了头像和昵称`)
+  //             wx.switchTab({ url: '/pages/today/today' })
+  //           }
+  //         }
+  //       })
+  //     } else {
+  //       // 用户授权了头像和昵称
+  //       log.info(`用户授权了头像和昵称`)
 
-        self.setUrl()
-      }
-    })
-  },
+  //       self.setUrl()
+  //     }
+  //   })
+  // },
 
   // 生成论坛的url
   setUrl() {
-    const url = utils.generate_flarum_url(this.data.url)
+    const url = utils.generate_flarum_url()
 
     log.info(`生成了论坛的url为: ${url}`)
 

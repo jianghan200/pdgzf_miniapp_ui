@@ -86,7 +86,7 @@ Page({
   init(options) {
     const pid = options.pid
     // 判断是否应该展示VIP内容
-    const isVipShowCase = pid == constants.vipSampleProjectId
+    const isVipShowCase = pid == constants.vipPid
     const isVip = (app.globalData.userinfo.type === 2) || isVipShowCase
 
     const self = this

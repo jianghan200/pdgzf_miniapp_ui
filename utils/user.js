@@ -166,5 +166,7 @@ const isNewUser = function() {
 module.exports = {
   hasStartDate : hasStartDate,
   get_tencent_nicknameAndAvatar: get_tencent_nicknameAndAvatar,
+  has_weixin_nickNameAndAvatar: has_weixin_nickNameAndAvatar,
+  upload_weixin_nickNameAndAvatar: upload_weixin_nickNameAndAvatar,
   isNewUser: isNewUser
 }

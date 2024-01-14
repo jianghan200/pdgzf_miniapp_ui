@@ -48,7 +48,7 @@ Page({
   vipSample(e) {
     log.info('普通用户点击vip范例')
 
-    let url = '../community/community?pid=' + constants.vipPid + '&mock=true'
+    const url = '../community/community?pid=' + constants.vipPid + '&mock=true'
     wx.navigateTo({ url: url })
   },
 
@@ -56,7 +56,7 @@ Page({
   showConfirmationModal() {
     if (app.globalData.IOS && !this.data.isNormalMode) {
       wx.showModal({
-        'title' : '苹果税',
+        'title' : '苹果税,',
         'content' : this.data.iosModeMsg
       })
     } else {
