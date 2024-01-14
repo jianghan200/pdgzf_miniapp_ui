@@ -9,15 +9,9 @@ const log = require('./../../utils/log')
 Page({
   data: {
     avatarUrl: '',
-    nickname: '',
-    fromForumPage: false
+    nickname: ''
   },
   onLoad(options) {
-    if (options.from && options.from == 'forum') {
-      this.setData({
-        fromForumPage: true
-      })
-    }
     const userinfo = app.globalData.userinfo
     if (userApi.has_weixin_nickNameAndAvatar()) {
       log.info('这个用户有微信头像和昵称')
@@ -65,8 +59,6 @@ Page({
       log.info('应该 navigate back 回 /pages/flarum/flarum ...')
 
       if (this.data.nickname.trim() != '' && this.data.avatarUrl.trim() != '') {
-        prev_page.setUrl()
-
         wx.navigateBack({ delta: 1 })
       } else {
         log.info('nickname or avatarUrl is empty, navigate to the main page: /pages/today/today')

@@ -15,7 +15,11 @@ Page({
 
       this.setData({ url: options.url })
     }
+  },
 
+  // Switch tab, navigateBack 时触发
+  onShow() {
+    log.info('flarum switchTab 触发')
     this.promptUserToSetNicknameAndAvatar()
   },
 
@@ -40,12 +44,14 @@ Page({
             log.info('即将进入设置头像和昵称的页面')
 
             wx.navigateTo({
-              url: '/pages/user/edit-user-info?from=forum',
+              url: '/pages/user/edit-user-info',
             })
           } else {
             log.warn(`用户始终没有同意授权头像和昵称, 不允许退出`)
 
-            this.promptUserToSetNicknameAndAvatar()
+            wx.switchTab({
+              url: '/pages/today/today',
+            })
           }
         }
       })
