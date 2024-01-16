@@ -163,10 +163,32 @@ const isNewUser = function() {
   return app.globalData.userinfo.type == 0 && app.globalData.userinfo.email == null && app.globalData.userinfo.startDate == null
 }
 
+// 用于用户上传头像
+const uploadAvatar = function(filePath) {
+  return new Promise((resolve) => {
+    wx.uploadFile({
+      filePath: filePath,
+      name: 'file',
+      url: 'https://api.pdgzf.cn/upload_api/upload?path=default',
+      success(res) {
+        const avatar_url = res.data
+        resolve(avatar_url)
+      },
+      fail(err) {
+        log.error(`上传失败 (filePath: ${filePath})`)
+        log.error(err)
+
+        resolve('')
+      }
+    })
+  })
+}
+
 module.exports = {
   hasStartDate : hasStartDate,
   get_tencent_nicknameAndAvatar: get_tencent_nicknameAndAvatar,
   has_weixin_nickNameAndAvatar: has_weixin_nickNameAndAvatar,
   upload_weixin_nickNameAndAvatar: upload_weixin_nickNameAndAvatar,
-  isNewUser: isNewUser
+  isNewUser: isNewUser,
+  uploadAvatar: uploadAvatar
 }

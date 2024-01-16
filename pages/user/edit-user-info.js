@@ -72,18 +72,28 @@ Page({
   confirmChange(e) {
     if (this.data.nickname.trim() != '' && this.data.avatarUrl.trim() != '') {
       const self = this
-      userApi.upload_weixin_nickNameAndAvatar(self.data.nickname.trim(), self.data.avatarUrl.trim()).then(() => {
-        // 用户信息上传成功，完成了用户信息采集
-        log.info(`完成了微信昵称和头像的采集`)
 
-        app.globalData.userinfo.wxNickName = self.data.nickname.trim()
-        app.globalData.userinfo.wxAvatarUrl = self.data.avatarUrl.trim()
-
-        wx.showToast({ title: '信息修改成功', icon: 'success' })
-      }).catch(err => {
-        console.log(err)
-        log.error(`Future返回了错误: ${err}`)
-        wx.showToast({ title: '信息上传失败', icon: 'error' })
+      // 首先获得我们自己服务器生成的可以从公网访问的 url
+      userApi.uploadAvatar(self.data.avatarUrl.trim()).then(publicUrl => {
+        if (publicUrl != '') {
+          userApi.upload_weixin_nickNameAndAvatar(self.data.nickname.trim(), publicUrl).then(() => {
+            // 用户信息上传成功，完成了用户信息采集
+            log.info(`完成了微信昵称和头像的采集`)
+    
+            app.globalData.userinfo.wxNickName = self.data.nickname.trim()
+            app.globalData.userinfo.wxAvatarUrl = publicUrl
+    
+            wx.showToast({ title: '信息修改成功', icon: 'success' })
+          }).catch(err => {
+            log.error(`基于微信接口的方法，upload_weixin_nickNameAndAvatar 报错`)
+            log.error(err)
+            console.log(err)
+            wx.showToast({ title: '信息上传失败', icon: 'error' })
+          })
+        } else {
+          log.error('上传头像失败，不能完成用户昵称和头像的修改.')
+          wx.showToast({ title: '信息上传失败', icon: 'error' })
+        }
       })
     }
   }
