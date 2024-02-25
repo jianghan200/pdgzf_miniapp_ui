@@ -54,7 +54,7 @@ Page({
 
   // Modal相关
   showConfirmationModal() {
-    if (app.globalData.IOS && !this.data.isNormalMode) {
+    if (!this.data.isNormalMode) {
       wx.showModal({
         'title' : '苹果税,',
         'content' : this.data.iosModeMsg
