@@ -60,7 +60,9 @@
   <!-- 付款按钮 -->
   <view style="padding: 10rpx;" wx:if="{{!isVip}}">
     <button style="height: 90rpx;" class="bg-black" bindtap="showConfirmationModal">
-      <text class="cuIcon-vip" style="color: gold; font-weight: 500"></text> 开通VIP
+      <text class="cuIcon-vip" style="color: gold; font-weight: 500"></text>
+      <text wx:if="{{closeIOSPay}}"> 联系 meo365</text>
+      <text wx:else> 开通VIP</text>
     </button>
   </view>
 
