@@ -25,7 +25,8 @@
     <view class="cu-item arrow" bindtap="goToRights" style="background-color: currentColor;">
       <view class="content">
         <text class="cuIcon-vip text-bold" style="color: goldenrod;"></text>
-        <text class="text-bold" style="color: goldenrod;">成为会员(查看权益)</text>
+        <text class="text-bold" style="color: goldenrod;" wx:if="{{!closeIOSPay}}">成为会员(查看权益)</text>
+        <text class="text-bold" style="color: goldenrod;" wx:else>更多信息请联系 meo365</text>
       </view>
     </view>
 
@@ -53,14 +54,6 @@
         <text class="text-bold">房源提醒 (请关注公众号“PD生活”)</text>
       </view>
     </view>
-
-    <!-- 开通付费咨询 -->
-    <!-- <view class="cu-item arrow" bindtap="gotoConsult">
-      <view class="content">
-        <text class="cuIcon-service text-bold"></text>
-        <text class="text-bold">真人咨询</text>
-      </view>
-    </view> -->
 
     <!-- 版本内容 -->
     <view class="cu-item arrow" bindtap="gotoVersions">

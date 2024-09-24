@@ -26,7 +26,9 @@ Page({
     },
     // 用户的头像和昵称
     nickname: '未知用户',
-    avatarUrl: ''
+    avatarUrl: '',
+    // 是否存在关闭苹果支付
+    closeIOSPay: false
   },
   
   onLoad: function (options) {
@@ -41,7 +43,8 @@ Page({
       userinfo: userinfo,
       startDate: this.resolveStartDate(hasStartDateCode),
       hasStartDateCode: hasStartDateCode,
-      buttonInfo: this.resolveButtonInfo(hasStartDateCode, app.globalData.userinfo.type === 2)
+      buttonInfo: this.resolveButtonInfo(hasStartDateCode, app.globalData.userinfo.type === 2),
+      closeIOSPay: app.globalData.IOS && !app.globalData.isNormalMode
     })
 
     if (options['tab'] != undefined && options['tab'] != '' &&  options['tab'] == 'rights') {
@@ -184,9 +187,16 @@ Page({
 
   // 查看VIP的权益，导航至权益页
   goToRights() {
-    wx.navigateTo({
-      url: '/pages/rights/rights',
-    })
+    if (this.data.closeIOSPay) {
+      wx.showToast({
+        title: '联系 meo365',
+        icon: 'none'
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/rights/rights',
+      })
+    }
   },
 
   // Bottom Bar的方法

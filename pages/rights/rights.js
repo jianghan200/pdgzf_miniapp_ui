@@ -20,7 +20,9 @@ Page({
     officialAccount: 'PD生活',
     // 用户的头像和昵称
     nickname: '未知用户',
-    avatarUrl: ''
+    avatarUrl: '',
+    // 是否存在关闭苹果支付
+    closeIOSPay: false
   },
 
   onLoad: function (options) {
@@ -32,7 +34,8 @@ Page({
       iosModeMsg:app.globalData.iosModeMsg,
       isVip: app.globalData.userinfo.type == 2,
       displayOfficialAccount: utils.displayOfficialAccount(),
-      officialAccount: constants.officialAccount
+      officialAccount: constants.officialAccount,
+      closeIOSPay: app.globalData.IOS && !app.globalData.isNormalMode
     })
 
     // open-id被禁用，只能向用户请求权限
@@ -54,9 +57,9 @@ Page({
 
   // Modal相关
   showConfirmationModal() {
-    if (app.globalData.IOS && !this.data.isNormalMode) {
+    if (this.data.closeIOSPay) {
       wx.showModal({
-        'title' : '苹果税,',
+        'title' : '苹果税',
         'content' : this.data.iosModeMsg
       })
     } else {
