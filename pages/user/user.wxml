@@ -2,13 +2,15 @@
 
 <!-- 微信用户信息 -->
 <view class="userinfo">
-  <image class="{{vipInfo.type == 2 ? 'vip-' : ''}}avatar" src="{{avatarUrl}}" mode="aspectFill"></image>
-  <view class="{{vipInfo.type == 2 ? 'vip-' : ''}}nickname">{{ nickname }}</view>
-  <button 
+  <image class="{{vipInfo.type == 2 ? 'vip-' : ''}}avatar" src="{{avatarUrl}}" mode="aspectFill" bind:tap="goToEditUserInfo"></image>
+  <view class="{{vipInfo.type == 2 ? 'vip-' : ''}}nickname" bind:tap="goToEditUserInfo">{{ nickname }}</view>
+  <!-- <button 
     class="cu-btn round line-olive text-bold" 
     style="border: 1px solid; margin-bottom: 5px;" 
     bind:tap="goToEditUserInfo"
-  >修改头像昵称</button>
+  >修改头像昵称</button> -->
+
+  
   <button 
     class="cu-btn round line-{{buttonInfo.color}} text-bold" 
     style="border: 1px solid;"
@@ -24,6 +26,15 @@
       <view class="content">
         <text class="cuIcon-vip text-bold" style="color: goldenrod;"></text>
         <text class="text-bold" style="color: goldenrod;">成为会员(查看权益)</text>
+      </view>
+    </view>
+
+
+    <!-- 我的选房状态 -->
+    <view class="cu-item arrow" bindtap="goToSelectDetail">
+      <view class="content">
+        <text class="cuIcon-home text-bold text-pink"></text>
+        <text class="text-bold">我的选房状态</text>
       </view>
     </view>
 

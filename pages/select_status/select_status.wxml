@@ -1,0 +1,69 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-bold" style="color: gold;">VIP权益</view>
+  </view>
+</cu-custom>
+
+<view style="height: 20px;"></view>
+
+<view class="text-bold text-xl" style="padding-top: 0.5rem; color: rgb(0, 0, 0);">
+    是否为小程序VIP: <span style="color: rgb(17, 70, 245);"> {{vip_status}} </span>
+</view>
+
+<block wx:if="{{account}}">
+  <view  class="text-bold text-xl" style="padding-top: 0.5rem; color: rgb(0, 0, 0);">
+    官网账号: <span style="color: rgb(17, 70, 245);"> {{account}}  </span>
+  </view>
+ 
+</block>
+
+
+
+<block wx:else >
+  <view class="text-bold text-xl" style="padding-top: 0.5rem; color: rgb(0, 0, 0);">
+      官网账号: <span style="color: rgb(17, 70, 245);"> 暂未登记官网账号信息 </span>   
+      <!-- <view class="text-bold" style="align-items: center;" wx:if="{{ !hasAccountInfo && isVip }}">
+      <view style="margin-left: 10px; color: cornflowerblue;" bindtap="goToVipInfo">【登记官网账户信息】</view>
+      </view> -->
+  </view>
+  <view class="text-bold text-gray text-sm" style="padding-top: 0.5rem;">
+      请先开通 VIP 后，到”关注房源列表“中设置”自动选房“完成账号信息登记
+  </view>
+</block>
+
+<!-- <view style="padding: 10rpx;">
+      <button style="height: 90rpx;" class="cu-btn block lg bg-black" bindtap="goToVipInfo">
+        <text class="cuIcon-vip" style="color: gold; font-weight: 500"></text> 认证官网账户信息
+      </button>
+    </view> -->
+<!-- <block wx:if="{{account}}"> -->
+  <view class="text-bold text-xl" style="padding-top: 0.5rem; color: rgb(0, 0, 0);">
+      官网账户姓名: <span style="color: rgb(17, 70, 245);"> {{real_name}} </span>
+  </view>
+  <view class="text-bold text-xl" style="padding-top: 0.5rem; color: rgb(0, 0, 0);">
+      官网账户状态: <span style="color: rgb(17, 70, 245);"> {{pdgzf_account_status_code}} {{pdgzf_account_status}} </span>
+  </view>
+  <view class="text-bold text-gray text-sm" style="padding-top: 0.5rem;">
+    自动选房时，只有“1007 待选房”状态才会执行自动选房操作
+  </view>
+  <view class="text-bold text-xl" style="padding-top: 0.5rem; ">
+    自动选房状态:  <span style="color: rgb(17, 70, 245);"> {{auto_choose_status}} </span>
+  </view>
+  <!-- <view class="text-bold text-xl" style="padding-top: 0.5rem; ">
+    接收选房报告邮件:  <span style="color: rgb(17, 70, 245);"> {{auto_choose_email}} </span>
+  </view> -->
+  <view class="text-bold text-xl" style="padding-top: 0.5rem; ">
+    选房资格日期: <span style="color: rgb(17, 70, 245);"> {{start_date}} </span> 
+  </view>
+    <!-- <view class="text-bold text-xl" style="padding-top: 0.5rem; ">
+    最晚选房时间: {{status}}
+  </view> -->
+<!-- </block> -->
+
+  <!-- <view class="text-bold text-gray text-sm" style="padding-top: 0.5rem;">
+  </view>
+  <view class="text-bold text-gray text-sm" style="padding-top: 0.5rem;">
+    真人咨询为兼职答复，不保证实时性，也不保证能回答所有问题，仅供参考。如需要 100%准确，请致电公租房官方电话
+  </view>
+   -->

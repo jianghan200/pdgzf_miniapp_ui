@@ -147,6 +147,13 @@ Page({
     })
   },
 
+  
+  goToSelectDetail(e) {
+    wx.navigateTo({
+      url: '/pages/select_status/select_status',
+    })
+  },
+
   // Go to 我的反馈进度页
   gotoConsult(e) {
     wx.navigateTo({

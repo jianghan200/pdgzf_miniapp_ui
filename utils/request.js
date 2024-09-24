@@ -918,6 +918,36 @@ const getAppMode = function() {
   })
 }
 
+const getStatusByServerId = function(server_account_id) {
+  const url = constants.server + '/user_status/' + server_account_id;
+  const header = {
+    'content-type': 'application/json'
+  }
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      header: header,
+      success: (res) => {
+        if (res.statusCode != 200) {
+          console.log(res)
+          resolve([])
+        } else {
+          if (res.data && res.data != null) {
+            resolve(res.data)
+          } else {
+            console.log(res)
+            resolve([])
+          }
+        }
+      },
+      fail: (err) => {
+        console.log(err)
+        resolve([])
+      }
+    })
+  })
+}
+
 module.exports = {
   login : login,
   getSubscriptions : getSubscriptions,
@@ -944,5 +974,6 @@ module.exports = {
   getMonthlyHouseCount : getMonthlyHouseCount,
   getConsultStatus : getConsultStatus,
   getConsultingPaymentInfo : getConsultingPaymentInfo,
-  getAppMode: getAppMode
+  getAppMode: getAppMode,
+  getStatusByServerId:getStatusByServerId
 }
