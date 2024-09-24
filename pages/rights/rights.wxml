@@ -47,13 +47,16 @@
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
     3. 可向真人微信咨询，排坑答疑（每晚统一答复）
   </view>
-
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
-    4. 提新功能需求，优先收集VIP关注的房源信息
+    4. 可加入 VIP 专属微信交流群
   </view>
 
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
-    5. 可开启自动排队, 以免遗漏心仪房源（附赠）
+    5. 提新功能需求，优先收集VIP关注的房源信息
+  </view>
+
+  <view class="text-bold text-xl" style="padding-top: 0.5rem;">
+    6. 可开启自动排队, 以免遗漏心仪房源（附赠）
   </view>
 
 
