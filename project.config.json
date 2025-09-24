@@ -41,10 +41,15 @@
     "showES6CompileOption": false,
     "useCompilerPlugins": false,
     "ignoreUploadUnusedFiles": true,
-    "useStaticServer": true
+    "useStaticServer": true,
+    "compileWorklet": false,
+    "localPlugins": false,
+    "condition": false,
+    "swc": false,
+    "disableSWC": true
   },
   "compileType": "miniprogram",
-  "libVersion": "2.19.6",
+  "libVersion": "2.27.3",
   "appid": "wx98a85564da1c5d20",
   "projectname": "PD%E5%85%AC%E7%A7%9F%E6%88%BF",
   "condition": {
@@ -70,5 +75,6 @@
   "editorSetting": {
     "tabIndent": "insertSpaces",
     "tabSize": 2
-  }
+  },
+  "simulatorPluginLibVersion": {}
 }

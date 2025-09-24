@@ -67,7 +67,7 @@ Page({
       }
     }
   },
-
+ 
   // 上传头像和昵称
   confirmChange(e) {
     if (this.data.nickname.trim() != '' && this.data.avatarUrl.trim() != '') {

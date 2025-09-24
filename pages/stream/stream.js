@@ -152,11 +152,24 @@ Page({
     this.setData({ vipInfo : app.globalData.userinfo })
     // open-id被禁用，只能向用户请求权限
     const self = this
-    userInfoHelper.get_tencent_nicknameAndAvatar().then(res => {
-      if (res !== null) {
-        self.setData({ nickname: res.wxNickName, avatarUrl: res.wxAvatarUrl })
-      }
-    })
+    // userInfoHelper.get_tencent_nicknameAndAvatar().then(res => {
+    //   if (res !== null) {
+    //     self.setData({ nickname: res.wxNickName, avatarUrl: res.wxAvatarUrl })
+    //   }
+    // })
+
+    if (userInfoHelper.has_weixin_nickNameAndAvatar()) {
+      self.setData({ 
+        nickname: app.globalData.userinfo.wxNickName, 
+        avatarUrl: app.globalData.userinfo.wxAvatarUrl 
+      })
+    } else {
+      // 使用默认值
+      self.setData({ 
+        nickname: '游客', 
+        avatarUrl: '../../assets/cat.jpeg' 
+      })
+    }
   },
 
   // 打开某个文章
