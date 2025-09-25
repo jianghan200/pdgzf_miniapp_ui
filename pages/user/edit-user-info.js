@@ -72,16 +72,20 @@ Page({
   confirmChange(e) {
     if (this.data.nickname.trim() != '' && this.data.avatarUrl.trim() != '') {
       const self = this
-
+      console.log(self.data.avatarUrl)
+      console.log('===============')
       // 首先获得我们自己服务器生成的可以从公网访问的 url
       userApi.uploadAvatar(self.data.avatarUrl.trim()).then(publicUrl => {
+        
+        console.log('===============')
         if (publicUrl != '') {
-          userApi.upload_weixin_nickNameAndAvatar(self.data.nickname.trim(), publicUrl).then(() => {
+          publicUrl=JSON.parse(publicUrl)
+          userApi.upload_weixin_nickNameAndAvatar(self.data.nickname.trim(), publicUrl.url).then(() => {
             // 用户信息上传成功，完成了用户信息采集
             log.info(`完成了微信昵称和头像的采集`)
     
             app.globalData.userinfo.wxNickName = self.data.nickname.trim()
-            app.globalData.userinfo.wxAvatarUrl = publicUrl
+            app.globalData.userinfo.wxAvatarUrl = publicUrl.url
     
             wx.showToast({ title: '信息修改成功', icon: 'success' })
           }).catch(err => {

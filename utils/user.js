@@ -1,4 +1,3 @@
-const app = getApp()
 const log = require('./log')
 const constants = require('./constants')
 
@@ -6,12 +5,18 @@ const constants = require('./constants')
 // 0：是个VIP；1：模拟过资格日；-1：不是vip也没有模拟资格日
 const hasStartDate = function() {
   log.info(`判断用户是否有资格日`)
-  log.info(app.globalData.userinfo)
+  const appInstance = typeof getApp === 'function' ? getApp() : null
+  if (!appInstance || !appInstance.globalData || !appInstance.globalData.userinfo) {
+    log.warn('app 或 userinfo 不可用，按无资格日处理')
+    return -1
+  }
+  const userinfo = appInstance.globalData.userinfo
+  log.info(userinfo)
 
-  if (app.globalData.userinfo.type == 2 && app.globalData.userinfo.startDate && app.globalData.userinfo.startDate != null) {
+  if (userinfo.type == 2 && userinfo.startDate && userinfo.startDate != null) {
     // 开启了自动选房的Vip，现在Vip也有可能没有选房资格日的信息。
     return 0
-  } else if (!app.globalData.userinfo.manualStartDate || app.globalData.userinfo.manualStartDate == null) {
+  } else if (!userinfo.manualStartDate || userinfo.manualStartDate == null) {
     // 不是vip，也没有输入过资格日
     return -1
   } else {
@@ -23,7 +28,14 @@ const hasStartDate = function() {
 // 判断后端是否有用户的微信昵称和头像
 // 不是undefined，不是null，不是空字符串, 不是叫"undefined"的字符串
 const has_weixin_nickNameAndAvatar = function() {
-  return app.globalData.userinfo.wxNickName && app.globalData.userinfo.wxNickName !== null && app.globalData.userinfo.wxNickName.trim() !== '' && app.globalData.userinfo.wxAvatarUrl && app.globalData.userinfo.wxAvatarUrl !== null && app.globalData.userinfo.wxAvatarUrl.trim() !== '' && app.globalData.userinfo.wxAvatarUrl.trim() !== 'undefined' && app.globalData.userinfo.wxNickName.trim() !== 'undefined'
+  const appInstance = typeof getApp === 'function' ? getApp() : null
+  if (!appInstance || !appInstance.globalData || !appInstance.globalData.userinfo) {
+    return false
+  }
+  const userinfo = appInstance.globalData.userinfo
+  const hasNick = userinfo.wxNickName && userinfo.wxNickName !== null && ('' + userinfo.wxNickName).trim() !== '' && ('' + userinfo.wxNickName).trim() !== 'undefined'
+  const hasAvatar = userinfo.wxAvatarUrl && userinfo.wxAvatarUrl !== null && ('' + userinfo.wxAvatarUrl).trim() !== '' && ('' + userinfo.wxAvatarUrl).trim() !== 'undefined'
+  return hasNick && hasAvatar
 }
 
 // 使用弹窗以及调用微信的接口向用户索要微信昵称和头像
@@ -88,7 +100,8 @@ const upload_weixin_nickNameAndAvatar = function(nickName, avatar) {
   log.info(`向后端上传用户的微信昵称: ${nickName}和头像的url: ${avatar}`)
 
   const url = constants.userinfoServer + '/api/user/update'
-  const token = app.globalData.userinfo.tokenStr
+  const appInstance = typeof getApp === 'function' ? getApp() : null
+  const token = appInstance && appInstance.globalData && appInstance.globalData.userinfo && appInstance.globalData.userinfo.tokenStr ? appInstance.globalData.userinfo.tokenStr : ''
   return new Promise((resolve, reject) => {
     wx.request({
       url: url,
@@ -135,8 +148,12 @@ const get_tencent_nicknameAndAvatar = function() {
             // 用户信息上传成功，完成了用户信息采集
             log.info(`完成了微信昵称和头像的采集`)
 
-            app.globalData.userinfo.wxNickName = wxNickName
-            app.globalData.userinfo.wxAvatarUrl = wxAvatarUrl
+            const appInstance = typeof getApp === 'function' ? getApp() : null
+            if (appInstance) {
+              appInstance.globalData.userinfo = appInstance.globalData.userinfo || {}
+              appInstance.globalData.userinfo.wxNickName = wxNickName
+              appInstance.globalData.userinfo.wxAvatarUrl = wxAvatarUrl
+            }
 
             resolve(wxNickNameAndAvatar_from_user_auth)
           }).catch(err => {
@@ -150,9 +167,11 @@ const get_tencent_nicknameAndAvatar = function() {
       })
     } else {
       log.info('该用户已经拥有微信昵称和头像, 继续')
-      resolve({ 
-        'wxNickName' : app.globalData.userinfo.wxNickName, 
-        'wxAvatarUrl': app.globalData.userinfo.wxAvatarUrl 
+      const appInstance = typeof getApp === 'function' ? getApp() : null
+      const userinfo = appInstance && appInstance.globalData ? appInstance.globalData.userinfo : { wxNickName: '', wxAvatarUrl: '' }
+      resolve({
+        'wxNickName' : userinfo.wxNickName,
+        'wxAvatarUrl': userinfo.wxAvatarUrl
       })
     }
   })
@@ -160,7 +179,13 @@ const get_tencent_nicknameAndAvatar = function() {
 
 // 一个用户是否为新人？
 const isNewUser = function() {
-  return app.globalData.userinfo.type == 0 && app.globalData.userinfo.email == null && app.globalData.userinfo.startDate == null
+  const appInstance = typeof getApp === 'function' ? getApp() : null
+  if (!appInstance || !appInstance.globalData || !appInstance.globalData.userinfo) {
+    // 在非常早期或异常环境下，无法获得app或userinfo，按“新用户”处理
+    return true
+  }
+  const userinfo = appInstance.globalData.userinfo
+  return userinfo.type == 0 && userinfo.email == null && userinfo.startDate == null
 }
 
 // 用于用户上传头像

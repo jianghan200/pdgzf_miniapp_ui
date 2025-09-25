@@ -445,6 +445,8 @@ const generate_flarum_url = function() {
                 '&nickname=' + app.globalData.userinfo.wxNickName + 
                 '&avatarUrl=' + app.globalData.userinfo.wxAvatarUrl +
                 '&url=' + bbs_url
+  console.log('========url=============')
+
   return url
 }
 

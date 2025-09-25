@@ -59,6 +59,10 @@ Page({
     this.initNewbee()
   },
   
+  onShow(){
+    this.initNewbee()
+  },
+
   // init categories
   initCategories() {
     const self = this

@@ -1,10 +1,13 @@
 // app.js
 var log = require('./utils/log')
+const userInfoHelper = require('./utils/user')
+const constants = require('./utils/constants')
+
 App({
   onLaunch: function (options) {
     log.info(options)
     this.globalData.scene = options.scene
-
+    this.getRandomNameAndAvatar()
     log.info('用户onLaunch')
     // 最开始要prompt用户升级程序（if any）
     this.updateApp()
@@ -38,6 +41,8 @@ App({
       fail: (result) => {}
     })
   },
+
+ 
 
   // 检查版本，prompt用户下载新版本
   updateApp() {
@@ -73,5 +78,19 @@ App({
   },
 
   globalData: {
-  }
+    userinfo: {
+      wxNickName: '',
+      wxAvatarUrl: ''
+    }
+  },
+  
+  getRandomNameAndAvatar: function() {
+    const names = constants.randomNikName || []
+    const pickedName = names.length > 0 ? names[Math.floor(Math.random() * names.length)] : constants.randomUserName()
+    const defaultAvatar = '/assets/cat.jpeg'
+
+    this.globalData.userinfo = this.globalData.userinfo || {}
+    this.globalData.userinfo.wxNickName = pickedName
+    this.globalData.userinfo.wxAvatarUrl = defaultAvatar
+  },
 })

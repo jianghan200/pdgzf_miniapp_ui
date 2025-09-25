@@ -1,6 +1,7 @@
 const log = require('../../utils/log')
 const utils = require('../../utils/util')
 const userInfoHelper = require('../../utils/user')
+const constants = require('../../utils/constants')
 Page({
   data: {
     title: '',
@@ -9,12 +10,13 @@ Page({
 
   onLoad(options) {
     log.info(`用户进入论坛 onLoad, ${options}`)
-
+    this.promptUserToSetNicknameAndAvatar()
     if (options && options.url){
       log.info('进入论坛webview页，options中存在url，代表用户通过分享进入论坛某个文章')
 
       this.setData({ url: options.url })
     }
+    
   },
 
   // Switch tab, navigateBack 时触发
@@ -32,29 +34,30 @@ Page({
     } else {
       log.info(`用户没有头像和昵称`)
 
-      wx.showModal({
-        title: '请设置头像和昵称',
-        content: '请设置头像和昵称才可以访问论坛',
-        showCancel: true,
-        cancelText: '暂时不',
-        confirmText: '好的',
-        confirmColor: 'green',
-        complete: (res) => {
-          if (res.confirm) {
-            log.info('即将进入设置头像和昵称的页面')
+      // 自动设置一个默认昵称与头像
+      try {
+        const names = constants.randomNikName || []
+        const pickedName = names.length > 0 ? names[Math.floor(Math.random() * names.length)] : constants.randomUserName()
+        const defaultAvatar = '../../assets/cat.jpeg'
 
-            wx.navigateTo({
-              url: '/pages/user/edit-user-info',
-            })
-          } else {
-            log.warn(`用户始终没有同意授权头像和昵称, 不允许退出`)
+        log.info(`自动分配昵称与头像: ${pickedName}, ${defaultAvatar}`)
 
-            wx.switchTab({
-              url: '/pages/today/today',
-            })
-          }
-        }
-      })
+        userInfoHelper.upload_weixin_nickNameAndAvatar(pickedName, defaultAvatar).then(() => {
+          // 写入全局，保持与user.js一致
+          const app = getApp()
+          app.globalData.userinfo.wxNickName = pickedName
+          app.globalData.userinfo.wxAvatarUrl = defaultAvatar
+
+          this.setUrl()
+        }).catch(err => {
+          log.error('自动上传默认昵称头像失败')
+          console.log(err)
+        })
+      } catch (e) {
+        log.error('分配默认昵称头像时发生异常')
+        console.log(e)
+  
+      }
     }
   },
 
