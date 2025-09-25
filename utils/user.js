@@ -188,6 +188,8 @@ const isNewUser = function() {
   return userinfo.type == 0 && userinfo.email == null && userinfo.startDate == null
 }
 
+
+// {statusCode: 200, data: "https://cdn.pdgzf.cn/upload/default/087b0012-7bc2-48b0-824c-6a3acba6bdbb.jpeg", header: {…}, cookies: Array(0), errMsg: "uploadFile:ok"}
 // 用于用户上传头像
 const uploadAvatar = function(filePath) {
   return new Promise((resolve) => {
