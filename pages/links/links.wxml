@@ -3,10 +3,10 @@
   <view slot="content">干货传送门</view>
 </cu-custom>
 
-<view 
+<!-- <view 
   class="padding text-white text-bold" 
   style="display: flex; align-items: center; justify-content: center; background-color: darkslategrey;"
->点击卡片传送至文章</view>
+>点击卡片传送至文章</view> -->
 
 <scroll-view scroll-y style="height: 100vh;" class="bg-black">
   <view 
