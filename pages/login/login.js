@@ -3,6 +3,7 @@ const app = getApp()
 const requests = require('../../utils/request')
 const dataHelper = require('../../utils/data')
 const log = require('./../../utils/log')
+const constants = require('./../../utils/constants')
 
 Page({
   data: {
@@ -30,9 +31,14 @@ Page({
     requests
       .login(jscode)
       .then((userinfo) => {
-        app.globalData.userinfo = userinfo
         log.info('登陆成功')
         log.info(userinfo)
+
+        if(!this.has_weixin_nickNameAndAvatar(userinfo)){
+          console.log("生成随机昵称头像");
+          this.getRandomNameAndAvatar(userinfo)
+        }
+        app.globalData.userinfo = userinfo
         // 几乎全部的初始请求
         dataHelper.loadAllData(self.options)
       })
@@ -41,5 +47,23 @@ Page({
         console.log(err)
         wx.showToast({ title: '服务器错误', icon: 'error' })
       })
+  },
+
+  getRandomNameAndAvatar: function(userinfo) {
+    
+    const names = constants.randomNikName || []
+    const pickedName = names.length > 0 ? names[Math.floor(Math.random() * names.length)] : constants.randomUserName()
+    const defaultAvatar = 'https://cdn.vencloud.cn/yzzz/default/cat.jpeg-detail_img'
+    userinfo.wxNickName = pickedName;
+    userinfo.wxAvatarUrl = defaultAvatar;
+    // this.globalData.userinfo = userinfo || {}
+    // this.globalData.userinfo.wxNickName = pickedName
+    // this.globalData.userinfo.wxAvatarUrl = defaultAvatar
+  },
+
+  has_weixin_nickNameAndAvatar: function(userinfo) {
+    const hasNick = userinfo.wxNickName && userinfo.wxNickName !== null && ('' + userinfo.wxNickName).trim() !== '' && ('' + userinfo.wxNickName).trim() !== 'undefined'
+    const hasAvatar = userinfo.wxAvatarUrl && userinfo.wxAvatarUrl !== null && ('' + userinfo.wxAvatarUrl).trim() !== '' && ('' + userinfo.wxAvatarUrl).trim() !== 'undefined'
+    return hasNick && hasAvatar
   }
 })

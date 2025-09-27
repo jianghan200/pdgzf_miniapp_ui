@@ -11,7 +11,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    CustomBar: app.globalData.CustomBar,
+    CustomBar: app.globalData.CustomBar *2,
     userinfo: null,
     vipInfo: null,
     startDate: '',
@@ -68,7 +68,7 @@ Page({
       // 使用默认值
       self.setData({ 
         nickname: '游客', 
-        avatarUrl: '../../assets/cat.jpeg' 
+        avatarUrl: 'https://cdn.vencloud.cn/yzzz/default/cat.jpeg-detail_img' 
       })
     }
   },
@@ -314,5 +314,14 @@ Page({
         }
       }
     }
-  }
+  },
+
+  // 新手村导航至某个页面
+  goToNewbeePage(e) {
+    console.log("goToNewbeePage", e.currentTarget.dataset)
+    const page = e.currentTarget.dataset.page
+    const url = `/pages/${page}/${page}?curComponentId=${e.currentTarget.dataset.curcomponentid}`
+    console.log("url", url)
+    wx.navigateTo({ url: url })
+  },
 })

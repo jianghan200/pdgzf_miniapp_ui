@@ -75,7 +75,7 @@ Page({
       const self = this
       console.log(self.data.avatarUrl)
       console.log('===============')
-      if(self.data.avatarUrl.startsWith("https://cdn.vencloud.cn")){
+      if(self.data.avatarUrl.startsWith("https://cdn.vencloud.cn" )|| self.data.avatarUrl.startsWith("../../" )){
         console.log('头像没有变');
         userApi.upload_weixin_nickNameAndAvatar(self.data.nickname.trim(), self.data.avatarUrl).then(() => {
           // 用户信息上传成功，完成了用户信息采集
@@ -99,7 +99,7 @@ Page({
       // 首先获得我们自己服务器生成的可以从公网访问的 url
       userApi.uploadAvatar(self.data.avatarUrl.trim()).then(publicUrl => {
         
-        console.log('===============')
+        console.log('===============', publicUrl)
         if (publicUrl != '') {
           if(publicUrl.startsWith("{")){
             publicUrl=JSON.parse(publicUrl);

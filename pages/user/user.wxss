@@ -1,33 +1,46 @@
 /* pages/user/user.wxss */
 
 .userinfo {
-  display: flex; 
-  flex-direction: column; 
-  padding: 10rpx; 
+  display: flex;
+  flex-direction: row;
+  padding: 20rpx 30rpx;
   align-items: center;
+  gap: 20rpx;
+  margin: 40rpx 30rpx;
+  background: white;
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .avatar {
   overflow: hidden; 
-  width: 150rpx; 
-  height: 150rpx; 
+  width: 120rpx; 
+  height: 120rpx; 
   border-radius: 50%; 
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
 }
 
 .nickname {
-  font-size: x-large; 
+  font-size:large; 
   font-family: serif;
-  padding: .5rem;
+  padding: .2rem;
 }
 
 .vip-avatar {
   overflow: hidden; 
-  width: 150rpx; 
-  height: 150rpx; 
+  width: 120rpx; 
+  height: 120rpx; 
   border-radius: 50%; 
   box-shadow: 3px 3px 10px rgba(218, 165, 32, 0.959);
   border: 5px solid goldenrod;
+  flex-shrink: 0;
 }
 
 .vip-nickname {
@@ -36,4 +49,45 @@
   font-size: x-large; 
   font-family: serif;
   padding: .5rem;
+}
+
+/* 网格容器样式 */
+.grid-container {
+  margin: 30rpx;
+  background: white;
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 20rpx rgba(0, 0, 0, 0.1); 
+  padding: 20rpx;
+}
+
+/* 资格日期信息样式 */
+.start-date-info {
+  display: flex;
+  margin-top: 10rpx;
+  padding: 10rpx;
+  background: #ffffff;
+}
+
+.start-date-label {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 4rpx;
+}
+
+.start-date-value {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 4rpx;
+}
+
+.start-date-hint {
+  font-size: 22rpx;
+  color: #999;
+  font-style: italic;
+}
+
+
+.cu-list.grid.no-border {
+  padding: 0;
 }
