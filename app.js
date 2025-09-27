@@ -7,7 +7,7 @@ App({
   onLaunch: function (options) {
     log.info(options)
     this.globalData.scene = options.scene
-    this.getRandomNameAndAvatar()
+    
     log.info('用户onLaunch')
     // 最开始要prompt用户升级程序（if any）
     this.updateApp()
@@ -25,7 +25,7 @@ App({
         if (capsule) {
           this.globalData.Custom = capsule;
           // (capsule.top - result.statusBarHeight)过小，本来要乘2，为了让其饱满一些，乘四
-          this.globalData.CustomBar = result.statusBarHeight + capsule.height + (capsule.top - result.statusBarHeight) * 4;
+          this.globalData.CustomBar = result.statusBarHeight + capsule.height + (capsule.top - result.statusBarHeight) * 2;
         } else {
           this.globalData.CustomBar = result.statusBarHeight + 50;
         }
@@ -84,13 +84,5 @@ App({
     }
   },
   
-  getRandomNameAndAvatar: function() {
-    const names = constants.randomNikName || []
-    const pickedName = names.length > 0 ? names[Math.floor(Math.random() * names.length)] : constants.randomUserName()
-    const defaultAvatar = '/assets/cat.jpeg'
 
-    this.globalData.userinfo = this.globalData.userinfo || {}
-    this.globalData.userinfo.wxNickName = pickedName
-    this.globalData.userinfo.wxAvatarUrl = defaultAvatar
-  },
 })
