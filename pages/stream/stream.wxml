@@ -1,12 +1,18 @@
 <wxs src="../../utils/tool.wxs" module="tools" />
 <view>
-  <!-- 页面标题 -->
-  <view style="height: {{ CustomBar }}px; display: flex; flex-direction: row; align-items: center;">
-    <view class="title" style="margin-top: 30px;">
-      <text class="cuIcon-discover text-bold"></text>
-      <text class="text-bold" style="margin-left: 10px;">公租房新鲜事</text>
+  <cu-custom bgColor="bg-black" isBack="{{true}}">
+    <view slot="backText">返回</view>
+    <view slot="content">
+      <view class="text-bold" style="color: gold;">PD租房 - VIP看房文章</view>
     </view>
-  </view>
+  </cu-custom>
+  <!-- 页面标题 -->
+  <!-- <view style="height: {{ CustomBar }}px; display: flex; flex-direction: row; align-items: center;">
+    <view class="title" style="margin-top: 60rpx;">
+      <text class="cuIcon-discover text-bold"></text>
+      <text class="text-bold" style="margin-left: 10px;"> PD租房 - VIP看房文章</text>
+    </view>
+  </view> -->
   <scroll-view class="nav bg-white text-center" scroll-x scroll-with-animation>
     <view class="cu-item {{ curComponentId == 0 ? 'text-black cur text-bold' : '' }}" data-id="0" bindtap="selectTab">
       信息流
@@ -14,9 +20,9 @@
     <view class="cu-item {{ curComponentId == 1 ? 'text-black cur text-bold' : '' }}" data-id="1" bindtap="selectTab">
       VIP内容
     </view>
-    <view class="cu-item {{ curComponentId == 2 ? 'text-black cur text-bold' : '' }}" data-id="2" bindtap="selectTab">
+    <!-- <view class="cu-item {{ curComponentId == 2 ? 'text-black cur text-bold' : '' }}" data-id="2" bindtap="selectTab">
       新手村
-    </view>
+    </view> -->
   </scroll-view>
 
   <!-- 搜索栏 -->

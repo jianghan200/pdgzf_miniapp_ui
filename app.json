@@ -54,12 +54,6 @@
       "text": "全部房源"
     },
     {
-      "pagePath": "pages/stream/stream",
-      "iconPath": "/assets/discoverfill_grey.png",
-      "selectedIconPath": "/assets/discoverfill.png",
-      "text": "发现"
-    },
-    {
       "pagePath": "pages/flarum/flarum",
       "iconPath": "/assets/communityfill_grey.png",
       "selectedIconPath": "/assets/communityfill.png",
