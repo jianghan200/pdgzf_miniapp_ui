@@ -50,15 +50,25 @@ Page({
   },
 
   getRandomNameAndAvatar: function(userinfo) {
-    
+    // 基于 unionid 生成确定性的昵称
     const names = constants.randomNikName || []
-    const pickedName = names.length > 0 ? names[Math.floor(Math.random() * names.length)] : constants.randomUserName()
+    let pickedName = ''
+    if (userinfo.unionid && names.length > 0) {
+      // 简单 hash 算法，将 unionid 映射到 names 的索引
+      let hash = 0
+      for (let i = 0; i < userinfo.unionid.length; i++) {
+        hash = ((hash << 5) - hash) + userinfo.unionid.charCodeAt(i)
+        hash |= 0 // 转为32位整数
+      }
+      const idx = Math.abs(hash) % names.length
+      pickedName = names[idx]
+    } else {
+      // 没有 unionid 或 names 为空，退回随机
+      pickedName = names.length > 0 ? names[Math.floor(Math.random() * names.length)] : constants.randomUserName()
+    }
     const defaultAvatar = 'https://cdn.vencloud.cn/yzzz/default/cat.jpeg-detail_img'
-    userinfo.wxNickName = pickedName;
-    userinfo.wxAvatarUrl = defaultAvatar;
-    // this.globalData.userinfo = userinfo || {}
-    // this.globalData.userinfo.wxNickName = pickedName
-    // this.globalData.userinfo.wxAvatarUrl = defaultAvatar
+    userinfo.wxNickName = pickedName
+    userinfo.wxAvatarUrl = defaultAvatar
   },
 
   has_weixin_nickNameAndAvatar: function(userinfo) {
