@@ -20,7 +20,7 @@
     </view>
     <view class="cu-bar bg-white solid-bottom" bindtap="navigateToOffice">
       <view class="action"><text class="cuIcon-locationfill text-red"></text><text>办事处地址</text></view>
-      <view class="action text-blue">点击导航：浦东新区浦三路930弄1号（近杨高南路）</view>
+      <view class="action text-blue">点击导航：上海市浦东新区金桥镇庙港路187弄1号</view>
     </view>
     <view class="cu-bar bg-white solid-bottom">
       <view class="action"><text class="cuIcon-servicefill text-blue"></text><text>咨询电话</text></view>
@@ -35,9 +35,16 @@
       <view class="action">https://select.pdgzf.com</view>
     </view>
     <view class="cu-bar bg-white solid-bottom">
-      <view class="action"><text class="cuIcon-repairfill text-grey"></text><text>报修</text></view>
-      <view class="action">可登录官网申报</view>
+      <view class="action"><text class="cuIcon-repairfill text-grey"></text><text>报修电话</text></view>
+      <view class="action"></view>
+      <view class="action text-blue" bindtap="makePhoneCall">021-68389100 可在官方程序报销</view>
     </view>
+    <view class="cu-bar bg-white solid-bottom">
+      <view class="action"><text class="cuIcon-servicefill text-blue"></text><text>智能门禁、门锁故障报修电话:</text></view>
+      <view class="action text-blue" bindtap="makePhoneCall">4008089669</view>
+    </view>
+
+
   </view>
   <!-- 注意事项 -->
   <view wx:if="{{1 == curTab}}">
