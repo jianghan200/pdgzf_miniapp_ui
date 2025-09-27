@@ -16,8 +16,7 @@ Page({
     wx.login({
       success: function(res) {
         log.info(res)
-        console.log(res)
-
+        console.log("wx.login", res)
         self.login(res.code)
       }
     })
@@ -32,7 +31,8 @@ Page({
       .login(jscode)
       .then((userinfo) => {
         log.info('登陆成功')
-        log.info(userinfo)
+        log.info("userinfo", userinfo)
+        console.log("userinfo", userinfo)
 
         if(!this.has_weixin_nickNameAndAvatar(userinfo)){
           console.log("生成随机昵称头像");
@@ -50,20 +50,21 @@ Page({
   },
 
   getRandomNameAndAvatar: function(userinfo) {
-    // 基于 unionid 生成确定性的昵称
+    // 基于 unionId 生成确定性的昵称
     const names = constants.randomNikName || []
     let pickedName = ''
-    if (userinfo.unionid && names.length > 0) {
-      // 简单 hash 算法，将 unionid 映射到 names 的索引
+    if (userinfo.unionId && names.length > 0) {
+      // 简单 hash 算法，将 unionId 映射到 names 的索引
       let hash = 0
-      for (let i = 0; i < userinfo.unionid.length; i++) {
-        hash = ((hash << 5) - hash) + userinfo.unionid.charCodeAt(i)
+      for (let i = 0; i < userinfo.unionId.length; i++) {
+        hash = ((hash << 5) - hash) + userinfo.unionId.charCodeAt(i)
         hash |= 0 // 转为32位整数
       }
       const idx = Math.abs(hash) % names.length
+      console.log(userinfo.unionId, idx)
       pickedName = names[idx]
     } else {
-      // 没有 unionid 或 names 为空，退回随机
+      // 没有 unionId 或 names 为空，退回随机
       pickedName = names.length > 0 ? names[Math.floor(Math.random() * names.length)] : constants.randomUserName()
     }
     const defaultAvatar = 'https://cdn.vencloud.cn/yzzz/default/cat.jpeg-detail_img'
