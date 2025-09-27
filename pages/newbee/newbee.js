@@ -44,7 +44,7 @@ Page({
       // 使用默认值
       self.setData({ 
         nickname: '游客', 
-        avatarUrl: '../../assets/cat.jpeg' 
+        avatarUrl: 'https://cdn.vencloud.cn/yzzz/default/cat.jpeg-detail_img' 
       })
     }
   },

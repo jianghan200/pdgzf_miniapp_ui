@@ -38,7 +38,7 @@ Page({
       try {
         const names = constants.randomNikName || []
         const pickedName = names.length > 0 ? names[Math.floor(Math.random() * names.length)] : constants.randomUserName()
-        const defaultAvatar = '../../assets/cat.jpeg'
+        const defaultAvatar = 'https://cdn.vencloud.cn/yzzz/default/cat.jpeg-detail_img'
 
         log.info(`自动分配昵称与头像: ${pickedName}, ${defaultAvatar}`)
 
