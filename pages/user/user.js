@@ -73,7 +73,14 @@ Page({
     }
   },
 
- 
+  onShow: function(){
+    console.log("onshow")
+    this.setData({
+      nickname: app.globalData.userinfo.wxNickName, 
+      avatarUrl: app.globalData.userinfo.wxAvatarUrl 
+    });
+  },
+
   // res = { 'wxNickName': '...', 'wxAvatarUrl': 'http://...' }
   setAvatarAndNickname(res) {
     const self = this

@@ -159,7 +159,7 @@ const get_tencent_nicknameAndAvatar = function() {
           }).catch(err => {
             console.log(err)
             log.error(`Future返回了错误: ${err}`)
-            wx.showToast({ title: '信息上传失败', icon: 'error' })
+            wx.showToast({ title: '信息上传失败3', icon: 'error' })
   
             resolve(null)
           })

@@ -1,6 +1,7 @@
 // pages/user/edit-user-info.js
 const app = getApp()
 const constants = require('../../utils/constants')
+const { updateUserInfo } = require('../../utils/request')
 const requests = require('../../utils/request')
 const user = require('../../utils/user')
 const userApi = require('../../utils/user')
@@ -74,13 +75,37 @@ Page({
       const self = this
       console.log(self.data.avatarUrl)
       console.log('===============')
+      if(self.data.avatarUrl.startsWith("https://cdn.vencloud.cn")){
+        console.log('头像没有变');
+        userApi.upload_weixin_nickNameAndAvatar(self.data.nickname.trim(), self.data.avatarUrl).then(() => {
+          // 用户信息上传成功，完成了用户信息采集
+          log.info(`完成了微信昵称和头像的采集a`)
+    
+          app.globalData.userinfo.wxNickName = self.data.nickname.trim()
+          app.globalData.userinfo.wxAvatarUrl = self.data.avatarUrl
+    
+          wx.showToast({ title: '信息已修改成功', icon: 'success' })
+          wx.navigateBack({
+            delta: 1
+          });
+        }).catch(err => {
+          log.error(`基于微信接口的方法，upload_weixin_nickNameAndAvatar 报错`)
+          log.error(err)
+          console.log(err)
+          wx.showToast({ title: '信息上传失败6', icon: 'error' })
+        })
+          return;
+      }
       // 首先获得我们自己服务器生成的可以从公网访问的 url
       userApi.uploadAvatar(self.data.avatarUrl.trim()).then(publicUrl => {
         
         console.log('===============')
         if (publicUrl != '') {
-          publicUrl=JSON.parse(publicUrl)
-          userApi.upload_weixin_nickNameAndAvatar(self.data.nickname.trim(), publicUrl.url).then(() => {
+          if(publicUrl.startsWith("{")){
+            publicUrl=JSON.parse(publicUrl);
+            publicUrl = publicUrl.url;
+          }
+          userApi.upload_weixin_nickNameAndAvatar(self.data.nickname.trim(), publicUrl).then(() => {
             // 用户信息上传成功，完成了用户信息采集
             log.info(`完成了微信昵称和头像的采集`)
     
@@ -92,13 +117,16 @@ Page({
             log.error(`基于微信接口的方法，upload_weixin_nickNameAndAvatar 报错`)
             log.error(err)
             console.log(err)
-            wx.showToast({ title: '信息上传失败', icon: 'error' })
+            wx.showToast({ title: '信息上传失败2', icon: 'error' })
           })
         } else {
           log.error('上传头像失败，不能完成用户昵称和头像的修改.')
-          wx.showToast({ title: '信息上传失败', icon: 'error' })
+          wx.showToast({ title: '信息上传失败1', icon: 'error' })
         }
       })
     }
-  }
+  },
+
+
+
 })
