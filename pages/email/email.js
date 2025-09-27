@@ -130,8 +130,7 @@ Page({
 
     if (util.validateEmail(this.data.email)) {
       log.info('开始支付')
-
-      self.postPayment()
+      this.postPayment()
     } else {
       log.error('用户填写的Email不合法')
       // 检查未通过
