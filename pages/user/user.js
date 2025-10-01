@@ -40,6 +40,7 @@ Page({
     // 判断用户的资格日
     let hasStartDateCode = userInfoHelper.hasStartDate()
     this.setData({
+      app: app,
       userinfo: userinfo,
       startDate: this.resolveStartDate(hasStartDateCode),
       hasStartDateCode: hasStartDateCode,
@@ -76,6 +77,7 @@ Page({
   onShow: function(){
     console.log("onshow")
     this.setData({
+      app: app,
       nickname: app.globalData.userinfo.wxNickName, 
       avatarUrl: app.globalData.userinfo.wxAvatarUrl 
     });

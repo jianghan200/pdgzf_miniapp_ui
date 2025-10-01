@@ -15,10 +15,7 @@
   <view  class="text-bold text-xl" style="padding-top: 0.5rem; color: rgb(0, 0, 0);">
     官网账号: <span style="color: rgb(17, 70, 245);"> {{account}}  </span>
   </view>
- 
 </block>
-
-
 
 <block wx:else >
   <view class="text-bold text-xl" style="padding-top: 0.5rem; color: rgb(0, 0, 0);">
@@ -37,7 +34,6 @@
         <text class="cuIcon-vip" style="color: gold; font-weight: 500"></text> 认证官网账户信息
       </button>
     </view> -->
-<!-- <block wx:if="{{account}}"> -->
   <view class="text-bold text-xl" style="padding-top: 0.5rem; color: rgb(0, 0, 0);">
       官网账户姓名: <span style="color: rgb(17, 70, 245);"> {{real_name}} </span>
   </view>
@@ -54,16 +50,15 @@
     接收选房报告邮件:  <span style="color: rgb(17, 70, 245);"> {{auto_choose_email}} </span>
   </view> -->
   <view class="text-bold text-xl" style="padding-top: 0.5rem; ">
-    选房资格日期: <span style="color: rgb(17, 70, 245);"> {{start_date}} </span> 
+    官网选房资格日期: <span style="color: rgb(17, 70, 245);"> {{start_date}} </span> 
   </view>
-    <!-- <view class="text-bold text-xl" style="padding-top: 0.5rem; ">
+
+  <view class="text-bold text-xl" style="padding-top: 0.5rem; ">
+    自定义选房资格日期: <span style="color: rgb(17, 70, 245);"> {{userinfo.manualStartDate}} </span> 
+  </view>
+  
+  <!-- <view class="text-bold text-xl" style="padding-top: 0.5rem; ">
     最晚选房时间: {{status}}
   </view> -->
-<!-- </block> -->
 
-  <!-- <view class="text-bold text-gray text-sm" style="padding-top: 0.5rem;">
-  </view>
-  <view class="text-bold text-gray text-sm" style="padding-top: 0.5rem;">
-    真人咨询为兼职答复，不保证实时性，也不保证能回答所有问题，仅供参考。如需要 100%准确，请致电公租房官方电话
-  </view>
-   -->
+

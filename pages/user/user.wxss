@@ -30,7 +30,7 @@
 .nickname {
   font-size:large; 
   font-family: serif;
-  padding: .2rem;
+  padding: .5rem;
 }
 
 .vip-avatar {
@@ -63,28 +63,29 @@
 /* 资格日期信息样式 */
 .start-date-info {
   display: flex;
+  align-items: center;
   margin-top: 10rpx;
-  padding: 10rpx;
+  /* padding: 10rpx; */
+  padding: .5rem;
   background: #ffffff;
+  font-size: 26rpx;
+  line-height: 1.4;
 }
 
 .start-date-label {
-  font-size: 24rpx;
   color: #666;
-  margin-bottom: 4rpx;
 }
 
 .start-date-value {
-  font-size: 28rpx;
   font-weight: bold;
   color: #333;
-  margin-bottom: 4rpx;
+  margin-left: 8rpx;
 }
 
 .start-date-hint {
-  font-size: 22rpx;
   color: #999;
   font-style: italic;
+  margin-left: 8rpx;
 }
 
 

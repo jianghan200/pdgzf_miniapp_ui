@@ -1,7 +1,7 @@
 
 <cu-custom bgColor="bg-black" isBack="{{false}}">
-  <view slot="content">
-    <view style="color: white;"> <text class="cuIcon-discover text-bold"></text> PD公租房 - 我的</view>
+  <view slot="content" style="width: auto; padding-left: 30rpx; right:auto">
+    <view style="color: white; width: auto; float: left;"> <text class="cuIcon-discover text-bold"></text> PD公租房 - 我的</view>
   </view>
 </cu-custom>
 
@@ -12,10 +12,10 @@
   <view class="user-details">
     <view class="{{vipInfo.type == 2 ? 'vip-' : ''}}nickname" bind:tap="goToEditUserInfo">{{ nickname }}</view>
     <view class="start-date-info" bindtap="openMaunalStartDateDialog">
-      <text class="start-date-label">资格日：</text>
-      <text class="start-date-value">{{ startDate }}</text>
+      <text class="start-date-label"> 资格日: </text>
+      <text class="start-date-value"> {{ startDate  }}  </text>
       <text class="start-date-hint" wx:if="{{hasStartDateCode === -1}}">(模拟)</text>
-      <text class="start-date-hint" wx:elif="{{hasStartDateCode === 1}}">(点击重置)</text>
+      <text class="start-date-hint" wx:elif="{{hasStartDateCode === 1}}"> (点击重置)</text>
     </view>
   </view>
 </view>
