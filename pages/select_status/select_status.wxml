@@ -15,7 +15,10 @@
   <view  class="text-bold text-xl" style="padding-top: 0.5rem; color: rgb(0, 0, 0);">
     官网账号: <span style="color: rgb(17, 70, 245);"> {{account}}  </span>
   </view>
+ 
 </block>
+
+
 
 <block wx:else >
   <view class="text-bold text-xl" style="padding-top: 0.5rem; color: rgb(0, 0, 0);">

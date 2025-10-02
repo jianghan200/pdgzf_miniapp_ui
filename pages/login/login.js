@@ -3,7 +3,6 @@ const app = getApp()
 const requests = require('../../utils/request')
 const dataHelper = require('../../utils/data')
 const log = require('./../../utils/log')
-const constants = require('./../../utils/constants')
 
 Page({
   data: {
@@ -16,7 +15,8 @@ Page({
     wx.login({
       success: function(res) {
         log.info(res)
-        console.log("wx.login", res)
+        console.log(res)
+
         self.login(res.code)
       }
     })
@@ -30,10 +30,9 @@ Page({
     requests
       .login(jscode)
       .then((userinfo) => {
-        log.info('登陆成功')
-        log.info("userinfo", userinfo)
-        console.log("userinfo", userinfo)
         app.globalData.userinfo = userinfo
+        log.info('登陆成功')
+        log.info(userinfo)
         // 几乎全部的初始请求
         dataHelper.loadAllData(self.options)
       })
@@ -42,6 +41,5 @@ Page({
         console.log(err)
         wx.showToast({ title: '服务器错误', icon: 'error' })
       })
-  },
-
+  }
 })
