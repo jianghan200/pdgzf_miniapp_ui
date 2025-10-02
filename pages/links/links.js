@@ -36,7 +36,7 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-    var path = '/pages/stream/stream?tab=links&curComponentId=' + this.data.curComponentId
+    var path = '/pages/user/user?tab=links&curComponentId=' + this.data.curComponentId
     let self = this
     return {
       title : '公租房干货',

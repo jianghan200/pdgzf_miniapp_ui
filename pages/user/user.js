@@ -35,6 +35,20 @@ Page({
     log.info('onLoad user')
     log.info(app.globalData.userinfo)
 
+      // // 继承自newbee页面
+      // if (options['curComponentId'] && options['curComponentId'] != '') {
+      //   this.setData({ curComponentId: options['curComponentId'] })
+      // }
+      if (options['tab'] && options['tab'] != '') {
+        const tab = options['tab']
+        let articleUrl = ''
+        if (options['articleUrl'] && options['articleUrl'] != '') {
+          articleUrl = '?articleUrl=' + options['articleUrl']
+        }
+        // 来自分享
+        wx.navigateTo({ url: `/pages/${tab}/${tab}` + articleUrl })
+      }
+
     this.getVipInfo()
     let userinfo = app.globalData.userinfo
     // 判断用户的资格日

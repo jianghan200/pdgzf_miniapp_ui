@@ -137,7 +137,7 @@ Page({
 
   // 转发
   onShareAppMessage: function(options) {
-    var path = '/pages/stream/stream?tab=qualification&curComponentId=' + this.data.curComponentId
+    var path = '/pages/user/user?tab=qualification&curComponentId=' + this.data.curComponentId
     let self = this
     return {
       title : '申请资格',

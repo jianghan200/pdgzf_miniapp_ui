@@ -83,7 +83,7 @@ Page({
 
   // 转发
   onShareAppMessage: function(options) {
-    var path = '/pages/stream/stream?tab=policy&curComponentId=' + this.data.curComponentId
+    var path = '/pages/user/user?tab=policy&curComponentId=' + this.data.curComponentId
     let self = this
     return {
       title : '信息&心得',

@@ -36,7 +36,7 @@ Page({
   },
   onShareAppMessage: function () {
     let self = this
-    var path = '/pages/stream/stream?tab=article&articleUrl=' + self.extractUrl(self.data.url) + '&curComponentId=' + self.data.curComponentId
+    var path = '/pages/user/user?tab=article&articleUrl=' + self.extractUrl(self.data.url) + '&curComponentId=' + self.data.curComponentId
     return {
       title : 'PD公租房',
       path : '/pages/login/login?redirect=' + encodeURIComponent(path),

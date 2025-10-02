@@ -22,7 +22,7 @@ Page({
 
   // 转发
   onShareAppMessage: function(options) {
-    var path = '/pages/stream/stream?tab=timeline&curComponentId=' + this.data.curComponentId
+    var path = '/pages/user/user?tab=timeline&curComponentId=' + this.data.curComponentId
     let self = this
     return {
       title : '流程时间线',

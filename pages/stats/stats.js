@@ -84,7 +84,7 @@ Page({
   
   // 转发
   onShareAppMessage: function(options) {
-    var path = '/pages/stream/stream?tab=stats&curComponentId=' + this.data.curComponentId
+    var path = '/pages/user/user?tab=stats&curComponentId=' + this.data.curComponentId
     return {
       title: '公租房统计数据',
       path: '/pages/login/login?redirect=' + encodeURIComponent(path),
