@@ -48,11 +48,12 @@ Page({
     }
 
     // 不同身份看到的初始tab是不同的
-    if (userInfoHelper.isNewUser()) {
-      log.info('发现新用户，默认tab为新手村')
-      // 新人，进入新手村tab
-      this.setData({ curComponentId: 2 })
-    }
+    // if (userInfoHelper.isNewUser()) {
+    //   log.info('发现新用户，默认tab为新手村')
+    //   // 新人，进入新手村tab
+    //   this.setData({ curComponentId: 2 })
+    // }
+    this.setData({ curComponentId: 1 })
     this.initCategories()
     this.loadArticles(this.data.pageNum, [])
     this.loadArticles(this.data.vipPageNum, [constants.vip_wp_category])
