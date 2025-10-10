@@ -5,7 +5,7 @@
   <!-- 标题 -->
   <view class="title bg-gray">
     <view class="margin-bottom" style="display: flex; flex-direction: row; align-items: center;">
-      <text class="text-bold"> 今日房源</text>
+      <text class="text-bold">PD公租房</text>
       <!-- 按钮功能区 -->
       <button class="cu-btn text-bold icon bg-white margin-left shadow" bindtap="openMap">
         <text class="cuIcon-locationfill text-red text-bold"></text>
@@ -20,7 +20,7 @@
       >VIP权益</button>
     </view>
     <view class="text-df">
-      <text class="text-bold"> 当前周期：{{milestone}}（共{{projectCount}}个小区，{{houseCount}}套房）</text>
+      <text class="text-bold"> 今日房源：{{milestone}}（共{{projectCount}}个小区，{{houseCount}}套房）</text>
     </view>
   </view>
 
@@ -67,6 +67,7 @@
                     >{{tools.sliceOf(project.pName)}} ({{project.houses.length}}套)
                     </text>
                     <text style="font-size: smaller; color: grey; padding-left: 10px;">预排：{{project.bestRank}}</text>
+                    <text style="font-size: smaller; color: grey; padding-left: 10px;">热度：{{project.hotness}}</text>
                   </view>
                 </view>
               </view>
@@ -75,7 +76,8 @@
         </block>
       </view>
       <view class="cu-list menu margin-bottom">
-        <text style="font-size: smaller; color: rgba(128, 128, 128, 0.705); padding-left: 10px;">预排：预计最靠前排名</text>
+        <view style="font-size: smaller; color: rgba(128, 128, 128, 0.705); padding-left: 10px;">预排：预计最靠前排名</view>
+        <view style="font-size: smaller; color: rgba(128, 128, 128, 0.705); padding-left: 10px;">热度：参选本小区的所有人数</view>
       </view>
 
     </scroll-view>

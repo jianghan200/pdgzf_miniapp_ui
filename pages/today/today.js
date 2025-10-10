@@ -130,6 +130,21 @@ Page({
       todayProjects.forEach(area => { allProjects = allProjects.concat(area.projects) })
       allProjects.forEach(p => { allHouses = allHouses.concat(p.houses) })
 
+      // 计算每个项目的热度指标（所有房屋队列长度的总和）
+      todayProjects.forEach(area => {
+        area.projects.forEach(project => {
+          let hotness = 0
+          if (project.houses && project.houses.length > 0) {
+            project.houses.forEach(house => {
+              if (house.queue && house.queue.length) {
+                hotness += house.queue.length
+              }
+            })
+          }
+          project.hotness = hotness
+        })
+      })
+
       this.setData({
         list : todayProjects,
         milestone : milestone,
