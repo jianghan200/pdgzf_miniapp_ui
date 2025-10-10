@@ -19,8 +19,12 @@
         bindtap="vipSample"
       >VIP权益</button>
     </view>
-    <view class="text-df">
-      <text class="text-bold"> 今日房源：{{milestone}}（共{{projectCount}}个小区，{{houseCount}}套房）</text>
+    <view class="text-df" style="display: flex; justify-content: space-between; align-items: center;">
+      <text class="text-bold"> 今日房源：{{milestone}}（{{projectCount}}小区，{{houseCount}}套房）</text>
+      <button class="cu-btn text-sm bg-white shadow" bindtap="toggleSortModal" style="padding: 8rpx 16rpx; border-radius: 8rpx;">
+        <text class="cuIcon-sort text-gray"></text>
+        <text class="text-gray margin-left-xs">排序</text>
+      </button>
     </view>
   </view>
 
@@ -42,37 +46,35 @@
   <!-- 房源列表 -->
   <view wx:if="{{list.length > 0}}">
     <scroll-view scroll-y scroll-with-animation style="height: 100%">
-      <!-- 遍历社区 -->
+      <!-- 直接遍历项目列表 -->
       <view class="cu-list menu ">
-        <block wx:for="{{list}}" wx:for-item="area" wx:key="*this" id="main-{{index}}">
-          <!-- 遍历社区的小区 -->
-          <block wx:for="{{area.projects}}" wx:for-item="project" wx:key="*this">
-            <view class="cu-item arrow" bindtap="navToProject" data-pId="{{project.pId}}">
-              <view class="content padding-tb-sm">
-                <view>
-                  <!-- 订阅 -->
-                  <view 
-                    catchtap="subscribe"
-                    data-pid="{{project.pId}}"
-                    data-areaid="{{area.areaId}}"
-                    data-pname="{{project.pName}}"
-                  >
-                    <text class="text-red text-bold cuIcon-{{project.isSubscribed ? 'likefill' : 'like'}}"></text>
-                  </view>
+        <block wx:for="{{list}}" wx:for-item="project" wx:key="*this" id="main-{{index}}">
+          <view class="cu-item arrow" bindtap="navToProject" data-pId="{{project.pId}}">
+            <view class="content padding-tb-sm">
+              <view>
+                <!-- 订阅 -->
+                <view 
+                  catchtap="subscribe"
+                  data-pid="{{project.pId}}"
+                  data-areaid="{{project.areaId}}"
+                  data-pname="{{project.pName}}"
+                >
+                  <text class="text-red text-bold cuIcon-{{project.isSubscribed ? 'likefill' : 'like'}}"></text>
+                </view>
 
-                  <!-- 小区地址 -->
-                  <view style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
-                    <text 
-                      class="text-black padding-left {{project.isSubscribed ? 'text-bold' : ''}}"
-                    >{{tools.sliceOf(project.pName)}} ({{project.houses.length}}套)
-                    </text>
-                    <text style="font-size: smaller; color: grey; padding-left: 10px;">预排：{{project.bestRank}}</text>
-                    <text style="font-size: smaller; color: grey; padding-left: 10px;">热度：{{project.hotness}}</text>
-                  </view>
+                <!-- 小区地址 -->
+                <view style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
+                  <text 
+                    class="text-black padding-left {{project.isSubscribed ? 'text-bold' : ''}}"
+                  >{{tools.sliceOf(project.pName)}} ({{project.houses.length}}套)
+                  </text>
+                  <text style="font-size: smaller; color: grey; padding-left: 10px;">预排：{{project.bestRank}}</text>
+                  <text style="font-size: smaller; color: grey; padding-left: 10px;">热度：{{project.hotness}}</text>
+                  
                 </view>
               </view>
             </view>
-          </block>
+          </view>
         </block>
       </view>
       <view class="cu-list menu margin-bottom">
@@ -95,6 +97,62 @@
   <view style="height: calc(100vh - calc(100rpx + env(safe-area-inset-bottom) / 2)); display: flex; flex-direction: column; align-items: center; justify-content: center;">
     <image class="worker-avatar" src="/assets/kid.jpeg" mode="aspectFill"></image>
     <text class="text-bold text-xl padding">每天上午9:30 ~ 10:00关闭选房通道。请于上午10:03后打开此页～（搬砖的手，微微颤抖）</text>
+  </view>
+</view>
+
+<!-- 排序选择Modal -->
+<view class="cu-modal {{showSortModal ? 'show' : ''}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content text-bold">选择排序方式</view>
+      <view class="action" bindtap="hideSortModal">
+        <text class="cuIcon-close text-red"></text>
+      </view>
+    </view>
+    
+    <view class="padding">
+      <view class="cu-list menu">
+        <view class="cu-item {{sortBy === 'name' ? 'text-blue' : ''}}" bindtap="setSortBy" data-sort="name">
+          <view class="content">
+            <text class="cuIcon-title text-cyan"></text>
+            <text class="margin-left">按小区名排序</text>
+          </view>
+          <view class="action">
+            <text class="cuIcon-{{sortBy === 'name' ? (sortOrder === 'asc' ? 'sort_asc' : 'sort_desc') : 'right'}}"></text>
+          </view>
+        </view>
+        
+        <view class="cu-item {{sortBy === 'count' ? 'text-blue' : ''}}" bindtap="setSortBy" data-sort="count">
+          <view class="content">
+            <text class="cuIcon-home text-orange"></text>
+            <text class="margin-left">按套数排序</text>
+          </view>
+          <view class="action">
+            <text class="cuIcon-{{sortBy === 'count' ? (sortOrder === 'asc' ? 'sort_asc' : 'sort_desc') : 'right'}}"></text>
+          </view>
+        </view>
+        
+        <view class="cu-item {{sortBy === 'rank' ? 'text-blue' : ''}}" bindtap="setSortBy" data-sort="rank">
+          <view class="content">
+            <text class="cuIcon-rank text-green"></text>
+            <text class="margin-left">按预排排序</text>
+          </view>
+          <view class="action">
+            <text class="cuIcon-{{sortBy === 'rank' ? (sortOrder === 'asc' ? 'sort_asc' : 'sort_desc') : 'right'}}"></text>
+          </view>
+        </view>
+        
+        <view class="cu-item {{sortBy === 'hotness' ? 'text-blue' : ''}}" bindtap="setSortBy" data-sort="hotness">
+          <view class="content">
+            <text class="cuIcon-hot text-red"></text>
+            <text class="margin-left">按热度排序</text>
+          </view>
+          <view class="action">
+            <text class="cuIcon-{{sortBy === 'hotness' ? (sortOrder === 'asc' ? 'sort_asc' : 'sort_desc') : 'right'}}"></text>
+          </view>
+        </view>
+      </view>
+    </view>
   </view>
 </view>
 

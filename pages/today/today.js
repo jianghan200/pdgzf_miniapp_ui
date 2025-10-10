@@ -21,13 +21,19 @@ Page({
     houseCount: 0,
     // Modal相关
     showModal: false,
+    // 排序Modal相关
+    showSortModal: false,
+    sortBy: 'name', // name, count, rank, hotness
+    sortOrder: 'desc', // asc, desc
     // 每天早9:30 ～ 10:03之间要关闭选房
     disable: false,
     // vip的身份flag
     isVip: false,
     hasStartDate: false,
     // 公告
-    broadcastMsgs: []
+    broadcastMsgs: [],
+    // 原始数据备份，用于排序
+    originalList: []
   },
 
   onLoad: function (options) {
@@ -112,6 +118,125 @@ Page({
     this.setData({ showModal: false })
   },
 
+  // 显示排序Modal
+  toggleSortModal() {
+    this.setData({ showSortModal: !this.data.showSortModal })
+  },
+
+  // 隐藏排序Modal
+  hideSortModal() {
+    this.setData({ showSortModal: false })
+  },
+
+  // 设置排序方式
+  setSortBy(e) {
+    const newSortBy = e.currentTarget.dataset.sort
+    let newSortOrder = 'desc'
+    
+    // 如果点击的是当前排序字段，则切换排序顺序
+    if (newSortBy === this.data.sortBy) {
+      newSortOrder = this.data.sortOrder === 'asc' ? 'desc' : 'asc'
+    }
+    
+    log.info(`设置排序: ${newSortBy} ${newSortOrder}`)
+    
+    this.setData({
+      sortBy: newSortBy,
+      sortOrder: newSortOrder
+    }, () => {
+      log.info('开始执行排序')
+      this.sortProjects()
+      this.hideSortModal()
+    })
+  },
+
+  // 排序项目
+  sortProjects() {
+    const { sortBy, sortOrder, originalList } = this.data
+    
+    log.info(`排序开始: sortBy=${sortBy}, sortOrder=${sortOrder}`)
+    log.info(`原始数据长度: ${originalList ? originalList.length : 0}`)
+    
+    // 如果没有原始数据，直接返回
+    if (!originalList || originalList.length === 0) {
+      log.info('没有原始数据，排序终止')
+      return
+    }
+    
+    // 提取所有项目，并保留其所属区域信息
+    let allProjects = []
+    originalList.forEach(area => {
+      if (area.projects && area.projects.length > 0) {
+        area.projects.forEach(project => {
+          // 深拷贝项目，并添加区域信息
+          let projectCopy = JSON.parse(JSON.stringify(project))
+          projectCopy.areaId = area.areaId
+          projectCopy.areaName = area.areaName
+          projectCopy.areaIdForMap = area.id // 保留原始的 area.id 用于地图等功能
+          allProjects.push(projectCopy)
+        })
+      }
+    })
+    
+    log.info(`提取到所有项目数量: ${allProjects.length}`)
+    
+    // 对所有项目进行全局排序
+    allProjects.sort((a, b) => {
+      let valueA, valueB
+      
+      switch (sortBy) {
+        case 'name':
+          valueA = a.pName || ''
+          valueB = b.pName || ''
+          break
+        case 'count':
+          valueA = a.houses ? a.houses.length : 0
+          valueB = b.houses ? b.houses.length : 0
+          break
+        case 'rank':
+          valueA = a.bestRank || 999999
+          valueB = b.bestRank || 999999
+          break
+        case 'hotness':
+          valueA = a.hotness || 0
+          valueB = b.hotness || 0
+          break
+        default:
+          return 0
+      }
+      
+      if (sortBy === 'name') {
+        // 字符串排序
+        if (sortOrder === 'asc') {
+          return valueA.localeCompare(valueB, 'zh-CN')
+        } else {
+          return valueB.localeCompare(valueA, 'zh-CN')
+        }
+      } else {
+        // 数字排序
+        if (sortOrder === 'asc') {
+          return valueA - valueB
+        } else {
+          return valueB - valueA
+        }
+      }
+    })
+    
+    // 直接使用扁平化的项目列表
+    this.setData({ list: allProjects })
+    
+    // 添加调试日志
+    log.info(`全局排序完成: ${sortBy} ${sortOrder}`)
+    log.info(`排序后项目数量: ${allProjects.length}`)
+    
+    // 显示排序结果提示
+    wx.showToast({
+      title: `按${sortBy === 'name' ? '小区名' : sortBy === 'count' ? '套数' : sortBy === 'rank' ? '预排' : '热度'}${sortOrder === 'asc' ? '正序' : '倒序'}排序`,
+      icon: 'none',
+      duration: 1500
+    })
+  },
+
   // 读取
   useTodayProjectsInStorage() {
     log.info('从缓存中读取今日房源的信息')
@@ -147,6 +272,7 @@ Page({
 
       this.setData({
         list : todayProjects,
+        originalList : JSON.parse(JSON.stringify(todayProjects)), // 深拷贝原始数据
         milestone : milestone,
         timeStamp : util.formatTime(new Date()),
         projectCount : allProjects.length,
@@ -154,6 +280,9 @@ Page({
         isVip : app.globalData.userinfo.type == 2,
         // 用户是否输入了自己的startDated
         hasStartDate : this.hasStartDate()
+      }, () => {
+        // 数据加载完成后应用初始排序
+        this.sortProjects()
       })
     }
   },
@@ -208,19 +337,15 @@ Page({
     log.info(`用户点击subscribe: pid: ${pid}, pname: ${pname}, aid: ${aid}`)
 
     const self = this
-    // 找所属到街道
-    const area = 
-      self.data.list.find(area => {
-        // 数据可能出现areaId为空的情况或者小区Id为空的情况
-        const projectOpt = area.projects.find(p => p.pId == pid)
-        return projectOpt && area.areaId == aid
-      })
-    const indexOfThisArea = self.data.list.indexOf(area)
-
-    // 找到小区
-    let projectsOfThisArea = area.projects
-    let projectOnChange = projectsOfThisArea.find(p => p.pId == pid)
-    const indexOfProjectOnChange = projectsOfThisArea.indexOf(projectOnChange)
+    
+    // 在扁平化的list中找到对应的项目
+    const projectIndex = self.data.list.findIndex(p => p.pId == pid && p.areaId == aid)
+    if (projectIndex === -1) {
+      log.error('未找到对应的项目')
+      return
+    }
+    
+    let projectOnChange = self.data.list[projectIndex]
     
     if (!projectOnChange.isSubscribed) {
       log.info('开启订阅')
@@ -229,13 +354,17 @@ Page({
         .subscribeThenSyncUp(aid, pid, pname)
         .then((rid) => {
           log.info('subscribeThenSyncUp 成功')
-          // 替换
+          
+          // 更新扁平化list中的项目
           projectOnChange.isSubscribed = true
           projectOnChange.ruleId = rid
-          projectsOfThisArea[indexOfProjectOnChange] = projectOnChange
-          const updatedArea = { id: area.id, areaId: aid, areaName: area.areaName, projects: projectsOfThisArea }
-          // 更新list
-          self.setData({ ['list[' + indexOfThisArea + ']'] : updatedArea })
+          self.setData({ 
+            ['list[' + projectIndex + '].isSubscribed']: true,
+            ['list[' + projectIndex + '].ruleId']: rid
+          })
+          
+          // 同时更新originalList中对应的项目
+          self.updateOriginalList(pid, aid, { isSubscribed: true, ruleId: rid })
         })
         .catch((err) => {
           log.error('subscribeThenSyncUp 失败')
@@ -249,19 +378,47 @@ Page({
         .unsubscribeThenSyncUp(projectOnChange.ruleId, aid, pid)
         .then(() => {
           log.info('unsubscribeThenSyncUp 成功')
-          // 替换
+          
+          // 更新扁平化list中的项目
           projectOnChange.isSubscribed = false
           projectOnChange.ruleId = ''
-          projectsOfThisArea[indexOfProjectOnChange] = projectOnChange
-          const updatedArea = { id: area.id, areaId: aid, areaName: area.areaName, projects: projectsOfThisArea }
-          // 更新list
-          self.setData({ ['list[' + indexOfThisArea + ']'] : updatedArea })
+          self.setData({ 
+            ['list[' + projectIndex + '].isSubscribed']: false,
+            ['list[' + projectIndex + '].ruleId']: ''
+          })
+          
+          // 同时更新originalList中对应的项目
+          self.updateOriginalList(pid, aid, { isSubscribed: false, ruleId: '' })
         })
         .catch((err) => {
           log.error('unsubscribeThenSyncUp 失败')
           log.error(err)
           console.log(err)
         })
+    }
+  },
+
+  // 更新originalList中对应的项目
+  updateOriginalList(pid, aid, updates) {
+    const { originalList } = this.data
+    
+    // 找到对应的区域和项目
+    for (let areaIndex = 0; areaIndex < originalList.length; areaIndex++) {
+      const area = originalList[areaIndex]
+      if (area.areaId === aid && area.projects) {
+        for (let projectIndex = 0; projectIndex < area.projects.length; projectIndex++) {
+          const project = area.projects[projectIndex]
+          if (project.pId === pid) {
+            // 更新项目属性
+            Object.keys(updates).forEach(key => {
+              this.setData({
+                [`originalList[${areaIndex}].projects[${projectIndex}].${key}`]: updates[key]
+              })
+            })
+            return
+          }
+        }
+      }
     }
   },
 
