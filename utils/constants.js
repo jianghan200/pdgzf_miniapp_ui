@@ -1,5 +1,6 @@
 const prodServer = 'https://api.pdgzf.cn/api'
-const userinfoProdServer = 'https://api.pdgzf.cn/user_api'
+// const userinfoProdServer = 'https://api.pdgzf.cn/user_api'
+const userinfoProdServer = 'https://api.pdgzf.cn'
 const prodFeedbackServer = 'https://pdgzf.cn'
 const ROOM_TYPE = ["未知", "一室", "一室一厅", "两室", "两室一厅", "三室", "三室一厅", "四室", "五室"]
 const id2Type = id => {

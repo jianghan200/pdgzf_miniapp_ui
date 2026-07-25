@@ -13,23 +13,20 @@ Page({
     this.promptUserToSetNicknameAndAvatar()
     if (options && options.url){
       log.info('进入论坛webview页，options中存在url，代表用户通过分享进入论坛某个文章')
-
       this.setData({ url: options.url })
     }
-    
   },
 
   // Switch tab, navigateBack 时触发
   onShow() {
     log.info('flarum switchTab 触发')
-    this.promptUserToSetNicknameAndAvatar()
+    // this.promptUserToSetNicknameAndAvatar()
   },
 
   promptUserToSetNicknameAndAvatar() {
     if (userInfoHelper.has_weixin_nickNameAndAvatar()) {
       // 用户授权过头像和昵称
       log.info(`用户授权过头像和昵称`)
-
       this.setUrl()
     } else {
       log.info(`用户没有头像和昵称`)

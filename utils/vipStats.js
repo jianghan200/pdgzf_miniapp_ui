@@ -134,8 +134,10 @@ const chart_of_monthly_stats = function(chart1, chart2, projectId) {
       const y_m_range = []
       const sorted_extreme_ym = 
         refDataByHouseType.map(data => `${data['firstYear']}-${data['firstMonth']}`).sort(utils.dateStrComparator)
-      // [2019, 11]
-      const firstYM = sorted_extreme_ym[0].split('-')
+      // 取最早的日期作为起始点（不管排序方向）
+      const firstYM = sorted_extreme_ym[0] < sorted_extreme_ym[sorted_extreme_ym.length - 1] 
+        ? sorted_extreme_ym[0].split('-').map(Number) 
+        : sorted_extreme_ym[sorted_extreme_ym.length - 1].split('-').map(Number)
       // lastYM为本年月，跟数据无关
       const lastYM = [new Date().getFullYear(), new Date().getMonth() + 1]
       // 从第一年月遍历到最后一年月生成所有自然年月
@@ -263,8 +265,10 @@ const chart_of_monthly_stats = function(chart1, chart2, projectId) {
         // toolbox: { feature: { dataZoom: { yAxisIndex: 'none' }, restore: {}, saveAsImage: {} } },
         tooltip : { trigger : 'axis' },
         legend : { data : dataByHouseType.map(houseTypeData => houseTypeData[0]['houseTypeName']), top : 40, left : 'center', z : 100 },
-        grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
-        xAxis : { type : 'category', boundaryGap : false, data: y_m_range.map(ym => `${ym['year']}-${ym['month']}`) },
+        grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
+        xAxis : { type : 'category', boundaryGap : false, data: y_m_range.map(ym => `${ym['year']}-${ym['month']}`),
+          axisLabel: { rotate: 45, interval: Math.floor(y_m_range.length / 12) }
+        },
         yAxis : { type : 'value', boundaryGap: [0, '100%'] },
         backgroundColor: "#ffffff",
         // dataZoom: [{ type: 'inside', start: 50, end: 100 }],
@@ -275,8 +279,10 @@ const chart_of_monthly_stats = function(chart1, chart2, projectId) {
         // toolbox: { feature: { dataZoom: { yAxisIndex: 'none' }, restore: {}, saveAsImage: {} } },
         tooltip : { trigger : 'axis' },
         legend : { data : dataByHouseType.map(houseTypeData => houseTypeData[0]['houseTypeName']), top : 40, left : 'center', z : 100 },
-        grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
-        xAxis : { type : 'category', boundaryGap : false, data: y_m_range.map(ym => `${ym['year']}-${ym['month']}`) },
+        grid: { left: '3%', right: '4%', bottom: '15%', containLabel: true },
+        xAxis : { type : 'category', boundaryGap : false, data: y_m_range.map(ym => `${ym['year']}-${ym['month']}`),
+          axisLabel: { rotate: 45, interval: Math.floor(y_m_range.length / 12) }
+        },
         yAxis : { type : 'value', boundaryGap: [0, '100%'] },
         backgroundColor: "#ffffff",
         // dataZoom: [{ type: 'inside', start: 50, end: 100 }],

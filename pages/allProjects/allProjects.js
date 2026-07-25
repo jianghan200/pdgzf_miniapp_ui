@@ -10,6 +10,7 @@ const pinyinMatch = require('pinyin-match')
 Page({
   data: {
     CustomBar: app.globalData.CustomBar,
+    StatusBar: app.globalData.StatusBar,
     list : [],
     reqSuccessful: false,
     // 筛选器抽屉
@@ -18,19 +19,19 @@ Page({
     // 全部的areaName
     areas : [],
     chosenAreas : [],
-    hideAreaFilter: true,
+    hideAreaFilter: false,
     // 按照小区房源数量筛选
     rentableCountCategory : [],
     chosenRentableCountCategory : [],
-    hideRentableCountFilter: true,
+    hideRentableCountFilter: false,
     // 按照小区可选的户型筛选
     roomTypes: [],
     chosenRoomTypes: [],
-    hideRoomTypesFilter: true,
+    hideRoomTypesFilter: false,
     // 按照价格筛选
     priceIntervals: [],
     chosenPriceIntervals: [],
-    hidePriceFilter: true
+    hidePriceFilter: false
   },
 
   onLoad: function (options) {

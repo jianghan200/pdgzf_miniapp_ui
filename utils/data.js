@@ -50,6 +50,7 @@ const handleTodayProjects = function(projectsRawData, housesRawData, stats, subs
           }
           // 是不是VIP范例小区？
           if (housesOfThisProject) {
+            console.log(housesOfThisProject);
             // 如果是VIP，每个house里面要有用户的预计排名
             housesOfThisProject.houses.forEach(house => {
               let sortedQueue = []

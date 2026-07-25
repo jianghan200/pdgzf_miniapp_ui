@@ -1,7 +1,8 @@
 
 <cu-custom bgColor="bg-black" isBack="{{false}}">
   <view slot="content" style="width: auto; padding-left: 30rpx; right:auto">
-    <view style="color: white; width: auto; float: left;"> <text class="cuIcon-discover text-bold"></text> PD公租房 - 我的</view>
+    <view style="color: white; width: auto; float: left;"> 
+    <text class="cuIcon-discover text-bold"></text> PD公租房 - 我的</view>
   </view>
 </cu-custom>
 

@@ -1,7 +1,7 @@
 <wxs src="../../utils/tool.wxs" module="tools" />
 
-<view style="height: 100vh; background-color: white;" wx:if="{{!disable}}">
-  <view class="bg-gray" style="height: 2.5rem;"></view>
+<view style="height: 100vh; background-color: white;" style="padding-top: {{StatusBar}}px;" wx:if="{{!disable}}">
+  <!-- <view class="bg-gray" style="height: 2.5rem;"></view> -->
   <!-- 标题 -->
   <view class="title bg-gray">
     <view class="margin-bottom" style="display: flex; flex-direction: row; align-items: center;">
@@ -13,6 +13,9 @@
       <button class="cu-btn text-bold icon bg-white margin-left shadow" bindtap="refresh">
         <text class="cuIcon-refresh text-green text-bold"></text>
       </button>
+      <button class="cu-btn text-bold icon bg-white margin-left shadow" bindtap="openFilterDrawer">
+        <text class="cuIcon-filter text-blue text-bold"></text> 
+      </button>
       <button 
         wx:if="{{!isVip}}"
         class="wide-btn cu-btn text-bold cuIcon-vip icon bg-black text-yellow margin-left" 
@@ -21,10 +24,6 @@
     </view>
     <view class="text-df" style="display: flex; justify-content: space-between; align-items: center;">
       <text class="text-bold"> 今日房源：{{milestone}}（{{projectCount}}小区，{{houseCount}}套房）</text>
-      <button class="cu-btn text-sm bg-white shadow" bindtap="toggleSortModal" style="padding: 8rpx 16rpx; border-radius: 8rpx;">
-        <text class="cuIcon-sort text-gray"></text>
-        <text class="text-gray margin-left-xs">排序</text>
-      </button>
     </view>
   </view>
 
@@ -69,8 +68,8 @@
                   >{{tools.sliceOf(project.pName)}} ({{project.houses.length}}套)
                   </text>
                   <text style="font-size: smaller; color: grey; padding-left: 10px;">预排：{{project.bestRank}}</text>
-                  <text style="font-size: smaller; color: grey; padding-left: 10px;">热度：{{project.hotness}}</text>
                   
+                  <text style="font-size: smaller; color: grey; padding-left: 10px;"><text class="cuIcon-hot "></text> {{project.hotness}}</text>
                 </view>
               </view>
             </view>
@@ -79,7 +78,7 @@
       </view>
       <view class="cu-list menu margin-bottom">
         <view style="font-size: smaller; color: rgba(128, 128, 128, 0.705); padding-left: 10px;">预排：预计最靠前排名</view>
-        <view style="font-size: smaller; color: rgba(128, 128, 128, 0.705); padding-left: 10px;">热度：参选本小区的所有人数</view>
+        <view style="font-size: smaller; color: rgba(128, 128, 128, 0.705); padding-left: 10px;"><text class="cuIcon-hot "></text>：参选本小区的所有人数</view>
       </view>
 
     </scroll-view>
@@ -100,58 +99,110 @@
   </view>
 </view>
 
-<!-- 排序选择Modal -->
-<view class="cu-modal {{showSortModal ? 'show' : ''}}">
-  <view class="cu-dialog">
-    <view class="cu-bar bg-white justify-end">
-      <view class="content text-bold">选择排序方式</view>
-      <view class="action" bindtap="hideSortModal">
-        <text class="cuIcon-close text-red"></text>
+<!-- 筛选器弹窗 - 重新设计 -->
+<view class="filter-modal {{ openDrawer ? 'show' : '' }}" bindtap="closeFilterDrawer">
+  <view class="filter-container" catchtap>
+    <view class="bg-gray" style="height: 2.5rem;"></view>
+    <!-- 头部 -->
+    <view class="filter-header">
+      <view class="filter-title">
+        <text class="cuIcon-filter text-blue"></text>
+        <text class="title-text">筛选房源</text>
+        <button class="reset-btn-header" bindtap="resetFilter">
+          <text class="cuIcon-refresh"></text>
+          <text>重置</text>
+        </button>
+      </view>
+      <view class="filter-close" bindtap="closeFilterDrawer">
+        <text class="cuIcon-close"></text>
       </view>
     </view>
-    
-    <view class="padding">
-      <view class="cu-list menu">
-        <view class="cu-item {{sortBy === 'name' ? 'text-blue' : ''}}" bindtap="setSortBy" data-sort="name">
-          <view class="content">
-            <text class="cuIcon-title text-cyan"></text>
-            <text class="margin-left">按小区名排序</text>
-          </view>
-          <view class="action">
-            <text class="cuIcon-{{sortBy === 'name' ? (sortOrder === 'asc' ? 'sort_asc' : 'sort_desc') : 'right'}}"></text>
-          </view>
+
+    <!-- 筛选内容 -->
+    <scroll-view scroll-y class="filter-content">
+      <!-- 快速排序 -->
+      <view class="filter-section">
+        <view class="section-header">
+          <text class="cuIcon-sort section-icon"></text>
+          <text class="section-title">排序</text>
         </view>
-        
-        <view class="cu-item {{sortBy === 'count' ? 'text-blue' : ''}}" bindtap="setSortBy" data-sort="count">
-          <view class="content">
-            <text class="cuIcon-home text-orange"></text>
-            <text class="margin-left">按套数排序</text>
+        <view class="sort-grid">
+          <!-- <view 
+            class="sort-item {{ sortBy === 'name' ? 'active' : '' }}" 
+            data-sort="name" 
+            bindtap="setSortBy"
+          >
+            <text class="cuIcon-title sort-icon"></text>
+            <text class="sort-text">小区名</text>
+            <text class="sort-arrow" wx:if="{{sortBy === 'name'}}">{{ sortOrder === 'asc' ? '↑' : '↓' }}</text>
+          </view> -->
+          <view 
+            class="sort-item {{ sortBy === 'count' ? 'active' : '' }}" 
+            data-sort="count" 
+            bindtap="setSortBy"
+          >
+            <text class="cuIcon-home sort-icon"></text>
+            <text class="sort-text">套数</text>
+            <text class="sort-arrow" wx:if="{{sortBy === 'count'}}">{{ sortOrder === 'asc' ? '↑' : '↓' }}</text>
           </view>
-          <view class="action">
-            <text class="cuIcon-{{sortBy === 'count' ? (sortOrder === 'asc' ? 'sort_asc' : 'sort_desc') : 'right'}}"></text>
+          <view 
+            class="sort-item {{ sortBy === 'rank' ? 'active' : '' }}" 
+            data-sort="rank" 
+            bindtap="setSortBy"
+          >
+            <text class="cuIcon-rank sort-icon"></text>
+            <text class="sort-text">预排</text>
+            <text class="sort-arrow" wx:if="{{sortBy === 'rank'}}">{{ sortOrder === 'asc' ? '↑' : '↓' }}</text>
           </view>
-        </view>
-        
-        <view class="cu-item {{sortBy === 'rank' ? 'text-blue' : ''}}" bindtap="setSortBy" data-sort="rank">
-          <view class="content">
-            <text class="cuIcon-rank text-green"></text>
-            <text class="margin-left">按预排排序</text>
-          </view>
-          <view class="action">
-            <text class="cuIcon-{{sortBy === 'rank' ? (sortOrder === 'asc' ? 'sort_asc' : 'sort_desc') : 'right'}}"></text>
-          </view>
-        </view>
-        
-        <view class="cu-item {{sortBy === 'hotness' ? 'text-blue' : ''}}" bindtap="setSortBy" data-sort="hotness">
-          <view class="content">
-            <text class="cuIcon-hot text-red"></text>
-            <text class="margin-left">按热度排序</text>
-          </view>
-          <view class="action">
-            <text class="cuIcon-{{sortBy === 'hotness' ? (sortOrder === 'asc' ? 'sort_asc' : 'sort_desc') : 'right'}}"></text>
+          <view 
+            class="sort-item {{ sortBy === 'hotness' ? 'active' : '' }}" 
+            data-sort="hotness" 
+            bindtap="setSortBy"
+          >
+            <text class="cuIcon-hot sort-icon"></text>
+            <text class="sort-text">热度</text>
+            
+            <text class="sort-arrow" wx:if="{{sortBy === 'hotness'}}">{{ sortOrder === 'asc' ? '↑' : '↓' }}</text>
           </view>
         </view>
       </view>
+
+
+
+      <!-- 套数筛选 -->
+      <view class="filter-section">
+        <view class="section-header" bindtap="changeCountFilterDisplayStatus">
+          <text class="cuIcon-number section-icon"></text>
+          <text class="section-title">套数 ({{chosenCountCategories.length}}/{{countCategories.length}})</text>
+          <text class="section-toggle cuIcon-{{ hideCountFilter ? 'unfold' : 'fold' }}"></text>
+        </view>
+        <view class="tag-container" wx:if="{{!hideCountFilter}}">
+          <view class="tag-row">
+            <view 
+              class="filter-tag {{ countCategories.length == chosenCountCategories.length ? 'all-selected' : 'unselected' }}" 
+              data-category="all"
+              bindtap="tapCountCategory"
+            >全选</view>
+          </view>
+          <view class="tag-grid">
+            <block wx:for="{{countCategories}}" wx:for-item="category" wx:key="*this">
+              <view 
+                class="filter-tag {{ tools.indexOf(chosenCountCategories, category) == -1 ? 'unselected' : 'selected' }}" 
+                data-category="{{category}}"
+                bindtap="tapCountCategory"
+              >{{category}}</view>
+            </block>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 底部操作栏 -->
+    <view class="filter-footer">
+      <button class="apply-btn" bindtap="closeFilterDrawer">
+        <text class="cuIcon-check"></text>
+        <text>应用筛选</text>
+      </button>
     </view>
   </view>
 </view>

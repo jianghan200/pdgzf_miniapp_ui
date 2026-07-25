@@ -1,7 +1,5 @@
 // app.js
 var log = require('./utils/log')
-const userInfoHelper = require('./utils/user')
-const constants = require('./utils/constants')
 
 App({
   onLaunch: function (options) {

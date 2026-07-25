@@ -11,6 +11,7 @@ const wpHelper = require('../../utils/wp')
 Page({
   data: {
     CustomBar: app.globalData.CustomBar,
+    StatusBar: app.globalData.StatusBar,
     // 要展示的数据
     list: [],
     // dateStamp
@@ -21,10 +22,19 @@ Page({
     houseCount: 0,
     // Modal相关
     showModal: false,
-    // 排序Modal相关
-    showSortModal: false,
-    sortBy: 'name', // name, count, rank, hotness
+    // 筛选器抽屉
+    openDrawer: false,
+    // 排序相关
+    sortBy: 'hotness', // name, count, rank, hotness
     sortOrder: 'desc', // asc, desc
+    hideSortFilter: false,
+    // 筛选器相关
+    projectNames: [],
+    chosenProjects: [],
+    hideProjectFilter: false,
+    countCategories: ['1套', '2-5套', '6-10套', '10套以上'],
+    chosenCountCategories: [],
+    hideCountFilter: false,
     // 每天早9:30 ～ 10:03之间要关闭选房
     disable: false,
     // vip的身份flag
@@ -32,7 +42,7 @@ Page({
     hasStartDate: false,
     // 公告
     broadcastMsgs: [],
-    // 原始数据备份，用于排序
+    // 原始数据备份，用于排序和筛选
     originalList: []
   },
 
@@ -118,14 +128,33 @@ Page({
     this.setData({ showModal: false })
   },
 
-  // 显示排序Modal
-  toggleSortModal() {
-    this.setData({ showSortModal: !this.data.showSortModal })
+  // 点开筛选器抽屉
+  openFilterDrawer(e) {
+    this.setData({ openDrawer: true })
   },
 
-  // 隐藏排序Modal
-  hideSortModal() {
-    this.setData({ showSortModal: false })
+  // 关闭筛选器抽屉
+  closeFilterDrawer(e) {
+    this.applyFilters()
+    this.setData({ openDrawer: false })
+  },
+
+  // hide/unhide排序筛选器
+  changeSortFilterDisplayStatus(e) {
+    const curStatus = this.data.hideSortFilter
+    this.setData({ hideSortFilter: !curStatus })
+  },
+
+  // hide/unhide小区筛选器
+  changeProjectFilterDisplayStatus(e) {
+    const curStatus = this.data.hideProjectFilter
+    this.setData({ hideProjectFilter: !curStatus })
+  },
+
+  // hide/unhide套数筛选器
+  changeCountFilterDisplayStatus(e) {
+    const curStatus = this.data.hideCountFilter
+    this.setData({ hideCountFilter: !curStatus })
   },
 
   // 设置排序方式
@@ -145,21 +174,116 @@ Page({
       sortOrder: newSortOrder
     }, () => {
       log.info('开始执行排序')
-      this.sortProjects()
-      this.hideSortModal()
+      this.applyFilters()
     })
   },
 
-  // 排序项目
-  sortProjects() {
-    const { sortBy, sortOrder, originalList } = this.data
+  // 重置所有的筛选器
+  resetFilter(e) {
+    log.info('重置筛选器')
+
+    this.setData({
+      chosenProjects: this.data.projectNames,
+      chosenCountCategories: this.data.countCategories,
+      sortBy: 'hotness',
+      sortOrder: 'desc'
+    })
+  },
+
+  // 筛选器中选择小区
+  tapProject(e) {
+    let tappedProject = e.currentTarget.dataset.project
+    if (tappedProject == 'all') {
+      // 选中了all，即全选
+      if (this.data.projectNames.length != this.data.chosenProjects.length) {
+        // 有部分未选中的，此时点击all，即为select All
+        this.setData({ chosenProjects: this.data.projectNames })
+      } else {
+        // 全选中，此时点击all，即为deselect All
+        this.setData({ chosenProjects: [] })
+      }
+    } else {
+      // tap的并不是all
+      let curChosenProjects = this.data.chosenProjects.concat([])
+      if (curChosenProjects.indexOf(tappedProject) == -1) {
+        // 是选中
+        curChosenProjects.push(tappedProject)
+        this.setData({ chosenProjects: curChosenProjects })
+      } else {
+        // 是deselect
+        curChosenProjects.splice(curChosenProjects.indexOf(tappedProject), 1)
+        this.setData({ chosenProjects: curChosenProjects })
+      }
+    }
+  },
+
+  // 筛选器中选择套数类别
+  tapCountCategory(e) {
+    const tappedCategory = e.currentTarget.dataset.category
+    if (tappedCategory == 'all') {
+      if (this.data.countCategories.length != this.data.chosenCountCategories.length) {
+        // 有部分未选中的，此时点击all，即为select All
+        this.setData({ chosenCountCategories: this.data.countCategories })
+      } else {
+        // 全选中，此时点击all，即为deselect All
+        this.setData({ chosenCountCategories: [] })
+      }
+    } else {
+      // tap的并不是all
+      let curCountCategories = this.data.chosenCountCategories.concat([])
+      if (curCountCategories.indexOf(tappedCategory) == -1) {
+        // 是选中
+        curCountCategories.push(tappedCategory)
+        this.setData({ chosenCountCategories: curCountCategories })
+      } else {
+        // 是deselect
+        curCountCategories.splice(curCountCategories.indexOf(tappedCategory), 1)
+        this.setData({ chosenCountCategories: curCountCategories })
+      }
+    }
+  },
+
+  // 根据套数判断是否符合筛选条件
+  eligibleForCountCategory(count) {
+    let res = false
+    const chosenCategories = this.data.chosenCountCategories
+
+    for (let idx = 0; idx < chosenCategories.length; idx++) {
+      let category = chosenCategories[idx]
+      let eligible = false
+      
+      switch (category) {
+        case '1套':
+          eligible = count === 1
+          break
+        case '2-5套':
+          eligible = count >= 2 && count <= 5
+          break
+        case '6-10套':
+          eligible = count >= 6 && count <= 10
+          break
+        case '10套以上':
+          eligible = count > 10
+          break
+      }
+      
+      if (eligible) {
+        res = true
+        break
+      }
+    }
+    return res
+  },
+
+  // 应用筛选器
+  applyFilters() {
+    const { originalList, chosenProjects, chosenCountCategories } = this.data
     
-    log.info(`排序开始: sortBy=${sortBy}, sortOrder=${sortOrder}`)
-    log.info(`原始数据长度: ${originalList ? originalList.length : 0}`)
+    log.info('开始应用筛选器')
     
     // 如果没有原始数据，直接返回
     if (!originalList || originalList.length === 0) {
-      log.info('没有原始数据，排序终止')
+      log.info('没有原始数据，筛选终止')
       return
     }
     
@@ -172,16 +296,43 @@ Page({
           let projectCopy = JSON.parse(JSON.stringify(project))
           projectCopy.areaId = area.areaId
           projectCopy.areaName = area.areaName
-          projectCopy.areaIdForMap = area.id // 保留原始的 area.id 用于地图等功能
+          projectCopy.areaIdForMap = area.id
           allProjects.push(projectCopy)
         })
       }
     })
     
-    log.info(`提取到所有项目数量: ${allProjects.length}`)
+    // 应用筛选条件
+    let filteredProjects = allProjects.filter(project => {
+      // 小区名筛选
+      const projectNameMatch = chosenProjects.length === 0 || chosenProjects.indexOf(project.pName) !== -1
+      
+      // 套数筛选
+      const houseCount = project.houses ? project.houses.length : 0
+      const countMatch = chosenCountCategories.length === 0 || this.eligibleForCountCategory(houseCount)
+      
+      return projectNameMatch && countMatch
+    })
     
-    // 对所有项目进行全局排序
-    allProjects.sort((a, b) => {
+    // 对筛选后的项目进行排序
+    this.sortFilteredProjects(filteredProjects)
+    
+    // 显示筛选结果提示
+    wx.showToast({
+      title: `找到${filteredProjects.length}个小区`,
+      icon: 'none',
+      duration: 1500
+    })
+  },
+
+  // 对筛选后的项目进行排序
+  sortFilteredProjects(projects) {
+    const { sortBy, sortOrder } = this.data
+    
+    log.info(`排序开始: sortBy=${sortBy}, sortOrder=${sortOrder}`)
+    
+    // 对项目进行排序
+    projects.sort((a, b) => {
       let valueA, valueB
       
       switch (sortBy) {
@@ -222,20 +373,13 @@ Page({
       }
     })
     
-    // 直接使用扁平化的项目列表
-    this.setData({ list: allProjects })
+    // 更新显示的列表
+    this.setData({ list: projects })
     
-    // 添加调试日志
-    log.info(`全局排序完成: ${sortBy} ${sortOrder}`)
-    log.info(`排序后项目数量: ${allProjects.length}`)
-    
-    // 显示排序结果提示
-    wx.showToast({
-      title: `按${sortBy === 'name' ? '小区名' : sortBy === 'count' ? '套数' : sortBy === 'rank' ? '预排' : '热度'}${sortOrder === 'asc' ? '正序' : '倒序'}排序`,
-      icon: 'none',
-      duration: 1500
-    })
+    log.info(`筛选排序完成，显示${projects.length}个项目`)
   },
+
+
 
   // 读取
   useTodayProjectsInStorage() {
@@ -270,6 +414,16 @@ Page({
         })
       })
 
+      // 提取所有小区名称用于筛选
+      const projectNames = []
+      todayProjects.forEach(area => {
+        area.projects.forEach(project => {
+          if (projectNames.indexOf(project.pName) === -1) {
+            projectNames.push(project.pName)
+          }
+        })
+      })
+
       this.setData({
         list : todayProjects,
         originalList : JSON.parse(JSON.stringify(todayProjects)), // 深拷贝原始数据
@@ -279,10 +433,14 @@ Page({
         houseCount : allHouses.length,
         isVip : app.globalData.userinfo.type == 2,
         // 用户是否输入了自己的startDated
-        hasStartDate : this.hasStartDate()
+        hasStartDate : this.hasStartDate(),
+        // 筛选器数据
+        projectNames: projectNames,
+        chosenProjects: projectNames.concat([]),
+        chosenCountCategories: this.data.countCategories.concat([])
       }, () => {
-        // 数据加载完成后应用初始排序
-        this.sortProjects()
+        // 数据加载完成后应用初始筛选和排序
+        this.applyFilters()
       })
     }
   },
