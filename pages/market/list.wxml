@@ -1,0 +1,105 @@
+<cu-custom bgColor="bg-black" isBack="{{false}}">
+  <view slot="content">
+    <view class="text-white text-bold">PD租房 - 市场租房</view>
+  </view>
+</cu-custom>
+<view style="background-color: #f5f5f5; min-height: 100vh;">
+  <!-- 顶部标题栏 -->
+  <view class="header-bar">
+    <view class="header-row">
+      <text class="header-title">市场房源（转租/出租）</text>
+      <view class="header-actions">
+        <button class="cu-btn icon bg-white shadow margin-right-xs" bindtap="toggleFilter">
+          <text class="cuIcon-filter text-blue"></text>
+        </button>
+        <button class="cu-btn bg-red shadow" bindtap="goPublish">
+          <text class="cuIcon-add margin-right-xs"></text>发布
+        </button>
+      </view>
+    </view>
+    <!-- 排序条 -->
+    <view class="sort-bar">
+      <picker mode="selector" range="{{sortOptions}}" value="{{sortIndex}}" bindchange="onSortChange">
+        <view class="sort-item">{{sortOptions[sortIndex]}} ▾</view>
+      </picker>
+      <picker mode="selector" range="{{districts}}" value="{{districtIndex}}" bindchange="onDistrictChange">
+        <view class="sort-item">{{districts[districtIndex]}} ▾</view>
+      </picker>
+    </view>
+    <view class="cu-bar bg-white search">
+      <view class="search-form round">
+        <text class="cuIcon-search"></text>
+        <input type="text" placeholder="搜索小区 / 地址" confirm-type="search" bindinput="onSearchInput" />
+      </view>
+    </view>
+  </view>
+
+  <!-- 筛选抽屉 -->
+  <view class="filter-drawer" wx:if="{{showFilter}}">
+    <view class="filter-mask" bindtap="toggleFilter"></view>
+    <view class="filter-content">
+      <view class="filter-title">筛选条件</view>
+
+      <view class="filter-group">
+        <text class="filter-label">区域</text>
+        <picker mode="selector" range="{{districts}}" value="{{districtIndex}}" bindchange="onDistrictChange">
+          <view class="filter-picker">{{districts[districtIndex]}}</view>
+        </picker>
+      </view>
+
+      <view class="filter-group">
+        <text class="filter-label">价格区间（元/月）</text>
+        <view class="filter-row">
+          <input class="filter-input" type="number" placeholder="最低" value="{{filters.rent_min}}" bindinput="onRentMinInput"/>
+          <text class="filter-sep">-</text>
+          <input class="filter-input" type="number" placeholder="最高" value="{{filters.rent_max}}" bindinput="onRentMaxInput"/>
+        </view>
+      </view>
+
+      <view class="filter-group">
+        <text class="filter-label">卧室数</text>
+        <input class="filter-input" type="number" placeholder="如 2" value="{{filters.bedrooms}}" bindinput="onBedroomsChange"/>
+      </view>
+
+      <view class="filter-group">
+        <view class="filter-row" bindtap="toggleCertified">
+          <text class="filter-label">仅看认证房东</text>
+          <switch checked="{{filters.only_certified == 1}}" color="#e54d42"/>
+        </view>
+      </view>
+
+      <view class="filter-actions">
+        <button class="cu-btn bg-gray" bindtap="resetFilter">重置</button>
+        <button class="cu-btn bg-red" bindtap="applyFilter">确定</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 房源列表 -->
+  <view class="house-list">
+    <view class="house-card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="openDetail">
+      <image class="house-cover" src="{{item.cover_url || '/assets/today.png'}}" mode="aspectFill"/>
+      <view class="house-info">
+        <view class="house-title-row">
+          <text class="house-title">{{item.title}}</text>
+          <text class="house-vip" wx:if="{{item.is_vip == 1}}">VIP</text>
+          <text class="house-cert" wx:if="{{item.is_certified == 1}}">认证</text>
+        </view>
+        <view class="house-meta">{{item.district}} · {{item.town}}</view>
+        <view class="house-meta">{{item.house_type}} · {{item.area}}㎡ · {{item.payment_type}}</view>
+        <view class="house-bottom">
+          <text class="house-rent">¥{{item.rent}}<text class="house-rent-unit">/月</text></text>
+          <text class="house-time">{{item.online_time_str}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-tip" wx:if="{{loading}}">加载中...</view>
+  <view class="loading-tip" wx:if="{{!hasMore && list.length > 0}}">没有更多了</view>
+  <view class="empty-tip" wx:if="{{!loading && list.length == 0}}">
+    <text class="cuIcon-text text-gray" style="font-size: 80rpx;"></text>
+    <view class="empty-text">暂无房源</view>
+  </view>
+</view>

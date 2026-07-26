@@ -213,7 +213,7 @@ const loadAllData = function(options) {
       } else {
         // 对于不同的用户，“首页”是不同的.
         // 新用户（userinfo中没有startDate也没有email）
-        wx.switchTab({ url: '/pages/today/today' })
+        wx.switchTab({ url: '/pages/pudong/pudong' })
         // if (userHelper.isNewUser()) {
         //   log.info('新用户，首页为发现')
       }

@@ -6,6 +6,7 @@ const subHelper = require('../../utils/subscripton')
 const contants = require('../../utils/constants')
 const constants = require('../../utils/constants')
 const pinyinMatch = require('pinyin-match')
+const market = require('../../utils/market')
 
 Page({
   data: {
@@ -13,6 +14,16 @@ Page({
     StatusBar: app.globalData.StatusBar,
     list : [],
     reqSuccessful: false,
+    // 顶部数据源 Tab：gzf=公租房 shbzf=保租房 market=市场房源
+    sourceTab: 'gzf',
+    // 保租房/市场房源列表
+    shbzfList: [],
+    shbzfLoaded: false,
+    marketList: [],
+    marketLoaded: false,
+    marketPage: 1,
+    marketHasMore: true,
+    marketLoading: false,
     // 筛选器抽屉
     openDrawer: false,
     // 以下均为筛选器
@@ -61,6 +72,63 @@ Page({
 
         wx.showToast({ title: '数据获取失败', icon: 'error' })
       })
+  },
+
+  // 切换顶部数据源 Tab
+  switchSourceTab(e) {
+    const tab = e.currentTarget.dataset.tab
+    if (tab === this.data.sourceTab) return
+    this.setData({ sourceTab: tab })
+    if (tab === 'shbzf' && !this.data.shbzfLoaded) this.loadShbzfList()
+    if (tab === 'market' && !this.data.marketLoaded) this.loadMarketList(true)
+  },
+
+  // 加载保租房项目列表
+  loadShbzfList() {
+    const self = this
+    market.getShbzfList({ page: 1, size: 50 }).then((res) => {
+      if (res && res.status === 0) {
+        self.setData({ shbzfList: (res.data && res.data.list) || [], shbzfLoaded: true })
+      }
+    }).catch(() => {})
+  },
+
+  // 加载市场房源列表
+  loadMarketList(reset) {
+    if (this.data.marketLoading) return
+    const page = reset ? 1 : this.data.marketPage
+    if (!reset && !this.data.marketHasMore) return
+    const self = this
+    self.setData({ marketLoading: true })
+    market.getMarketList({ page, size: 20 }).then((res) => {
+      if (res && res.status === 0) {
+        const list = (res.data && res.data.list) || []
+        self.setData({
+          marketList: reset ? list : self.data.marketList.concat(list),
+          marketPage: page + 1,
+          marketHasMore: list.length >= 20,
+          marketLoaded: true,
+          marketLoading: false
+        })
+      } else {
+        self.setData({ marketLoading: false })
+      }
+    }).catch(() => { self.setData({ marketLoading: false }) })
+  },
+
+  // 滚动到底加载更多市场房源
+  onMarketReachBottom() {
+    if (this.data.sourceTab === 'market') this.loadMarketList(false)
+  },
+
+  // 跳转保租房详情
+  navToShbzf(e) {
+    wx.navigateTo({ url: '/pages/shbzf/detail?id=' + e.currentTarget.dataset.id })
+  },
+
+  // 跳转市场房源详情
+  navToMarket(e) {
+    wx.navigateTo({ url: '/pages/market/detail?id=' + e.currentTarget.dataset.id })
   },
 
   // 重新读取缓存中的allProjects

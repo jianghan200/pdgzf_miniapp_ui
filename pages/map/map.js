@@ -2,6 +2,7 @@ const constants = require("../../utils/constants")
 let app = getApp()
 const log = require('./../../utils/log')
 const utils = require('./../../utils/util')
+const market = require('../../utils/market')
 
 Page({
   data: {
@@ -9,7 +10,16 @@ Page({
     mode: '',
     selfLatitude: 31.23037,
     selfLongitude: 121.4737,
-    markers: []
+    markers: [],
+    // 新增：数据源 Tab（仅 all 模式显示），gzf/shbzf/market
+    sourceTab: 'gzf',
+    // 半屏列表
+    showList: false,
+    listData: [],
+    // 三类房源分别的 markers
+    gzfMarkers: [],
+    shbzfMarkers: [],
+    marketMarkers: []
   },
 
   onLoad(options) {
@@ -66,6 +76,14 @@ Page({
         pid: this.options.pid,
         aid: this.options.aid
       })
+    } else if (this.options.mode == 'market') {
+      this.setData({ title: '市场房源地图' })
+      this.loadMarketMarkers()
+      return
+    } else if (this.options.mode == 'shbzf') {
+      this.setData({ title: '保租房地图' })
+      this.loadShbzfMarkers()
+      return
     }
 
     let rawData = wx.getStorageSync(queryKey)
@@ -80,6 +98,85 @@ Page({
       } else if (this.options.mode == 'singleToday') {
         this.markerForTodaySingleProject(rawData)
       }
+    }
+  },
+
+  // 切换数据源 Tab（仅 all 模式）
+  switchSourceTab(e) {
+    const tab = e.currentTarget.dataset.tab
+    this.setData({ sourceTab: tab })
+    let markers = []
+    if (tab === 'gzf') markers = this.data.gzfMarkers
+    else if (tab === 'shbzf') markers = this.data.shbzfMarkers
+    else if (tab === 'market') markers = this.data.marketMarkers
+    this.setData({ markers, listData: markers })
+  },
+
+  // 加载市场房源 markers
+  loadMarketMarkers() {
+    const self = this
+    market.getMarketList({ page: 1, size: 100 }).then((res) => {
+      if (res && res.status === 0) {
+        const list = (res.data && res.data.list) || []
+        const markers = list.map((item, idx) => {
+          return {
+            id: 10000 + idx,
+            latitude: parseFloat(item.latitude),
+            longitude: parseFloat(item.longitude),
+            iconPath: '/assets/orange.png',
+            width: 22,
+            height: 22,
+            customCallout: { anchorY: 10, anchorX: 0, display: 'BYCLICK' },
+            pname: item.title,
+            countDesc: `¥${item.rent}/月 · ${item.layout || ''} · ${item.area}㎡`,
+            sourceType: 'market',
+            sourceId: item.id
+          }
+        })
+        self.setData({ marketMarkers: markers, markers, listData: list, showList: true })
+      }
+    }).catch(() => {})
+  },
+
+  // 加载保租房 markers
+  loadShbzfMarkers() {
+    const self = this
+    market.getShbzfList({ page: 1, size: 200 }).then((res) => {
+      if (res && res.status === 0) {
+        const list = (res.data && res.data.list) || []
+        const markers = list.map((item, idx) => {
+          return {
+            id: 20000 + idx,
+            latitude: parseFloat(item.latitude),
+            longitude: parseFloat(item.longitude),
+            iconPath: '/assets/green.png',
+            width: 22,
+            height: 22,
+            customCallout: { anchorY: 10, anchorX: 0, display: 'BYCLICK' },
+            pname: item.project_name,
+            countDesc: `保租房 · ${item.district || ''}`,
+            sourceType: 'shbzf',
+            sourceId: item.id
+          }
+        })
+        self.setData({ shbzfMarkers: markers, markers, listData: list, showList: true })
+      }
+    }).catch(() => {})
+  },
+
+  // 切换半屏列表显示
+  toggleList() {
+    this.setData({ showList: !this.data.showList })
+  },
+
+  // 点击 marker
+  onMarkerTap(e) {
+    const markerId = e.markerId
+    const marker = this.data.markers.find(m => m.id === markerId)
+    if (marker && marker.sourceType === 'market') {
+      wx.navigateTo({ url: '/pages/market/detail?id=' + marker.sourceId })
+    } else if (marker && marker.sourceType === 'shbzf') {
+      wx.navigateTo({ url: '/pages/shbzf/detail?id=' + marker.sourceId })
     }
   },
 
@@ -249,7 +346,7 @@ Page({
   // 转发
   onShareAppMessage: function(options) {
     console.log(this.data)
-    var path = '/pages/today/today?mode=' + this.data.mode
+    var path = '/pages/pudong/pudong?mode=' + this.data.mode
     return {
       title : 'PD公租房',
       path : '/pages/login/login?redirect=' + encodeURIComponent(path),

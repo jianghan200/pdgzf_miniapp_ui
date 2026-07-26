@@ -1,0 +1,36 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold"></view>
+  </view>
+</cu-custom>
+<view style="background-color: #f5f5f5; min-height: 100vh; padding-bottom: 40rpx;">
+  <view class="loading" wx:if="{{loading}}">加载中...</view>
+  <block wx:if="{{detail}}">
+    <swiper class="media" wx:if="{{detail.media_urls.length > 0}}" indicator-dots circular>
+      <swiper-item wx:for="{{detail.media_urls}}" wx:key="*this"><image src="{{item}}" mode="aspectFill" class="media-img"/></swiper-item>
+    </swiper>
+    <view class="section">
+      <view class="title">{{detail.title}}</view>
+      <view class="meta">{{detail.district}} {{detail.town}} {{detail.address}}</view>
+      <view class="meta">{{detail.house_type}} · {{detail.area}}㎡ · ¥{{detail.rent}}/月</view>
+      <view class="meta">联系人：{{detail.contact_name}} {{detail.contact_phone}}</view>
+      <view class="meta">付款：{{detail.payment_type}} · 租期：{{detail.min_lease}}-{{detail.max_lease}}月</view>
+    </view>
+    <view class="section" wx:if="{{detail.description}}">
+      <view class="section-title">描述</view><view class="desc">{{detail.description}}</view>
+    </view>
+    <view class="section" wx:if="{{detail.facilities_arr.length > 0}}">
+      <view class="section-title">设施</view>
+      <view class="tags"><text class="tag" wx:for="{{detail.facilities_arr}}" wx:key="*this">{{item}}</text></view>
+    </view>
+    <view class="section">
+      <view class="section-title">驳回原因</view>
+      <textarea class="textarea" placeholder="如信息不实、图片不清晰等" value="{{rejectComment}}" bindinput="onRejectInput" maxlength="500"/>
+    </view>
+    <view class="actions">
+      <button class="cu-btn bg-green lg" bindtap="approve" style="flex:1;">通过</button>
+      <button class="cu-btn bg-red lg" bindtap="reject" style="flex:1;">驳回</button>
+    </view>
+  </block>
+</view>

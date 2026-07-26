@@ -54,7 +54,7 @@
     <view class="cu-item arrow" bindtap="gotoEmailPage">
       <view class="content">
         <text class="cuIcon-noticefill text-bold text-yellow"></text>
-        <text class="text-bold">房源提醒 (请关注公众号“PD生活”)</text>
+        <text class="text-bold">房源提醒 (关注公众号“三只熊猫工作室”)</text>
       </view>
     </view>
 
@@ -74,6 +74,67 @@
       </view>
     </view>
   </view>
+
+  <!-- MVP 新增功能入口 -->
+  <view class="cu-list menu sm-border card-menu margin-top">
+    <view class="cu-item arrow" bindtap="goPublishMarket">
+      <view class="content">
+        <text class="cuIcon-edit text-bold text-orange"></text>
+        <text class="text-bold">发布市场房源</text>
+      </view>
+    </view>
+    <view class="cu-item arrow" bindtap="goMyMarketHouses">
+      <view class="content">
+        <text class="cuIcon-form text-bold text-orange"></text>
+        <text class="text-bold">我的发布</text>
+      </view>
+    </view>
+    <view class="cu-item arrow" bindtap="goShbzfList">
+      <view class="content">
+        <text class="cuIcon-taxi text-bold text-green"></text>
+        <text class="text-bold">保租房项目</text>
+      </view>
+    </view>
+    <view class="cu-item arrow" bindtap="goContactList">
+      <view class="content">
+        <text class="cuIcon-message text-bold text-blue"></text>
+        <text class="text-bold">我的联系记录</text>
+      </view>
+    </view>
+    <view class="cu-item arrow" bindtap="goDepositList">
+      <view class="content">
+        <text class="cuIcon-moneybag text-bold text-yellow"></text>
+        <text class="text-bold">保证金记录</text>
+      </view>
+    </view>
+    <view class="cu-item arrow" bindtap="goRealName">
+      <view class="content">
+        <text class="cuIcon-people text-bold text-blue"></text>
+        <text class="text-bold">实名认证</text>
+      </view>
+    </view>
+    <view class="cu-item arrow" bindtap="goLandlordAuth">
+      <view class="content">
+        <text class="cuIcon-homefill text-bold text-blue"></text>
+        <text class="text-bold">房东认证</text>
+      </view>
+    </view>
+    <view class="cu-item arrow" bindtap="goVipCenter">
+      <view class="content">
+        <text class="cuIcon-vip text-bold text-orange"></text>
+        <text class="text-bold">VIP 中心</text>
+      </view>
+    </view>
+
+    <!-- 管理员入口 -->
+    <view class="cu-item arrow" bindtap="goAdmin" wx:if="{{isAdmin}}">
+      <view class="content">
+        <text class="cuIcon-settings text-bold text-red"></text>
+        <text class="text-bold">审核后台</text>
+      </view>
+    </view>
+  </view>
+
 <!-- </movable-area> -->
 
 <view class="grid-container">

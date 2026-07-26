@@ -1,0 +1,20 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold"></view>
+  </view>
+</cu-custom>
+<view style="background-color: #f5f5f5; min-height: 100vh;">
+  <view class="header"><text class="title">联系记录</text></view>
+  <view class="list">
+    <view class="card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="openDetail">
+      <view class="card-top">
+        <text class="card-title">{{item.house_title || '房源#' + item.house_id}}</text>
+        <text class="status status-{{item.status}}">{{['待支付','已支付','已读','已回复'][item.status]}}</text>
+      </view>
+      <view class="card-msg">{{item.message}}</view>
+      <view class="card-time">{{item.create_time}}</view>
+    </view>
+  </view>
+  <view class="empty" wx:if="{{!loading && list.length == 0}}">暂无联系记录</view>
+</view>

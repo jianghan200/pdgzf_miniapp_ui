@@ -246,8 +246,8 @@ Page({
     const pages = getCurrentPages()
     const prevPage = pages[pages.length - 2]
     const prevPageRoute = prevPage.__route__
-    if (prevPageRoute == 'pages/today/today') {
-      log.info('从社区页返回today')
+    if (prevPageRoute == 'pages/today/today' || prevPageRoute == 'pages/pudong/pudong') {
+      log.info('从社区页返回today/pudong')
 
       prevPage.useTodayProjectsInStorage()
     } else if (prevPageRoute == 'pages/allProjects/allProjects') {
@@ -518,7 +518,7 @@ Page({
   onShareAppMessage: function () {
     let self = this
     // 当前页面是community, 由于直接redirect到该community会导致某些渲染不正确, 因此只能先redirect到today页面, 再从today页面跳转到community, 这是因为界面耦合度高导致的
-    var path = '/pages/today/today'
+    var path = '/pages/pudong/pudong'
     var params = utils.getParams(self)
     path = path + '?' + params
     return {

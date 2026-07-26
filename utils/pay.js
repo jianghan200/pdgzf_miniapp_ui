@@ -1,4 +1,5 @@
 const requests = require('./request')
+const market = require('./market')
 const log = require('./log')
 const userInfoHelper = require('./user')
 
@@ -26,6 +27,37 @@ const actualPayment = function(payment_info) {
     })
   })
 }
+// 通用：先创建订单拿支付参数，再调起微信支付
+const payWithOrder = function(orderPromise) {
+  return orderPromise.then((res) => {
+    if (!res || res.code !== 0 || !res.data || !res.data.pay_params) {
+      console.log('创建订单失败', res)
+      return Promise.reject(res)
+    }
+    return actualPayment(res.data.pay_params)
+  })
+}
+
+// 市场房源 付费联系
+const payContact = function(houseId, type, message) {
+  return payWithOrder(market.createContact({ house_id: houseId, type: type, message: message }))
+}
+
+// VIP 订阅
+const payVip = function(type, period) {
+  return payWithOrder(market.createVipOrder({ type: type, period: period }))
+}
+
+// 保证金支付
+const payDepositFee = function(houseId) {
+  return payWithOrder(market.payDeposit(houseId))
+}
+
+// 举报费支付
+const payReportFee = function(houseId, reason) {
+  return payWithOrder(market.createReport({ house_id: houseId, reason: reason }))
+}
+
 // vip 付费
 const pay = function(userType) {
   return requests
@@ -64,5 +96,10 @@ const payConsultFee = function() {
 
 module.exports = {
   pay : pay,
-  payConsultFee : payConsultFee
+  payConsultFee : payConsultFee,
+  payContact : payContact,
+  payVip : payVip,
+  payDepositFee : payDepositFee,
+  payReportFee : payReportFee,
+  actualPayment : actualPayment
 }

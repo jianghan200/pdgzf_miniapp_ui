@@ -1,0 +1,30 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold"></view>
+  </view>
+</cu-custom>
+<view style="background-color: #f5f5f5; min-height: 100vh; padding-bottom: 140rpx;">
+  <view class="loading" wx:if="{{loading}}">加载中...</view>
+  <block wx:if="{{detail}}">
+    <view class="section">
+      <view class="msg-row"><text class="label">房源</text><text>{{detail.house_title || '#' + detail.house_id}}</text></view>
+      <view class="msg-row"><text class="label">状态</text><text>{{['待支付','已支付','已读','已回复'][detail.status]}}</text></view>
+      <view class="msg-row"><text class="label">金额</text><text>¥{{detail.amount}}</text></view>
+      <view class="msg-row"><text class="label">时间</text><text>{{detail.create_time}}</text></view>
+    </view>
+    <view class="section">
+      <view class="section-title">留言内容</view>
+      <view class="msg-content">{{detail.message}}</view>
+    </view>
+    <view class="section" wx:if="{{detail.reply}}">
+      <view class="section-title">回复</view>
+      <view class="msg-content">{{detail.reply}}</view>
+      <view class="reply-time">回复时间：{{detail.reply_time}}</view>
+    </view>
+    <view class="bottom-bar" wx:if="{{detail.status < 3}}">
+      <input class="reply-input" placeholder="输入回复..." value="{{replyText}}" bindinput="onReplyInput"/>
+      <button class="cu-btn bg-red" bindtap="sendReply">发送</button>
+    </view>
+  </block>
+</view>

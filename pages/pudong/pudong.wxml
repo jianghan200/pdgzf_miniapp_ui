@@ -1,0 +1,291 @@
+<wxs src="../../utils/tool.wxs" module="tools" />
+
+<view style="height: 100vh; background-color: white; padding-top: {{StatusBar}}px;">
+  <!-- 顶部导航栏：切换按钮 + 功能按钮，与胶囊平齐 -->
+  <view class="toggle-bar bg-white" style="height: {{CustomBar/2}}px;">
+    <view class="toggle-group">
+      <view class="toggle-btn {{activeSubTab === 'today' ? 'active' : ''}}" data-tab="today" bindtap="switchSubTab">今日</view>
+      <view class="toggle-btn {{activeSubTab === 'all' ? 'active' : ''}}" data-tab="all" bindtap="switchSubTab">全部</view>
+    </view>
+    <view class="action-group" wx:if="{{activeSubTab === 'today'}}">
+      <button class="cu-btn icon bg-white shadow" bindtap="todayOpenMap">
+        <text class="cuIcon-locationfill text-red"></text>
+      </button>
+      <button class="cu-btn icon bg-white shadow" bindtap="todayRefresh">
+        <text class="cuIcon-refresh text-green"></text>
+      </button>
+      <button class="cu-btn icon bg-white shadow" bindtap="todayOpenFilterDrawer">
+        <text class="cuIcon-filter text-blue"></text>
+      </button>
+      <button wx:if="{{!todayIsVip}}" class="cu-btn cuIcon-vip icon bg-black text-yellow shadow" bindtap="todayVipSample"></button>
+    </view>
+    <view class="action-group" wx:if="{{activeSubTab === 'all' && allReqSuccessful}}">
+      <button class="cu-btn icon bg-white shadow" bindtap="allOpenMap">
+        <text class="cuIcon-locationfill text-red"></text>
+      </button>
+      <button class="cu-btn icon bg-white shadow" bindtap="allOpenFilterDrawer">
+        <text class="cuIcon-filter text-blue"></text>
+      </button>
+    </view>
+    <view class="action-group" wx:if="{{activeSubTab === 'all' && !allReqSuccessful}}">
+      <button class="cu-btn icon bg-green shadow" bindtap="allRefresh">
+        <text class="cuIcon-refresh text-white"></text>
+      </button>
+    </view>
+    <view class="right-spacer" style="width: {{Custom.width}}px;"></view>
+  </view>
+
+  <!-- ==================== 今日房源 ==================== -->
+  <view wx:if="{{activeSubTab === 'today' && !todayDisable}}" style="height: calc(100vh - {{CustomBar}}px);">
+    <view class="title bg-gray">
+      <view class="text-df" style="display: flex; justify-content: space-between; align-items: center;">
+        <text class="text-bold">今日房源：{{todayMilestone}}（{{todayProjectCount}}小区，{{todayHouseCount}}套房）</text>
+      </view>
+    </view>
+
+    <swiper style="height: 55rpx; width: 100vw;" autoplay="true" interval="4000" circular="true">
+      <block wx:for="{{todayBroadcastMsgs}}" wx:for-item="msg" wx:key="*this">
+        <navigator url="/pages/article/article?url={{msg.link}}" open-type="navigate">
+          <swiper-item style="display: flex; align-items: center; justify-content: center;">
+            <view class="swiper_item text-bold text-red">点击查看: {{msg.title.rendered}}</view>
+          </swiper-item>
+        </navigator>
+      </block>
+    </swiper>
+
+    <view wx:if="{{!todayHasStartDate}}" class="text-bold text-grey flex" style="justify-content: center; align-items: center;">
+      缺少资格日期，请至【我的】录入资格日(可模拟)
+    </view>
+
+    <view wx:if="{{todayList.length > 0}}">
+      <scroll-view scroll-y scroll-with-animation style="height: 100%">
+        <view class="cu-list menu">
+          <block wx:for="{{todayList}}" wx:for-item="project" wx:key="*this">
+            <view class="cu-item arrow" bindtap="todayNavToProject" data-pId="{{project.pId}}">
+              <view class="content padding-tb-sm">
+                <view>
+                  <view catchtap="todaySubscribe" data-pid="{{project.pId}}" data-areaid="{{project.areaId}}" data-pname="{{project.pName}}">
+                    <text class="text-red text-bold cuIcon-{{project.isSubscribed ? 'likefill' : 'like'}}"></text>
+                  </view>
+                  <view style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
+                    <text class="text-black padding-left {{project.isSubscribed ? 'text-bold' : ''}}">{{tools.sliceOf(project.pName)}} ({{project.houses.length}}套)</text>
+                    <text style="font-size: smaller; color: grey; padding-left: 10px;">预排：{{project.bestRank}}</text>
+                    <text style="font-size: smaller; color: grey; padding-left: 10px;"><text class="cuIcon-hot"></text> {{project.hotness}}</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </block>
+        </view>
+        <view class="cu-list menu margin-bottom">
+          <view style="font-size: smaller; color: rgba(128,128,128,0.7); padding-left: 10px;">预排：预计最靠前排名</view>
+          <view style="font-size: smaller; color: rgba(128,128,128,0.7); padding-left: 10px;"><text class="cuIcon-hot"></text>：参选本小区的所有人数</view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <view wx:else style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <image class="worker-avatar" src="/assets/cat.jpeg" mode="aspectFill"></image>
+      <view class="text-bold text-large padding">没了，真的一套都没了(ｰ ｰ;)，过几小时再看看吧～</view>
+    </view>
+  </view>
+
+  <!-- 9:30-10:03 禁止 -->
+  <view wx:if="{{activeSubTab === 'today' && todayDisable}}" style="height: calc(100vh - {{CustomBar}}px); display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <image class="worker-avatar" src="/assets/kid.jpeg" mode="aspectFill"></image>
+    <text class="text-bold text-xl padding">每天上午9:30 ~ 10:00关闭选房通道。请于上午10:03后打开此页～（搬砖的手，微微颤抖）</text>
+  </view>
+
+  <!-- 今日房源筛选器 -->
+  <view class="filter-modal {{ todayOpenDrawer ? 'show' : '' }}" bindtap="todayCloseFilterDrawer">
+    <view class="filter-container" catchtap>
+      <view class="bg-gray" style="height: 2.5rem;"></view>
+      <view class="filter-header">
+        <view class="filter-title">
+          <text class="cuIcon-filter text-blue"></text>
+          <text class="title-text">筛选房源</text>
+          <button class="reset-btn-header" bindtap="todayResetFilter"><text class="cuIcon-refresh"></text><text>重置</text></button>
+        </view>
+        <view class="filter-close" bindtap="todayCloseFilterDrawer"><text class="cuIcon-close"></text></view>
+      </view>
+      <scroll-view scroll-y class="filter-content">
+        <view class="filter-section">
+          <view class="section-header"><text class="cuIcon-sort section-icon"></text><text class="section-title">排序</text></view>
+          <view class="sort-grid">
+            <view class="sort-item {{ todaySortBy === 'count' ? 'active' : '' }}" data-sort="count" bindtap="todaySetSortBy">
+              <text class="cuIcon-home sort-icon"></text><text class="sort-text">套数</text>
+              <text class="sort-arrow" wx:if="{{todaySortBy === 'count'}}">{{ todaySortOrder === 'asc' ? '↑' : '↓' }}</text>
+            </view>
+            <view class="sort-item {{ todaySortBy === 'rank' ? 'active' : '' }}" data-sort="rank" bindtap="todaySetSortBy">
+              <text class="cuIcon-rank sort-icon"></text><text class="sort-text">预排</text>
+              <text class="sort-arrow" wx:if="{{todaySortBy === 'rank'}}">{{ todaySortOrder === 'asc' ? '↑' : '↓' }}</text>
+            </view>
+            <view class="sort-item {{ todaySortBy === 'hotness' ? 'active' : '' }}" data-sort="hotness" bindtap="todaySetSortBy">
+              <text class="cuIcon-hot sort-icon"></text><text class="sort-text">热度</text>
+              <text class="sort-arrow" wx:if="{{todaySortBy === 'hotness'}}">{{ todaySortOrder === 'asc' ? '↑' : '↓' }}</text>
+            </view>
+          </view>
+        </view>
+        <view class="filter-section">
+          <view class="section-header" bindtap="todayChangeCountFilterDisplayStatus">
+            <text class="cuIcon-number section-icon"></text>
+            <text class="section-title">套数 ({{todayChosenCountCategories.length}}/{{todayCountCategories.length}})</text>
+            <text class="section-toggle cuIcon-{{ todayHideCountFilter ? 'unfold' : 'fold' }}"></text>
+          </view>
+          <view class="tag-container" wx:if="{{!todayHideCountFilter}}">
+            <view class="tag-row">
+              <view class="filter-tag {{ todayCountCategories.length == todayChosenCountCategories.length ? 'all-selected' : 'unselected' }}" data-category="all" bindtap="todayTapCountCategory">全选</view>
+            </view>
+            <view class="tag-grid">
+              <block wx:for="{{todayCountCategories}}" wx:for-item="cat" wx:key="*this">
+                <view class="filter-tag {{ tools.indexOf(todayChosenCountCategories, cat) == -1 ? 'unselected' : 'selected' }}" data-category="{{cat}}" bindtap="todayTapCountCategory">{{cat}}</view>
+              </block>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+      <view class="filter-footer">
+        <button class="apply-btn" bindtap="todayCloseFilterDrawer"><text class="cuIcon-check"></text><text>应用筛选</text></button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 今日房源刷新Modal -->
+  <view class="cu-modal {{todayShowModal ? 'show' : ''}}">
+    <view class="cu-dialog">
+      <view class="cu-bar bg-white justify-end">
+        <view class="content text-bold">成功刷新房源数据</view>
+        <view class="action" bindtap="todayHideModal"><text class="cuIcon-close text-red"></text></view>
+      </view>
+      <view class="padding-xl text-green text-bold">更新于：{{todayTimeStamp}}</view>
+    </view>
+  </view>
+
+  <!-- ==================== 全部房源 ==================== -->
+  <view wx:if="{{activeSubTab === 'all'}}" style="height: calc(100vh - {{CustomBar}}px);">
+    <view class="cu-bar bg-white search">
+      <view class="search-form round">
+        <text class="cuIcon-search"></text>
+        <input type="text" placeholder="搜索小区名字 / 地址 (支持如: ady -> 艾东苑)" confirm-type="search" bindinput="allSearchProject" />
+      </view>
+    </view>
+
+    <view wx:if="{{allReqSuccessful}}">
+      <scroll-view scroll-y scroll-with-animation style="background-color: #f1f1f1; height: 100%">
+        <view wx:for="{{allList}}" wx:for-item="area" wx:key="areaId">
+          <view class='cu-bar solid-bottom bg-white' wx:if="{{area.display}}">
+            <view class='action'><text class='cuIcon-titles text-red'></text> {{area.areaName == null ? '未知街道' : area.areaName}}</view>
+          </view>
+          <view class="cu-list menu">
+            <block wx:for="{{area.projects}}" wx:for-item="project" wx:key="pId">
+              <view class="cu-item arrow" style="min-height: 80rpx;" bindtap="allNavToProject" data-pId="{{project.pId}}" wx:if="{{project.display}}">
+                <view class="content">
+                  <view>
+                    <view catchtap="allSubscribe" data-pid="{{project.pId}}" data-aid="{{area.areaId}}" data-pname="{{project.pName}}">
+                      <text class="text-red text-bold cuIcon-{{project.isSubscribed ? 'likefill' : 'like'}}"></text>
+                    </view>
+                    <view>
+                      <text class="text-black padding-left {{project.isSubscribed ? 'text-bold' : ''}}">{{tools.sliceOf(project.pName)}}</text>
+                      <text class="text-grey margin-left margin-right">{{project.rentableCount}}套</text>
+                      <text class="cuIcon-picfill text-grey text-xlg" wx:if="{{project.raw.hasImage}}"></text>
+                      <text class="cuIcon-videofill text-grey text-xlg" wx:if="{{project.raw.hasVideo}}"></text>
+                      <text class="cuIcon-post text-grey text-xlg" wx:if="{{project.raw.wp_url && project.raw.wp_url != null && project.raw.wp_url != ''}}"></text>
+                      <text class="text-grey margin-left">最低{{ project.floor }}元</text>
+                    </view>
+                  </view>
+                </view>
+              </view>
+            </block>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 全部房源筛选器 -->
+  <view class="filter-modal {{ allOpenDrawer ? 'show' : '' }}" bindtap="allCloseFilterDrawer">
+    <view class="filter-container" catchtap>
+      <view class="filter-header">
+        <view class="filter-title">
+          <text class="cuIcon-filter text-blue"></text>
+          <text class="title-text">筛选房源</text>
+          <button class="reset-btn-header" bindtap="allResetFilter"><text class="cuIcon-refresh"></text><text>重置</text></button>
+        </view>
+        <view class="filter-close" bindtap="allCloseFilterDrawer"><text class="cuIcon-close"></text></view>
+      </view>
+      <scroll-view scroll-y class="filter-content">
+        <view class="filter-section">
+          <view class="section-header" bindtap="allChangeAreaFilterDisplay">
+            <text class="cuIcon-location section-icon"></text>
+            <text class="section-title">社区 ({{allChosenAreas.length}}/{{allAreas.length}})</text>
+            <text class="section-toggle cuIcon-{{ allHideAreaFilter ? 'unfold' : 'fold' }}"></text>
+          </view>
+          <view class="tag-container" wx:if="{{!allHideAreaFilter}}">
+            <view class="tag-row">
+              <view class="filter-tag {{ allAreas.length == allChosenAreas.length ? 'all-selected' : 'unselected' }}" data-areaName="all" bindtap="allTapArea">全选</view>
+            </view>
+            <view class="tag-grid">
+              <block wx:for="{{allAreas}}" wx:for-item="a" wx:key="*this">
+                <view class="filter-tag {{ tools.indexOf(allChosenAreas, a) == -1 ? 'unselected' : 'selected' }}" data-areaName="{{a}}" bindtap="allTapArea">{{a}}</view>
+              </block>
+            </view>
+          </view>
+        </view>
+        <view class="filter-section">
+          <view class="section-header" bindtap="allChangeRentableCountsFilterDisplay">
+            <text class="cuIcon-number section-icon"></text>
+            <text class="section-title">房源数量 ({{allChosenRentableCountCategory.length}}/{{allRentableCountCategory.length}})</text>
+            <text class="section-toggle cuIcon-{{ allHideRentableCountFilter ? 'unfold' : 'fold' }}"></text>
+          </view>
+          <view class="tag-container" wx:if="{{!allHideRentableCountFilter}}">
+            <view class="tag-row">
+              <view class="filter-tag {{ allRentableCountCategory.length == allChosenRentableCountCategory.length ? 'all-selected' : 'unselected' }}" data-category="all" bindtap="allTapRentableCounts">全选</view>
+            </view>
+            <view class="tag-grid">
+              <block wx:for="{{allRentableCountCategory}}" wx:for-item="cat" wx:key="*this">
+                <view class="filter-tag {{ tools.indexOf(allChosenRentableCountCategory, cat) == -1 ? 'unselected' : 'selected' }}" data-category="{{cat}}" bindtap="allTapRentableCounts">{{cat}}</view>
+              </block>
+            </view>
+          </view>
+        </view>
+        <view class="filter-section">
+          <view class="section-header" bindtap="allChangeRoomTypesFilterDisplay">
+            <text class="cuIcon-home section-icon"></text>
+            <text class="section-title">户型 ({{allChosenRoomTypes.length}}/{{allRoomTypes.length}})</text>
+            <text class="section-toggle cuIcon-{{ allHideRoomTypesFilter ? 'unfold' : 'fold' }}"></text>
+          </view>
+          <view class="tag-container" wx:if="{{!allHideRoomTypesFilter}}">
+            <view class="tag-row">
+              <view class="filter-tag {{ allRoomTypes.length == allChosenRoomTypes.length ? 'all-selected' : 'unselected' }}" data-rtid="all" bindtap="allTapRoomTypes">全选</view>
+            </view>
+            <view class="tag-grid">
+              <block wx:for="{{allRoomTypes}}" wx:for-item="rt" wx:key="*this">
+                <view class="filter-tag {{ tools.indexOf(allChosenRoomTypes, rt) == -1 ? 'unselected' : 'selected' }}" data-rtid="{{rt}}" bindtap="allTapRoomTypes">{{ tools.id2RoomType(rt) }}</view>
+              </block>
+            </view>
+          </view>
+        </view>
+        <view class="filter-section">
+          <view class="section-header" bindtap="allChangePriceFilterDisplay">
+            <text class="cuIcon-moneybagfill section-icon"></text>
+            <text class="section-title">价格区间 ({{allChosenPriceIntervals.length}}/{{allPriceIntervals.length}})</text>
+            <text class="section-toggle cuIcon-{{ allHidePriceFilter ? 'unfold' : 'fold' }}"></text>
+          </view>
+          <view class="tag-container" wx:if="{{!allHidePriceFilter}}">
+            <view class="tag-row">
+              <view class="filter-tag {{ allPriceIntervals.length == allChosenPriceIntervals.length ? 'all-selected' : 'unselected' }}" data-cap="all" bindtap="allTapPriceIntervals">全选</view>
+            </view>
+            <view class="tag-grid">
+              <block wx:for="{{allPriceIntervals}}" wx:for-item="iv" wx:key="*this">
+                <view class="filter-tag {{ tools.interval_is_selected(allChosenPriceIntervals, iv) ? 'selected' : 'unselected' }}" data-floor="{{iv[0]}}" data-cap="{{iv[1]}}" bindtap="allTapPriceIntervals">{{ iv[0] }} ~ {{ iv[1] }}</view>
+              </block>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+      <view class="filter-footer">
+        <button class="apply-btn" bindtap="allCloseFilterDrawer"><text class="cuIcon-check"></text><text>应用筛选</text></button>
+      </view>
+    </view>
+  </view>
+</view>

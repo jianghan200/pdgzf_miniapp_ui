@@ -1,0 +1,14 @@
+.header { background: #fff; padding: 20rpx 24rpx; }
+.title { font-size: 36rpx; font-weight: bold; }
+.list { padding: 20rpx; }
+.card { background: #fff; border-radius: 16rpx; padding: 24rpx; margin-bottom: 20rpx; }
+.card-top { display: flex; justify-content: space-between; align-items: center; }
+.card-title { font-size: 30rpx; font-weight: bold; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.status { font-size: 22rpx; padding: 4rpx 12rpx; border-radius: 6rpx; }
+.status-0 { background: #f0f0f0; color: #999; }
+.status-1 { background: #e6f7ff; color: #1890ff; }
+.status-2 { background: #fff7e6; color: #fa8c16; }
+.status-3 { background: #f6ffed; color: #52c41a; }
+.card-msg { font-size: 28rpx; color: #666; margin-top: 12rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.card-time { font-size: 22rpx; color: #ccc; margin-top: 8rpx; }
+.empty { text-align: center; padding: 200rpx; color: #999; }

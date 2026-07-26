@@ -28,7 +28,9 @@ Page({
     nickname: '未知用户',
     avatarUrl: '',
     // 是否存在关闭苹果支付
-    closeIOSPay: false
+    closeIOSPay: false,
+    // 是否为管理员（基于 role 字段判断）
+    isAdmin: false
   },
   
   onLoad: function (options) {
@@ -90,10 +92,12 @@ Page({
 
   onShow: function(){
     console.log("onshow")
+    const userType = (app.globalData.userinfo && app.globalData.userinfo.type) || 0
     this.setData({
       app: app,
-      nickname: app.globalData.userinfo.wxNickName, 
-      avatarUrl: app.globalData.userinfo.wxAvatarUrl 
+      nickname: app.globalData.userinfo.wxNickName,
+      avatarUrl: app.globalData.userinfo.wxAvatarUrl,
+      isAdmin: userType === 99
     });
   },
 
@@ -213,6 +217,51 @@ Page({
     wx.navigateTo({
       url: '/pages/about/about',
     })
+  },
+
+  // 进入审核后台（管理员可见）
+  goAdmin() {
+    wx.navigateTo({ url: '/pages/admin/houseReview' })
+  },
+
+  // 发布市场房源
+  goPublishMarket() {
+    wx.navigateTo({ url: '/pages/market/publish' })
+  },
+
+  // 我的发布
+  goMyMarketHouses() {
+    wx.navigateTo({ url: '/pages/market/myhouses' })
+  },
+
+  // 保租房项目
+  goShbzfList() {
+    wx.switchTab({ url: '/pages/shbzf/list' })
+  },
+
+  // 我的联系
+  goContactList() {
+    wx.navigateTo({ url: '/pages/contact/list' })
+  },
+
+  // 保证金记录
+  goDepositList() {
+    wx.navigateTo({ url: '/pages/deposit/list' })
+  },
+
+  // 实名认证
+  goRealName() {
+    wx.navigateTo({ url: '/pages/auth/realName' })
+  },
+
+  // 房东认证
+  goLandlordAuth() {
+    wx.navigateTo({ url: '/pages/auth/landlord' })
+  },
+
+  // VIP 中心
+  goVipCenter() {
+    wx.navigateTo({ url: '/pages/vip/vipCenter' })
   },
 
   // Go to edit-user-info

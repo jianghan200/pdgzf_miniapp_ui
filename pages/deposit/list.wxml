@@ -1,0 +1,23 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold"></view>
+  </view>
+</cu-custom>
+<view style="background-color: #f5f5f5; min-height: 100vh;">
+  <view class="header"><text class="title">保证金记录</text></view>
+  <view class="list">
+    <view class="card" wx:for="{{list}}" wx:key="id">
+      <view class="card-top">
+        <text class="card-title">房源 #{{item.house_id}}</text>
+        <text class="status status-{{item.status}}">{{['冻结中','已退还','已扣除','待退还'][item.status]}}</text>
+      </view>
+      <view class="card-row"><text>保证金</text><text>¥{{item.amount}}</text></view>
+      <view class="card-row"><text>当前余额</text><text>¥{{item.balance}}</text></view>
+      <view class="card-row" wx:if="{{item.monthly_fee}}"><text>月占用费</text><text>¥{{item.monthly_fee}}</text></view>
+      <view class="card-time">{{item.create_time}}</view>
+      <button class="cu-btn bg-blue sm" wx:if="{{item.status == 0}}" data-id="{{item.id}}" bindtap="applyRefund">申请退还</button>
+    </view>
+  </view>
+  <view class="empty" wx:if="{{!loading && list.length == 0}}">暂无保证金记录</view>
+</view>

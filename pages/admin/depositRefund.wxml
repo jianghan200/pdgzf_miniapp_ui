@@ -1,0 +1,26 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold"></view>
+  </view>
+</cu-custom>
+<view style="background-color: #f5f5f5; min-height: 100vh;">
+  <view class="header">
+    <text class="title">审核后台</text>
+    <view class="nav-row">
+      <view class="nav-item" bindtap="goHouses">房源审核</view>
+      <view class="nav-item" bindtap="goReports">举报处理</view>
+      <view class="nav-item active">退款审核</view>
+      <view class="nav-item" bindtap="goAuths">认证审核</view>
+    </view>
+  </view>
+  <view class="list">
+    <view class="card" wx:for="{{list}}" wx:key="id">
+      <view class="card-title">用户 #{{item.user_id}} · 房源 #{{item.house_id}}</view>
+      <view class="card-meta">余额 ¥{{item.balance}}</view>
+      <view class="card-time">{{item.create_time}}</view>
+      <button class="cu-btn bg-green sm" data-id="{{item.id}}" bindtap="approve">批准退还</button>
+    </view>
+  </view>
+  <view class="empty" wx:if="{{!loading && list.length == 0}}">暂无待审退款</view>
+</view>

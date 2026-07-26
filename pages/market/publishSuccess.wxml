@@ -1,0 +1,19 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold"></view>
+  </view>
+</cu-custom>
+<view style="background-color: #f5f5f5; min-height: 100vh;">
+  <view class="success-box">
+    <text class="cuIcon-roundcheckfill text-green" style="font-size: 120rpx;"></text>
+    <view class="success-title">提交成功</view>
+    <view class="success-desc">房源已提交审核，审核通过后将自动上架。</view>
+    <view class="success-desc">工作日 9:00-18:00 按时效审核，非工作时段顺延。</view>
+  </view>
+  <view class="action-btns">
+    <button class="cu-btn bg-red" bindtap="goList">查看房源列表</button>
+    <button class="cu-btn bg-blue" bindtap="goPublish">继续发布</button>
+    <button class="cu-btn bg-gray" bindtap="goMy">返回我的</button>
+  </view>
+</view>

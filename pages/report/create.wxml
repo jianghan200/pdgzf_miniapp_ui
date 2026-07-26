@@ -1,0 +1,17 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold"></view>
+  </view>
+</cu-custom>
+<view style="background-color: #f5f5f5; min-height: 100vh; padding-bottom: 140rpx;">
+  <view class="header"><text class="title">举报房源</text></view>
+  <view class="section">
+    <view class="section-title">举报原因</view>
+    <textarea class="textarea" placeholder="请详细描述举报原因，如虚假信息、房源已租等" value="{{reason}}" bindinput="onInput" maxlength="500"/>
+  </view>
+  <view class="section">
+    <view class="fee-tip">举报费 ¥2.00（举报成功后退还）</view>
+  </view>
+  <view class="bottom-bar"><button class="cu-btn bg-red lg" bindtap="submit" disabled="{{submitting}}" style="width:100%;">支付 ¥2.00 提交举报</button></view>
+</view>

@@ -4,6 +4,34 @@
   padding: 0 1rem 0 1rem;
 }
 
+/* 顶部数据源 Tab */
+.source-tabs {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 12rpx 16rpx;
+  gap: 12rpx;
+  border-top: 1rpx solid #eee;
+}
+.source-tab {
+  flex: 0 0 auto;
+  padding: 10rpx 24rpx;
+  font-size: 26rpx;
+  color: #666;
+  border-radius: 24rpx;
+  background: #f5f5f5;
+}
+.source-tab.active {
+  background: #e54d42;
+  color: #fff;
+  font-weight: bold;
+}
+.source-tab.all-tab {
+  margin-left: auto;
+  color: #e54d42;
+  background: #fff5f4;
+}
+
 /* 筛选器样式 - 重新设计 */
 .filter-modal {
   position: fixed;

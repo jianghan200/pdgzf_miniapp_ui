@@ -1,0 +1,21 @@
+.loading-box { text-align: center; padding: 200rpx; }
+.media-swiper { width: 100%; height: 500rpx; }
+.media-img { width: 100%; height: 100%; }
+.section { background: #fff; margin: 20rpx; border-radius: 16rpx; padding: 24rpx; }
+.section-title { font-size: 30rpx; font-weight: bold; margin-bottom: 20rpx; border-left: 6rpx solid #39b54a; padding-left: 16rpx; }
+.title { font-size: 36rpx; font-weight: bold; }
+.meta-row { display: flex; align-items: center; gap: 8rpx; margin-top: 12rpx; font-size: 28rpx; color: #666; }
+.tags { display: flex; flex-wrap: wrap; gap: 12rpx; margin-top: 16rpx; }
+.tag { background: #f0faf0; color: #39b54a; font-size: 24rpx; padding: 6rpx 16rpx; border-radius: 6rpx; }
+.desc { font-size: 28rpx; color: #666; line-height: 1.6; }
+.room-list { display: flex; flex-direction: column; gap: 16rpx; }
+.room-item { padding: 20rpx; background: #f9f9f9; border-radius: 12rpx; }
+.room-header { display: flex; align-items: baseline; gap: 12rpx; margin-bottom: 12rpx; }
+.room-name { font-weight: bold; font-size: 30rpx; }
+.room-bedrooms { font-size: 24rpx; color: #999; }
+.room-detail-row { display: flex; align-items: center; gap: 12rpx; margin-top: 8rpx; }
+.room-label { font-size: 26rpx; color: #999; width: 3em; }
+.room-value { font-size: 28rpx; color: #333; }
+.room-rent { color: #e54d42; font-weight: bold; }
+.facilities { display: flex; flex-wrap: wrap; gap: 16rpx; }
+.facility { background: #eef; color: #6699cc; font-size: 26rpx; padding: 8rpx 20rpx; border-radius: 20rpx; }

@@ -9,10 +9,10 @@
       <!-- 按钮功能区 -->
       <!-- 请求成功展示地图按钮 -->
       <button class="bg-white cu-btn shadow margin-right round" bindtap="openMap" wx:if="{{reqSuccessful}}">
-        <text class="cuIcon-locationfill text-red text-bold"></text>地图
+        <text class="cuIcon-locationfill text-red text-bold"></text>
       </button>
       <button class="bg-white cu-btn shadow round" bindtap="openFilterDrawer" wx:if="{{reqSuccessful}}">
-        <text class="cuIcon-filter text-blue text-bold"></text>筛选
+        <text class="cuIcon-filter text-blue text-bold"></text>
       </button>
       <!-- 请求失败展示刷新按钮 -->
       <button class="bg-green cu-btn icon shadow" bindtap="refresh" wx:if="{{!reqSuccessful}}">
@@ -27,11 +27,21 @@
       <input type="text" placeholder="搜索小区名字 / 地址 (支持如: ady -> 艾东苑)" confirm-type="search" bindinput="searchProject" />
     </view>
   </view>
+
+  <!-- 顶部数据源 Tab -->
+  <view class="source-tabs bg-white">
+    <view class="source-tab {{sourceTab === 'gzf' ? 'active' : ''}}" data-tab="gzf" bindtap="switchSourceTab">公租房</view>
+    <view class="source-tab {{sourceTab === 'shbzf' ? 'active' : ''}}" data-tab="shbzf" bindtap="switchSourceTab">保租房</view>
+    <view class="source-tab {{sourceTab === 'market' ? 'active' : ''}}" data-tab="market" bindtap="switchSourceTab">市场房源</view>
+    <view class="source-tab all-tab" bindtap="openMap">
+      <text class="cuIcon-locationfill"></text> 全部地图
+    </view>
+  </view>
 </view>
 <!-- <view style="height: 2.5rem;"></view> -->
 
 
-<view wx:if="{{reqSuccessful}}">
+<view wx:if="{{reqSuccessful && sourceTab === 'gzf'}}">
   <scroll-view scroll-y scroll-with-animation style="background-color: #f1f1f1; height: 100%">
     <!-- 遍历社区 -->
     <view wx:for="{{list}}" wx:for-item="area" wx:key="areaId" id="main-{{index}}">
@@ -67,6 +77,50 @@
       </block>
       </view>
 
+    </view>
+  </scroll-view>
+</view>
+
+<!-- 保租房列表 -->
+<view wx:if="{{sourceTab === 'shbzf'}}">
+  <scroll-view scroll-y style="background-color: #f1f1f1; height: 100%">
+    <view wx:if="{{!shbzfLoaded}}" class="padding text-center text-gray">加载中...</view>
+    <view wx:elif="{{shbzfList.length === 0}}" class="padding text-center text-gray">暂无保租房项目</view>
+    <view wx:else>
+      <view class="bg-white margin-sm radius padding" wx:for="{{shbzfList}}" wx:key="id" bindtap="navToShbzf" data-id="{{item.id}}">
+        <view class="flex justify-between align-center">
+          <text class="text-bold text-lg text-green">{{item.project_name}}</text>
+          <text class="text-gray text-sm">{{item.district}}</text>
+        </view>
+        <view class="text-gray text-sm margin-top-xs">{{item.address || '暂无地址'}}</view>
+        <view class="flex margin-top-xs">
+          <text class="text-orange text-sm margin-right" wx:if="{{item.rent_min}}">¥{{item.rent_min}}-{{item.rent_max}}/月</text>
+          <text class="text-gray text-sm" wx:if="{{item.developer}}">{{item.developer}}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>
+
+<!-- 市场房源列表 -->
+<view wx:if="{{sourceTab === 'market'}}">
+  <scroll-view scroll-y lower-threshold="100" bindscrolltolower="onMarketReachBottom" style="background-color: #f1f1f1; height: 100%">
+    <view wx:if="{{!marketLoaded}}" class="padding text-center text-gray">加载中...</view>
+    <view wx:elif="{{marketList.length === 0}}" class="padding text-center text-gray">暂无市场房源</view>
+    <view wx:else>
+      <view class="bg-white margin-sm radius padding" wx:for="{{marketList}}" wx:key="id" bindtap="navToMarket" data-id="{{item.id}}">
+        <view class="flex justify-between align-center">
+          <text class="text-bold text-lg text-orange">{{item.title}}</text>
+          <text class="text-orange text-bold">¥{{item.rent}}/月</text>
+        </view>
+        <view class="text-gray text-sm margin-top-xs">{{item.district}} · {{item.layout || ''}} · {{item.area}}㎡</view>
+        <view class="flex margin-top-xs">
+          <text class="cuIcon-lightfill text-blue margin-right" wx:if="{{item.is_certified}}"> 已认证</text>
+          <text class="cuIcon-time text-gray margin-right"> {{item.create_time}}</text>
+        </view>
+      </view>
+      <view class="padding text-center text-gray text-sm" wx:if="{{marketLoading}}">加载中...</view>
+      <view class="padding text-center text-gray text-sm" wx:if="{{!marketHasMore && marketList.length > 0}}">没有更多了</view>
     </view>
   </scroll-view>
 </view>

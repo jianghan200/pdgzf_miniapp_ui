@@ -1,0 +1,14 @@
+.header { background: #fff; padding: 20rpx 24rpx; }
+.title { font-size: 36rpx; font-weight: bold; }
+.list { padding: 20rpx; }
+.card { background: #fff; border-radius: 16rpx; padding: 24rpx; margin-bottom: 20rpx; }
+.card-top { display: flex; justify-content: space-between; align-items: center; }
+.card-title { font-size: 30rpx; font-weight: bold; }
+.status { font-size: 22rpx; padding: 4rpx 12rpx; border-radius: 6rpx; }
+.status-0 { background: #e6f7ff; color: #1890ff; }
+.status-1 { background: #f6ffed; color: #52c41a; }
+.status-2 { background: #fff1f0; color: #f5222d; }
+.status-3 { background: #fff7e6; color: #fa8c16; }
+.card-row { display: flex; justify-content: space-between; font-size: 28rpx; padding: 8rpx 0; color: #666; }
+.card-time { font-size: 22rpx; color: #ccc; margin: 8rpx 0; }
+.empty { text-align: center; padding: 200rpx; color: #999; }

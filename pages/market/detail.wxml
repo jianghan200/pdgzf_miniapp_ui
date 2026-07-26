@@ -1,0 +1,125 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold"></view>
+  </view>
+</cu-custom>
+<view style="background-color: #f5f5f5; min-height: 100vh; padding-bottom: 140rpx;">
+  <!-- 加载中 -->
+  <view class="loading-box" wx:if="{{loading}}">
+    <text class="cuIcon-loading2 cuIcon-spin text-gray" style="font-size: 60rpx;"></text>
+  </view>
+
+  <block wx:if="{{detail}}">
+    <!-- 图片轮播 -->
+    <swiper class="media-swiper" indicator-dots="{{mediaList.length > 1}}" autoplay="{{false}}" circular="{{true}}" bindchange="onSwiperChange">
+      <swiper-item wx:for="{{mediaList}}" wx:key="*this">
+        <image src="{{item}}" mode="aspectFill" class="media-img" data-idx="{{index}}" bindtap="previewMedia"/>
+      </swiper-item>
+    </swiper>
+    <view class="media-count" wx:if="{{mediaList.length > 0}}">{{currentMedia + 1}}/{{mediaList.length}}</view>
+
+    <!-- 基本信息 -->
+    <view class="section">
+      <view class="price-row">
+        <text class="price">¥{{detail.rent}}</text>
+        <text class="price-unit">/月</text>
+        <text class="badge-vip" wx:if="{{detail.is_vip == 1}}">VIP</text>
+        <text class="badge-cert" wx:if="{{detail.is_certified == 1}}">认证房东</text>
+      </view>
+      <view class="house-title">{{detail.title}}</view>
+      <view class="house-tags">
+        <text class="tag">{{detail.house_type}}</text>
+        <text class="tag">{{detail.area}}㎡</text>
+        <text class="tag">{{detail.payment_type}}</text>
+        <text class="tag" wx:if="{{detail.support_short_term == 1}}">支持短租</text>
+        <text class="tag" wx:if="{{detail.only_long_term == 1}}">仅长租</text>
+      </view>
+    </view>
+
+    <!-- 位置信息 -->
+    <view class="section">
+      <view class="section-title">位置</view>
+      <view class="location-row">
+        <text class="cuIcon-locationfill text-red"></text>
+        <text class="location-text">{{detail.district}} {{detail.town}} {{detail.address}}</text>
+      </view>
+    </view>
+
+    <!-- 详细信息 -->
+    <view class="section">
+      <view class="section-title">房源详情</view>
+      <view class="detail-grid">
+        <view class="detail-item"><text class="detail-label">户型</text><text class="detail-val">{{detail.house_type}}</text></view>
+        <view class="detail-item"><text class="detail-label">面积</text><text class="detail-val">{{detail.area}}㎡</text></view>
+        <view class="detail-item"><text class="detail-label">最短租期</text><text class="detail-val">{{detail.min_lease}}月</text></view>
+        <view class="detail-item"><text class="detail-label">最长租期</text><text class="detail-val">{{detail.max_lease > 0 ? detail.max_lease + '月' : '不限'}}</text></view>
+        <view class="detail-item"><text class="detail-label">起租日期</text><text class="detail-val">{{detail.available_date}}</text></view>
+        <view class="detail-item"><text class="detail-label">看房时间</text><text class="detail-val">{{detail.earliest_view_time}}</text></view>
+        <view class="detail-item"><text class="detail-label">停车费</text><text class="detail-val">{{detail.parking_fee}}</text></view>
+        <view class="detail-item"><text class="detail-label">物业费</text><text class="detail-val">{{detail.property_fee}}</text></view>
+      </view>
+    </view>
+
+    <!-- 配套设施 -->
+    <view class="section" wx:if="{{detail.facilities_arr.length > 0}}">
+      <view class="section-title">配套设施</view>
+      <view class="facilities-list">
+        <text class="facility-tag" wx:for="{{detail.facilities_arr}}" wx:key="*this">{{item}}</text>
+      </view>
+    </view>
+
+    <!-- 周边配套 -->
+    <view class="section" wx:if="{{detail.nearby_arr.length > 0}}">
+      <view class="section-title">周边配套</view>
+      <view class="facilities-list">
+        <text class="facility-tag nearby" wx:for="{{detail.nearby_arr}}" wx:key="*this">{{item}}</text>
+      </view>
+    </view>
+
+    <!-- 描述 -->
+    <view class="section" wx:if="{{detail.description}}">
+      <view class="section-title">房源描述</view>
+      <view class="desc-text">{{detail.description}}</view>
+    </view>
+
+    <!-- 联系方式 -->
+    <view class="section" wx:if="{{detail.contact_visible}}">
+      <view class="section-title">联系方式</view>
+      <view class="contact-row">
+        <text class="contact-name">{{detail.contact_name}}</text>
+        <text class="contact-phone">{{detail.contact_phone}}</text>
+        <button class="cu-btn bg-green sm" bindtap="callPhone">拨打</button>
+      </view>
+    </view>
+
+    <!-- 房东操作 -->
+    <view class="section" wx:if="{{isOwner}}">
+      <view class="section-title">房东操作</view>
+      <view class="owner-actions">
+        <button class="cu-btn bg-blue" bindtap="editHouse">编辑</button>
+        <button class="cu-btn bg-gray" bindtap="offlineHouse">下架</button>
+      </view>
+    </view>
+  </block>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar" wx:if="{{detail && !isOwner}}">
+    <button class="cu-btn bg-gray" bindtap="goReport" style="flex: 1;">举报</button>
+    <button class="cu-btn bg-red" bindtap="toggleContact" style="flex: 2;">联系房东</button>
+  </view>
+
+  <!-- 联系弹窗 -->
+  <view class="contact-modal" wx:if="{{showContact}}">
+    <view class="contact-mask" bindtap="toggleContact"></view>
+    <view class="contact-modal-content">
+      <view class="modal-title">联系房东</view>
+      <view class="modal-desc">支付 ¥1.00 获取房东联系方式并发送留言</view>
+      <textarea class="modal-textarea" placeholder="给房东留言（简单介绍自己和需求）" value="{{contactMessage}}" bindinput="onContactInput" maxlength="200"/>
+      <view class="modal-actions">
+        <button class="cu-btn bg-gray" bindtap="toggleContact">取消</button>
+        <button class="cu-btn bg-red" bindtap="doContact">支付 ¥1.00 联系</button>
+      </view>
+    </view>
+  </view>
+</view>

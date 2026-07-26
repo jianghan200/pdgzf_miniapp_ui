@@ -1,7 +1,14 @@
-const prodServer = 'https://api.pdgzf.cn/api'
-// const userinfoProdServer = 'https://api.pdgzf.cn/user_api'
-const userinfoProdServer = 'https://api.pdgzf.cn'
+// 生产模式
+// const prodServer = 'https://api.pdgzf.cn/api'
+// const userinfoProdServer = 'https://api.pdgzf.cn/api'
+
+// 本地开发模式
+const prodServer = 'http://localhost:8089'
+const userinfoProdServer = 'http://localhost:8089'
+
+
 const prodFeedbackServer = 'https://pdgzf.cn'
+
 const ROOM_TYPE = ["未知", "一室", "一室一厅", "两室", "两室一厅", "三室", "三室一厅", "四室", "五室"]
 const id2Type = id => {
   let res = ''
@@ -116,7 +123,7 @@ const randomUserName = function() {
 }
 
 // 公众号的名称
-const officialAccount = 'PD生活'
+const officialAccount = '三只熊猫工作室'
 
 // WP文章中VIP内容的ID
 const vip_wp_category = 18

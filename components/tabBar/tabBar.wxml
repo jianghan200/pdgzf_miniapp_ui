@@ -1,29 +1,23 @@
 <view class="cu-bar tabbar bg-white shadow foot">
-  <view class="action" bindtap="switchTab" data-tabname="today">
-    <view class="cuIcon-{{tab == 'today' ? 'homefill' : 'home'}} text-{{tab == 'today' ? 'red' : 'gray'}}"></view>
-    <view class="text-{{tab == 'today' ? 'black' : 'gray'}}">今日房源</view>
+  <view class="action" bindtap="switchTab" data-tabname="pudong">
+    <view class="cuIcon-{{tab == 'pudong' ? 'homefill' : 'home'}} text-{{tab == 'pudong' ? 'red' : 'gray'}}"></view>
+    <view class="text-{{tab == 'pudong' ? 'black' : 'gray'}}">浦东公租房</view>
   </view>
 
-  <view class="action" bindtap="switchTab" data-tabname="allProjects">
-    <view 
-      class="cuIcon-{{tab == 'allProjects' ? 'homefill' : 'home'}} text-{{tab == 'allProjects' ? 'red' : 'gray'}}"
-    ></view>
-    <view class="text-{{tab == 'allProjects' ? 'black' : 'gray'}}">全部房源</view>
+  <view class="action" bindtap="switchTab" data-tabname="shbzf">
+    <view class="cuIcon-{{tab == 'shbzf' ? 'shieldfill' : 'shield'}} text-{{tab == 'shbzf' ? 'red' : 'gray'}}"></view>
+    <view class="text-{{tab == 'shbzf' ? 'black' : 'gray'}}">保租房</view>
   </view>
 
-  <view class="action" bindtap="switchTab" data-tabname="news">
-    <view class="cuIcon-{{isDiscoveryPage ? 'discoverfill' : 'discover'}} text-{{isDiscoveryPage ? 'red' : 'gray'}}"></view>
-    <view class="text-{{isDiscoveryPage ? 'black' : 'gray'}}">发现</view>
+  <view class="action" bindtap="switchTab" data-tabname="market">
+    <view class="cuIcon-{{tab == 'market' ? 'shopfill' : 'shop'}} text-{{tab == 'market' ? 'red' : 'gray'}}"></view>
+    <view class="text-{{tab == 'market' ? 'black' : 'gray'}}">市场租房</view>
   </view>
 
-  <view class="action" bindtap="switchTab" data-tabname="rentList">
-    <view class="cuIcon-{{tab == 'rentList' ? 'shopfill' : 'shop'}} text-{{tab == 'rentList' ? 'red' : 'gray'}}"></view>
-    <view class="text-{{tab == 'rentList' ? 'black' : 'gray'}}">市场租房</view>
-  </view>
-  <!-- <view class="action" bindtap="switchTab" data-tabname="flarum">
+  <view class="action" bindtap="switchTab" data-tabname="flarum">
     <view class="cuIcon-{{tab == 'flarum' ? 'communityfill' : 'community'}} text-{{tab == 'flarum' ? 'red' : 'gray'}}"></view>
-    <view class="text-{{tab == 'flarum' ? 'black' : 'gray'}}">社区论坛</view>
-  </view> -->
+    <view class="text-{{tab == 'flarum' ? 'black' : 'gray'}}">社区</view>
+  </view>
 
   <view class="action" bindtap="switchTab" data-tabname="user">
     <view class="cu-tag badge" style="right: auto; margin-left: 20rpx;">{{ unreadCount == 0 ? '' : unreadCount }}</view>

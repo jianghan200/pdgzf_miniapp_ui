@@ -17,7 +17,7 @@ Page({
     // 弹窗相关
     showModal: false,
     displayOfficialAccount: true,
-    officialAccount: 'PD生活',
+    officialAccount: '三只熊猫工作室',
     // 用户的头像和昵称
     nickname: '未知用户',
     avatarUrl: '',

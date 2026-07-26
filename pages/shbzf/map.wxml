@@ -1,0 +1,74 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold">保租房地图</view>
+  </view>
+</cu-custom>
+
+<view class="map-wrap">
+  <map
+    id="map"
+    subkey="2QUBZ-IJVWW-K6RRU-R7ANO-WSRSJ-PTBMG"
+    latitude="{{centerLatitude}}"
+    longitude="{{centerLongitude}}"
+    scale="{{scale}}"
+    markers="{{markers}}"
+    polygons="{{polygons}}"
+    show-location
+    enable-3D="{{false}}"
+    show-compass="{{false}}"
+    bindmarkertap="onMarkerTap"
+    bindregionchange="onRegionChange"
+  >
+    <!-- 顶部信息栏（cover-view 覆盖在 map 上） -->
+    <cover-view class="top-bar">
+      <cover-view class="legend">
+        <cover-view class="legend-dot"></cover-view>
+        <cover-view class="legend-text">{{levelDesc}}</cover-view>
+      </cover-view>
+      <cover-view class="top-bar-right">
+        <cover-view class="reset-btn" bindtap="onReset" wx:if="{{currentLevel !== 'district'}}">
+          <cover-view class="reset-btn-text">全市</cover-view>
+        </cover-view>
+        <cover-view class="list-btn" bindtap="toggleList">
+          <cover-view class="list-btn-text">列表</cover-view>
+        </cover-view>
+      </cover-view>
+    </cover-view>
+
+    <!-- 项目 marker 的 customCallout -->
+    <cover-view slot="callout">
+      <block wx:for="{{markers}}" wx:key="id">
+        <cover-view marker-id="{{item.id}}" class="project-callout" wx:if="{{item.type === 'project'}}">
+          <cover-view class="callout-title">{{item.pname}}</cover-view>
+          <cover-view class="callout-row" wx:if="{{item.rentDesc}}">{{item.rentDesc}}</cover-view>
+          <cover-view class="callout-row" wx:if="{{item.typeDesc}}">{{item.typeDesc}}</cover-view>
+          <cover-view class="callout-row addr" wx:if="{{item.address}}">{{item.address}}</cover-view>
+          <cover-view class="callout-btn" bindtap="onProjectDetail" data-id="{{item.projectId}}">查看详情</cover-view>
+        </cover-view>
+      </block>
+    </cover-view>
+  </map>
+</view>
+
+<!-- 半屏列表 -->
+<view class="list-mask {{showList ? 'show' : ''}}" bindtap="toggleList"></view>
+<view class="list-panel {{showList ? 'show' : ''}}">
+  <view class="list-panel-header">
+    <text class="list-panel-title">{{listTitle}}</text>
+    <text class="cuIcon-close list-close" bindtap="toggleList"></text>
+  </view>
+  <scroll-view scroll-y class="list-scroll">
+    <view class="list-empty" wx:if="{{listData.length === 0}}">暂无数据</view>
+    <view class="list-item" wx:for="{{listData}}" wx:key="key" data-type="{{item.listType}}" data-id="{{item.dataId}}" bindtap="onListTap">
+      <view class="list-item-left">
+        <view class="list-item-name">{{item.name}}</view>
+        <view class="list-item-desc">{{item.desc}}</view>
+      </view>
+      <view class="list-item-right">
+        <text class="list-item-count">{{item.countDesc}}</text>
+        <text class="cuIcon-right"></text>
+      </view>
+    </view>
+  </scroll-view>
+</view>

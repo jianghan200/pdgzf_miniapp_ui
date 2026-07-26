@@ -1,0 +1,68 @@
+.header-bar { background: #fff; padding: 20rpx 24rpx; display: flex; align-items: center; justify-content: space-between; position: relative; box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 10; }
+.header-title { font-size: 34rpx; font-weight: bold; color: #222; position: absolute; left: 50%; transform: translateX(-50%); pointer-events: none; }
+.filter-trigger { display: flex; align-items: center; background: rgba(57,181,74,0.1); color: #39b54a; border-radius: 28rpx; padding: 10rpx 22rpx; position: relative; }
+.filter-trigger .cuIcon-filter { font-size: 26rpx; color: #39b54a; margin-right: 6rpx; }
+.filter-trigger-text { font-size: 26rpx; color: #39b54a; font-weight: 500; }
+.filter-badge { position: absolute; top: -8rpx; right: -8rpx; min-width: 28rpx; height: 28rpx; line-height: 28rpx; padding: 0 6rpx; background: #e54d42; color: #fff; font-size: 20rpx; border-radius: 14rpx; text-align: center; }
+.map-entry { display: flex; align-items: center; background: #39b54a; color: #fff; border-radius: 28rpx; padding: 8rpx 20rpx; box-shadow: 0 2rpx 8rpx rgba(57,181,74,0.3); }
+.map-entry .cuIcon-locationfill { font-size: 26rpx; color: #fff; margin-right: 6rpx; }
+.map-entry-text { font-size: 24rpx; color: #fff; font-weight: 500; }
+.list { padding: 20rpx; }
+.card { background: #fff; border-radius: 16rpx; margin-bottom: 20rpx; overflow: hidden; display: flex; box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04); }
+.card-cover { width: 200rpx; height: 200rpx; flex-shrink: 0; }
+.card-info { flex: 1; padding: 20rpx; display: flex; flex-direction: column; justify-content: space-between; }
+.card-title { font-size: 30rpx; font-weight: bold; }
+.card-meta { font-size: 24rpx; color: #999; margin-top: 6rpx; }
+.card-bottom { display: flex; align-items: center; justify-content: space-between; }
+.card-rent { color: #39b54a; font-size: 30rpx; font-weight: bold; }
+.card-units { font-size: 22rpx; color: #ccc; }
+.cu-bar.search { padding: 16rpx 24rpx; background: #fff; }
+.search-form { display: flex; align-items: center; background: #f5f5f5; border-radius: 32rpx; padding: 12rpx 20rpx; }
+.search-form .cuIcon-search { font-size: 28rpx; color: #999; margin-right: 12rpx; }
+.search-form input { flex: 1; font-size: 26rpx; }
+.loading-tip { text-align: center; padding: 40rpx; color: #999; font-size: 26rpx; }
+
+/* ===== 区域筛选 drawer ===== */
+.filter-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 9999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+.filter-modal.show { opacity: 1; visibility: visible; }
+.filter-container { position: absolute; left: 0; top: 0; width: 78vw; max-width: 600rpx; height: 100vh; background: #fff; box-shadow: 8rpx 0 32rpx rgba(0,0,0,0.15); display: flex; flex-direction: column; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.filter-modal.show .filter-container { transform: translateX(0); }
+.filter-header { display: flex; align-items: center; justify-content: space-between; padding: 24rpx 24rpx 16rpx; padding-top: calc(24rpx + 40rpx); border-bottom: 2rpx solid #f0f0f0; background: #fff; }
+.filter-title { display: flex; align-items: center; font-size: 30rpx; font-weight: 600; color: #333; flex: 1; }
+.filter-title-icon { color: #39b54a; margin-right: 12rpx; font-size: 30rpx; }
+.filter-close { padding: 8rpx 12rpx; border-radius: 50%; background: #f5f5f5; font-size: 28rpx; color: #666; }
+.filter-close:active { background: #39b54a; color: #fff; }
+.filter-content { flex: 1; padding: 0 24rpx; overflow-y: auto; }
+
+/* 树状节点 */
+.tree-node { display: flex; align-items: center; padding: 20rpx 0; border-bottom: 2rpx solid #f7f7f7; }
+.tree-node.tree-root { font-size: 28rpx; font-weight: 600; color: #333; }
+.tree-node.tree-root.active { color: #39b54a; }
+.tree-node.tree-district { padding: 24rpx 0; }
+.tree-node.tree-bizcircle { padding: 18rpx 0; font-size: 26rpx; }
+.tree-toggle { width: 48rpx; flex-shrink: 0; text-align: center; color: #999; font-size: 26rpx; }
+.tree-main { flex: 1; display: flex; align-items: center; }
+.tree-children { padding-left: 48rpx; }
+.tree-check { font-size: 32rpx; margin-right: 16rpx; color: #39b54a; flex-shrink: 0; }
+.tree-node .cuIcon-round { color: #ccc; }
+.node-label { flex: 1; font-size: 28rpx; color: #333; }
+.tree-bizcircle .node-label { font-size: 26rpx; color: #555; }
+.node-count { font-size: 22rpx; color: #999; background: #f5f5f5; padding: 2rpx 12rpx; border-radius: 16rpx; }
+.tree-empty { padding: 20rpx 0; font-size: 24rpx; color: #ccc; text-align: center; }
+
+/* 底部按钮 */
+.filter-footer { display: flex; gap: 16rpx; padding: 20rpx 24rpx; padding-bottom: calc(20rpx + env(safe-area-inset-bottom)); border-top: 2rpx solid #f0f0f0; background: #fff; }
+.reset-btn { flex: 1; padding: 18rpx; border: 2rpx solid #ddd; border-radius: 12rpx; background: #fff; color: #666; font-size: 26rpx; font-weight: 500; }
+.reset-btn:active { background: #f5f5f5; }
+.apply-btn { flex: 2; padding: 18rpx; border: 2rpx solid #39b54a; border-radius: 12rpx; background: #39b54a; color: #fff; font-size: 26rpx; font-weight: 500; }
+.apply-btn:active { background: #2da538; }
+
+/* ===== 户型/价格筛选分区 ===== */
+.filter-section { margin: 24rpx 0; }
+.section-header { display: flex; align-items: center; padding: 16rpx 0; border-bottom: 2rpx solid #f0f0f0; margin-bottom: 16rpx; }
+.section-icon { font-size: 26rpx; color: #39b54a; margin-right: 12rpx; }
+.section-title { flex: 1; font-size: 26rpx; font-weight: 600; color: #333; }
+.tag-grid { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.filter-tag { padding: 12rpx 24rpx; border-radius: 24rpx; font-size: 24rpx; font-weight: 500; transition: all 0.2s ease; border: 2rpx solid transparent; }
+.filter-tag.unselected { background: #f5f5f5; color: #666; border-color: #e8e8e8; }
+.filter-tag.selected { background: rgba(57,181,74,0.12); color: #39b54a; border-color: #39b54a; box-shadow: 0 4rpx 12rpx rgba(57,181,74,0.2); }

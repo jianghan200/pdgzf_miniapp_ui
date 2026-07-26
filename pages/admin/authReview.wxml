@@ -1,0 +1,33 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold"></view>
+  </view>
+</cu-custom>
+<view style="background-color: #f5f5f5; min-height: 100vh;">
+  <view class="header">
+    <text class="title">审核后台</text>
+    <view class="nav-row">
+      <view class="nav-item" bindtap="goHouses">房源审核</view>
+      <view class="nav-item" bindtap="goReports">举报处理</view>
+      <view class="nav-item" bindtap="goDeposits">退款审核</view>
+      <view class="nav-item active">认证审核</view>
+    </view>
+  </view>
+  <view class="list">
+    <view class="card" wx:for="{{list}}" wx:key="id">
+      <view class="card-title">{{item.auth_type == 1 ? '实名认证' : item.auth_type == 2 ? '产证认证' : '租赁合同认证'}} · 用户 #{{item.user_id}}</view>
+      <view class="card-meta" wx:if="{{item.real_name}}">姓名：{{item.real_name}}</view>
+      <view class="card-images">
+        <image src="{{item.cert_image}}" mode="aspectFill" class="cert-img" data-url="{{item.cert_image}}" bindtap="previewImage" wx:if="{{item.cert_image}}"/>
+        <image src="{{item.lease_image}}" mode="aspectFill" class="cert-img" data-url="{{item.lease_image}}" bindtap="previewImage" wx:if="{{item.lease_image}}"/>
+      </view>
+      <view class="card-time">{{item.create_time}}</view>
+      <view class="card-actions">
+        <button class="cu-btn bg-green sm" data-id="{{item.id}}" bindtap="approve">通过</button>
+        <button class="cu-btn bg-gray sm" data-id="{{item.id}}" bindtap="reject">驳回</button>
+      </view>
+    </view>
+  </view>
+  <view class="empty" wx:if="{{!loading && list.length == 0}}">暂无待审认证</view>
+</view>

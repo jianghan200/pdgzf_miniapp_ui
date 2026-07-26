@@ -1,0 +1,64 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold"></view>
+  </view>
+</cu-custom>
+<view style="background-color: #f5f5f5; min-height: 100vh;">
+  <view class="loading-box" wx:if="{{loading}}"><text class="cuIcon-loading2 cuIcon-spin text-gray" style="font-size:60rpx;"></text></view>
+  <block wx:if="{{detail}}">
+    <swiper class="media-swiper" wx:if="{{mediaList.length > 0}}" indicator-dots circular autoplay>
+      <swiper-item wx:for="{{mediaList}}" wx:key="*this">
+        <image src="{{item}}" mode="aspectFill" class="media-img" data-idx="{{index}}" bindtap="previewMedia"/>
+      </swiper-item>
+    </swiper>
+
+    <view class="section">
+      <view class="title">{{detail.name}}</view>
+      <view class="meta-row"><text class="cuIcon-locationfill text-green"></text><text>{{detail.district_name}} {{detail.address}}</text></view>
+      <view class="tags">
+        <text class="tag" wx:if="{{detail.rent_low}}">¥{{detail.rent_low}}-{{detail.rent_high}}/月</text>
+        <text class="tag" wx:if="{{detail.area_low}}">{{detail.area_low}}-{{detail.area_high}}㎡</text>
+        <text class="tag">{{detail.total_units}}套</text>
+        <text class="tag" wx:if="{{detail.rent_type}}">{{detail.rent_type}}</text>
+      </view>
+    </view>
+
+    <view class="section" wx:if="{{detail.introduction}}">
+      <view class="section-title">项目简介</view>
+      <view class="desc">{{detail.introduction}}</view>
+    </view>
+
+    <view class="section" wx:if="{{detail.room_types_arr.length > 0}}">
+      <view class="section-title">户型</view>
+      <view class="room-list">
+        <view class="room-item" wx:for="{{detail.room_types_arr}}" wx:key="name">
+          <view class="room-header">
+            <text class="room-name">{{item.name}}</text>
+            <text class="room-bedrooms">{{item.bedrooms}}室</text>
+          </view>
+          <view class="room-detail-row">
+            <text class="room-label">面积</text>
+            <text class="room-value">{{item.area_low}}-{{item.area_high}}㎡</text>
+          </view>
+          <view class="room-detail-row">
+            <text class="room-label">租金</text>
+            <text class="room-value room-rent">¥{{item.rent_low}}-{{item.rent_high}}/月</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section" wx:if="{{detail.facilities_arr.length > 0}}">
+      <view class="section-title">配套设施</view>
+      <view class="facilities">
+        <text class="facility" wx:for="{{detail.facilities_arr}}" wx:key="*this">{{item}}</text>
+      </view>
+    </view>
+
+    <view class="section" wx:if="{{detail.supply_way}}">
+      <view class="section-title">供应方式</view>
+      <view class="desc">{{detail.supply_way}}</view>
+    </view>
+  </block>
+</view>

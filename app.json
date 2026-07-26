@@ -2,6 +2,7 @@
   "pages":[
     "pages/login/login",
     "pages/about/about",
+    "pages/pudong/pudong",
     "pages/allProjects/allProjects",
     "pages/article/article",
     "pages/community/community",
@@ -31,7 +32,28 @@
     "pages/vipStats/vipStats",
     "pages/preview-media-desc/item/item-index",
     "pages/preview-media-desc/swiper-limited-load/index",
-    "pages/preview-media-desc/index"
+    "pages/preview-media-desc/index",
+    "pages/market/list",
+    "pages/market/detail",
+    "pages/market/publish",
+    "pages/market/publishSuccess",
+    "pages/market/myhouses",
+    "pages/shbzf/list",
+    "pages/shbzf/detail",
+    "pages/shbzf/map",
+    "pages/contact/list",
+    "pages/contact/detail",
+    "pages/vip/vipCenter",
+    "pages/deposit/list",
+    "pages/auth/realName",
+    "pages/auth/landlord",
+    "pages/report/create",
+    "pages/admin/login",
+    "pages/admin/houseReview",
+    "pages/admin/houseDetail",
+    "pages/admin/reportReview",
+    "pages/admin/depositRefund",
+    "pages/admin/authReview"
   ],
   "window": {
     "navigationStyle": "custom"
@@ -42,16 +64,22 @@
     "backgroundColor": "white",
     "borderStyle": "white",
     "list": [{
-      "pagePath": "pages/today/today",
-      "iconPath": "/assets/today_grey.png",
-      "selectedIconPath": "/assets/today.png",
-      "text": "今日房源"
-    }, 
+      "pagePath": "pages/pudong/pudong",
+      "iconPath": "/assets/pudong_grey.png",
+      "selectedIconPath": "/assets/pudong.png",
+      "text": "浦东公租房"
+    },
     {
-      "pagePath": "pages/allProjects/allProjects",
-      "iconPath": "/assets/Map-grey.png",
-      "selectedIconPath": "/assets/Map-_1.png",
-      "text": "全部房源"
+      "pagePath": "pages/shbzf/list",
+      "iconPath": "/assets/shbzf_grey.png",
+      "selectedIconPath": "/assets/shbzf.png",
+      "text": "保租房"
+    },
+    {
+      "pagePath": "pages/market/list",
+      "iconPath": "/assets/market_grey.png",
+      "selectedIconPath": "/assets/market.png",
+      "text": "市场租房"
     },
     {
       "pagePath": "pages/flarum/flarum",

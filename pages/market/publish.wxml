@@ -1,0 +1,168 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold"></view>
+  </view>
+</cu-custom>
+<view style="background-color: #f5f5f5; min-height: 100vh; padding-bottom: 140rpx;">
+  <view class="page-title">{{editId ? '编辑房源' : '发布房源'}}</view>
+
+  <!-- 图片上传 -->
+  <view class="section">
+    <view class="section-title">房源图片（最多9张）</view>
+    <view class="image-grid">
+      <view class="image-item" wx:for="{{mediaUrls}}" wx:key="*this">
+        <image src="{{item}}" mode="aspectFill" class="preview-img"/>
+        <view class="remove-btn" data-idx="{{index}}" bindtap="removeImage">×</view>
+      </view>
+      <view class="image-add" bindtap="chooseImage" wx:if="{{mediaUrls.length < 9}}">
+        <text class="cuIcon-add text-gray" style="font-size: 60rpx;"></text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 基本信息 -->
+  <view class="section">
+    <view class="section-title">基本信息</view>
+    <view class="form-item">
+      <text class="form-label">标题</text>
+      <input class="form-input" placeholder="如：陆家嘴精装一室一厅" value="{{form.title}}" data-field="title" bindinput="onInput"/>
+    </view>
+    <view class="form-item">
+      <text class="form-label">区域</text>
+      <picker mode="selector" range="{{districts}}" value="{{districtIndex}}" bindchange="onDistrictChange">
+        <view class="form-picker">{{form.district || '请选择'}}</view>
+      </picker>
+    </view>
+    <view class="form-item">
+      <text class="form-label">镇/街道</text>
+      <input class="form-input" placeholder="如：陆家嘴街道" value="{{form.town}}" data-field="town" bindinput="onInput"/>
+    </view>
+    <view class="form-item">
+      <text class="form-label">详细地址</text>
+      <input class="form-input" placeholder="如：浦东新区陆家嘴环路1000号" value="{{form.address}}" data-field="address" bindinput="onInput"/>
+    </view>
+  </view>
+
+  <!-- 户型信息 -->
+  <view class="section">
+    <view class="section-title">户型信息</view>
+    <view class="form-item">
+      <text class="form-label">卧室数</text>
+      <input class="form-input" type="number" value="{{form.bedrooms}}" bindinput="onBedroomChange"/>
+    </view>
+    <view class="form-item">
+      <text class="form-label">客厅数</text>
+      <input class="form-input" type="number" value="{{form.living_rooms}}" bindinput="onLivingChange"/>
+    </view>
+    <view class="form-item">
+      <text class="form-label">卫生间数</text>
+      <input class="form-input" type="number" value="{{form.bathrooms}}" bindinput="onBathChange"/>
+    </view>
+    <view class="form-item">
+      <text class="form-label">面积（㎡）</text>
+      <input class="form-input" type="digit" placeholder="如：58" value="{{form.area}}" data-field="area" bindinput="onInput"/>
+    </view>
+  </view>
+
+  <!-- 租金信息 -->
+  <view class="section">
+    <view class="section-title">租金信息</view>
+    <view class="form-item">
+      <text class="form-label">月租金（元）</text>
+      <input class="form-input" type="digit" placeholder="如：5500" value="{{form.rent}}" data-field="rent" bindinput="onInput"/>
+    </view>
+    <view class="form-item">
+      <text class="form-label">付款方式</text>
+      <picker mode="selector" range="{{paymentTypes}}" value="{{paymentIndex}}" bindchange="onPaymentChange">
+        <view class="form-picker">{{form.payment_type}}</view>
+      </picker>
+    </view>
+    <view class="form-item">
+      <text class="form-label">最短租期（月）</text>
+      <input class="form-input" type="number" value="{{form.min_lease}}" bindinput="onMinLeaseChange"/>
+    </view>
+    <view class="form-item">
+      <text class="form-label">最长租期（月，0不限）</text>
+      <input class="form-input" type="number" value="{{form.max_lease}}" bindinput="onMaxLeaseChange"/>
+    </view>
+    <view class="form-row">
+      <view class="form-switch" bindtap="toggleShortTerm">
+        <text>支持短租</text>
+        <switch checked="{{form.support_short_term == 1}}" color="#e54d42"/>
+      </view>
+      <view class="form-switch" bindtap="toggleLongTerm">
+        <text>仅长租</text>
+        <switch checked="{{form.only_long_term == 1}}" color="#e54d42"/>
+      </view>
+    </view>
+  </view>
+
+  <!-- 入住信息 -->
+  <view class="section">
+    <view class="section-title">入住信息</view>
+    <view class="form-item">
+      <text class="form-label">起租日期</text>
+      <picker mode="date" value="{{form.available_date}}" bindchange="onDateChange">
+        <view class="form-picker">{{form.available_date || '请选择'}}</view>
+      </picker>
+    </view>
+    <view class="form-item">
+      <text class="form-label">看房时间</text>
+      <input class="form-input" placeholder="如：随时可看" value="{{form.earliest_view_time}}" data-field="earliest_view_time" bindinput="onInput"/>
+    </view>
+  </view>
+
+  <!-- 费用信息 -->
+  <view class="section">
+    <view class="section-title">费用信息</view>
+    <view class="form-item">
+      <text class="form-label">停车费</text>
+      <input class="form-input" placeholder="如：500元/月" value="{{form.parking_fee}}" data-field="parking_fee" bindinput="onInput"/>
+    </view>
+    <view class="form-item">
+      <text class="form-label">物业费</text>
+      <input class="form-input" placeholder="如：3.5元/㎡/月" value="{{form.property_fee}}" data-field="property_fee" bindinput="onInput"/>
+    </view>
+  </view>
+
+  <!-- 配套设施 -->
+  <view class="section">
+    <view class="section-title">配套设施</view>
+    <view class="tags-grid">
+      <view class="tag-option {{form.facilities.indexOf(item) >= 0 ? 'active' : ''}}" wx:for="{{facilityOptions}}" wx:key="*this" data-idx="{{index}}" bindtap="toggleFacility">{{item}}</view>
+    </view>
+  </view>
+
+  <!-- 周边配套 -->
+  <view class="section">
+    <view class="section-title">周边配套</view>
+    <view class="tags-grid">
+      <view class="tag-option nearby {{form.nearby_facilities.indexOf(item) >= 0 ? 'active' : ''}}" wx:for="{{nearbyOptions}}" wx:key="*this" data-idx="{{index}}" bindtap="toggleNearby">{{item}}</view>
+    </view>
+  </view>
+
+  <!-- 联系人 -->
+  <view class="section">
+    <view class="section-title">联系人</view>
+    <view class="form-item">
+      <text class="form-label">姓名</text>
+      <input class="form-input" value="{{form.contact_name}}" data-field="contact_name" bindinput="onInput"/>
+    </view>
+    <view class="form-item">
+      <text class="form-label">电话</text>
+      <input class="form-input" type="number" placeholder="138****8888" value="{{form.contact_phone}}" data-field="contact_phone" bindinput="onInput"/>
+    </view>
+  </view>
+
+  <!-- 描述 -->
+  <view class="section">
+    <view class="section-title">房源描述</view>
+    <textarea class="form-textarea" placeholder="详细描述房源亮点、周边环境、交通等" value="{{form.description}}" data-field="description" bindinput="onInput" maxlength="500"/>
+  </view>
+
+  <!-- 提交 -->
+  <view class="bottom-bar">
+    <button class="cu-btn bg-red lg" bindtap="submit" disabled="{{submitting}}" style="width: 100%;">{{editId ? '保存修改' : '发布房源'}}</button>
+  </view>
+</view>

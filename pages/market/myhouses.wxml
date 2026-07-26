@@ -1,0 +1,45 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold">我的发布</view>
+  </view>
+</cu-custom>
+<view class="page">
+  <!-- 加载中 -->
+  <view class="loading-tip" wx:if="{{loading}}">
+    <text class="cuIcon-loading2 cuIcon-spin text-gray" style="font-size: 60rpx;"></text>
+    <view class="empty-text">加载中...</view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-tip" wx:if="{{!loading && list.length == 0}}">
+    <text class="cuIcon-text text-gray" style="font-size: 80rpx;"></text>
+    <view class="empty-text">暂无发布房源</view>
+    <button class="cu-btn bg-red margin-top" bindtap="goPublish" style="margin-top: 30rpx;">去发布</button>
+  </view>
+
+  <!-- 房源列表 -->
+  <view wx:for="{{list}}" wx:key="id" class="house-card" data-id="{{item.id}}" bindtap="openDetail">
+    <view class="house-card-header">
+      <text class="house-card-title">{{item.title}}</text>
+      <text class="status-tag {{item.statusInfo.cls}}">{{item.statusInfo.text}}</text>
+    </view>
+    <view class="house-card-body">
+      <view class="house-meta">{{item.district}} {{item.town}} · {{item.house_type}} · {{item.area}}㎡</view>
+      <view class="house-meta">发布时间：{{item.create_time}}</view>
+    </view>
+    <view class="house-card-footer">
+      <text class="house-rent">¥{{item.rent}}<text class="house-rent-unit">/月</text></text>
+      <text class="house-time">{{item.online_time_str}}</text>
+    </view>
+    <!-- 审核不通过显示原因 -->
+    <view class="review-comment" wx:if="{{item.status == 3 && item.review_comment}}">
+      驳回原因：{{item.review_comment}}
+    </view>
+    <!-- 操作按钮 -->
+    <view class="house-card-actions" catchtap=""><!-- catchtap 阻止冒泡到卡片点击 -->
+      <button class="cu-btn bg-blue" data-id="{{item.id}}" bindtap="editHouse">编辑</button>
+      <button class="cu-btn bg-gray" wx:if="{{item.status == 1}}" data-id="{{item.id}}" bindtap="offlineHouse">下架</button>
+    </view>
+  </view>
+</view>

@@ -6,7 +6,7 @@ const utils = require('../utils/util')
 
 // 用户login
 const login = function(jscode) {
-  const url = constants.userinfoServer + '/api/user/login'
+  const url = constants.userinfoServer + '/user/login'
   return new Promise((resolve, reject) => {
     wx.request({
       url: url,
@@ -120,7 +120,7 @@ const getTodayStats = function() {
 // 获得用户的subscription列表
 const getSubscriptions = function() {
   let token = app.globalData.userinfo.tokenStr
-  const url = constants.userinfoServer + '/api/rule'
+  const url = constants.userinfoServer + '/rule'
 
   return new Promise((resolve, reject) => {
     wx.request({
@@ -198,7 +198,7 @@ const loadProjectHouseInfo = function() {
 
 // 开启某个小区的订阅
 const subscribe = function(pid, pname) {
-  const url = constants.userinfoServer + '/api/rule/'
+  const url = constants.userinfoServer + '/rule/'
   const header = {
     'content-type' : 'application/x-www-form-urlencoded', 
     'token': app.globalData.userinfo.tokenStr 
@@ -261,7 +261,7 @@ const unsubscribe = function(ruleId) {
 
 // 更新订阅规则
 const updateSubscription = function(pid, name, payload) {
-  const url = constants.userinfoServer + '/api/rule/'
+  const url = constants.userinfoServer + '/rule/'
   const header = {
     'content-type' : 'application/x-www-form-urlencoded',
     'token': app.globalData.userinfo.tokenStr
@@ -293,7 +293,7 @@ const updateSubscription = function(pid, name, payload) {
 // 获取用户的vip信息
 const getVipInfo = function() {
   let token = app.globalData.userinfo.tokenStr
-  const url = constants.userinfoServer + '/api/user/vip'
+  const url = constants.userinfoServer + '/user/vip'
   return new Promise((resolve, reject) => {
     wx.request({
       url: url,
@@ -320,7 +320,7 @@ const getVipInfo = function() {
 // 获取预支付信息
 const getPaymentInfo = function(payType) {
   let token = app.globalData.userinfo.tokenStr
-  const url = constants.userinfoServer + '/api/pay?type=' + payType
+  const url = constants.userinfoServer + '/pay?type=' + payType
   return new Promise((resolve, reject) => {
     wx.request({
       url: url,
@@ -352,7 +352,7 @@ const getPaymentInfo = function(payType) {
 const getConsultingPaymentInfo = function() {
   log.info('准备获得付费咨询的付款信息(pre-payment)')
 
-  const url = constants.userinfoServer + '/api/pay/consult?nickName=' + app.globalData.nickname
+  const url = constants.userinfoServer + '/pay/consult?nickName=' + app.globalData.nickname
   const header = { 'token': app.globalData.userinfo.tokenStr }
   
   return new Promise((resolve, reject) => {
@@ -388,7 +388,7 @@ const getConsultingPaymentInfo = function() {
 
 // 上传manualStartDate
 const updateManualStartDate = function(manualStartDate) {
-  const url = constants.userinfoServer + '/api/user/update'
+  const url = constants.userinfoServer + '/user/update'
   let token = app.globalData.userinfo.tokenStr
   return new Promise((resolve, reject) => {
     wx.request({
@@ -419,7 +419,7 @@ const updateManualStartDate = function(manualStartDate) {
 const updateUsername = function(username) {
   log.info(`向用户后端上传用户昵称(${username})`)
 
-  const url = constants.userinfoServer + '/api/user/update'
+  const url = constants.userinfoServer + '/user/update'
   let token = app.globalData.userinfo.tokenStr
 
   return new Promise((resolve, reject) => {
@@ -459,7 +459,7 @@ const updateUsername = function(username) {
 
 // 上传 / 更新用户的信息
 const updateUserInfo = function(email, account, password) {
-  const url = constants.userinfoServer + '/api/user/update'
+  const url = constants.userinfoServer + '/user/update'
   let token = app.globalData.userinfo.tokenStr
   let payload = {}
   if (email && email.trim() != '') {
@@ -501,7 +501,7 @@ const updateUserInfo = function(email, account, password) {
 // update是否使用邮件订阅
 // 0: 停止订阅，1: 开启订阅
 const updateEmailSubscriptionStatus = function(code) {
-  const url = constants.userinfoServer + '/api/user/update'
+  const url = constants.userinfoServer + '/user/update'
   let token = app.globalData.userinfo.tokenStr
   return new Promise((resolve, reject) => {
     wx.request({
@@ -531,7 +531,7 @@ const updateEmailSubscriptionStatus = function(code) {
 // update是否自动选房
 // 0: No，1: Yes
 const updateAutoSelectionStatus = function(code) {
-  const url = constants.userinfoServer + '/api/user/update'
+  const url = constants.userinfoServer + '/user/update'
   let token = app.globalData.userinfo.tokenStr
   return new Promise((resolve, reject) => {
     wx.request({
@@ -560,7 +560,7 @@ const updateAutoSelectionStatus = function(code) {
 
 // 获取某个小区的详情
 const getProjectInfo = function(pid) {
-  const url = constants.userinfoServer + '/api/project_detail/' + pid
+  const url = constants.userinfoServer + '/project_detail/' + pid
   const header = {
     'content-type': 'application/json'
   }
@@ -835,7 +835,7 @@ const generateArticleIdOf = function(pid) {
 const getConsultStatus = function() {
   log.info(`获取是否付费咨询的信息`)
   
-  const url = constants.userinfoServer + '/api/user/consult'
+  const url = constants.userinfoServer + '/user/consult'
   const header = { 'token' : app.globalData.userinfo.tokenStr }
 
   return new Promise((resolve, reject) => {

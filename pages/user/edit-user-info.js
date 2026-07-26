@@ -64,7 +64,7 @@ Page({
       } else {
         log.info('nickname or avatarUrl is empty, navigate to the main page: /pages/today/today')
 
-        wx.switchTab({ url: '/pages/today/today' })
+        wx.switchTab({ url: '/pages/pudong/pudong' })
       }
     }
   },
