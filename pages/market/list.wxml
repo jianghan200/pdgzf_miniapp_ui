@@ -78,12 +78,14 @@
   <!-- 房源列表 -->
   <view class="house-list">
     <view class="house-card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="openDetail">
-      <image class="house-cover" src="{{item.cover_url || '/assets/today.png'}}" mode="aspectFill"/>
+      <view class="house-cover-wrap">
+        <image class="house-cover" src="{{item.cover_url || '/assets/today.png'}}" mode="aspectFill"/>
+        <text class="house-cert" wx:if="{{item.is_certified == 1}}">认证</text>
+      </view>
       <view class="house-info">
         <view class="house-title-row">
           <text class="house-title">{{item.title}}</text>
           <text class="house-vip" wx:if="{{item.is_vip == 1}}">VIP</text>
-          <text class="house-cert" wx:if="{{item.is_certified == 1}}">认证</text>
         </view>
         <view class="house-meta">{{item.district}} · {{item.town}}</view>
         <view class="house-meta">{{item.house_type}} · {{item.area}}㎡ · {{item.payment_type}}</view>

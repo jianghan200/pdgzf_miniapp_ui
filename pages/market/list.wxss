@@ -110,10 +110,15 @@
   display: flex;
   box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
 }
-.house-cover {
+.house-cover-wrap {
+  position: relative;
   width: 220rpx;
   height: 220rpx;
   flex-shrink: 0;
+}
+.house-cover {
+  width: 220rpx;
+  height: 220rpx;
 }
 .house-info {
   flex: 1;
@@ -144,11 +149,14 @@
   border-radius: 6rpx;
 }
 .house-cert {
+  position: absolute;
+  top: 0;
+  left: 0;
   background: #e54d42;
   color: #fff;
   font-size: 20rpx;
-  padding: 2rpx 10rpx;
-  border-radius: 6rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 0 0 8rpx 0;
 }
 .house-meta {
   font-size: 24rpx;
