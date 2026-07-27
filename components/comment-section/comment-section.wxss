@@ -1,0 +1,250 @@
+/* 评论区块 - 小红书风格，主色 #f44d56 与 app.json tabBar 保持一致 */
+
+.cs-section {
+  background: #fff;
+  padding: 20rpx 30rpx 140rpx;
+}
+
+.cs-header {
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+.cs-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 一级评论 */
+.cs-list { padding: 0; }
+.cs-item {
+  display: flex;
+  padding: 30rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+.cs-avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+  background: #f0f0f0;
+}
+.cs-body { flex: 1; min-width: 0; }
+.cs-name-line {
+  display: flex;
+  align-items: center;
+}
+.cs-name {
+  font-size: 26rpx;
+  color: #576b95;
+  font-weight: 500;
+}
+.cs-vip-tag {
+  background: linear-gradient(90deg, #f0a050, #f44d56);
+  color: #fff;
+  font-size: 18rpx;
+  padding: 2rpx 12rpx;
+  border-radius: 20rpx;
+  margin-left: 10rpx;
+}
+.cs-content {
+  font-size: 30rpx;
+  color: #333;
+  line-height: 1.5;
+  margin-top: 8rpx;
+  word-break: break-all;
+}
+
+/* 图片九宫格 */
+.cs-images {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 16rpx;
+}
+.cs-image {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 8rpx;
+  margin-right: 8rpx;
+  margin-bottom: 8rpx;
+}
+
+/* 元信息行 */
+.cs-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16rpx;
+}
+.cs-time {
+  font-size: 22rpx;
+  color: #999;
+}
+.cs-actions {
+  display: flex;
+  align-items: center;
+}
+.cs-action {
+  font-size: 24rpx;
+  color: #576b95;
+  margin-left: 30rpx;
+  display: flex;
+  align-items: center;
+}
+.cs-action:first-child { margin-left: 0; }
+.cs-action-text { margin-left: 4rpx; }
+.cs-action-danger { color: #999; }
+.cs-icon { font-size: 26rpx; }
+.cs-liked { color: #f44d56; }
+
+/* 二级回复 */
+.cs-replies {
+  margin-top: 16rpx;
+  padding: 16rpx 20rpx;
+  background: #f7f7f7;
+  border-radius: 8rpx;
+}
+.cs-reply {
+  padding: 8rpx 0;
+  font-size: 26rpx;
+  color: #333;
+  line-height: 1.5;
+}
+.cs-reply-name { color: #576b95; }
+.cs-reply-to { color: #999; }
+.cs-reply-content { color: #333; }
+.cs-reply-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4rpx;
+}
+.cs-toggle-replies {
+  font-size: 24rpx;
+  color: #576b95;
+  padding: 12rpx 0 4rpx;
+}
+
+/* 空状态 / 加载更多 */
+.cs-empty {
+  padding: 80rpx 0;
+  text-align: center;
+  color: #999;
+  font-size: 26rpx;
+}
+.cs-loadmore {
+  padding: 24rpx 0;
+  text-align: center;
+  color: #576b95;
+  font-size: 26rpx;
+}
+
+/* 底部触发条 */
+.cs-trigger {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  padding: 20rpx 30rpx;
+  background: #fff;
+  border-top: 1rpx solid #eee;
+  z-index: 10;
+}
+.cs-trigger-text {
+  display: block;
+  padding: 16rpx 24rpx;
+  background: #f5f5f5;
+  border-radius: 32rpx;
+  color: #999;
+  font-size: 26rpx;
+  text-align: center;
+}
+
+/* 输入面板 */
+.cs-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 99;
+}
+.cs-input-panel {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: #fff;
+  padding: 20rpx 30rpx calc(40rpx + env(safe-area-inset-bottom));
+  z-index: 100;
+  border-top-left-radius: 16rpx;
+  border-top-right-radius: 16rpx;
+}
+.cs-input-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10rpx 0;
+}
+.cs-input-cancel { font-size: 28rpx; color: #666; }
+.cs-input-title { font-size: 28rpx; color: #333; font-weight: 500; }
+.cs-input-submit { font-size: 28rpx; color: #999; }
+.cs-input-submit-active { color: #f44d56; font-weight: bold; }
+
+.cs-textarea {
+  width: 100%;
+  min-height: 150rpx;
+  padding: 20rpx;
+  background: #f7f7f7;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  margin: 16rpx 0;
+  box-sizing: border-box;
+}
+
+.cs-input-images {
+  display: flex;
+  flex-wrap: wrap;
+}
+.cs-input-image {
+  position: relative;
+  width: 160rpx;
+  height: 160rpx;
+  margin-right: 12rpx;
+  margin-bottom: 12rpx;
+}
+.cs-input-image image {
+  width: 100%;
+  height: 100%;
+  border-radius: 8rpx;
+}
+.cs-remove-image {
+  position: absolute;
+  top: -10rpx; right: -10rpx;
+  width: 36rpx; height: 36rpx;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 36rpx;
+  font-size: 28rpx;
+}
+.cs-add-image {
+  width: 160rpx;
+  height: 160rpx;
+  background: #f7f7f7;
+  border: 2rpx dashed #ccc;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.cs-add-plus {
+  font-size: 60rpx;
+  color: #999;
+}
+.cs-upload-loading {
+  position: absolute;
+  top: 4rpx; right: 4rpx;
+  font-size: 20rpx;
+  background: #f44d56;
+  color: #fff;
+  padding: 2rpx 8rpx;
+  border-radius: 20rpx;
+}

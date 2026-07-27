@@ -60,5 +60,7 @@
       <view class="section-title">供应方式</view>
       <view class="desc">{{detail.supply_way}}</view>
     </view>
+
+    <comment-section wx:if="{{id}}" target-type="shbzf_project" target-id="{{id}}"/>
   </block>
 </view>

@@ -45,6 +45,7 @@
     scroll-y 
     scroll-with-animation
     scroll-into-view="component-{{ curComponentId }}"
+    enable-flex="{{true}}"
   >
     <!-- 基本信息 -->
     <view id="component-0">
@@ -70,12 +71,11 @@
       <!-- 户型信息卡 -->
       <view class="cu-card article">
         <view class="cu-item shadow">
-          <view class="title" style="display: flex; justify-content: center;">
-            <text class="text-red text-lg">{{ selectedHouse.rent }}/月（押一付三）</text>
-          </view>
+     
           <view class="content" style="display: flex; flex-direction: row; justify-content: space-around">
-            <view><text class="text-bold text-lg">{{ selectedHouse.area }}平</text></view>
             <view><text class="text-bold text-lg">{{ selectedHouse.type }}</text></view>
+            <text class="text-red text-lg">{{ selectedHouse.rent }}/月 </text>
+            <view><text class="text-bold text-lg">{{ selectedHouse.area }}平</text></view>
             <view><text class="text-bold text-lg">供给{{ selectedHouse.tCount }}套</text></view>
           </view>
         </view>
@@ -329,6 +329,10 @@
       </block>
     </view>
 
+    <!-- 评论区 -->
+    <comment-section wx:if="{{pId}}" id="comment-section" hide-trigger="{{true}}"
+      target-type="project" target-id="{{pId}}"/>
+
   </scroll-view>
 
 </view>
@@ -376,7 +380,12 @@
     <text>{{ subscribed ? '取消' : '添加' }}收藏</text>
   </view>
 
-  <view class="action" style="width: 60%;">
+  <view class="action" bindtap="onTapComment">
+    <text class="cuIcon-comment text-blue"></text>
+    <text>评论</text>
+  </view>
+
+  <view class="action" style="width: 50%;">
     <button class="cu-btn bg-green lg cuIcon-community round shadow" style="width: 100%;" bindtap="goToForum"> 进入社区论坛</button>
   </view>
 </view>

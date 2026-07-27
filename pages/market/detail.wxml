@@ -103,9 +103,14 @@
     </view>
   </block>
 
+  <!-- 评论区 -->
+  <comment-section wx:if="{{detail}}" id="comment-section" hide-trigger="{{true}}"
+    target-type="market_house" target-id="{{id}}"/>
+
   <!-- 底部操作栏 -->
   <view class="bottom-bar" wx:if="{{detail && !isOwner}}">
     <button class="cu-btn bg-gray" bindtap="goReport" style="flex: 1;">举报</button>
+    <button class="cu-btn bg-gray" bindtap="onTapComment" style="flex: 1;">评论</button>
     <button class="cu-btn bg-red" bindtap="toggleContact" style="flex: 2;">联系房东</button>
   </view>
 

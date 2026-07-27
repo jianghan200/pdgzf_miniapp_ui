@@ -91,6 +91,11 @@ Page({
     wx.navigateTo({ url: `/pages/market/publish?id=${this.data.id}` })
   },
 
+  onTapComment() {
+    const cs = this.selectComponent('#comment-section')
+    if (cs) cs.openInput()
+  },
+
   offlineHouse() {
     wx.showModal({
       title: '下架确认',

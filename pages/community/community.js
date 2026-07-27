@@ -514,6 +514,12 @@ Page({
     wx.switchTab({ url: '/pages/flarum/flarum' })
   },
 
+  // 打开评论输入
+  onTapComment() {
+    const cs = this.selectComponent('#comment-section')
+    if (cs) cs.openInput()
+  },
+
   // 分享该页面
   onShareAppMessage: function () {
     let self = this
