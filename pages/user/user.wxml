@@ -100,12 +100,7 @@
         <text class="text-bold">我的发布</text>
       </view>
     </view>
-    <view class="cu-item arrow" bindtap="goShbzfList">
-      <view class="content">
-        <text class="cuIcon-taxi text-bold text-green"></text>
-        <text class="text-bold">保租房项目</text>
-      </view>
-    </view>
+
     <view class="cu-item arrow" bindtap="goContactList">
       <view class="content">
         <text class="cuIcon-message text-bold text-blue"></text>

@@ -260,11 +260,7 @@ Page({
     wx.navigateTo({ url: '/pages/market/myhouses' })
   },
 
-  // 保租房项目
-  goShbzfList() {
-    wx.switchTab({ url: '/pages/shbzf/list' })
-  },
-
+ 
   // 我的联系
   goContactList() {
     wx.navigateTo({ url: '/pages/contact/list' })
