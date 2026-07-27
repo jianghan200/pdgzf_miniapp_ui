@@ -219,6 +219,32 @@ Page({
     })
   },
 
+  // 设置默认首页 0=pudong 1=shbzf 2=market 3=forum
+  chooseDefaultTab() {
+    const tabs = [
+      { key: 0, label: '浦东公租房' },
+      { key: 1, label: '保租房' },
+      { key: 2, label: '市场租房' },
+      { key: 3, label: '社区' },
+    ]
+    const current = app.globalData.userinfo.defaultTab != null ? app.globalData.userinfo.defaultTab : 0
+    wx.showActionSheet({
+      itemList: tabs.map(t => t.label + (t.key === current ? ' (当前)' : '')),
+      success: (res) => {
+        const tab = tabs[res.tapIndex].key
+        if (tab === current) return
+        requests.updateDefaultTab(tab).then(() => {
+          wx.showToast({ title: '设置成功', icon: 'success' })
+          this.setData({
+            'userinfo.defaultTab': tab
+          })
+        }).catch(() => {
+          wx.showToast({ title: '设置失败', icon: 'error' })
+        })
+      }
+    })
+  },
+
   // 进入审核后台（管理员可见）
   goAdmin() {
     wx.navigateTo({ url: '/pages/admin/houseReview' })

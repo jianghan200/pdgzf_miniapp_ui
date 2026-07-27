@@ -353,7 +353,9 @@ Page({
         allChosenPriceIntervals: intervals.concat([])
       })
     } else {
+      // 没有缓存则主动加载（启动时不再预加载全量数据，改为按需加载）
       this.setData({ allReqSuccessful: false })
+      this.allRefresh()
     }
   },
 

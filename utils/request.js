@@ -415,6 +415,40 @@ const updateManualStartDate = function(manualStartDate) {
   })
 }
 
+// 更新用户默认首页 tab
+const updateDefaultTab = function(tab) {
+  log.info(`更新用户默认首页 tab: ${tab}`)
+
+  const url = constants.userinfoServer + '/user/update'
+  let token = app.globalData.userinfo.tokenStr
+
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      header: {
+        'token' : token,
+        'content-type' : 'application/x-www-form-urlencoded'
+      },
+      method: 'POST',
+      data: { 'defaultTab' : tab },
+      success: function(res) {
+        if (res.data.status == 0) {
+          // 同步更新全局数据
+          app.globalData.userinfo.defaultTab = tab
+          resolve(true)
+        } else {
+          console.log(res.data.data)
+          reject(false)
+        }
+      },
+      fail: function(err) {
+        console.log(err)
+        reject(false)
+      }
+    })
+  })
+}
+
 // 上传用户的昵称(name)，用户的真实姓名(realName)是在后端填好的。
 const updateUsername = function(username) {
   log.info(`向用户后端上传用户昵称(${username})`)
@@ -963,6 +997,7 @@ module.exports = {
   getPaymentInfo : getPaymentInfo,
   updateUsername : updateUsername,
   updateManualStartDate : updateManualStartDate,
+  updateDefaultTab : updateDefaultTab,
   updateUserInfo : updateUserInfo,
   updateEmailSubscriptionStatus : updateEmailSubscriptionStatus,
   updateAutoSelectionStatus : updateAutoSelectionStatus,

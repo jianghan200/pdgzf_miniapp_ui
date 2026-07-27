@@ -168,37 +168,43 @@ const handleAllProjects = function(projects, info, subscriptionsRawData) {
   wx.setStorageSync('allProjects', list)
 }
 
-// 读取所有数据
+// tab 路径映射：0=pudong 1=shbzf 2=market 3=forum
+const TAB_PATHS = {
+  0: '/pages/pudong/pudong',
+  1: '/pages/shbzf/list',
+  2: '/pages/market/list',
+  3: '/pages/flarum/flarum',
+}
+
+// 根据 defaultTab 决定跳转路径，兜底为浦东公租房(0)
+function _getDefaultTabPath() {
+  const tab = (app.globalData.userinfo && app.globalData.userinfo.defaultTab != null)
+    ? app.globalData.userinfo.defaultTab
+    : 0
+  return TAB_PATHS[tab] || TAB_PATHS[0]
+}
+
+// 读取启动必需的数据（今日房源 + 订阅 + 运行模式）
+// 全量房源等数据延迟到用户切换到”全部”tab 时再加载
 const loadAllData = function(options) {
   Promise
     .all([
-      requests.getTodayProjects(), requests.getTodayHouses(), requests.getTodayStats(), 
-      requests.loadAllProjects(), requests.loadProjectHouseInfo(),
-      requests.getSubscriptions(), requests.getConsultStatus(), requests.getAppMode()
+      requests.getTodayProjects(),
+      requests.getTodayHouses(),
+      requests.getSubscriptions(),
+      requests.getAppMode(),
     ])
     .then((rs) => {
       log.info('loadAllData 成功')
 
       // 今日房源的数据
-      // /project, 今日的小区信息
-      let todayProjectsRawData = rs[0]
-      // /house, 今日的户型信息
-      let todayHousesRawData = rs[1]
-      // /all_project_stat
-      let todayStats = rs[2]
-
-      // 全部房源的数据
-      // /all_project, 全部小区的的统计信息
-      let allProjectsRawData = rs[3]
-      // /project_house_type, 各个小区的各户型信息
-      let allProjectsHouseInfoRawData = rs[4]
-      // 订阅信息
-      let subscriptions = rs[5]
+      const todayProjectsRawData = rs[0]
+      const todayHousesRawData = rs[1]
+      const subscriptions = rs[2]
       wx.setStorageSync('subscriptions', subscriptions)
 
-      // 处理数据
-      handleTodayProjects(todayProjectsRawData, todayHousesRawData, todayStats, subscriptions)
-      handleAllProjects(allProjectsRawData, allProjectsHouseInfoRawData, subscriptions)
+      // 只处理今日数据（stats 延迟到地图页加载）
+      handleTodayProjects(todayProjectsRawData, todayHousesRawData, null, subscriptions)
 
       if (options['redirect'] && options['redirect'] != '') {
         // login后, 如果发现有redirect参数, 说明来自分享, 需要重定向到对应的分享界面
@@ -211,11 +217,10 @@ const loadAllData = function(options) {
           getCurrentPages().pop().onLoad(param)
         } })
       } else {
-        // 对于不同的用户，“首页”是不同的.
-        // 新用户（userinfo中没有startDate也没有email）
-        wx.switchTab({ url: '/pages/pudong/pudong' })
-        // if (userHelper.isNewUser()) {
-        //   log.info('新用户，首页为发现')
+        // 根据用户设置的 defaultTab 跳转到对应 tab
+        const targetPath = _getDefaultTabPath()
+        log.info('跳转到默认 tab: ' + targetPath)
+        wx.switchTab({ url: targetPath })
       }
     })
     .catch((err) => {

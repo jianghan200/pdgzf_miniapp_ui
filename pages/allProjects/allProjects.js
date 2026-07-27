@@ -161,9 +161,9 @@ Page({
       })
     } else {
       log.error('allProjects 获取失败')
-      // 请求失败了，需要特殊处理，立一个flag
-
+      // 没有缓存则主动加载（启动时不再预加载全量数据，改为按需加载）
       this.setData({ reqSuccessful : false })
+      this.refresh()
     }
   },
 

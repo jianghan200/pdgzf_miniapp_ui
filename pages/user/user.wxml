@@ -66,6 +66,17 @@
       </view>
     </view>
 
+    <!-- 默认首页 -->
+    <view class="cu-item arrow" bindtap="chooseDefaultTab">
+      <view class="content">
+        <text class="cuIcon-apps text-bold"></text>
+        <text class="text-bold">默认首页</text>
+      </view>
+      <view class="action">
+        <text class="text-gray text-sm">{{userinfo.defaultTab === 1 ? '保租房' : userinfo.defaultTab === 2 ? '市场租房' : userinfo.defaultTab === 3 ? '社区' : '浦东公租房'}}</text>
+      </view>
+    </view>
+
     <!-- About页 -->
     <view class="cu-item arrow" bindtap="gotoAbout">
       <view class="content">
