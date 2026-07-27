@@ -48,6 +48,19 @@
   border-radius: 20rpx;
   margin-left: 10rpx;
 }
+.cs-pending-tag {
+  background: #f0f0f0;
+  color: #999;
+  font-size: 20rpx;
+  padding: 2rpx 12rpx;
+  border-radius: 20rpx;
+  margin-left: 10rpx;
+}
+.cs-pending-tag-sm {
+  font-size: 18rpx;
+  padding: 0 10rpx;
+  margin-left: 8rpx;
+}
 .cs-content {
   font-size: 30rpx;
   color: #333;

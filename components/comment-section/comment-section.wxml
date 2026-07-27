@@ -11,6 +11,7 @@
         <view class="cs-name-line">
           <text class="cs-name">{{item.user.name}}</text>
           <text class="cs-vip-tag" wx:if="{{item.user.type == 2}}">VIP</text>
+          <text class="cs-pending-tag" wx:if="{{item.status == 0}}">审核中</text>
         </view>
         <view class="cs-content">{{item.content}}</view>
 
@@ -24,17 +25,19 @@
         <view class="cs-meta">
           <text class="cs-time">{{item.create_time}}</text>
           <view class="cs-actions">
-            <view class="cs-action" catchtap="onLike" data-id="{{item.id}}">
-              <text class="cs-icon {{item.liked_by_me ? 'cs-liked' : ''}}">♥</text>
-              <text class="cs-action-text">{{item.like_count}}</text>
-            </view>
-            <view class="cs-action" catchtap="openInput"
-              data-parent-id="{{item.id}}"
-              data-reply-to-user-id="{{item.user.id}}"
-              data-reply-to-comment-id="{{item.id}}"
-              data-reply-to-name="{{item.user.name}}">
-              回复
-            </view>
+            <block wx:if="{{item.status != 0}}">
+              <view class="cs-action" catchtap="onLike" data-id="{{item.id}}">
+                <text class="cs-icon {{item.liked_by_me ? 'cs-liked' : ''}}">♥</text>
+                <text class="cs-action-text">{{item.like_count}}</text>
+              </view>
+              <view class="cs-action" catchtap="openInput"
+                data-parent-id="{{item.id}}"
+                data-reply-to-user-id="{{item.user.id}}"
+                data-reply-to-comment-id="{{item.id}}"
+                data-reply-to-name="{{item.user.name}}">
+                回复
+              </view>
+            </block>
             <view class="cs-action cs-action-danger" wx:if="{{item.is_mine}}"
               catchtap="onDelete" data-id="{{item.id}}">删除</view>
           </view>
@@ -45,21 +48,24 @@
           <block wx:if="{{item.repliesExpanded}}">
             <view class="cs-reply" wx:for="{{item.replies}}" wx:for-item="r" wx:key="id">
               <text class="cs-reply-name">{{r.user.name}}</text>
+              <text class="cs-pending-tag cs-pending-tag-sm" wx:if="{{r.status == 0}}">审核中</text>
               <text wx:if="{{r.reply_to}}" class="cs-reply-to"> 回复 </text>
               <text wx:if="{{r.reply_to}}" class="cs-reply-name">{{r.reply_to.name}}</text>
               <text class="cs-reply-content">：{{r.content}}</text>
               <view class="cs-reply-meta">
                 <text class="cs-time">{{r.create_time}}</text>
                 <view class="cs-actions">
-                  <view class="cs-action" catchtap="onLike" data-id="{{r.id}}">
-                    <text class="cs-icon {{r.liked_by_me ? 'cs-liked' : ''}}">♥</text>
-                    <text class="cs-action-text">{{r.like_count}}</text>
-                  </view>
-                  <view class="cs-action" catchtap="openInput"
-                    data-parent-id="{{item.id}}"
-                    data-reply-to-user-id="{{r.user.id}}"
-                    data-reply-to-comment-id="{{r.id}}"
-                    data-reply-to-name="{{r.user.name}}">回复</view>
+                  <block wx:if="{{r.status != 0}}">
+                    <view class="cs-action" catchtap="onLike" data-id="{{r.id}}">
+                      <text class="cs-icon {{r.liked_by_me ? 'cs-liked' : ''}}">♥</text>
+                      <text class="cs-action-text">{{r.like_count}}</text>
+                    </view>
+                    <view class="cs-action" catchtap="openInput"
+                      data-parent-id="{{item.id}}"
+                      data-reply-to-user-id="{{r.user.id}}"
+                      data-reply-to-comment-id="{{r.id}}"
+                      data-reply-to-name="{{r.user.name}}">回复</view>
+                  </block>
                   <view class="cs-action cs-action-danger" wx:if="{{r.is_mine}}"
                     catchtap="onDelete" data-id="{{r.id}}">删除</view>
                 </view>

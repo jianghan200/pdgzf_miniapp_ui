@@ -206,13 +206,22 @@ Component({
       comment.createComment(payload).then(res => {
         this.setData({ submitting: false })
         if (res && res.status === 0) {
-          wx.showToast({ title: '已发送', icon: 'success' })
+          const pending = res.data && res.data.pending_review
+          if (pending) {
+            wx.showToast({ title: '已提交，待审核', icon: 'none', duration: 2000 })
+          } else {
+            wx.showToast({ title: '已发送', icon: 'success' })
+          }
+          // 刷新列表（自己发的待审核评论也能在列表里看到，带"审核中"标签）
           if (this.data.replyingTo) {
             const pid = this.data.replyingTo.parentId
             this.loadReplies(pid)
-            const idx = this.data.comments.findIndex(x => x.id === pid)
-            if (idx >= 0) {
-              this.setData({ [`comments[${idx}].reply_count`]: this.data.comments[idx].reply_count + 1 })
+            // 待审核的二级评论不计入 reply_count，审核通过后才补增
+            if (!pending) {
+              const idx = this.data.comments.findIndex(x => x.id === pid)
+              if (idx >= 0) {
+                this.setData({ [`comments[${idx}].reply_count`]: this.data.comments[idx].reply_count + 1 })
+              }
             }
           } else {
             this.setData({ page: 1 })
