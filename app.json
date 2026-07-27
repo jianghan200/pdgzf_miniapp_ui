@@ -53,7 +53,8 @@
     "pages/admin/houseDetail",
     "pages/admin/reportReview",
     "pages/admin/depositRefund",
-    "pages/admin/authReview"
+    "pages/admin/authReview",
+    "pages/admin/commentReview"
   ],
   "window": {
     "navigationStyle": "custom"
