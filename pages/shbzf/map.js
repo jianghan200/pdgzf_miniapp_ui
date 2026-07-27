@@ -316,7 +316,12 @@ Page({
       }
       return
     }
-    // 项目 marker：customCallout 自动处理，不强制缩放
+    // 项目 marker：直接导航到详情页（cover-view bindtap 在 callout 中不可靠）
+    const idx = markerId - PROJECT_BASE
+    const m = this._projectMarkers[idx]
+    if (m && m.projectId) {
+      wx.navigateTo({ url: `/pages/shbzf/detail?id=${m.projectId}` })
+    }
   },
 
   onProjectDetail(e) {

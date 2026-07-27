@@ -3,6 +3,7 @@ let app = getApp()
 const log = require('./../../utils/log')
 const utils = require('./../../utils/util')
 const market = require('../../utils/market')
+const dataHelper = require('../../utils/data')
 
 Page({
   data: {
@@ -89,16 +90,34 @@ Page({
     let rawData = wx.getStorageSync(queryKey)
 
     if (rawData) {
-      if (this.options.mode == 'today') {
-        this.markersOfTodayMap(rawData)
-      } else if (this.options.mode == 'all') {
-        this.markersForAllMode(rawData)
-      } else if (this.options.mode == 'single') {
-        this.markerForSingleProject(rawData)
-      } else if (this.options.mode == 'singleToday') {
-        this.markerForTodaySingleProject(rawData)
-      }
+      this._renderMapData(rawData)
+    } else {
+      // 没有缓存则主动加载（启动时不再预加载，改为按需加载）
+      const self = this
+      const loader = (this.options.mode === 'today' || this.options.mode === 'singleToday')
+        ? dataHelper.loadTodayData()
+        : dataHelper.loadAllProjectsData()
+      loader.then(() => {
+        const data = wx.getStorageSync(queryKey)
+        if (data) self._renderMapData(data)
+      }).catch(() => {
+        wx.showToast({ title: '数据加载失败', icon: 'error' })
+      })
     }
+  },
+
+  _renderMapData(rawData) {
+    log.info('_renderMapData mode=' + this.options.mode + ' rawData length=' + (rawData ? rawData.length : 0))
+    if (this.options.mode == 'today') {
+      this.markersOfTodayMap(rawData)
+    } else if (this.options.mode == 'all') {
+      this.markersForAllMode(rawData)
+    } else if (this.options.mode == 'single') {
+      this.markerForSingleProject(rawData)
+    } else if (this.options.mode == 'singleToday') {
+      this.markerForTodaySingleProject(rawData)
+    }
+    log.info('_renderMapData done, markers count=' + this.data.markers.length)
   },
 
   // 切换数据源 Tab（仅 all 模式）
@@ -194,15 +213,15 @@ Page({
       let project = projects[i]
 
       let marker = this.generateMarkerForTodayMap(project, i)
-      newMarkers.push(marker)
+      if (marker) newMarkers.push(marker)
     }
-      
+
     this.setData({
       markers: newMarkers
     })
   },
 
-  // 场景为“今日单个坐标”时
+  // 场景为”今日单个坐标”时
   markerForTodaySingleProject(rawData) {
     let newMarkers = this.data.markers
 
@@ -237,6 +256,13 @@ Page({
 
     // 后端传过来的经纬度都是百度地图中拿到的，必须矫正后才能使用
     let coordinates = utils.convert2TecentMap(project.raw.longitude, project.raw.latitude)
+
+    // 坐标不合法则跳过（避免基础库校验失败导致整批 marker 不显示）
+    if (!coordinates.lat || !coordinates.lng
+        || coordinates.lat < -90 || coordinates.lat > 90
+        || coordinates.lng < -180 || coordinates.lng > 180) {
+      return null
+    }
 
     return {
       id: index, // marker 点击事件回调会返回此 id
@@ -285,7 +311,7 @@ Page({
 
     for (let i = 0; i < projects.length; i++) {
       let marker = this.generateMarkerForAllProjectsMap(projects[i], i)
-      newMarkers.push(marker)
+      if (marker) newMarkers.push(marker)
     }
 
     this.setData({
@@ -324,7 +350,14 @@ Page({
 
     // 后端传过来的经纬度都是百度地图中拿到的，必须矫正后才能使用
     let coordinates = utils.convert2TecentMap(project.raw.longitude, project.raw.latitude)
-    
+
+    // 坐标不合法则跳过（避免基础库校验失败导致整批 marker 不显示）
+    if (!coordinates.lat || !coordinates.lng
+        || coordinates.lat < -90 || coordinates.lat > 90
+        || coordinates.lng < -180 || coordinates.lng > 180) {
+      return null
+    }
+
     return {
       id: index, // marker 点击事件回调会返回此 id
       latitude: coordinates.lat,
