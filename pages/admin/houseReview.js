@@ -15,6 +15,7 @@ Page({
     const id = e.currentTarget.dataset.id
     market.adminApproveHouse(id).then((res) => { if (res && res.status === 0) { wx.showToast({ title: '已通过', icon: 'success' }); this.loadList() } })
   },
+  goComments() { wx.redirectTo({ url: '/pages/admin/commentReview' }) },
   goReports() { wx.redirectTo({ url: '/pages/admin/reportReview' }) },
   goDeposits() { wx.redirectTo({ url: '/pages/admin/depositRefund' }) },
   goAuths() { wx.redirectTo({ url: '/pages/admin/authReview' }) }

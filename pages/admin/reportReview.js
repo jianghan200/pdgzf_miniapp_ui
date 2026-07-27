@@ -21,6 +21,7 @@ Page({
     market.adminRejectReport(id).then((res) => { if (res && res.status === 0) { wx.showToast({ title: '已驳回', icon: 'success' }); this.loadList() } })
   },
   goHouses() { wx.redirectTo({ url: '/pages/admin/houseReview' }) },
+  goComments() { wx.redirectTo({ url: '/pages/admin/commentReview' }) },
   goDeposits() { wx.redirectTo({ url: '/pages/admin/depositRefund' }) },
   goAuths() { wx.redirectTo({ url: '/pages/admin/authReview' }) }
 })

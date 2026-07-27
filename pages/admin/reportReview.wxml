@@ -9,6 +9,7 @@
     <text class="title">审核后台</text>
     <view class="nav-row">
       <view class="nav-item" bindtap="goHouses">房源审核</view>
+      <view class="nav-item" bindtap="goComments">评论审核</view>
       <view class="nav-item active">举报处理</view>
       <view class="nav-item" bindtap="goDeposits">退款审核</view>
       <view class="nav-item" bindtap="goAuths">认证审核</view>

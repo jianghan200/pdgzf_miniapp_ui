@@ -10,6 +10,7 @@
     <view class="nav-row">
       <view class="nav-item" bindtap="goHouses">房源审核</view>
       <view class="nav-item" bindtap="goReports">举报处理</view>
+      <view class="nav-item" bindtap="goComments">评论审核</view>
       <view class="nav-item" bindtap="goDeposits">退款审核</view>
       <view class="nav-item active">认证审核</view>
     </view>

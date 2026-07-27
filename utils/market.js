@@ -193,6 +193,10 @@ const adminGetPendingAuths = (page) => _get(`/admin/auth/pending?page=${page || 
 const adminApproveAuth = (id) => _post(`/admin/auth/${id}/approve`)
 const adminRejectAuth = (id, comment) => _post(`/admin/auth/${id}/reject`, { comment })
 
+const adminGetPendingComments = (page) => _get(`/admin/comment/pending?page=${page || 1}`)
+const adminApproveComment = (id) => _post(`/admin/comment/${id}/approve`)
+const adminRejectComment = (id, reason) => _post(`/admin/comment/${id}/reject`, { reason })
+
 const _buildQuery = (params) => {
   if (!params) return ''
   const arr = []
@@ -256,5 +260,9 @@ module.exports = {
   adminApproveDepositRefund,
   adminGetPendingAuths,
   adminApproveAuth,
-  adminRejectAuth
+  adminRejectAuth,
+  // 评论审核
+  adminGetPendingComments,
+  adminApproveComment,
+  adminRejectComment
 }

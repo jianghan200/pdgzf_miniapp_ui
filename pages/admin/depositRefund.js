@@ -15,6 +15,7 @@ Page({
     market.adminApproveDepositRefund(id).then((res) => { if (res && res.status === 0) { wx.showToast({ title: '已批准', icon: 'success' }); this.loadList() } })
   },
   goHouses() { wx.redirectTo({ url: '/pages/admin/houseReview' }) },
+  goComments() { wx.redirectTo({ url: '/pages/admin/commentReview' }) },
   goReports() { wx.redirectTo({ url: '/pages/admin/reportReview' }) },
   goAuths() { wx.redirectTo({ url: '/pages/admin/authReview' }) }
 })

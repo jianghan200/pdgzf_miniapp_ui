@@ -22,6 +22,7 @@ Page({
   },
   previewImage(e) { wx.previewImage({ urls: [e.currentTarget.dataset.url] }) },
   goHouses() { wx.redirectTo({ url: '/pages/admin/houseReview' }) },
+  goComments() { wx.redirectTo({ url: '/pages/admin/commentReview' }) },
   goReports() { wx.redirectTo({ url: '/pages/admin/reportReview' }) },
   goDeposits() { wx.redirectTo({ url: '/pages/admin/depositRefund' }) }
 })
