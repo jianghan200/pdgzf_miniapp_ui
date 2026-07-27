@@ -17,7 +17,6 @@
       <button class="cu-btn icon bg-white shadow" bindtap="todayOpenFilterDrawer">
         <text class="cuIcon-filter text-blue"></text>
       </button>
-      <button wx:if="{{!todayIsVip}}" class="cu-btn cuIcon-vip icon bg-black text-yellow shadow" bindtap="todayVipSample"></button>
     </view>
     <view class="action-group" wx:if="{{activeSubTab === 'all' && allReqSuccessful}}">
       <button class="cu-btn icon bg-white shadow" bindtap="allOpenMap">
@@ -77,9 +76,14 @@
             </view>
           </block>
         </view>
-        <view class="cu-list menu margin-bottom">
-          <view style="font-size: smaller; color: rgba(128,128,128,0.7); padding-left: 10px;">预排：预计最靠前排名</view>
-          <view style="font-size: smaller; color: rgba(128,128,128,0.7); padding-left: 10px;"><text class="cuIcon-hot"></text>：参选本小区的所有人数</view>
+        <view class="cu-list menu margin-bottom" style="display: flex; align-items: center; justify-content: space-between;">
+          <view>
+            <view style="font-size: smaller; color: rgba(128,128,128,0.7); padding-left: 10px;">预排：预计最靠前排名</view>
+            <view style="font-size: smaller; color: rgba(128,128,128,0.7); padding-left: 10px;"><text class="cuIcon-hot"></text>：参选本小区的所有人数</view>
+          </view>
+          <button wx:if="{{!todayIsVip}}" class="cu-btn bg-black text-yellow shadow" bindtap="todayVipSample" style="font-size: smaller; height: 64rpx; padding: 0 20rpx; border-radius: 8rpx; margin-right: 10px;">
+            <text class="cuIcon-vip" style="margin-right: 4rpx;"></text>VIP权益
+          </button>
         </view>
       </scroll-view>
     </view>
