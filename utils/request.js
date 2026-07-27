@@ -200,7 +200,7 @@ const loadProjectHouseInfo = function() {
 const subscribe = function(pid, pname) {
   const url = constants.userinfoServer + '/rule/'
   const header = {
-    'content-type' : 'application/x-www-form-urlencoded', 
+    'content-type' : 'application/json',
     'token': app.globalData.userinfo.tokenStr 
   }
   return new Promise((resolve,reject) => {
@@ -263,7 +263,7 @@ const unsubscribe = function(ruleId) {
 const updateSubscription = function(pid, name, payload) {
   const url = constants.userinfoServer + '/rule/'
   const header = {
-    'content-type' : 'application/x-www-form-urlencoded',
+    'content-type' : 'application/json',
     'token': app.globalData.userinfo.tokenStr
   }
   payload['projectId'] = pid
