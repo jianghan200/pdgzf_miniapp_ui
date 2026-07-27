@@ -27,9 +27,21 @@ function interval_is_selected(intervals, interval) {
   return res
 }
 
+function shortType(type) {
+  return type ? type.replace('一厅', '') : type
+}
+
+function videoName(url) {
+  var parts = url.split('/')
+  var filename = parts[parts.length - 1]
+  return filename.split('.')[0]
+}
+
 module.exports = {
   indexOf : indexOf,
   sliceOf : sliceOf,
   id2RoomType: id2RoomType,
-  interval_is_selected: interval_is_selected
+  interval_is_selected: interval_is_selected,
+  shortType: shortType,
+  videoName: videoName
 }

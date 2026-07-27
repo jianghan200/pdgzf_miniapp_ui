@@ -1,7 +1,7 @@
 <wxs src="../../utils/tool.wxs" module="tools" />
 
 <!-- 主页面 -->
-<view class="DrawerPage {{ (showvideoListDrawer || showTodaysOutlets) ? 'show' : ''}}">
+<view class="page">
   <!-- 页面标题 -->
   <view style="height: {{ CustomBar }}px; display: flex; flex-direction: row; align-items: center;">
     <view class="title" style="margin-top: 30px;" bindtap="backToParent">
@@ -10,382 +10,399 @@
     </view>
   </view>
 
-  <!-- 横向的大标题的标签 -->
-  <scroll-view 
-    class="nav bg-white text-center" 
-    scroll-x 
+  <!-- Tab 栏 -->
+  <scroll-view
+    class="nav bg-white text-center"
+    scroll-x
     scroll-with-animation
   >
-    <!-- 基本信息 -->
+    <!-- 小区详情 -->
     <view class="cu-item {{ curComponentId == 0 ? 'text-black cur text-bold' : '' }}" data-id="0" bindtap="selectTab">
-      <text class="cuIcon-homefill"></text> 基本信息
+      <text class="cuIcon-homefill"></text> 小区详情
     </view>
-    <!-- 多媒体信息 -->
-    <view class="cu-item {{ curComponentId == 1 ? 'text-black cur text-bold' : '' }}" data-id="1" bindtap="selectTab">
-      <text class="cuIcon-camerafill"></text> 媒体信息
-    </view>
-    <!-- 不是所有小区都有“今日房源” -->
-    <view 
-      wx:if="{{ todayHouses.length > 0 }}" 
-      class="cu-item {{ curComponentId == 2 ? 'text-black cur text-bold' : '' }}" 
-      data-id="2" 
+    <!-- 今日房源（有数据才显示） -->
+    <view
+      wx:if="{{ todayHouses.length > 0 }}"
+      class="cu-item {{ curComponentId == 1 ? 'text-black cur text-bold' : '' }}"
+      data-id="1"
       bindtap="selectTab"
     >
       <text class="cuIcon-activityfill"></text> 今日房源
     </view>
     <!-- 统计信息 -->
-    <view class="cu-item {{ curComponentId == 3 ? 'text-black cur text-bold' : '' }}" data-id="3" bindtap="selectTab">
+    <view class="cu-item {{ curComponentId == 2 ? 'text-black cur text-bold' : '' }}" data-id="2" bindtap="selectTab">
       <text class="cuIcon-rankfill"></text> 统计信息
     </view>
   </scroll-view>
 
-  <!-- 长列表 -->
-  <scroll-view 
+  <!-- 内容区 -->
+  <scroll-view
     style="height: calc(100vh - {{ CustomBar }}px - 90rpx - 100rpx);"
-    scroll-y 
+    scroll-y
     scroll-with-animation
-    scroll-into-view="component-{{ curComponentId }}"
+    scroll-into-view="{{ todayScrollTarget }}"
     enable-flex="{{true}}"
   >
-    <!-- 基本信息 -->
-    <view id="component-0">
-      <!-- 标题 -->
-      <view class="solid-bottom text-xl padding">
-        <text class="text-black text-bold">基础信息</text>
-      </view>
-      <!-- 多联按钮 -->
-      <view class="padding" style="display: flex; flex-direction: row; justify-content: center;">
-        <block wx:for="{{ recentHouseInfo }}" wx:for-item="houseInfo" wx:key="type">
-          <button 
-            class="button-tab bg-{{ selectedHouseType == houseInfo.type ? 'green' : '' }} shadow" 
-            data-type="{{ houseInfo.type }}" 
-            bindtap="selectHouseType"
-          >
-            <text 
-              style="font-size: xx-small;" 
-              class="text-{{ selectedHouseType == houseInfo.type ? 'white text-bold' : 'black' }}"
-            >{{ houseInfo.type }}</text>
+    <!-- Tab 0: 小区详情（基本信息 + 媒体） -->
+    <block wx:if="{{ curComponentId == 0 }}">
+      <!-- 基础信息 -->
+      <view id="component-0">
+        <!-- 标题 -->
+        <view class="solid-bottom text-xl padding">
+          <text class="text-black text-bold">基础信息</text>
+        </view>
+        <!-- 户型信息 -->
+        <view class="padding">
+          <block wx:for="{{ basicHouseTypes }}" wx:for-item="houseInfo" wx:key="type">
+            <view class="cu-card article" style="margin-bottom: 12rpx;">
+              <view class="cu-item shadow">
+                <view class="content" style="display: flex; flex-direction: row; justify-content: space-around;">
+                  <view><text class="text-bold text-lg">{{ houseInfo.type }}</text></view>
+                  <text class="text-red text-lg">{{ houseInfo.rent }}/月 </text>
+                  <view><text class="text-bold text-lg">{{ houseInfo.area }}平</text></view>
+                  <view><text class="text-bold text-lg">供给{{ houseInfo.tCount }}套</text></view>
+                </view>
+              </view>
+            </view>
+          </block>
+        </view>
+
+        <!-- 地图 -->
+        <!-- 导航 -->
+        <view style="display: flex; justify-content: center;" class="padding">
+          <button class="cu-btn bg-white round shadow text-bold lg" bindtap="openMapNavigator">
+            <text class="cuIcon-locationfill text-red"></text> 导航至：{{ pName }}
           </button>
-        </block>
-      </view>
-      <!-- 户型信息卡 -->
-      <view class="cu-card article">
-        <view class="cu-item shadow">
-     
-          <view class="content" style="display: flex; flex-direction: row; justify-content: space-around">
-            <view><text class="text-bold text-lg">{{ selectedHouse.type }}</text></view>
-            <text class="text-red text-lg">{{ selectedHouse.rent }}/月 </text>
-            <view><text class="text-bold text-lg">{{ selectedHouse.area }}平</text></view>
-            <view><text class="text-bold text-lg">供给{{ selectedHouse.tCount }}套</text></view>
-          </view>
+        </view>
+        <!-- 小地图 -->
+        <view style="width: 100wh; height: 250px;">
+          <map
+            id="map"
+            style="width: 100%; height: 100%;"
+            latitude="{{ coordinate.lat }}"
+            longitude="{{ coordinate.lng }}"
+            scale="12"
+            markers="{{ marker }}"
+            show-location
+            show-scale
+          ></map>
         </view>
       </view>
 
-      <!-- 地图 -->
-      <!-- 导航 -->
-      <view style="display: flex; justify-content: center;" class="padding">
-        <button class="cu-btn bg-white round shadow text-bold lg" bindtap="openMapNavigator">
-          <text class="cuIcon-locationfill text-red"></text> 导航至：{{ pName }}
-        </button>
-      </view>
-      <!-- 小地图 -->
-      <view style="width: 100wh; height: 250px;">
-        <map 
-          id="map"
-          style="width: 100%; height: 100%;"
-          latitude="{{ coordinate.lat }}"
-          longitude="{{ coordinate.lng }}"
-          scale="12"
-          markers="{{ marker }}"
-          show-location
-          show-scale
-        ></map>
-      </view>
+      <!-- 媒体信息 -->
+      <view id="component-media">
+        <!-- 标题 -->
+        <view class="solid-bottom text-xl padding">
+          <text class="text-black text-bold">媒体信息</text>
+        </view>
+        <!-- 九宫格图片展示 -->
+        <!-- 有图片 -->
+        <view wx:if="{{ selectedImageGroup && selectedImageGroup.images && selectedImageGroup.images.length > 0 }}" class="grid flex-sub padding-lr col-3 grid-square">
+          <block wx:for="{{ selectedImageGroup.images }}" wx:for-item="image" wx:key="url">
+            <view wx:if="{{image.vipOnly && !isVip}}" class="banner" bindtap="goToVipPage">
+              <block style="display: flex; align-items: center; justify-content: center;">
+                <text style="color: #e88282; font-size: 20px; position: absolute; z-index: 999;left: calc(50% - 35px);top: calc(50% - 20px);"> VIP内容 </text>
+                <view class="mask bg-img blur" style="background-image:url({{image.url}}$detail_thumb);" data-idx="{{index}}"></view>
+              </block>
+            </view>
+            <view wx:else class="bg-img" style="background-image:url({{image.url}}$detail_thumb);" bindtap="previewImg" data-idx="{{index}}"></view>
+          </block>
+        </view>
+        <!-- 没有图片 -->
+        <view wx:else style="display: flex; flex-direction: column; align-items: center;" class="margin">
+          <image class="vip-avatar" src="/assets/keJiaQian.jpeg" mode="aspectFill"></image>
+          <button
+            class="cu-btn bg-white round shadow text-bold lg margin"
+            style="background-color: black; width: 60%;"
+            bindtap="goToRewardPage"
+          >
+            <text class="cuIcon-vip text-bold" style="color: goldenrod;"></text>
+            <text style="color: goldenrod;">求图, 可加钱</text>
+          </button>
+        </view>
+        <!-- 多联按钮 -->
+        <view class="padding" style="display: flex; flex-direction: row; justify-content: center;">
+          <block wx:for="{{ imageGroups }}" wx:for-item="imageGroup" wx:key="id">
+            <button
+              class="button-tab bg-{{ selectedImageGroupId == imageGroup.id ? 'green' : '' }} shadow"
+              data-group="{{ imageGroup.id }}"
+              bindtap="onSelectImageGroup"
+            >
+              <text style="font-size: xx-small;" class="text-{{ selectedImageGroupId == imageGroup.id ? 'white text-bold' : 'black' }}">{{ imageGroup.id }}</text>
+            </button>
+          </block>
+        </view>
+        <!-- 视频列表（平铺） -->
+        <!-- if 小区有视频 -->
+        <view wx:if="{{ videos.length > 0 }}">
+          <view class="solid-bottom text-xl padding">
+            <text class="text-black text-bold">看房视频 ({{ videos.length }}个)</text>
+          </view>
+          <!-- 第一个视频播放器 -->
+          <view style="display: flex; justify-content: center; flex-direction: column; align-items: center;">
+            <video src="{{ isVip ? firstVideo : '' }}" muted catchtap="previewVideo"></video>
+          </view>
+          <!-- 全部视频列表 -->
+          <view class="cu-list menu card-menu margin">
+            <view class="cu-item arrow" wx:for="{{ videos }}" wx:for-item="video" wx:key="url" bindtap="previewVideo" data-idx="{{index}}">
+              <view class="content">
+                <text class="cuIcon-videofill text-red"></text>
+                <text class="margin-left">{{ tools.videoName(video.url) }}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+        <!-- else 小区没有视频 -->
+        <view wx:else style="display: flex; flex-direction: column; align-items: center;" class="margin">
+          <image class="vip-avatar" src="/assets/keJiaQian.jpeg" mode="aspectFill"></image>
+          <button
+            class="cu-btn bg-white round shadow text-bold lg margin"
+            style="background-color: black; width: 60%;"
+            bindtap="goToRewardPage"
+          >
+            <text class="cuIcon-vip text-bold" style="color: goldenrod;"></text>
+            <text style="color: goldenrod;">求视频, 可加钱</text>
+          </button>
+        </view>
 
-    </view>
-
-    <!-- 多媒体展示 -->
-    <view id="component-1">
-      <!-- 标题 -->
-      <view class="solid-bottom text-xl padding">
-        <text class="text-black text-bold">多媒体信息</text>
+        <!-- 小区文章链接 -->
+        <view class="cu-list menu sm-border card-menu margin" wx:if="{{ articleUrl != '' }}">
+          <view class="cu-item arrow" bindtap="gotoArticle" style="background-color: currentColor;">
+            <view class="content">
+              <text class="cuIcon-form text-bold" style="color: goldenrod;"></text>
+              <text class="text-bold" style="color: goldenrod;">看房图文详情</text>
+            </view>
+          </view>
+        </view>
       </view>
-      <!-- 九宫格图片展示 -->
-      <!-- 有图片 -->
-      <view wx:if="{{ selectedImageGroup.images.length > 0 }}" class="grid flex-sub padding-lr col-3 grid-square">
-        <block wx:for="{{ selectedImageGroup.images }}" wx:for-item="image" wx:key="url">
-          <view wx:if="{{image.vipOnly && !isVip}}" class="banner" bindtap="goToVipPage">
-            <block style="display: flex; align-items: center; justify-content: center;">
-              <text style="color: #e88282; font-size: 20px; position: absolute; z-index: 999;left: calc(50% - 35px);top: calc(50% - 20px);"> VIP内容 </text>
-              <view class="mask bg-img blur" style="background-image:url({{image.url}}$detail_thumb);" data-idx="{{index}}"></view>
+    </block>
+
+    <!-- Tab 1: 今日房源 -->
+    <block wx:if="{{ curComponentId == 1 }}">
+      <view id="component-1">
+        <!-- 标题 + 视图切换按钮 -->
+        <view class="padding" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+          <text class="text-black text-bold text-lg">今日房源({{ todayHouses.length }}套)</text>
+          <view class="view-toggle-bar">
+            <button class="cu-btn view-toggle-btn {{ todayViewMode == 'list' ? 'bg-green text-white' : 'bg-white' }} shadow" bindtap="switchViewMode" data-mode="list">
+              <text class="cuIcon-list"></text> 列表
+            </button>
+            <button class="cu-btn view-toggle-btn {{ todayViewMode == 'grid' ? 'bg-green text-white' : 'bg-white' }} shadow" bindtap="switchViewMode" data-mode="grid">
+              <text class="cuIcon-card"></text> 卡片
+            </button>
+          </view>
+        </view>
+
+        <!-- 今日房源列表 -->
+        <!-- if 此小区今日有房源 -->
+        <view wx:if="{{ todayHouses.length > 0 }}">
+          <!-- 列表模式 -->
+          <view wx:if="{{ todayViewMode == 'list' }}" class="today-list">
+            <block wx:for="{{ todayHouses }}" wx:for-item="house" wx:key="name">
+              <view class="today-list-item">
+                <text class="tl-name">{{ house.name }}</text>
+                <text class="tl-size">{{ house.size }}平</text>
+                <text class="tl-type">{{ tools.shortType(house.type) }}</text>
+                <text class="tl-rent">{{ house.rent }}/月</text>
+                <text class="tl-rank {{ house.rank == 1 ? 'rank-first' : '' }}">第{{ house.rank }}名</text>
+                <view class="tl-expand" bindtap="toggleExpand" data-idx="{{index}}">
+                  <text class="cuIcon-{{ expandedMap[index] ? 'fold' : 'unfold' }}"></text>
+                </view>
+              </view>
+              <view wx:if="{{ expandedMap[index] }}" class="today-list-card">
+                <view class="cu-card article" style="margin: 0;">
+                  <view class="cu-item shadow" style="margin: 0;">
+                    <view class="title" style="display: flex; flex-direction: column;">
+                      <text class="text-red text-lg">{{ house.rent }}/月（押一付三）</text>
+                      <text class="text-bold text-lg">队列: {{ house.displayedQueue }}</text>
+                    </view>
+                    <view class="content" style="display: flex; flex-direction: column;">
+                      <view class="cu-list grid col-3 solid">
+                        <view class="cu-item">
+                          <text class="text-bold">{{ house.emoveInDate }}</text>
+                          <text>预计入住</text>
+                        </view>
+                        <view class="cu-item">
+                          <text class="text-bold" style="color: {{ house.rank == 1 ? 'green' : 'grey' }}">第{{ house.rank }}名</text>
+                          <text>当前排名</text>
+                        </view>
+                        <view class="cu-item">
+                          <text class="text-bold">{{ house.name }}</text>
+                          <text>房间名</text>
+                        </view>
+                        <view class="cu-item">
+                          <text class="text-bold">{{ house.size }}平</text>
+                          <text>面积</text>
+                        </view>
+                        <view class="cu-item">
+                          <text class="text-bold">{{ house.type }}</text>
+                          <text>户型</text>
+                        </view>
+                      </view>
+                    </view>
+                  </view>
+                </view>
+              </view>
             </block>
           </view>
-          <view wx:else class="bg-img" style="background-image:url({{image.url}}$detail_thumb);" bindtap="previewImg" data-idx="{{index}}"></view>
-        </block>
-      </view>
-      <!-- 没有图片 -->
-      <view wx:else style="display: flex; flex-direction: column; align-items: center;" class="margin">
-        <image class="vip-avatar" src="/assets/keJiaQian.jpeg" mode="aspectFill"></image>
-        <button 
-          class="cu-btn bg-white round shadow text-bold lg margin" 
-          style="background-color: black; width: 60%;"
-          bindtap="goToRewardPage"
-        >
-          <text class="cuIcon-vip text-bold" style="color: goldenrod;"></text>
-          <text style="color: goldenrod;">求图, 可加钱</text>
-        </button>
-      </view>
-      <!-- 多联按钮 -->
-      <view class="padding" style="display: flex; flex-direction: row; justify-content: center;">
-        <block wx:for="{{ imageGroups }}" wx:for-item="imageGroup" wx:key="id">
-          <button 
-            class="button-tab bg-{{ selectedImageGroupId == imageGroup.id ? 'green' : '' }} shadow" 
-            data-group="{{ imageGroup.id }}" 
-            bindtap="onSelectImageGroup"
-          >
-            <text style="font-size: xx-small;" class="text-{{ selectedImageGroupId == imageGroup.id ? 'white text-bold' : 'black' }}">{{ imageGroup.id }}</text>
-          </button>
-        </block>
-      </view>
-      <!-- 视频 + 列表 -->
-      <!-- if 小区有视频 -->
-      <view 
-        wx:if="{{ videos.length > 0 }}" 
-        style="display: flex; justify-content: center; flex-direction: column; align-items: center;"
-      >
-        <video src="{{ isVip ? firstVideo : '' }}" muted catchtap="previewVideo"></video>
-        <!-- 点击打开视频列表抽屉 -->
-        <button class="cu-btn bg-white round shadow text-bold lg margin" style="width: 60%;" bindtap="openVideoList">
-          <text class="cuIcon-videofill text-red"></text> 更多视频
-        </button>
-      </view>
-      <!-- else 小区没有视频 -->
-      <view wx:else style="display: flex; flex-direction: column; align-items: center;" class="margin">
-        <image class="vip-avatar" src="/assets/keJiaQian.jpeg" mode="aspectFill"></image>
-        <button 
-          class="cu-btn bg-white round shadow text-bold lg margin" 
-          style="background-color: black; width: 60%;"
-          bindtap="goToRewardPage"
-        >
-          <text class="cuIcon-vip text-bold" style="color: goldenrod;"></text>
-          <text style="color: goldenrod;">求视频, 可加钱</text>
-        </button>
-      </view>
-
-      <!-- 小区文章链接 -->
-      <view class="cu-list menu sm-border card-menu margin" wx:if="{{ articleUrl != '' }}">
-        <view class="cu-item arrow" bindtap="gotoArticle" style="background-color: currentColor;">
-          <view class="content">
-            <text class="cuIcon-form text-bold" style="color: goldenrod;"></text>
-            <text class="text-bold" style="color: goldenrod;">看房图文详情</text>
+          <!-- 卡片模式 -->
+          <view wx:else>
+            <block wx:for="{{ todayHouses }}" wx:for-item="house" wx:key="name">
+              <view class="cu-card article">
+                <view class="cu-item shadow">
+                  <view class="title" style="display: flex; flex-direction: column;">
+                    <text class="text-bold">{{ house.name }} <text class="text-red text-lg">{{ house.rent }}/月</text></text>
+                    
+                    <text class="text-bold text-lg">队列: {{ house.displayedQueue }}</text>
+                  </view>
+                  <view class="content" style="display: flex; flex-direction: column;">
+                    <view class="cu-list grid col-3 solid">
+                      <view class="cu-item">
+                        <text class="text-bold">{{ house.emoveInDate }}</text>
+                        <text>预计入住</text>
+                      </view>
+                      <view class="cu-item">
+                        <text class="text-bold" style="color: {{ house.rank == 1 ? 'green' : 'grey' }}">第{{ house.rank }}名</text>
+                        <text>当前排名</text>
+                      </view>
+                      <view class="cu-item">
+                        <text class="text-bold">{{ house.name }}</text>
+                        <text>房间名</text>
+                      </view>
+                      <view class="cu-item">
+                        <text class="text-bold">{{ house.size }}平</text>
+                        <text>面积</text>
+                      </view>
+                      <view class="cu-item">
+                        <text class="text-bold">{{ house.type }}</text>
+                        <text>户型</text>
+                      </view>
+                    </view>
+                  </view>
+                </view>
+              </view>
+            </block>
+          </view>
+        </view>
+        <!-- else 此小区今日没有房源 -->
+        <view wx:else class="flex-sub text-center">
+          <view class="solid-bottom text-xl padding">
+            <text class="text-grey text-bold">改天再来看看~</text>
           </view>
         </view>
       </view>
+    </block>
 
-    </view>
+    <!-- Tab 2: 统计信息 -->
+    <block wx:if="{{ curComponentId == 2 }}">
+      <view id="component-2">
+        <!-- 标题 -->
+        <view class="solid-bottom text-xl padding">
+          <text class="text-black text-bold">统计信息</text>
+        </view>
 
-    <!-- 今日房源 -->
-    <view id="component-2">
-      <!-- 标题 -->
-      <view class="solid-bottom text-xl padding">
-        <text class="text-black text-bold">今日房源({{ todayHouses.length }}套)</text>
-        <!-- 打开今日房源列表 -->
-        <button class="cu-btn bg-white round shadow text-bold margin-left" style="width: 40%;" bindtap="openTodayDrawer">
-          <text class="cuIcon-list text-red"></text> 快捷跳转
-        </button>
-      </view>
+        <!-- 统计信息导航栏 -->
+        <view class="cu-list menu sm-border card-menu margin">
+          <view class="cu-item arrow" bindtap="goToVipStats" style="background-color: currentColor;">
+            <view class="content">
+              <text class="cuIcon-rank text-bold" style="color: goldenrod;"></text>
+              <text class="text-bold" style="color: goldenrod;">更多统计信息</text>
+            </view>
+          </view>
+        </view>
 
-      <!-- 今日房源列表 -->
-      <!-- if 此小区今日有房源 -->
-      <view wx:if="{{ todayHouses.length > 0 }}">
-        <block wx:for="{{ todayHouses }}" wx:for-item="house" wx:key="name">
+        <!-- 历史热力日历 -->
+        <view class="text-bold" style="margin: 10px;" bindtap="changeCalendarState">
+          <text class="cuIcon-calendar" style="font-size: large;"></text>
+          <text style="font-size: large;"> 小区人气日历 </text>
+          <text class="cuIcon-{{ calendarHidden ? 'un' : '' }}fold" style="font-size: large;"></text>
+          <text wx:if="{{ !isVip }}" bindTap="promptUsersToBecomeVip" style="font-size: large;">（VIP内容）</text>
+        </view>
+        <!-- 小历日历 -->
+        <view style="padding: 1rem;" wx:if="{{ isVip }}" hidden="{{ calendarHidden }}">
+          <calendar id="calendar" config="{{ calendarConfig }}" bind:whenChangeMonth="renderCalendar" bind:afterCalendarRender="renderCalendar"/>
+        </view>
+
+        <!-- 各户型的历史数据 -->
+        <!-- 标题 -->
+        <view class="solid-bottom text-xl padding">
+          <text class="cuIcon-rank text-bold"></text>
+          <text class="text-black text-bold">各户型最近1次轮候情况</text>
+        </view>
+        <!-- 加载中 -->
+        <view wx:if="{{ statsLoading }}" class="text-center text-gray padding-xl">
+          <text>加载中...</text>
+        </view>
+        <!-- 非VIP提示 -->
+        <view wx:elif="{{ !isVip }}" class="text-center text-gray padding-xl">
+          <text>开通VIP查看各户型轮候详情</text>
+        </view>
+        <!-- 各户型历史数据卡片 -->
+        <block wx:elif="{{ statsLoaded }}">
+          <block wx:for="{{ recentHouseInfo }}" wx:for-item="info" wx:key="type">
           <!-- 户型信息卡 -->
-          <view class="cu-card article" id="component-today{{ index }}">
+          <view class="cu-card article">
             <view class="cu-item shadow">
               <view class="title" style="display: flex; flex-direction: column;">
-                <text class="text-red text-lg">{{ house.rent }}/月（押一付三）</text>
-                <text class="text-bold text-lg">队列: {{ house.displayedQueue }}</text>
+                <text class="text-red text-lg">{{ info.rent }}/月（押一付三）</text>
               </view>
               <!-- 房源基本信息 -->
               <view class="content" style="display: flex; flex-direction: column;">
                 <view class="cu-list grid col-3 solid">
                   <view class="cu-item">
-                    <text class="text-bold">{{ house.emoveInDate }}</text>
-                    <text>预计入住</text>
+                    <text class="text-bold" style="color: green;">{{ info.type }}</text>
+                    <text>户型</text>
                   </view>
                   <view class="cu-item">
-                    <text class="text-bold" style="color: {{ house.rank == 1 ? 'green' : 'grey' }}">第{{ house.rank }}名</text>
-                    <text>当前排名</text>
-                  </view>
-                  <view class="cu-item">
-                    <text class="text-bold">{{ house.name }}</text>
-                    <text>房间名</text>
-                  </view>
-                  <view class="cu-item">
-                    <text class="text-bold">{{ house.size }}平</text>
+                    <text class="text-bold">{{ info.area }}平</text>
                     <text>面积</text>
                   </view>
                   <view class="cu-item">
-                    <text class="text-bold">{{ house.type }}</text>
-                    <text>户型</text>
+                    <text class="text-bold" wx:if="{{ isVip }}">{{ info.updateTime }}</text>
+                    <text class="text-bold" bindtap="promptUsersToBecomeVip" style="color: goldenrod;" wx:else>VIP内容</text>
+                    <text>选中日</text>
+                  </view>
+                  <view class="cu-item">
+                    <text class="text-bold" wx:if="{{ isVip }}">{{ info.ownerStartDate }}</text>
+                    <text class="text-bold" bindtap="promptUsersToBecomeVip" style="color: goldenrod;" wx:else>VIP内容</text>
+                    <text>选中人资格</text>
+                  </view>
+                  <view class="cu-item">
+                    <text class="text-bold" wx:if="{{ isVip }}">{{ info.ownerWaitingDays }}天</text>
+                    <text class="text-bold" bindtap="promptUsersToBecomeVip" style="color: goldenrod;" wx:else>VIP内容</text>
+                    <text>等待时长</text>
+                  </view>
+                  <view class="cu-item">
+                    <text class="text-bold" wx:if="{{ isVip }}">{{ info.hotIndexOnPickedDate }}人参与排队</text>
+                    <text class="text-bold" bindtap="promptUsersToBecomeVip" style="color: goldenrod;" wx:else>VIP内容</text>
+                    <text>选中日热度</text>
                   </view>
                 </view>
               </view>
 
             </view>
           </view>
+
+          </block>
         </block>
-
       </view>
-      <!-- else 此小区今日没有房源 -->
-      <view wx:else class="flex-sub text-center">
-        <!-- 今日没放出房源 -->
-        <view class="solid-bottom text-xl padding">
-          <text class="text-grey text-bold">改天再来看看~</text>
-        </view>
-      </view>
-    </view>
+    </block>
 
-    <!-- 统计信息 -->
-    <view id="component-3">
-      <!-- 标题 -->
-      <view class="solid-bottom text-xl padding">
-        <text class="text-black text-bold">统计信息</text>
-      </view>
-
-      <!-- 统计信息导航栏 -->
-      <view class="cu-list menu sm-border card-menu margin">
-        <view class="cu-item arrow" bindtap="goToVipStats" style="background-color: currentColor;">
-          <view class="content">
-            <text class="cuIcon-rank text-bold" style="color: goldenrod;"></text>
-            <text class="text-bold" style="color: goldenrod;">更多统计信息</text>
-          </view>
-        </view>
-      </view>
-
-      <!-- 历史热力日历 -->
-      <view class="text-bold" style="margin: 10px;" bindtap="changeCalendarState">
-        <text class="cuIcon-calendar" style="font-size: large;"></text> 
-        <text style="font-size: large;"> 小区人气日历 </text>
-        <text class="cuIcon-{{ calendarHidden ? 'un' : '' }}fold" style="font-size: large;"></text>
-        <text wx:if="{{ !isVip }}" bindTap="promptUsersToBecomeVip" style="font-size: large;">（VIP内容）</text>
-      </view>
-      <!-- 小历日历 -->
-      <view style="padding: 1rem;" wx:if="{{ isVip }}" hidden="{{ calendarHidden }}">
-        <calendar id="calendar" config="{{ calendarConfig }}" bind:whenChangeMonth="renderCalendar" bind:afterCalendarRender="renderCalendar"/>
-      </view>
-
-      <!-- 各户型的历史数据 -->
-      <!-- 标题 -->
-      <view class="solid-bottom text-xl padding">
-        <text class="cuIcon-rank text-bold"></text>
-        <text class="text-black text-bold">各户型最近1次轮候情况</text>
-      </view>
-      <!-- 各户型历史数据卡片 -->
-      <block wx:for="{{ recentHouseInfo }}" wx:for-item="info" wx:key="type">
-        <!-- 户型信息卡 -->
-        <view class="cu-card article">
-          <view class="cu-item shadow">
-            <view class="title" style="display: flex; flex-direction: column;">
-              <text class="text-red text-lg">{{ info.rent }}/月（押一付三）</text>
-            </view>
-            <!-- 房源基本信息 -->
-            <view class="content" style="display: flex; flex-direction: column;">
-              <view class="cu-list grid col-3 solid">
-                <view class="cu-item">
-                  <text class="text-bold" style="color: green;">{{ info.type }}</text>
-                  <text>户型</text>
-                </view>
-                <view class="cu-item">
-                  <text class="text-bold">{{ info.area }}平</text>
-                  <text>面积</text>
-                </view>
-                <view class="cu-item">
-                  <text class="text-bold" wx:if="{{ isVip }}">{{ info.updateTime }}</text>
-                  <text class="text-bold" bindtap="promptUsersToBecomeVip" style="color: goldenrod;" wx:else>VIP内容</text>
-                  <text>选中日</text>
-                </view>
-                <view class="cu-item">
-                  <text class="text-bold" wx:if="{{ isVip }}">{{ info.ownerStartDate }}</text>
-                  <text class="text-bold" bindtap="promptUsersToBecomeVip" style="color: goldenrod;" wx:else>VIP内容</text>
-                  <text>选中人资格</text>
-                </view>
-                <view class="cu-item">
-                  <text class="text-bold" wx:if="{{ isVip }}">{{ info.ownerWaitingDays }}天</text>
-                  <text class="text-bold" bindtap="promptUsersToBecomeVip" style="color: goldenrod;" wx:else>VIP内容</text>
-                  <text>等待时长</text>
-                </view>
-                <view class="cu-item">
-                  <text class="text-bold" wx:if="{{ isVip }}">{{ info.hotIndexOnPickedDate }}人参与排队</text>
-                  <text class="text-bold" bindtap="promptUsersToBecomeVip" style="color: goldenrod;" wx:else>VIP内容</text>
-                  <text>选中日热度</text>
-                </view>
-              </view>
-            </view>
-
-          </view>
-        </view>
-
-      </block>
-    </view>
-
-    <!-- 评论区 -->
+    <!-- 评论区（所有 Tab 共享，在内容最下方） -->
     <comment-section wx:if="{{pId}}" id="comment-section" hide-trigger="{{true}}"
       target-type="project" target-id="{{pId}}"/>
-
   </scroll-view>
 
-</view>
-
-<!-- 主页面的辅助页面 -->
-<!-- 关闭视频列表（抽屉） -->
-<view class="DrawerClose {{ (showvideoListDrawer || showTodaysOutlets) ? 'show' : '' }}" bindtap="closeDrawers">
-	<text class="cuIcon-pullright"></text>
-</view>
-
-<!-- 视频列表 (抽屉) -->
-<scroll-view 
-  scroll-y 
-  class="DrawerWindow {{ showvideoListDrawer ? 'show' : '' }}"
-  style="height: calc(100vh - 100rpx);"
->
-  <view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg">
-    <view class="cu-item arrow" wx:for="{{ videos }}" wx:for-item="video" wx:key="url">
-      <view class="content" bindtap="previewVideo" data-idx="{{index}}">
-        <text class="cuIcon-videofill text-red"></text> 视频{{ index + 1 }}
-      </view>
+  <!-- fix在底部的功能栏 -->
+  <view class="cu-bar bg-white shadow foot">
+    <view class="action" bindtap="subscribe">
+      <text class="cuIcon-{{ subscribed ? 'likefill' : 'like' }} text-pink"></text>
+      <text>{{ subscribed ? '取消' : '添加' }}收藏</text>
+    </view>
+    <view class="action" bindtap="onTapComment">
+      <text class="cuIcon-comment text-blue"></text>
+      <text>评论</text>
     </view>
   </view>
-</scroll-view>
 
-<!-- 今日房源列表（抽屉） -->
-<scroll-view 
-  scroll-y 
-  class="DrawerWindow {{ showTodaysOutlets ? 'show' : '' }}"
-  style="height: calc(100vh - 100rpx);"
->
-  <view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg">
-    <view class="cu-item arrow" wx:for="{{ todayHousesOutlets }}" wx:for-item="outlet" wx:key="*this">
-      <view class="content" bindtap="goToThisTodayHouse" data-idx="{{index}}">
-        <text class="cuIcon-homefill text-green"></text> {{outlet}}
-      </view>
-    </view>
-  </view>
-</scroll-view>
-
-<!-- fix在底部的功能栏 -->
-<view class="cu-bar bg-white shadow foot">
-  <view class="action" bindtap="subscribe">
-    <text class="cuIcon-{{ subscribed ? 'likefill' : 'like' }} text-pink"></text>
-    <text>{{ subscribed ? '取消' : '添加' }}收藏</text>
-  </view>
-
-  <view class="action" bindtap="onTapComment">
-    <text class="cuIcon-comment text-blue"></text>
-    <text>评论</text>
-  </view>
-
-  <view class="action" style="width: 50%;">
-    <button class="cu-btn bg-green lg cuIcon-community round shadow" style="width: 100%;" bindtap="goToForum"> 进入社区论坛</button>
-  </view>
 </view>

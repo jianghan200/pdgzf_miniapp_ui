@@ -32,69 +32,16 @@
   justify-content: center;
 }
 
-/* 抽屉 */
-
-.DrawerPage {
+/* 主页面 */
+.page {
   position: fixed;
   width: 100vw;
   height: 100vh;
   left: 0vw;
   background-color: #f1f1f1;
-  transition: all 0.4s;
 }
 
-.DrawerPage.show {
-  transform: scale(0.9, 0.9);
-  left: 85vw;
-  box-shadow: 0 0 60rpx rgba(0, 0, 0, 0.2);
-  transform-origin: 0;
-}
-
-.DrawerWindow {
-  position: absolute;
-  width: 85vw;
-  height: 100vh;
-  left: 0;
-  top: 0;
-  transform: scale(0.9, 0.9) translateX(-100%);
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.4s;
-}
-
-.DrawerWindow.show {
-  transform: scale(1, 1) translateX(0%);
-  opacity: 1;
-  pointer-events: all;
-}
-
-.DrawerClose {
-  position: absolute;
-  width: 40vw;
-  height: 100vh;
-  right: 0;
-  top: 0;
-  color: transparent;
-  padding-bottom: 100rpx;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  background-image: linear-gradient(90deg, rgba(0, 0, 0, 0.01), rgba(0, 0, 0, 0.6));
-  letter-spacing: 5px;
-  font-size: 50rpx;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.4s;
-}
-
-.DrawerClose.show {
-  opacity: 1;
-  pointer-events: all;
-  width: 15vw;
-  color: #fff;
-}
-
-.DrawerPage .cu-bar.tabbar .action button.icon {
+.page .cu-bar.tabbar .action button.icon {
   width: 64rpx;
   height: 64rpx;
   line-height: 64rpx;
@@ -102,46 +49,124 @@
   display: inline-block;
 }
 
-.DrawerPage .cu-bar.tabbar .action .cu-avatar {
+.page .cu-bar.tabbar .action .cu-avatar {
   margin: 0;
 }
 
-.DrawerPage .nav {
+.page .nav {
   flex: 1;
 }
 
-.DrawerPage .nav .cu-item.cur {
+.page .nav .cu-item.cur {
   border-bottom: 4rpx solid;
   position: relative;
 }
 
-/* .DrawerPage .nav .cu-item.cur::after {
-  content: "";
-  width: 10rpx;
-  height: 10rpx;
-  background-color: currentColor;
-  position: absolute;
-  bottom: 10rpx;
-  border-radius: 10rpx;
-  left: 0;
-  right: 0;
-  margin: auto;
-} */
-
-.DrawerPage .cu-bar.tabbar .action {
+.page .cu-bar.tabbar .action {
   flex: initial;
 }
 
-/* 多联button */
-.button-tab {
+/* 视图切换按钮 */
+.view-toggle-bar {
+  display: flex;
+  flex-direction: row;
+  gap: 16rpx;
+}
+
+.view-toggle-btn {
   margin: 0;
   border: 0;
-  height: 30px;
+  height: 50rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0%;
-  width: 80px;
+  border-radius: 40rpx;
+  font-size: 24rpx;
+  padding: 0 24rpx;
+}
+
+/* 列表模式 */
+.today-list {
+  padding: 10rpx 20rpx;
+}
+
+.today-list-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 22rpx 16rpx;
+  background: #fff;
+  border-radius: 12rpx;
+  margin-bottom: 8rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
+  font-size: 26rpx;
+}
+
+.tl-name {
+  font-weight: 700;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #333;
+}
+
+.tl-size {
+  min-width: 60rpx;
+  text-align: center;
+  color: #888;
+  font-size: 24rpx;
+  margin-right: 6rpx;
+}
+
+.tl-type {
+  min-width: 60rpx;
+  text-align: center;
+  color: #888;
+  font-size: 24rpx;
+  margin-right: 6rpx;
+}
+
+.tl-rent {
+  min-width: 100rpx;
+  text-align: right;
+  color: #e54d42;
+  font-weight: 600;
+  font-size: 24rpx;
+  margin-right: 6rpx;
+}
+
+.tl-rank {
+  min-width: 60rpx;
+  text-align: right;
+  color: #666;
+  font-weight: 500;
+  font-size: 24rpx;
+  white-space: nowrap;
+}
+
+.tl-rank.rank-first {
+  color: #19be6b;
+  font-weight: 700;
+}
+
+.tl-expand {
+  width: 50rpx;
+  height: 50rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  margin-left: 6rpx;
+  flex-shrink: 0;
+}
+
+.today-list-card {
+  margin: -4rpx 0 8rpx 0;
+  padding: 0 16rpx;
+  background: #fff;
+  border-radius: 0 0 12rpx 12rpx;
+  overflow: hidden;
 }
 
 .vip-avatar {

@@ -4,20 +4,19 @@ const utils = require('./util')
 const constants = require('./constants')
 const app = getApp()
 
-// 为小区详情页准备好所有数据
+// 为小区详情页准备好基础数据（不含统计信息，统计信息懒加载）
 const loadDataForCommunity = function(pid) {
   return Promise
     .all([loadDataFromStorage('todayProjects'), loadDataFromStorage('allProjects'), loadDataFromStorage('subscriptions'),
-          requests.getProjectInfo(pid), requests.heatOfTheProject(pid)]
+          requests.getProjectInfo(pid)]
     ).then(res => {
       // 这一步主要看请求是否都正常
-      log.info('请求一切正常')
+      log.info('基础数据请求一切正常')
 
       const todayProjects = res[0].data
-      const allProjects = res[1].data
+      let allProjects = res[1].data
       const subscriptions = res[2].data
       const rawMedias = res[3]
-      const rawHeatInfo = res[4]
 
       // allProjects是必须的，不能不存在
       if (allProjects == null || allProjects.length === 0) {
@@ -31,8 +30,7 @@ const loadDataForCommunity = function(pid) {
           todayProjects: todayProjects,
           allProjects: allProjects,
           subscriptions: subscriptions,
-          rawMedias: rawMedias,
-          rawHeatInfo: rawHeatInfo
+          rawMedias: rawMedias
         }
 
         return Promise.resolve(payload)
@@ -76,85 +74,127 @@ const loadDataForCommunity = function(pid) {
         return Promise.reject('数据有误')
       }
     }).then(payload => {
-      // 这一步生成每个户型的数据，以及可能会有的今日数据
-      const { area, project, todayProjects, subscriptions, rawMedias, rawHeatInfo, idsOfRecentHouses } = payload
-      // 首先拿到各个户型的统计数据
-      return getQueuesForEveryHouseTypes(idsOfRecentHouses).then(res => {
-        // 整理好今日房源的数据(if any)
-        const todayData = getDataFromTodayProject(pid, todayProjects)
-        // 文章链接
-        let articleUrl = ''
-        if (project.raw.wp_url && project.raw.wp_url.trim() != '') {
-          log.info(`找到了文章链接：${project.raw.wp_url}（${project.pId}）`)
+      // 这一步生成小区基础信息和今日房源（不含统计/热力，统计数据懒加载）
+      const { area, project, todayProjects, subscriptions, rawMedias, idsOfRecentHouses } = payload
+      // 整理好今日房源的数据(if any)
+      const todayData = getDataFromTodayProject(pid, todayProjects)
+      // 文章链接
+      let articleUrl = ''
+      if (project.raw.wp_url && project.raw.wp_url.trim() != '') {
+        log.info(`找到了文章链接：${project.raw.wp_url}（${project.pId}）`)
 
-          articleUrl = project.raw.wp_url
-        }
-        // 整理好各个户型最近出现房间的统计数据
-        const statsOfRecentHousesOfAllTypes = populateStatsForAllHouseTypes(project, res)
-        // 小区的坐标
-        const coordinate = utils.convert2TecentMap(project.raw.longitude, project.raw.latitude)
+        articleUrl = project.raw.wp_url
+      }
+      // 小区的坐标
+      const coordinate = utils.convert2TecentMap(project.raw.longitude, project.raw.latitude)
 
-        // 用户是否订阅过这个小区
-        let subscribed = false
-        let ruleId = ''
-        const idxOfThisProjectInSubscriptionList = subscriptions.findIndex(item => item.projectId == pid)
-        if (idxOfThisProjectInSubscriptionList != -1) {
-          subscribed = true
-          ruleId = subscriptions[idxOfThisProjectInSubscriptionList].id
-        }
+      // 用户是否订阅过这个小区
+      let subscribed = false
+      let ruleId = ''
+      const idxOfThisProjectInSubscriptionList = subscriptions.findIndex(item => item.projectId == pid)
+      if (idxOfThisProjectInSubscriptionList != -1) {
+        subscribed = true
+        ruleId = subscriptions[idxOfThisProjectInSubscriptionList].id
+      }
 
-        let payload = {
-          pId: pid,
-          pName: project.pName,
-          areaIdx: area.id,
-          areaId: area.areaId,
-          subscribed: subscribed,
-          ruleId: ruleId,
-          coordinate: coordinate,
-          recentHouseInfo: statsOfRecentHousesOfAllTypes,
-          totalCount: project.rentableCount,
-          heatMap: rawHeatInfo,
-          descriptions: (rawMedias == null) ? null : rawMedias.descriptions,
-          medias: (rawMedias == null) ? [] : rawMedias.medias,
-          equipments: (rawMedias == null) ? null : rawMedias.equipments,
-          todayHouses: [],
-          articleUrl: articleUrl
-        }
-        // 根据是否有今日房源populate payload
-        if (todayData) {
-          // 出现在今日
-          log.info(`${project.pName}(${pid})出现在今日房源中`)
-  
-          const todayHouses = housesOfToday(todayData)
-          payload['todayHouses'] = todayHouses
+      // 今日房源的总排队长度（用于今日热力点，无需后端）
+      let todayQueueLength = 0
+      let todayHouses = []
+      if (todayData) {
+        log.info(`${project.pName}(${pid})出现在今日房源中`)
+        todayHouses = housesOfToday(todayData)
+        todayHouses.forEach(house => {
+          todayQueueLength += house.queueLength
+        })
+      } else {
+        log.info(`${project.pName}(${pid})未出现在今日房源中`)
+      }
 
-          // 热力图数据需要添加今日的
-          let queueLength = 0
-          todayHouses.forEach(house => {
-            queueLength += house.queueLength
-          })
-          const date = new Date()
-          const heatOfToday = {
-            date : date,
-            year : date.getFullYear(),
-            month : date.getMonth() + 1,
-            date : date.getDate(),
-            count : queueLength,
-            hex : utils.number2Hex(queueLength)
-          }
-          const newHeatMap = payload.heatMap
-          newHeatMap.push(heatOfToday)
-          payload.heatMap = newHeatMap
+      // 从 project.houseInfo 直接构造户型基础信息（不依赖慢查询）
+      const basicHouseTypes = buildBasicHouseTypes(project)
 
-          return Promise.resolve(payload)
-        } else {
-          // 未出现在今日
-          log.info(`${project.pName}(${pid})未出现在今日房源中`)
+      const result = {
+        pId: pid,
+        pName: project.pName,
+        areaIdx: area.id,
+        areaId: area.areaId,
+        subscribed: subscribed,
+        ruleId: ruleId,
+        coordinate: coordinate,
+        // 基础户型信息（基本信息 Tab 用，无需等待统计数据）
+        basicHouseTypes: basicHouseTypes,
+        // 统计数据（懒加载，统计 Tab 用）
+        recentHouseInfo: [],
+        totalCount: project.rentableCount,
+        heatMap: [],
+        todayHeatCount: todayQueueLength,
+        descriptions: (rawMedias == null) ? null : rawMedias.descriptions,
+        medias: (rawMedias == null) ? [] : rawMedias.medias,
+        equipments: (rawMedias == null) ? null : rawMedias.equipments,
+        todayHouses: todayHouses,
+        articleUrl: articleUrl,
+        // 供懒加载使用
+        idsOfRecentHouses: idsOfRecentHouses,
+        project: project
+      }
 
-          return Promise.resolve(payload)
-        }
-      })
+      return Promise.resolve(result)
     })
+}
+
+// 从 project.houseInfo 构造户型基础信息列表（按 typeName 去重）
+const buildBasicHouseTypes = function(project) {
+  const groups = utils.groupBy(project.houseInfo, function(obj) {
+    return obj.typeName
+  })
+  return groups.map(group => {
+    const house = group[0]
+    return {
+      houseId: house.houseId,
+      type: constants.id2Type(house.typeName),
+      typeName: house.typeName,
+      area: house.area,
+      rent: house.rent,
+      tCount: group.length
+    }
+  })
+}
+
+// 懒加载：小区统计数据（热力图 + 各户型最近一次轮候情况）
+const loadStatsForCommunity = function(pid, project, idsOfRecentHouses, todayHeatCount) {
+  log.info(`懒加载小区统计数据: ${pid}`)
+  return Promise.all([
+    requests.heatOfTheProject(pid),
+    getQueuesForEveryHouseTypes(idsOfRecentHouses)
+  ]).then(res => {
+    const rawHeatInfo = res[0]
+    const queues = res[1]
+
+    // 整理各户型统计数据
+    const recentHouseInfo = populateStatsForAllHouseTypes(project, queues)
+
+    // 组装热力图，如果今日有数据则追加
+    let heatMap = rawHeatInfo.slice()
+    if (todayHeatCount && todayHeatCount > 0) {
+      const date = new Date()
+      heatMap.push({
+        date: date.getDate(),
+        year: date.getFullYear(),
+        month: date.getMonth() + 1,
+        count: todayHeatCount,
+        hex: utils.number2Hex(todayHeatCount)
+      })
+    }
+
+    return Promise.resolve({
+      recentHouseInfo: recentHouseInfo,
+      heatMap: heatMap
+    })
+  }).catch(err => {
+    log.error(`小区统计数据加载失败: ${pid}`)
+    log.error(err)
+    return Promise.resolve({ recentHouseInfo: [], heatMap: [] })
+  })
 }
 
 // 异步读取localStorage中的数据, 返回Promise
@@ -305,5 +345,6 @@ const populateStatsForAllHouseTypes = function(project, queuesForHouseTypes) {
 }
 
 module.exports = {
-  loadCommunityDetails: loadDataForCommunity
+  loadCommunityDetails: loadDataForCommunity,
+  loadStatsForCommunity: loadStatsForCommunity
 }
