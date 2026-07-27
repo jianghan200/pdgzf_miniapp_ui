@@ -205,7 +205,7 @@ Page({
           id: PROJECT_BASE + idx,
           latitude: p.latitude || p.longitude_lat,
           longitude: p.longitude || p.longitude_lng,
-          iconPath: '/assets/red.png',
+          iconPath: '/assets/red2.png',
           width: 22,
           height: 22,
           label: {
