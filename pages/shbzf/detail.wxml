@@ -24,6 +24,27 @@
       </view>
     </view>
 
+    <!-- 小地图 -->
+    <view class="section" wx:if="{{coordinate.lat && coordinate.lng}}">
+      <view class="section-title">项目位置</view>
+      <view class="map-nav" bindtap="openMapNavigator">
+        <text class="cuIcon-locationfill text-red"></text>
+        <text>导航至：{{detail.name}}</text>
+      </view>
+      <view class="map-container">
+        <map
+          id="detailMap"
+          latitude="{{coordinate.lat}}"
+          longitude="{{coordinate.lng}}"
+          scale="13"
+          markers="{{marker}}"
+          show-location
+          show-scale
+          style="width:100%;height:100%;"
+        ></map>
+      </view>
+    </view>
+
     <view class="section" wx:if="{{detail.introduction}}">
       <view class="section-title">项目简介</view>
       <view class="desc">{{detail.introduction}}</view>

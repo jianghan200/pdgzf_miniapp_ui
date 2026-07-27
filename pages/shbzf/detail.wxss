@@ -19,3 +19,5 @@
 .room-rent { color: #e54d42; font-weight: bold; }
 .facilities { display: flex; flex-wrap: wrap; gap: 16rpx; }
 .facility { background: #eef; color: #6699cc; font-size: 26rpx; padding: 8rpx 20rpx; border-radius: 20rpx; }
+.map-nav { display: flex; align-items: center; gap: 8rpx; font-size: 28rpx; color: #39b54a; font-weight: 500; margin-bottom: 16rpx; }
+.map-container { width: 100%; height: 350rpx; border-radius: 12rpx; overflow: hidden; }
