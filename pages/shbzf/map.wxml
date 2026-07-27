@@ -23,10 +23,13 @@
     <!-- 顶部信息栏（cover-view 覆盖在 map 上） -->
     <cover-view class="top-bar">
       <cover-view class="legend">
-        <cover-view class="legend-dot"></cover-view>
+        <cover-view class="legend-dot {{currentLevel === 'project' ? 'legend-dot-red' : ''}}"></cover-view>
         <cover-view class="legend-text">{{levelDesc}}</cover-view>
       </cover-view>
       <cover-view class="top-bar-right">
+        <cover-view class="toggle-label-btn {{showLabels ? 'active' : ''}}" wx:if="{{currentLevel === 'project'}}" bindtap="toggleLabels">
+          <cover-view class="toggle-label-text">名称</cover-view>
+        </cover-view>
         <cover-view class="reset-btn" bindtap="onReset" wx:if="{{currentLevel !== 'district'}}">
           <cover-view class="reset-btn-text">全市</cover-view>
         </cover-view>
@@ -44,7 +47,7 @@
           <cover-view class="callout-row" wx:if="{{item.rentDesc}}">{{item.rentDesc}}</cover-view>
           <cover-view class="callout-row" wx:if="{{item.typeDesc}}">{{item.typeDesc}}</cover-view>
           <cover-view class="callout-row addr" wx:if="{{item.address}}">{{item.address}}</cover-view>
-          <cover-view class="callout-btn" bindtap="onProjectDetail" data-id="{{item.projectId}}">查看详情</cover-view>
+           <cover-view class="callout-btn" bindtap="onProjectDetail" data-id="{{item.projectId}}">点击坐标进入详情</cover-view>
         </cover-view>
       </block>
     </cover-view>

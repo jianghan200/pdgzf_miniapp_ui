@@ -39,6 +39,10 @@ map {
   margin-right: 12rpx;
 }
 
+.legend-dot.legend-dot-red {
+  background: #e54d42;
+}
+
 .legend-text {
   font-size: 24rpx;
   color: #333;
@@ -48,6 +52,28 @@ map {
 .top-bar-right {
   display: flex;
   align-items: center;
+}
+
+.toggle-label-btn {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 32rpx;
+  padding: 12rpx 24rpx;
+  margin-right: 12rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.12);
+}
+
+.toggle-label-btn.active {
+  background: #e54d42;
+}
+
+.toggle-label-text {
+  font-size: 24rpx;
+  color: #666;
+  font-weight: 500;
+}
+
+.toggle-label-btn.active .toggle-label-text {
+  color: #fff;
 }
 
 .reset-btn {

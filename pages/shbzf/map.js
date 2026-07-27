@@ -28,7 +28,8 @@ Page({
     levelDesc: '全市行政区',
     showList: false,
     listData: [],
-    loading: true
+    loading: true,
+    showLabels: false
   },
 
   // 缓存数据
@@ -40,6 +41,7 @@ Page({
   _districtPolygons: [],
   _mapCtx: null,
   _regionTimer: null,
+  _lastProjectMarkerId: null,
 
   onLoad() {
     this._mapCtx = wx.createMapContext('map', this)
@@ -203,9 +205,20 @@ Page({
           id: PROJECT_BASE + idx,
           latitude: p.latitude || p.longitude_lat,
           longitude: p.longitude || p.longitude_lng,
-          iconPath: '/assets/green.png',
+          iconPath: '/assets/red.png',
           width: 22,
           height: 22,
+          label: {
+            content: p.name,
+            color: '#333',
+            fontSize: 11,
+            borderRadius: 4,
+            bgColor: '#ffffffcc',
+            padding: 4,
+            textAlign: 'center',
+            anchorX: 14,
+            anchorY: -8
+          },
           customCallout: { anchorY: 10, anchorX: 0, display: 'BYCLICK' },
           type: 'project',
           projectId: p.id,
@@ -219,6 +232,7 @@ Page({
 
   // === 级别切换（核心：平滑切换 markers + polygons） ===
   _switchLevel(level) {
+    this._lastProjectMarkerId = null
     if (level === 'district') {
       this.setData({
         markers: this._districtMarkers,
@@ -233,7 +247,10 @@ Page({
     this._mapCtx.getRegion({
       success: (res) => {
         const source = level === 'bizcircle' ? this._bizcircleMarkers : this._projectMarkers
-        const visible = this._filterByBounds(source, res.southwest, res.northeast)
+        let visible = this._filterByBounds(source, res.southwest, res.northeast)
+        if (level === 'project' && !this.data.showLabels) {
+          visible = visible.map(this._stripLabel)
+        }
         this.setData({
           markers: visible,
           polygons: [],
@@ -251,13 +268,35 @@ Page({
       success: (res) => {
         const level = this.data.currentLevel
         const source = level === 'bizcircle' ? this._bizcircleMarkers : this._projectMarkers
-        const visible = this._filterByBounds(source, res.southwest, res.northeast)
+        let visible = this._filterByBounds(source, res.southwest, res.northeast)
+        if (level === 'project' && !this.data.showLabels) {
+          visible = visible.map(this._stripLabel)
+        }
         // 仅当数量变化超过阈值时才 setData，减少抖动
         if (Math.abs(visible.length - this.data.markers.length) > 1) {
           this.setData({ markers: visible })
         }
       }
     })
+  },
+
+  _stripLabel(m) {
+    const { label, ...rest } = m
+    return rest
+  },
+
+  toggleLabels() {
+    const show = !this.data.showLabels
+    this.setData({ showLabels: show })
+    if (this.data.currentLevel === 'project') {
+      this._mapCtx.getRegion({
+        success: (res) => {
+          let visible = this._filterByBounds(this._projectMarkers, res.southwest, res.northeast)
+          if (!show) visible = visible.map(this._stripLabel)
+          this.setData({ markers: visible })
+        }
+      })
+    }
   },
 
   _filterByBounds(markers, sw, ne, padding) {
@@ -316,11 +355,16 @@ Page({
       }
       return
     }
-    // 项目 marker：直接导航到详情页（cover-view bindtap 在 callout 中不可靠）
-    const idx = markerId - PROJECT_BASE
-    const m = this._projectMarkers[idx]
-    if (m && m.projectId) {
-      wx.navigateTo({ url: `/pages/shbzf/detail?id=${m.projectId}` })
+    // 项目 marker：首次点击显示 callout，再次点击进入详情
+    if (markerId === this._lastProjectMarkerId) {
+      this._lastProjectMarkerId = null
+      const idx = markerId - PROJECT_BASE
+      const m = this._projectMarkers[idx]
+      if (m && m.projectId) {
+        wx.navigateTo({ url: `/pages/shbzf/detail?id=${m.projectId}` })
+      }
+    } else {
+      this._lastProjectMarkerId = markerId
     }
   },
 
