@@ -84,6 +84,13 @@ Page({
 
   // 支付
   pay(e) {
+    if (!wx.canIUse('requestVirtualPayment')) {
+      wx.showModal({
+        title: '版本过低',
+        content: '请将微信升级至最新版本后重试'
+      })
+      return
+    }
     wx.showLoading({
       title: '支付中',
       mask: true
@@ -92,16 +99,13 @@ Page({
       .payConsultFee()
       .then((res) => {
         if (res) {
-          // 付款成功  
           wx.hideLoading()
           wx.showToast({ title: '支付成功', icon: 'success' })
 
           app.globalData.userinfo.openConsult = true
           wx.redirectTo({ url: '/pages/user/user' })
         } else {
-          // 付款失败
           log.error('付款失败')
-
           wx.hideLoading()
           wx.showToast({ title: '支付失败', icon: 'error' })
         }

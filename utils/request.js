@@ -327,16 +327,38 @@ const getPaymentInfo = function(payType) {
       header: { 'token' : token },
       success: function(res) {
         if (res.data.status == 0) {
-          // 成功
           log.info('请求pre-payment信息成功！')
           log.info(res)
-
           resolve(res.data.data)
         } else {
-          // 失败
           log.error('请求pre-payment信息失败')
           console.log(res)
+          reject(res.data.data)
+        }
+      },
+      fail: function(err) {
+        console.log(err)
+        reject(err)
+      }
+    })
+  })
+}
 
+const getPaymentInfoVp = function(payType) {
+  let token = app.globalData.userinfo.tokenStr
+  const url = constants.userinfoServer + '/pay/vp?type=' + payType
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      header: { 'token' : token },
+      success: function(res) {
+        if (res.data.status == 0) {
+          log.info('请求虚拟支付信息成功！')
+          log.info(res)
+          resolve(res.data.data)
+        } else {
+          log.error('请求虚拟支付信息失败')
+          console.log(res)
           reject(res.data.data)
         }
       },
@@ -361,17 +383,13 @@ const getConsultingPaymentInfo = function() {
       header: header,
       success: (res) => {
         if (res.data.status == 0) {
-          // 成功
           log.info('请求pre-payment信息成功！')
           log.info(res)
-
           resolve(res.data.data)
         } else {
-          // 失败
           log.error('请求pre-payment信息失败')
           log.error(res)
           console.log(res)
-
           reject(res.data.data)
         }
       },
@@ -379,7 +397,36 @@ const getConsultingPaymentInfo = function() {
         log.error('pre-payment信息获取失败')
         log.error(err)
         console.log(err)
-      
+        reject(err)
+      }
+    })
+  })
+}
+
+const getConsultingPaymentInfoVp = function() {
+  log.info('准备获得付费咨询的虚拟付款信息')
+
+  const url = constants.userinfoServer + '/pay/vp?type=2'
+  const header = { 'token': app.globalData.userinfo.tokenStr }
+  
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: url,
+      header: header,
+      success: (res) => {
+        if (res.data.status == 0) {
+          log.info('请求虚拟支付信息成功！')
+          log.info(res)
+          resolve(res.data.data)
+        } else {
+          log.error('请求虚拟支付信息失败')
+          log.error(res)
+          reject(res.data.data)
+        }
+      },
+      fail: (err) => {
+        log.error('虚拟支付信息获取失败')
+        log.error(err)
         reject(err)
       }
     })
@@ -995,6 +1042,8 @@ module.exports = {
   getTodayStats : getTodayStats,
   getVipInfo : getVipInfo,
   getPaymentInfo : getPaymentInfo,
+  getPaymentInfoVp : getPaymentInfoVp,
+  getConsultingPaymentInfoVp : getConsultingPaymentInfoVp,
   updateUsername : updateUsername,
   updateManualStartDate : updateManualStartDate,
   updateDefaultTab : updateDefaultTab,

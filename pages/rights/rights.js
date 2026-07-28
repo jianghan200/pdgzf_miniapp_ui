@@ -22,7 +22,9 @@ Page({
     nickname: '未知用户',
     avatarUrl: '',
     // 是否存在关闭苹果支付
-    closeIOSPay: false
+    closeIOSPay: false,
+    // 是否支持虚拟支付（iOS 可通过 Apple IAP 支付）
+    supportVp: false
   },
 
   onLoad: function (options) {
@@ -35,7 +37,8 @@ Page({
       isVip: app.globalData.userinfo.type == 2,
       displayOfficialAccount: utils.displayOfficialAccount(),
       officialAccount: constants.officialAccount,
-      closeIOSPay: app.globalData.IOS && !app.globalData.isNormalMode
+      closeIOSPay: app.globalData.IOS && !app.globalData.isNormalMode,
+      supportVp: wx.canIUse('requestVirtualPayment')
     })
 
     // open-id被禁用，只能向用户请求权限
@@ -67,6 +70,11 @@ Page({
         showModal: true
       })
     }
+  },
+
+  // 弹窗确认 - iOS 走虚拟支付（Apple IAP），Android 走虚拟支付（微信内支付）
+  confirmPay() {
+    this.pay()
   },
 
   // 关闭所有弹窗

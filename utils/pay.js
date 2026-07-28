@@ -3,7 +3,10 @@ const market = require('./market')
 const log = require('./log')
 const userInfoHelper = require('./user')
 
-// 付款
+function canUseVirtualPayment() {
+  return !!wx.canIUse('requestVirtualPayment')
+}
+
 const actualPayment = function(payment_info) {
   return new Promise((resolve, reject) => {
     wx.requestPayment({
@@ -15,91 +18,128 @@ const actualPayment = function(payment_info) {
       success: (res) => {
         log.info('付款成功')
         log.info(res)
-
         resolve(true)
       },
       fail: (err) => {
         log.error(err)
         console.log(err)
-
         reject(false)
       }
     })
   })
 }
-// 通用：先创建订单拿支付参数，再调起微信支付
-const payWithOrder = function(orderPromise) {
-  return orderPromise.then((res) => {
-    if (!res || res.code !== 0 || !res.data || !res.data.pay_params) {
-      console.log('创建订单失败', res)
-      return Promise.reject(res)
+
+const actualVirtualPayment = function(vpInfo) {
+  return new Promise((resolve, reject) => {
+    if (!canUseVirtualPayment()) {
+      wx.showToast({ title: '请升级微信后再试', icon: 'none' })
+      reject(false)
+      return
     }
-    return actualPayment(res.data.pay_params)
+    const signDataStr = typeof vpInfo.signData === 'string' ? vpInfo.signData : JSON.stringify(vpInfo.signData)
+    console.log('=== VP DEBUG ===')
+    console.log('signData 类型:', typeof vpInfo.signData)
+    console.log('signData 内容:', vpInfo.signData)
+    console.log('signData 长度:', vpInfo.signData ? vpInfo.signData.length : 0)
+    console.log('paySig:', vpInfo.paySig)
+    console.log('signature:', vpInfo.signature)
+    console.log('传入微信的 signData:', signDataStr)
+    console.log('================')
+    wx.requestVirtualPayment({
+      signData: signDataStr,
+      paySig: vpInfo.paySig,
+      signature: vpInfo.signature,
+      mode: 'short_series_goods',
+      success: (res) => {
+        log.info('虚拟支付成功')
+        log.info(res)
+        resolve(true)
+      },
+      fail: ({ errMsg, errCode }) => {
+        log.error('虚拟支付失败', errCode, errMsg)
+        if (errCode === -2) {
+          resolve(false)
+          return
+        }
+        reject(false)
+      }
+    })
   })
 }
 
-// 市场房源 付费联系
+const payWithOrder = function(orderPromise) {
+  return orderPromise.then((res) => {
+    if (!res || res.code !== 0 || !res.data) {
+      console.log('创建订单失败', res)
+      return Promise.reject(res)
+    }
+    return actualPayment(res.data)
+  })
+}
+
+const payWithVpOrder = function(orderPromise) {
+  return orderPromise.then((res) => {
+    if (!res || res.code !== 0 || !res.data) {
+      console.log('创建虚拟支付订单失败', res)
+      return Promise.reject(res)
+    }
+    return actualVirtualPayment(res.data)
+  })
+}
+
 const payContact = function(houseId, type, message) {
-  return payWithOrder(market.createContact({ house_id: houseId, type: type, message: message }))
+  return payWithVpOrder(market.createContact({ house_id: houseId, type: type, message: message }))
 }
 
-// VIP 订阅
 const payVip = function(type, period) {
-  return payWithOrder(market.createVipOrder({ type: type, period: period }))
+  return payWithVpOrder(market.createVipOrder({ type: type, period: period }))
 }
 
-// 保证金支付
 const payDepositFee = function(houseId) {
   return payWithOrder(market.payDeposit(houseId))
 }
 
-// 举报费支付
 const payReportFee = function(houseId, reason) {
   return payWithOrder(market.createReport({ house_id: houseId, reason: reason }))
 }
 
-// vip 付费
 const pay = function(userType) {
   return requests
-    .getPaymentInfo(userType)
+    .getPaymentInfoVp(userType)
     .then((res) => {
-      log.info('获得付款信息！')
+      log.info('获得虚拟付款信息！')
       log.info(res)
-
-      // 获得预支付信息后开始微信支付
-      return actualPayment(res)
+      return actualVirtualPayment(res)
     })
 }
 
-// 付费咨询
 const payConsultFee = function() {
   return userInfoHelper.get_tencent_nicknameAndAvatar().then(res => {
     if (res !== null) {
       log.info('已经获得用户的昵称')
-
       return requests
-        .getConsultingPaymentInfo()
+        .getConsultingPaymentInfoVp()
         .then((info) => {
-          log.info('获得付款信息！')
+          log.info('获得虚拟付款信息！')
           log.info(info)
-
-          return actualPayment(info)
+          return actualVirtualPayment(info)
         })
     } else {
       log.info('用户拒绝提供昵称')
       wx.showToast({ title: '很遗憾', icon: 'error' })
-
       return Promise.reject()
     }
   })
 }
 
 module.exports = {
-  pay : pay,
-  payConsultFee : payConsultFee,
-  payContact : payContact,
-  payVip : payVip,
-  payDepositFee : payDepositFee,
-  payReportFee : payReportFee,
-  actualPayment : actualPayment
+  pay: pay,
+  payConsultFee: payConsultFee,
+  payContact: payContact,
+  payVip: payVip,
+  payDepositFee: payDepositFee,
+  payReportFee: payReportFee,
+  actualPayment: actualPayment,
+  actualVirtualPayment: actualVirtualPayment,
+  canUseVirtualPayment: canUseVirtualPayment,
 }

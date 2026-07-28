@@ -63,6 +63,10 @@ Page({
       wx.showToast({ title: '请输入留言', icon: 'none' })
       return
     }
+    if (!wx.canIUse('requestVirtualPayment')) {
+      wx.showModal({ title: '版本过低', content: '请将微信升级至最新版本后重试' })
+      return
+    }
     wx.showLoading({ title: '创建订单...' })
     pay.payContact(this.data.id, 1, this.data.contactMessage).then(() => {
       wx.hideLoading()

@@ -29,7 +29,7 @@
     <view class="cu-item arrow" bindtap="goToRights" style="background-color: currentColor;">
       <view class="content">
         <text class="cuIcon-vip text-bold" style="color: goldenrod;"></text>
-        <text class="text-bold" style="color: goldenrod;" wx:if="{{!closeIOSPay}}">成为会员(查看权益)</text>
+        <text class="text-bold" style="color: goldenrod;" wx:if="{{!closeIOSPay || supportVp}}">成为会员(查看权益)</text>
         <text class="text-bold" style="color: goldenrod;" wx:else>更多信息请联系 meo365</text>
       </view>
     </view>
