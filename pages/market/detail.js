@@ -115,5 +115,19 @@ Page({
         }
       }
     })
+  },
+
+  onShareAppMessage() {
+    const path = '/pages/market/detail?id=' + this.data.id
+    return {
+      title: this.data.detail ? this.data.detail.title : '市场租房',
+      path: '/pages/login/login?redirect=' + encodeURIComponent(path),
+      imageUrl: '',
+      success(res) { if (res.errMsg === 'shareAppMessage:ok') wx.showToast({ title: '转发成功', icon: 'success' }) },
+      fail(err) {
+        if (err.errMsg === 'shareAppMessage:fail cancel') wx.showToast({ title: '转发已取消' })
+        else wx.showToast({ title: '转发失败' })
+      }
+    }
   }
 })

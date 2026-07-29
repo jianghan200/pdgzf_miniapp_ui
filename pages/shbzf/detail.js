@@ -101,5 +101,19 @@ Page({
   },
   previewMedia(e) {
     wx.previewImage({ current: this.data.mediaList[e.currentTarget.dataset.idx], urls: this.data.mediaList })
+  },
+
+  onShareAppMessage() {
+    const path = '/pages/shbzf/detail?id=' + this.data.id
+    return {
+      title: this.data.detail ? this.data.detail.name : '上海保租房',
+      path: '/pages/login/login?redirect=' + encodeURIComponent(path),
+      imageUrl: '',
+      success(res) { if (res.errMsg === 'shareAppMessage:ok') wx.showToast({ title: '转发成功', icon: 'success' }) },
+      fail(err) {
+        if (err.errMsg === 'shareAppMessage:fail cancel') wx.showToast({ title: '转发已取消' })
+        else wx.showToast({ title: '转发失败' })
+      }
+    }
   }
 })

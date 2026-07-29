@@ -233,5 +233,18 @@ Page({
 
   openMap() {
     wx.navigateTo({ url: '/pages/shbzf/map' })
+  },
+
+  onShareAppMessage() {
+    return {
+      title: '上海保租房',
+      path: '/pages/login/login',
+      imageUrl: '',
+      success(res) { if (res.errMsg === 'shareAppMessage:ok') wx.showToast({ title: '转发成功', icon: 'success' }) },
+      fail(err) {
+        if (err.errMsg === 'shareAppMessage:fail cancel') wx.showToast({ title: '转发已取消' })
+        else wx.showToast({ title: '转发失败' })
+      }
+    }
   }
 })
