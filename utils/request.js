@@ -442,7 +442,7 @@ const updateManualStartDate = function(manualStartDate) {
       url: url,
       header: {
         'token' : token,
-        'content-type' : 'application/x-www-form-urlencoded'
+        'content-type' : 'application/json'
       },
       method: 'POST',
       data: { 'manualStartDate' : manualStartDate },
@@ -474,7 +474,7 @@ const updateDefaultTab = function(tab) {
       url: url,
       header: {
         'token' : token,
-        'content-type' : 'application/x-www-form-urlencoded'
+        'content-type' : 'application/json'
       },
       method: 'POST',
       data: { 'defaultTab' : tab },
@@ -508,7 +508,7 @@ const updateUsername = function(username) {
       url: url,
       header: {
         'token' : token,
-        'content-type' : 'application/x-www-form-urlencoded'
+        'content-type' : 'application/json'
       },
       method: 'POST',
       data : { 'name' : username },
@@ -557,7 +557,7 @@ const updateUserInfo = function(email, account, password) {
       url: url,
       header: {
         'token' : token,
-        'content-type' : 'application/x-www-form-urlencoded'
+        'content-type' : 'application/json'
       },
       method: 'POST',
       data: payload,
@@ -589,7 +589,7 @@ const updateEmailSubscriptionStatus = function(code) {
       url: url,
       header: {
         'token' : token,
-        'content-type' : 'application/x-www-form-urlencoded'
+        'content-type' : 'application/json'
       },
       method: 'POST',
       data: { 'emailSubscription' : code },
@@ -619,7 +619,7 @@ const updateAutoSelectionStatus = function(code) {
       url: url,
       header: {
         'token' : token,
-        'content-type' : 'application/x-www-form-urlencoded'
+        'content-type' : 'application/json'
       },
       method: 'POST',
       data: { 'autoChoose' : code },

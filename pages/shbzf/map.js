@@ -29,7 +29,17 @@ Page({
     showList: false,
     listData: [],
     loading: true,
-    showLabels: false
+    showLabels: false,
+    roomTypes: ['一居室', '二居室', '三居室', '四居室及以上'],
+    priceIntervals: [
+      { label: '3000以下', min: 0, max: 3000 },
+      { label: '3000-5000', min: 3000, max: 5000 },
+      { label: '5000-8000', min: 5000, max: 8000 },
+      { label: '8000-12000', min: 8000, max: 12000 },
+      { label: '12000以上', min: 12000, max: 999999 }
+    ],
+    chosenRoomTypes: [],
+    chosenPriceIndex: -1
   },
 
   // 缓存数据
@@ -195,7 +205,8 @@ Page({
     }))
 
     // 全部项目 markers（最细级别按视野筛选显示）
-    this._projectMarkers = this._allProjects
+    const filtered = this._getFilteredProjects()
+    this._projectMarkers = filtered
       .filter(p => (p.latitude || p.longitude_lat) && (p.longitude || p.longitude_lng))
       .map((p, idx) => {
         const rentDesc = (p.rent_low && p.rent_high)
@@ -209,7 +220,7 @@ Page({
           width: 22,
           height: 22,
           label: {
-            content: p.name,
+            content: p.name + (p.turn_person_num ? ` · 排队${p.turn_person_num}` : ''),
             color: '#333',
             fontSize: 11,
             borderRadius: 4,
@@ -225,9 +236,31 @@ Page({
           pname: p.name,
           rentDesc,
           typeDesc: p.house_type_summary || '',
-          address: p.address || ''
+          address: p.address || '',
+          queueDesc: p.turn_person_num ? `排队${p.turn_person_num}人` : '',
+          availDesc: p.available ? `可租${(p.online_flat_num || 0) + (p.offline_flat_num || 0)}套` : '满租'
         }
       })
+  },
+
+  _getFilteredProjects() {
+    let list = this._allProjects
+    const { chosenRoomTypes, chosenPriceIndex, priceIntervals } = this.data
+    if (chosenRoomTypes.length > 0) {
+      list = list.filter(p => {
+        if (!p.house_type_summary) return false
+        return chosenRoomTypes.some(t => p.house_type_summary.includes(t))
+      })
+    }
+    if (chosenPriceIndex >= 0) {
+      const interval = priceIntervals[chosenPriceIndex]
+      list = list.filter(p => {
+        const pLow = p.rent_low || 0
+        const pHigh = p.rent_high || 999999
+        return pLow <= interval.max && pHigh >= interval.min
+      })
+    }
+    return list
   },
 
   // === 级别切换（核心：平滑切换 markers + polygons） ===
@@ -383,6 +416,80 @@ Page({
     this._switchLevel('district')
   },
 
+  // === 筛选（即时生效）===
+  tapRoomType(e) {
+    const t = e.currentTarget.dataset.type
+    const cur = this.data.chosenRoomTypes
+    const idx = cur.indexOf(t)
+    const next = idx === -1 ? cur.concat([t]) : cur.filter((x) => x !== t)
+    this.setData({ chosenRoomTypes: next })
+    this._onFilterChange()
+  },
+
+  tapPriceInterval(e) {
+    const idx = Number(e.currentTarget.dataset.idx)
+    this.setData({ chosenPriceIndex: this.data.chosenPriceIndex === idx ? -1 : idx })
+    this._onFilterChange()
+  },
+
+  _onFilterChange() {
+    this._lastProjectMarkerId = null
+    const filtered = this._getFilteredProjects()
+    this._projectMarkers = filtered
+      .filter(p => (p.latitude || p.longitude_lat) && (p.longitude || p.longitude_lng))
+      .map((p, idx) => {
+        const rentDesc = (p.rent_low && p.rent_high)
+          ? `¥${p.rent_low}-${p.rent_high}/月`
+          : (p.rent_low ? `¥${p.rent_low}/月` : '租金待定')
+        return {
+          id: PROJECT_BASE + idx,
+          latitude: p.latitude || p.longitude_lat,
+          longitude: p.longitude || p.longitude_lng,
+          iconPath: '/assets/red2.png',
+          width: 22,
+          height: 22,
+          label: {
+            content: p.name + (p.turn_person_num ? ` · 排队${p.turn_person_num}` : ''),
+            color: '#333',
+            fontSize: 11,
+            borderRadius: 4,
+            bgColor: '#ffffffcc',
+            padding: 4,
+            textAlign: 'center',
+            anchorX: 14,
+            anchorY: -8
+          },
+          customCallout: { anchorY: 10, anchorX: 0, display: 'BYCLICK' },
+          type: 'project',
+          projectId: p.id,
+          pname: p.name,
+          rentDesc,
+          typeDesc: p.house_type_summary || '',
+          address: p.address || '',
+          queueDesc: p.turn_person_num ? `排队${p.turn_person_num}人` : '',
+          availDesc: p.available ? `可租${(p.online_flat_num || 0) + (p.offline_flat_num || 0)}套` : '满租'
+        }
+      })
+    if (this.data.currentLevel === 'project') {
+      this._mapCtx.getRegion({
+        success: (res) => {
+          let visible = this._filterByBounds(this._projectMarkers, res.southwest, res.northeast)
+          if (!this.data.showLabels) visible = visible.map(this._stripLabel)
+          this.setData({ markers: visible })
+        }
+      })
+    }
+    if (this.data.showList && this.data.currentLevel === 'project') {
+      const listData = this._getFilteredProjects().map(p => ({
+        key: p.id, listType: 'project', dataId: p.id,
+        name: p.name,
+        desc: `${p.district_name || ''} ${p.address || ''}`.trim(),
+        countDesc: (p.rent_low && p.rent_high) ? `¥${p.rent_low}-${p.rent_high}` : '租金待定'
+      }))
+      this.setData({ listData })
+    }
+  },
+
   // === 半屏列表 ===
   toggleList() {
     const show = !this.data.showList
@@ -397,7 +504,7 @@ Page({
         .filter(b => b.project_count > 0)
         .map(b => ({ key: b.id, listType: 'bizcircle', dataId: b.id, name: b.name, desc: b.district_name || '', countDesc: `${b.project_count}个项目` }))
     } else {
-      listData = this._allProjects.map(p => ({
+      listData = this._getFilteredProjects().map(p => ({
         key: p.id, listType: 'project', dataId: p.id,
         name: p.name,
         desc: `${p.district_name || ''} ${p.address || ''}`.trim(),

@@ -21,6 +21,36 @@
         <text class="tag" wx:if="{{detail.area_low}}">{{detail.area_low}}-{{detail.area_high}}㎡</text>
         <text class="tag">{{detail.total_units}}套</text>
         <text class="tag" wx:if="{{detail.rent_type}}">{{detail.rent_type}}</text>
+        <text class="tag" wx:if="{{detail.ring_rd_name}}">{{detail.ring_rd_name}}</text>
+        <text class="tag" wx:if="{{detail.rent_level}}">¥{{detail.rent_level}}/㎡</text>
+      </view>
+    </view>
+
+    <!-- 集中配租时间窗 -->
+    <view class="section" wx:if="{{detail.concent_rate_accept_start || detail.concent_rate_supply_start}}">
+      <view class="section-title">集中配租</view>
+      <view class="supply-card">
+        <view class="supply-row" wx:if="{{detail.concent_rate_supply_start}}">
+          <text class="supply-label">供应时间</text>
+          <text class="supply-value">{{detail.concent_rate_supply_start}} ~ {{detail.concent_rate_supply_end}}</text>
+        </view>
+        <view class="supply-row" wx:if="{{detail.concent_rate_accept_start}}">
+          <text class="supply-label">受理时间</text>
+          <text class="supply-value">{{detail.concent_rate_accept_start}} ~ {{detail.concent_rate_accept_end}}</text>
+        </view>
+        <view class="supply-countdown" wx:if="{{countdownText}}">{{countdownText}}</view>
+      </view>
+    </view>
+
+    <!-- 联系电话（看广告/VIP 解锁） -->
+    <view class="section" wx:if="{{tels.length > 0}}">
+      <view class="section-title">联系电话</view>
+      <view class="tel-row" wx:for="{{tels}}" wx:key="index" bindtap="tapTel" data-index="{{index}}">
+        <text class="cuIcon-phonefill text-green"></text>
+        <text class="tel-label">{{item.label}}</text>
+        <text class="tel-num">{{item.display}}</text>
+        <text class="tel-lock" wx:if="{{!item.unlocked && !isVip}}">看广告解锁，VIP免广告</text>
+        <text class="cuIcon-right text-gray"></text>
       </view>
     </view>
 
@@ -50,13 +80,13 @@
       <view class="desc">{{detail.introduction}}</view>
     </view>
 
-    <view class="section" wx:if="{{detail.room_types_arr.length > 0}}">
+    <view class="section" wx:if="{{detail.door_types_arr.length > 0}}">
       <view class="section-title">户型</view>
       <view class="room-list">
-        <view class="room-item" wx:for="{{detail.room_types_arr}}" wx:key="name">
+        <view class="room-item" wx:for="{{detail.door_types_arr}}" wx:key="door_type_name">
           <view class="room-header">
-            <text class="room-name">{{item.name}}</text>
-            <text class="room-bedrooms">{{item.bedrooms}}室</text>
+            <text class="room-name">{{item.door_type_name || item.name}}</text>
+            <text class="room-status {{item.statusClass}}" wx:if="{{item.statusText}}">{{item.statusText}}</text>
           </view>
           <view class="room-detail-row">
             <text class="room-label">面积</text>
@@ -66,20 +96,45 @@
             <text class="room-label">租金</text>
             <text class="room-value room-rent">¥{{item.rent_low}}-{{item.rent_high}}/月</text>
           </view>
+          <view class="room-detail-row" wx:if="{{item.turn_person_num !== undefined}}">
+            <text class="room-label">排队</text>
+            <text class="room-value room-queue">{{item.turn_person_num}}人</text>
+            <text class="room-value room-avail" wx:if="{{item.rent_flat_num > 0}}">可租{{item.rent_flat_num}}套</text>
+          </view>
         </view>
       </view>
+      <view class="disclaimer">信息仅供参考，无准确性保证，以项目官方信息为准</view>
     </view>
 
-    <view class="section" wx:if="{{detail.facilities_arr.length > 0}}">
-      <view class="section-title">配套设施</view>
+    <view class="section" wx:if="{{detail.appliances_arr.length > 0}}">
+      <view class="section-title">家电配置</view>
       <view class="facilities">
-        <text class="facility" wx:for="{{detail.facilities_arr}}" wx:key="*this">{{item}}</text>
+        <text class="facility" wx:for="{{detail.appliances_arr}}" wx:key="*this">{{item}}</text>
       </view>
     </view>
 
     <view class="section" wx:if="{{detail.supply_way}}">
       <view class="section-title">供应方式</view>
       <view class="desc">{{detail.supply_way}}</view>
+    </view>
+
+    <!-- 准入条件 + 配租规则 -->
+    <view class="section" wx:if="{{detail.project_access_conditions || detail.distribution_rule}}">
+      <view class="section-title">准入与配租</view>
+      <view class="rules-card" wx:if="{{detail.project_access_conditions}}" bindtap="toggleRules">
+        <view class="rules-header">
+          <text class="rules-title">准入条件</text>
+          <text class="cuIcon-{{expandedRules ? 'fold' : 'unfold'}} text-gray"></text>
+        </view>
+        <view class="rules-desc" wx:if="{{expandedRules}}">{{detail.project_access_conditions}}</view>
+      </view>
+      <view class="rules-card" wx:if="{{detail.distribution_rule}}" bindtap="toggleRules">
+        <view class="rules-header">
+          <text class="rules-title">配租规则</text>
+          <text class="cuIcon-{{expandedRules ? 'fold' : 'unfold'}} text-gray"></text>
+        </view>
+        <view class="rules-desc" wx:if="{{expandedRules}}">{{detail.distribution_rule}}</view>
+      </view>
     </view>
 
     <comment-section wx:if="{{id}}" target-type="shbzf_project" target-id="{{id}}"/>

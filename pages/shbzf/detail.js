@@ -55,11 +55,27 @@ const _translateFacility = (f) => FACILITY_MAP[f] || f
 const utils = require('../../utils/util')
 
 Page({
-  data: { StatusBar: 0, id: 0, detail: null, mediaList: [], loading: true, coordinate: { lat: null, lng: null }, marker: [] },
+  data: { StatusBar: 0, id: 0, detail: null, mediaList: [], loading: true, coordinate: { lat: null, lng: null }, marker: [], countdownText: '', expandedRules: false, tels: [], isVip: false, adUnitId: 'adunit-1261b13b058b14cb' },
   onLoad(options) {
     const sys = wx.getSystemInfoSync()
+    this._pendingTelIdx = -1
     this.setData({ StatusBar: sys.statusBarHeight, id: options.id })
     this.loadDetail()
+  },
+  _maskTel(tel) {
+    const s = String(tel || '').trim()
+    if (s.length <= 4) return s
+    return s.slice(0, 3) + '****' + s.slice(-2)
+  },
+  _countdownTo(endStr) {
+    if (!endStr) return ''
+    const end = new Date(endStr.replace(/-/g, '/')).getTime()
+    const now = Date.now()
+    const diff = end - now
+    if (diff <= 0) return ''
+    const days = Math.floor(diff / 86400000)
+    const hours = Math.floor((diff % 86400000) / 3600000)
+    return days > 0 ? `${days}天${hours}小时后截止` : `${Math.max(1, Math.floor(diff / 3600000))}小时后截止`
   },
   loadDetail() {
     this.setData({ loading: true })
@@ -68,7 +84,25 @@ Page({
         let detail = dRes.data
         try { detail.facilities_arr = (JSON.parse(detail.facilities || '[]')).map(_translateFacility) } catch(e) { detail.facilities_arr = [] }
         try { detail.room_types_arr = JSON.parse(detail.room_types || '[]') } catch(e) { detail.room_types_arr = [] }
-        this.setData({ detail })
+        // 户型：优先用官方 door_types[]，否则回退旧 room_types JSON
+        detail.door_types_arr = (detail.door_types && detail.door_types.length)
+          ? detail.door_types.map(d => Object.assign({}, d, {
+              statusText: (d.rent_flat_num || 0) > 0 ? '可租' : '满租',
+              statusClass: (d.rent_flat_num || 0) > 0 ? 'dt-avail' : 'dt-full'
+            }))
+          : detail.room_types_arr.map(r => Object.assign({}, r, { statusText: '', statusClass: '' }))
+        // 家电：官方 appliances[] 或旧 facilities
+        detail.appliances_arr = detail.appliances || detail.facilities_arr || []
+        const countdownText = this._countdownTo(detail.concent_rate_accept_end)
+        // 联系电话：默认脱敏，看广告或 VIP 后解锁
+        const tels = []
+        if (detail.project_tel) tels.push({ label: '项目', num: detail.project_tel, display: this._maskTel(detail.project_tel), unlocked: false })
+        if (detail.district_tel) tels.push({ label: '区住房保障', num: detail.district_tel, display: this._maskTel(detail.district_tel), unlocked: false })
+        this.setData({ detail, countdownText, tels })
+        // 查询 VIP 状态（VIP 免广告直接看电话）
+        market.getVipInfo().then((res) => {
+          if (res && res.status === 0 && res.data && res.data.is_active) this.setData({ isVip: true })
+        })
 
         if (detail.latitude && detail.longitude) {
           const coordinate = { lat: detail.latitude, lng: detail.longitude }
@@ -82,6 +116,50 @@ Page({
       }
       this.setData({ loading: false })
     })
+  },
+  toggleRules() {
+    this.setData({ expandedRules: !this.data.expandedRules })
+  },
+  tapTel(e) {
+    const idx = e.currentTarget.dataset.index
+    const tel = this.data.tels[idx]
+    if (!tel) return
+    if (tel.unlocked || this.data.isVip) { this.callNumber(tel.num); return }
+    this._showAd(idx)
+  },
+  _getAd() {
+    if (this._ad) return this._ad
+    if (!this.data.adUnitId || this.data.adUnitId.indexOf('adunit-xxxx') === 0) return null
+    this._ad = wx.createRewardedVideoAd({ adUnitId: this.data.adUnitId })
+    this._ad.onError((err) => { console.log('激励视频广告错误', err) })
+    this._ad.onClose((res) => {
+      const idx = this._pendingTelIdx
+      if (res && res.isEnded && idx >= 0) {
+        this._unlockTel(idx)
+      } else if (!res || !res.isEnded) {
+        wx.showToast({ title: '看完视频才能解锁', icon: 'none' })
+      }
+      this._pendingTelIdx = -1
+    })
+    return this._ad
+  },
+  _showAd(idx) {
+    this._pendingTelIdx = idx
+    const ad = this._getAd()
+    if (!ad) { wx.showToast({ title: '广告暂不可用', icon: 'none' }); return }
+    ad.show().catch(() => {
+      ad.load().then(() => ad.show()).catch(() => wx.showToast({ title: '广告加载失败', icon: 'none' }))
+    })
+  },
+  _unlockTel(idx) {
+    const tels = this.data.tels.slice()
+    const t = Object.assign({}, tels[idx], { unlocked: true, display: tels[idx].num })
+    tels[idx] = t
+    this.setData({ tels })
+    this.callNumber(tels[idx].num)
+  },
+  callNumber(tel) {
+    if (tel) wx.makePhoneCall({ phoneNumber: tel, fail: () => {} })
   },
   openMapNavigator() {
     const coordinate = this.data.coordinate

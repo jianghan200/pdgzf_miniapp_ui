@@ -26,6 +26,11 @@
       <input type="text" placeholder="搜索项目名称" confirm-type="search" bindinput="onSearchInput" />
     </view>
   </view>
+  <view class="sort-bar">
+    <view class="sort-tab {{chosenSort === item.key ? 'active' : ''}}"
+          wx:for="{{sortTabs}}" wx:key="key"
+          data-key="{{item.key}}" bindtap="tapSort">{{item.label}}</view>
+  </view>
   <view class="list">
     <view class="card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="openDetail">
       <image class="card-cover" src="{{item.cover_url || '/assets/today.png'}}" mode="aspectFill"/>
@@ -33,6 +38,12 @@
         <view class="card-title">{{item.name}}</view>
         <view class="card-meta">{{item.district_name}} · {{item.address}}</view>
         <view class="card-meta">{{item.house_type_summary}}</view>
+        <view class="card-badges">
+          <text class="badge badge-queue" wx:if="{{item.turn_person_num > 0}}">排队{{item.turn_person_num}}人</text>
+          <text class="badge badge-avail" wx:if="{{item.available}}">可租{{item.rent_flat_num}}套</text>
+          <text class="badge badge-full" wx:elif="{{item.total_units > 0}}">满租</text>
+          <text class="badge badge-ring" wx:if="{{item.ring_rd_name}}">{{item.ring_rd_name}}</text>
+        </view>
         <view class="card-bottom">
           <text class="card-rent" wx:if="{{item.rent_low}}">¥{{item.rent_low}}-{{item.rent_high}}/月</text>
           <text class="card-rent" wx:else>租金待定</text>
@@ -49,7 +60,7 @@
 <!-- 区域树状筛选 drawer -->
 <view class="filter-modal {{openDrawer ? 'show' : ''}}" bindtap="closeFilterDrawer">
   <view class="filter-container" catchtap>
-    <view class="filter-header">
+    <view class="filter-header" style="padding-top: {{menuTop}}px;">
       <view class="filter-title">
         <text class="cuIcon-locationfill filter-title-icon"></text>
         <text class="title-text">区域筛选</text>
@@ -60,20 +71,20 @@
     </view>
     <scroll-view scroll-y class="filter-content">
       <!-- 全部区域 -->
-      <view class="tree-node tree-root {{selectedCount === 0 ? 'active' : ''}}" catchtap="selectAll">
-        <text class="cuIcon-roundcheck tree-check" wx:if="{{selectedCount === 0}}"></text>
-        <text class="cuIcon-round tree-check" wx-else></text>
-        <text class="node-label">全部区域</text>
+      <view class="tree-node tree-root {{selectedDistrictIds.length === 0 && selectedBizcircleIds.length === 0 ? 'active' : ''}}" catchtap="toggleAllRegions">
+        <text class="cuIcon-{{allExpanded ? 'fold' : 'unfold'}} tree-toggle"></text>
+        <text class="tree-check {{selectedDistrictIds.length === 0 && selectedBizcircleIds.length === 0 ? 'cuIcon-roundcheck' : 'cuIcon-round'}}"></text>
+        <text class="node-label">全上海</text>
       </view>
-      <!-- 各区（可折叠） -->
+      <!-- 各区（默认收缩，点击"全上海"展开） -->
+      <view class="tree-children" wx:if="{{allExpanded}}">
       <block wx:for="{{districtTree}}" wx:key="id">
         <view class="tree-node tree-district">
           <view class="tree-toggle" catchtap="toggleDistrict" data-id="{{item.id}}">
             <text class="cuIcon-{{item.expanded ? 'fold' : 'unfold'}}"></text>
           </view>
           <view class="tree-main" catchtap="tapDistrict" data-id="{{item.id}}">
-            <text class="cuIcon-roundcheck tree-check" wx:if="{{item.checked}}"></text>
-            <text class="cuIcon-round tree-check" wx-else></text>
+            <text class="tree-check {{item.checked ? 'cuIcon-roundcheck' : 'cuIcon-round'}}"></text>
             <text class="node-label">{{item.name}}</text>
             <text class="node-count">{{item.project_count}}</text>
           </view>
@@ -82,14 +93,14 @@
           <view class="tree-node tree-bizcircle"
                 wx:for="{{item.children}}" wx:for-item="biz" wx:key="id"
                 catchtap="tapBizcircle" data-id="{{biz.id}}">
-            <text class="cuIcon-roundcheck tree-check" wx:if="{{biz.checked}}"></text>
-            <text class="cuIcon-round tree-check" wx-else></text>
+            <text class="tree-check {{biz.checked ? 'cuIcon-roundcheck' : 'cuIcon-round'}}"></text>
             <text class="node-label">{{biz.name}}</text>
             <text class="node-count">{{biz.project_count}}</text>
           </view>
           <view class="tree-empty" wx:if="{{!item.children || item.children.length === 0}}">暂无街镇</view>
         </view>
       </block>
+      </view>
       <!-- 户型筛选 -->
       <view class="filter-section">
         <view class="section-header">
@@ -113,6 +124,74 @@
                 wx:for="{{priceIntervals}}" wx:key="label"
                 data-idx="{{index}}" catchtap="tapPriceInterval">{{item.label}}</view>
         </view>
+        <view class="custom-price-row">
+          <view class="custom-price-toggle" bindtap="toggleCustomPrice" data-on="{{customPriceMode}}">
+            <text class="cuIcon-{{customPriceMode ? 'roundcheck' : 'round'}} custom-price-check"></text>
+            <text class="custom-price-label">自定义</text>
+          </view>
+          <view class="custom-price-inputs" wx:if="{{customPriceMode}}">
+            <input class="custom-price-input" type="number" placeholder="最低价" value="{{customPriceMin}}" bindinput="onCustomPriceMin"/>
+            <text class="custom-price-sep">~</text>
+            <input class="custom-price-input" type="number" placeholder="最高价" value="{{customPriceMax}}" bindinput="onCustomPriceMax"/>
+            <text class="custom-price-unit">元/月</text>
+          </view>
+        </view>
+      </view>
+      <!-- 环线 -->
+      <view class="filter-section">
+        <view class="section-header">
+          <text class="cuIcon-locationfill section-icon"></text>
+          <text class="section-title">环线</text>
+        </view>
+        <view class="tag-grid">
+          <view class="filter-tag {{chosenRingRd === item ? 'selected' : 'unselected'}}"
+                wx:for="{{ringRds}}" wx:key="*this"
+                data-rd="{{item}}" catchtap="tapRingRd">{{item}}</view>
+        </view>
+      </view>
+      <!-- 家电 -->
+      <view class="filter-section">
+        <view class="section-header">
+          <text class="cuIcon-homefill section-icon"></text>
+          <text class="section-title">家电</text>
+        </view>
+        <view class="tag-grid">
+          <view class="filter-tag {{tools.indexOf(chosenAppliances, item) !== -1 ? 'selected' : 'unselected'}}"
+                wx:for="{{applianceOptions}}" wx:key="*this"
+                data-a="{{item}}" catchtap="tapAppliance">{{item}}</view>
+        </view>
+      </view>
+      <!-- 可租套数 -->
+      <view class="filter-section">
+        <view class="section-header">
+          <text class="cuIcon-homefill section-icon"></text>
+          <text class="section-title">可租套数</text>
+        </view>
+        <view class="tag-grid">
+          <view class="filter-tag {{chosenFlatIdx === index ? 'selected' : 'unselected'}}"
+                wx:for="{{flatBuckets}}" wx:key="label"
+                data-idx="{{index}}" catchtap="tapFlatBucket">{{item.label}}</view>
+        </view>
+      </view>
+      <!-- 排队人数 -->
+      <view class="filter-section">
+        <view class="section-header">
+          <text class="cuIcon-peoplefill section-icon"></text>
+          <text class="section-title">排队人数</text>
+        </view>
+        <view class="tag-grid">
+          <view class="filter-tag {{chosenQueueIdx === index ? 'selected' : 'unselected'}}"
+                wx:for="{{queueBuckets}}" wx:key="label"
+                data-idx="{{index}}" catchtap="tapQueueBucket">{{item.label}}</view>
+        </view>
+      </view>
+      <!-- 仅看可租 -->
+      <view class="filter-section">
+        <view class="section-header">
+          <text class="cuIcon-checkcirclefill section-icon"></text>
+          <text class="section-title">仅看可租</text>
+        </view>
+        <switch checked="{{onlyAvailable}}" bindchange="toggleAvailable" color="#e54d42"/>
       </view>
     </scroll-view>
     <view class="filter-footer">

@@ -1,121 +1,225 @@
+<wxs src="../../utils/tool.wxs" module="tools" />
 <cu-custom bgColor="bg-black" isBack="{{true}}">
   <view slot="backText">返回</view>
   <view slot="content">
-    <view class="text-white text-bold"></view>
+    <view class="text-white text-bold">{{editId ? '编辑房源' : '发布房源'}}</view>
   </view>
 </cu-custom>
-<view style="background-color: #f5f5f5; min-height: 100vh; padding-bottom: 140rpx;">
-  <view class="page-title">{{editId ? '编辑房源' : '发布房源'}}</view>
 
-  <!-- 图片上传 -->
+<view class="page-container">
+  <!-- 1. 身份选择 -->
   <view class="section">
-    <view class="section-title">房源图片（最多9张）</view>
-    <view class="image-grid">
+    <view class="section-title">我是</view>
+    <view class="identity-list">
+      <view class="identity-card {{form.source_type === item.value ? 'active' : ''}}" wx:for="{{identityOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="onSourceTypeChange">
+        <view class="identity-title">{{item.title}}</view>
+        <view class="identity-desc">{{item.desc}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 2. 图片上传 -->
+  <view class="section">
+    <view class="section-title">实拍照</view>
+    <view class="upload-cover {{mediaUrls.length > 0 ? 'has-image' : ''}}" bindtap="chooseImage" wx:if="{{mediaUrls.length === 0}}">
+      <text class="cuIcon-camera text-gray" style="font-size: 72rpx;"></text>
+      <view class="upload-cover-title">上传照片</view>
+      <view class="upload-cover-tip">选择多张最能体现房子亮点的，各区域照片</view>
+    </view>
+    <view class="image-list" wx:else>
       <view class="image-item" wx:for="{{mediaUrls}}" wx:key="*this">
         <image src="{{item}}" mode="aspectFill" class="preview-img"/>
-        <view class="remove-btn" data-idx="{{index}}" bindtap="removeImage">×</view>
+        <view class="image-index" wx:if="{{index === 0}}">封面</view>
+        <view class="remove-btn" data-idx="{{index}}" catchtap="removeImage">×</view>
       </view>
-      <view class="image-add" bindtap="chooseImage" wx:if="{{mediaUrls.length < 9}}">
-        <text class="cuIcon-add text-gray" style="font-size: 60rpx;"></text>
+      <view class="image-add-small" bindtap="chooseImage" wx:if="{{mediaUrls.length < 9}}">
+        <text class="cuIcon-add text-gray" style="font-size: 48rpx;"></text>
       </view>
+    </view>
+    <view class="tips">
+      <view class="tip-item">· 真实房源照片对加速出租非常重要</view>
+      <view class="tip-item">· 请使用清晰、无水印、入住后的近期实拍照片</view>
+      <view class="tip-item">· 包含卧室、客厅、厨房、卫生间等区域</view>
+      <view class="tip-item">· 请不要使用网图/AI 图或带有其他平台水印的图片</view>
     </view>
   </view>
 
-  <!-- 基本信息 -->
+  <!-- 3. 出租类型 -->
   <view class="section">
-    <view class="section-title">基本信息</view>
-    <view class="form-item">
-      <text class="form-label">标题</text>
-      <input class="form-input" placeholder="如：陆家嘴精装一室一厅" value="{{form.title}}" data-field="title" bindinput="onInput"/>
+    <view class="section-title">出租类型</view>
+    <view class="tag-row">
+      <view class="tag {{form.rent_type === item.value ? 'active' : ''}}" wx:for="{{rentTypeOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="onRentTypeChange">{{item.label}}</view>
     </view>
-    <view class="form-item">
-      <text class="form-label">区域</text>
+  </view>
+
+  <!-- 4. 小区/地址 -->
+  <view class="section">
+    <view class="section-title">小区名称或地址</view>
+    <input class="block-input" placeholder="输入小区或地址" value="{{form.address_name}}" data-field="address_name" bindinput="onInput"/>
+    <!-- <view class="sub-address-row">
       <picker mode="selector" range="{{districts}}" value="{{districtIndex}}" bindchange="onDistrictChange">
-        <view class="form-picker">{{form.district || '请选择'}}</view>
+        <view class="sub-picker">{{form.district || '选择区域'}}</view>
       </picker>
+      <input class="sub-input" placeholder="镇/街道" value="{{form.town}}" data-field="town" bindinput="onInput"/>
     </view>
-    <view class="form-item">
-      <text class="form-label">镇/街道</text>
-      <input class="form-input" placeholder="如：陆家嘴街道" value="{{form.town}}" data-field="town" bindinput="onInput"/>
-    </view>
-    <view class="form-item">
-      <text class="form-label">详细地址</text>
-      <input class="form-input" placeholder="如：浦东新区陆家嘴环路1000号" value="{{form.address}}" data-field="address" bindinput="onInput"/>
-    </view>
+    <input class="block-input mt16" placeholder="详细地址，如：浦东新区陆家嘴环路1000号" value="{{form.address}}" data-field="address" bindinput="onInput"/> -->
   </view>
 
-  <!-- 户型信息 -->
+  <!-- 5. 户型结构 -->
   <view class="section">
-    <view class="section-title">户型信息</view>
-    <view class="form-item">
-      <text class="form-label">卧室数</text>
-      <input class="form-input" type="number" value="{{form.bedrooms}}" bindinput="onBedroomChange"/>
+    <view class="section-title">整套房子的房间</view>
+    <view class="tag-row">
+      <view class="tag {{form.bedrooms === item.value ? 'active' : ''}}" wx:for="{{bedroomOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="onBedroomChange">{{item.label}}</view>
+      <view class="tag {{customBedroom ? 'active' : ''}}" bindtap="showCustomBedroom">更多</view>
     </view>
-    <view class="form-item">
-      <text class="form-label">客厅数</text>
-      <input class="form-input" type="number" value="{{form.living_rooms}}" bindinput="onLivingChange"/>
-    </view>
-    <view class="form-item">
-      <text class="form-label">卫生间数</text>
-      <input class="form-input" type="number" value="{{form.bathrooms}}" bindinput="onBathChange"/>
-    </view>
-    <view class="form-item">
-      <text class="form-label">面积（㎡）</text>
-      <input class="form-input" type="digit" placeholder="如：58" value="{{form.area}}" data-field="area" bindinput="onInput"/>
-    </view>
-  </view>
+    <input class="custom-num mt16" wx:if="{{customBedroom}}" type="number" placeholder="输入卧室数量" value="{{form.bedrooms}}" data-field="bedrooms" bindinput="onNumberInput"/>
 
-  <!-- 租金信息 -->
-  <view class="section">
-    <view class="section-title">租金信息</view>
-    <view class="form-item">
-      <text class="form-label">月租金（元）</text>
-      <input class="form-input" type="digit" placeholder="如：5500" value="{{form.rent}}" data-field="rent" bindinput="onInput"/>
+    <view class="section-title" style="margin-top: 32rpx;">客厅</view>
+    <view class="tag-row">
+      <view class="tag {{form.living_rooms === item.value ? 'active' : ''}}" wx:for="{{livingRoomOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="onLivingChange">{{item.label}}</view>
+      <view class="tag {{customLiving ? 'active' : ''}}" bindtap="showCustomLiving">更多</view>
     </view>
-    <view class="form-item">
-      <text class="form-label">付款方式</text>
-      <picker mode="selector" range="{{paymentTypes}}" value="{{paymentIndex}}" bindchange="onPaymentChange">
-        <view class="form-picker">{{form.payment_type}}</view>
-      </picker>
-    </view>
-    <view class="form-item">
-      <text class="form-label">最短租期（月）</text>
-      <input class="form-input" type="number" value="{{form.min_lease}}" bindinput="onMinLeaseChange"/>
-    </view>
-    <view class="form-item">
-      <text class="form-label">最长租期（月，0不限）</text>
-      <input class="form-input" type="number" value="{{form.max_lease}}" bindinput="onMaxLeaseChange"/>
-    </view>
-    <view class="form-row">
-      <view class="form-switch" bindtap="toggleShortTerm">
-        <text>支持短租</text>
-        <switch checked="{{form.support_short_term == 1}}" color="#e54d42"/>
+    <input class="custom-num mt16" wx:if="{{customLiving}}" type="number" placeholder="输入客厅数量" value="{{form.living_rooms}}" data-field="living_rooms" bindinput="onNumberInput"/>
+
+    <view class="section-title" style="margin-top: 32rpx;">卫生间</view>
+    <view wx:if="{{form.rent_type === 'whole'}}">
+      <view class="tag-row">
+        <view class="tag {{form.bathrooms === item.value ? 'active' : ''}}" wx:for="{{bathroomOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="onBathroomChange">{{item.label}}</view>
+        <view class="tag {{customBathroom ? 'active' : ''}}" bindtap="showCustomBathroom">更多</view>
       </view>
-      <view class="form-switch" bindtap="toggleLongTerm">
-        <text>仅长租</text>
-        <switch checked="{{form.only_long_term == 1}}" color="#e54d42"/>
+      <input class="custom-num mt16" wx:if="{{customBathroom}}" type="number" placeholder="输入卫生间数量" value="{{form.bathrooms}}" data-field="bathrooms" bindinput="onNumberInput"/>
+    </view>
+    <view class="tag-row" wx:else>
+      <view class="tag {{form.bathroom_type === 'private' ? 'active' : ''}}" data-value="private" bindtap="onBathroomTypeChange">独立卫生间</view>
+      <view class="tag {{form.bathroom_type === 'shared' ? 'active' : ''}}" data-value="shared" bindtap="onBathroomTypeChange">共享卫生间</view>
+    </view>
+  </view>
+
+  <!-- 6. 房间类型（合租/床位显示） -->
+  <view class="section" wx:if="{{form.rent_type === 'share' || form.rent_type === 'bed'}}">
+    <view class="section-title">房间类型</view>
+    <view class="tag-row">
+      <view class="tag {{form.room_type === item.value ? 'active' : ''}}" wx:for="{{roomTypeOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="onRoomTypeChange">{{item.label}}</view>
+    </view>
+  </view>
+
+  <!-- 7. 朝向 -->
+  <view class="section">
+    <view class="section-title">朝向</view>
+    <view class="tag-row">
+      <view class="tag {{form.orientation === item.value ? 'active' : ''}}" wx:for="{{orientationOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="onOrientationChange">{{item.label}}</view>
+    </view>
+  </view>
+
+  <!-- 8. 设施 -->
+  <view class="section">
+    <view class="section-title">设施</view>
+    <view class="tag-row">
+      <view class="tag {{form.facility_level === item.value ? 'active' : ''}}" wx:for="{{facilityLevelOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="onFacilityLevelChange">{{item.label}}</view>
+    </view>
+    <view class="section-subtitle" style="margin-top: 8rpx;">详细设施（选填）</view>
+    <view class="tag-row" style="margin-top: 8rpx;">
+      <view class="tag {{tools.indexOf(form.facilities, item) >= 0 ? 'active' : ''}}" wx:for="{{facilityOptions}}" wx:key="*this" data-idx="{{index}}" bindtap="toggleFacility">{{item}}</view>
+    </view>
+  </view>
+
+  <!-- 9. 性别限制（合租/床位显示） -->
+  <view class="section" wx:if="{{form.rent_type === 'share' || form.rent_type === 'bed'}}">
+    <view class="section-title">性别</view>
+    <view class="tag-row">
+      <view class="tag {{form.gender_limit === item.value ? 'active' : ''}}" wx:for="{{genderOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="onGenderChange">{{item.label}}</view>
+    </view>
+  </view>
+
+  <!-- 10. 面积 -->
+  <view class="section">
+    <view class="section-title">整套房子的总面积</view>
+    <view class="input-with-unit">
+      <input class="unit-input" type="digit" placeholder="请输入总面积" value="{{form.total_area}}" data-field="total_area" bindinput="onInput"/>
+      <text class="unit">平米</text>
+    </view>
+    <view wx:if="{{form.rent_type === 'share'}}">
+      <view class="section-title" style="margin-top: 32rpx;">待租卧室面积</view>
+      <view class="input-with-unit">
+        <input class="unit-input" type="digit" placeholder="请输入出租房间面积" value="{{form.bedroom_area}}" data-field="bedroom_area" bindinput="onInput"/>
+        <text class="unit">平米</text>
       </view>
     </view>
   </view>
 
-  <!-- 入住信息 -->
+  <!-- 11. 楼层 -->
   <view class="section">
-    <view class="section-title">入住信息</view>
-    <view class="form-item">
-      <text class="form-label">起租日期</text>
-      <picker mode="date" value="{{form.available_date}}" bindchange="onDateChange">
-        <view class="form-picker">{{form.available_date || '请选择'}}</view>
-      </picker>
-    </view>
-    <view class="form-item">
-      <text class="form-label">看房时间</text>
-      <input class="form-input" placeholder="如：随时可看" value="{{form.earliest_view_time}}" data-field="earliest_view_time" bindinput="onInput"/>
+    <view class="section-title">楼层</view>
+    <view class="floor-row">
+      <input class="floor-input" type="number" placeholder="第几层" value="{{form.floor}}" data-field="floor" bindinput="onInput"/>
+      <text class="floor-split">/</text>
+      <input class="floor-input" type="number" placeholder="总楼层" value="{{form.total_floor}}" data-field="total_floor" bindinput="onInput"/>
     </view>
   </view>
 
-  <!-- 费用信息 -->
+  <!-- 12. 入住时间 -->
   <view class="section">
-    <view class="section-title">费用信息</view>
+    <view class="section-title">可入住时间</view>
+    <picker mode="date" value="{{form.available_date}}" bindchange="onDateChange">
+      <view class="date-picker">{{form.available_date || '选择日期'}}</view>
+    </picker>
+  </view>
+
+  <!-- 13. 详情介绍 -->
+  <view class="section">
+    <view class="section-title">详情介绍</view>
+    <view class="section-subtitle">房子的优缺点、交通及周边环境等</view>
+    <textarea class="block-textarea" placeholder="请详细介绍房子的情况" value="{{form.description}}" data-field="description" bindinput="onInput" maxlength="500"/>
+  </view>
+
+  <!-- 14. 室友情况（合租/床位显示） -->
+  <view class="section" wx:if="{{form.rent_type === 'share' || form.rent_type === 'bed'}}">
+    <view class="section-title">室友情况</view>
+    <view class="section-subtitle">介绍其他租客的情况、性别、数量等</view>
+    <textarea class="block-textarea" placeholder="请补充室友情况" value="{{form.roommate_info}}" data-field="roommate_info" bindinput="onInput" maxlength="300"/>
+  </view>
+
+  <!-- 15. 其他标签 -->
+  <view class="section">
+    <view class="section-title">其他</view>
+    <view class="tag-row">
+      <view class="tag {{tools.indexOf(extraTags, item.value) >= 0 ? 'active' : ''}}" wx:for="{{extraTagOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="toggleExtraTag">{{item.label}}</view>
+    </view>
+  </view>
+
+  <!-- 16. 租金 -->
+  <view class="section">
+    <view class="section-title">月租金</view>
+    <view class="input-with-unit">
+      <input class="unit-input" type="digit" placeholder="请输入月租金" value="{{form.rent}}" data-field="rent" bindinput="onInput"/>
+      <text class="unit">元/月</text>
+    </view>
+
+    <view class="section-title" style="margin-top: 32rpx;">押金</view>
+    <view class="tag-row">
+      <view class="tag {{form.deposit_months === item.value ? 'active' : ''}}" wx:for="{{depositOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="onDepositChange">{{item.label}}</view>
+      <view class="tag {{customDeposit ? 'active' : ''}}" bindtap="showCustomDeposit">更多</view>
+    </view>
+    <view class="input-with-unit custom-unit mt16" wx:if="{{customDeposit}}">
+      <input class="unit-input" type="number" placeholder="输入押金月数" value="{{form.deposit_months}}" data-field="deposit_months" bindinput="onNumberInput"/>
+      <text class="unit">个月</text>
+    </view>
+
+    <view class="section-title" style="margin-top: 32rpx;">付款方式</view>
+    <view class="tag-row">
+      <view class="tag {{form.payment_months === item.value ? 'active' : ''}}" wx:for="{{paymentMonthOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="onPaymentMonthChange">{{item.label}}</view>
+      <view class="tag {{customPayment ? 'active' : ''}}" bindtap="showCustomPayment">更多</view>
+      <!-- <view class="tag {{form.is_negotiable ? 'active' : ''}}" bindtap="toggleNegotiable">面议</view> -->
+    </view>
+    <view class="input-with-unit custom-unit mt16" wx:if="{{customPayment}}">
+      <input class="unit-input" type="number" placeholder="输入付款月数" value="{{form.payment_months}}" data-field="payment_months" bindinput="onNumberInput"/>
+      <text class="unit">个月</text>
+    </view>
+  </view>
+
+  <!-- 17. 费用信息（选填） -->
+  <view class="section">
+    <view class="section-title">费用信息（选填）</view>
     <view class="form-item">
       <text class="form-label">停车费</text>
       <input class="form-input" placeholder="如：500元/月" value="{{form.parking_fee}}" data-field="parking_fee" bindinput="onInput"/>
@@ -126,43 +230,46 @@
     </view>
   </view>
 
-  <!-- 配套设施 -->
+  <!-- 18. 周边配套 -->
   <view class="section">
-    <view class="section-title">配套设施</view>
-    <view class="tags-grid">
-      <view class="tag-option {{form.facilities.indexOf(item) >= 0 ? 'active' : ''}}" wx:for="{{facilityOptions}}" wx:key="*this" data-idx="{{index}}" bindtap="toggleFacility">{{item}}</view>
+    <view class="section-title">周边配套（选填）</view>
+    <view class="tag-row">
+      <view class="tag {{tools.indexOf(form.nearby_facilities, item) >= 0 ? 'active' : ''}}" wx:for="{{nearbyOptions}}" wx:key="*this" data-idx="{{index}}" bindtap="toggleNearby">{{item}}</view>
     </view>
   </view>
 
-  <!-- 周边配套 -->
+  <!-- 19. 联系人 -->
   <view class="section">
-    <view class="section-title">周边配套</view>
-    <view class="tags-grid">
-      <view class="tag-option nearby {{form.nearby_facilities.indexOf(item) >= 0 ? 'active' : ''}}" wx:for="{{nearbyOptions}}" wx:key="*this" data-idx="{{index}}" bindtap="toggleNearby">{{item}}</view>
-    </view>
-  </view>
-
-  <!-- 联系人 -->
-  <view class="section">
-    <view class="section-title">联系人</view>
-    <view class="form-item">
-      <text class="form-label">姓名</text>
-      <input class="form-input" value="{{form.contact_name}}" data-field="contact_name" bindinput="onInput"/>
+    <view class="section-title">联系方式</view>
+    <view class="contact-header">
+      <button class="contact-avatar-btn" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+        <image class="contact-avatar" src="{{form.avatar_url || '/images/default-avatar.png'}}" mode="aspectFill"/>
+      </button>
+      <view class="contact-info">
+        <input class="contact-nickname" type="nickname" placeholder="请输入微信名" value="{{form.contact_name}}" data-field="contact_name" bindinput="onInput"/>
+        <view class="contact-tip">点击头像选择微信头像，输入昵称</view>
+      </view>
+      <view class="contact-fill">{{form.contact_name ? '已获取' : '去填写'}}</view>
     </view>
     <view class="form-item">
-      <text class="form-label">电话</text>
+      <text class="form-label required">电话</text>
       <input class="form-input" type="number" placeholder="138****8888" value="{{form.contact_phone}}" data-field="contact_phone" bindinput="onInput"/>
     </view>
+    <view class="form-item">
+      <text class="form-label">微信</text>
+      <input class="form-input" placeholder="选填" value="{{form.contact_wechat}}" data-field="contact_wechat" bindinput="onInput"/>
+    </view>
+    <view class="form-item">
+      <text class="form-label">QQ</text>
+      <input class="form-input" placeholder="选填" value="{{form.contact_qq}}" data-field="contact_qq" bindinput="onInput"/>
+    </view>
   </view>
 
-  <!-- 描述 -->
-  <view class="section">
-    <view class="section-title">房源描述</view>
-    <textarea class="form-textarea" placeholder="详细描述房源亮点、周边环境、交通等" value="{{form.description}}" data-field="description" bindinput="onInput" maxlength="500"/>
-  </view>
+  <!-- 底部占位 -->
+  <view style="height: 160rpx;"></view>
+</view>
 
-  <!-- 提交 -->
-  <view class="bottom-bar">
-    <button class="cu-btn bg-red lg" bindtap="submit" disabled="{{submitting}}" style="width: 100%;">{{editId ? '保存修改' : '发布房源'}}</button>
-  </view>
+<!-- 20. 发布按钮 -->
+<view class="bottom-bar">
+  <button class="submit-btn" bindtap="submit" disabled="{{submitting}}">{{editId ? '保存修改' : '发布房源'}}</button>
 </view>

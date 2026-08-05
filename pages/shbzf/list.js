@@ -26,12 +26,54 @@ Page({
       { label: '8000-12000', min: 8000, max: 12000 },
       { label: '12000以上', min: 12000, max: 999999 }
     ],
-    chosenPriceIndex: -1
+    chosenPriceIndex: -1,
+    // 环线筛选（单选）
+    ringRds: ['内环内', '内环中', '中环外', '外环中', '外郊环间', '郊环外'],
+    chosenRingRd: '',
+    // 家电筛选（多选）
+    applianceOptions: ['洗衣机', '空调', '天然气', '冰箱', '暖气', '宽带'],
+    chosenAppliances: [],
+    // 仅看可租
+    onlyAvailable: false,
+    // 排序
+    sortTabs: [
+      { key: 'newest', label: '最新' },
+      { key: 'queue_asc', label: '排队少' }
+    ],
+    chosenSort: 'newest',
+    // 全上海根节点是否展开（默认收缩）
+    allExpanded: false,
+    // 价格：预设区间 + 自定义
+    customPriceMode: false,
+    customPriceMin: '',
+    customPriceMax: '',
+    // 可租套数 / 排队人数（单选桶）
+    flatBuckets: [
+      { label: '不限' },
+      { label: '可租', min: 1 },
+      { label: '满租', max: 0 },
+      { label: '≥10套', min: 10 },
+      { label: '≥50套', min: 50 }
+    ],
+    chosenFlatIdx: -1,
+    queueBuckets: [
+      { label: '不限' },
+      { label: '0人', max: 0 },
+      { label: '1-50人', min: 1, max: 50 },
+      { label: '50-100人', min: 50, max: 100 },
+      { label: '100人以上', min: 100 }
+    ],
+    chosenQueueIdx: -1
   },
 
   onLoad() {
     const sys = wx.getSystemInfoSync()
-    this.setData({ StatusBar: sys.statusBarHeight })
+    // 胶囊按钮包围盒：用于筛选侧边栏顶部对齐胶囊最高处
+    const menu = (typeof wx.getMenuButtonBoundingClientRect === 'function') ? wx.getMenuButtonBoundingClientRect() : null
+    this.setData({
+      StatusBar: sys.statusBarHeight,
+      menuTop: (menu && menu.top) ? menu.top : (sys.statusBarHeight || 20)
+    })
     this.loadDistricts()
     this.loadList(true)
   },
@@ -87,10 +129,27 @@ Page({
     if (this.data.chosenRoomTypes.length) {
       params.house_types = this.data.chosenRoomTypes.join(',')
     }
-    if (this.data.chosenPriceIndex >= 0) {
+    if (this.data.customPriceMode) {
+      if (this.data.customPriceMin) params.rent_min = this.data.customPriceMin
+      if (this.data.customPriceMax) params.rent_max = this.data.customPriceMax
+    } else if (this.data.chosenPriceIndex >= 0) {
       params.rent_min = this.data.priceIntervals[this.data.chosenPriceIndex].min
       params.rent_max = this.data.priceIntervals[this.data.chosenPriceIndex].max
     }
+    if (this.data.chosenFlatIdx >= 0) {
+      const b = this.data.flatBuckets[this.data.chosenFlatIdx]
+      if (b.min != null) params.min_rent_flat = b.min
+      if (b.max != null) params.max_rent_flat = b.max
+    }
+    if (this.data.chosenQueueIdx >= 0) {
+      const b = this.data.queueBuckets[this.data.chosenQueueIdx]
+      if (b.min != null) params.min_queue = b.min
+      if (b.max != null) params.max_queue = b.max
+    }
+    if (this.data.chosenRingRd) params.ring_rd = this.data.chosenRingRd
+    if (this.data.chosenAppliances.length) params.appliances = this.data.chosenAppliances.join(',')
+    if (this.data.onlyAvailable) params.available_only = 1
+    params.sort = this.data.chosenSort
     if (this.data.keyword) params.keyword = this.data.keyword
     market.getShbzfList(params).then((res) => {
       if (res && res.status === 0) {
@@ -149,6 +208,24 @@ Page({
     this.setData({ districtTree: tree })
   },
 
+  toggleAllRegions() {
+    // 点击"全上海"：展开/收缩区列表；若已勾选具体区镇，则仅清除区镇筛选（保留其他筛选），回到全上海
+    const hasRegion = (this.data.selectedDistrictIds.length > 0) || (this.data.selectedBizcircleIds.length > 0)
+    if (hasRegion) {
+      const tree = this.data.districtTree.map((d) => {
+        const children = (d.children || []).map((b) => Object.assign({}, b, { checked: false }))
+        return Object.assign({}, d, { checked: false, children })
+      })
+      const selectedCount = this.data.chosenRoomTypes.length
+        + (this.data.chosenPriceIndex >= 0 ? 1 : 0)
+        + (this.data.chosenRingRd ? 1 : 0)
+        + this.data.chosenAppliances.length
+        + (this.data.onlyAvailable ? 1 : 0)
+      this.setData({ districtTree: tree, selectedDistrictIds: [], selectedBizcircleIds: [], selectedCount })
+    }
+    this.setData({ allExpanded: !this.data.allExpanded })
+  },
+
   tapBizcircle(e) {
     const id = e.currentTarget.dataset.id
     const tree = this.data.districtTree.map((d) => {
@@ -171,7 +248,15 @@ Page({
     this.setData({
       districtTree: tree,
       chosenRoomTypes: [],
-      chosenPriceIndex: -1
+      chosenPriceIndex: -1,
+      chosenRingRd: '',
+      chosenAppliances: [],
+      onlyAvailable: false,
+      customPriceMode: false,
+      customPriceMin: '',
+      customPriceMax: '',
+      chosenFlatIdx: -1,
+      chosenQueueIdx: -1
     })
   },
 
@@ -193,6 +278,12 @@ Page({
       + selectedBizcircleIds.length
       + this.data.chosenRoomTypes.length
       + (this.data.chosenPriceIndex >= 0 ? 1 : 0)
+      + (this.data.customPriceMode ? 1 : 0)
+      + (this.data.chosenRingRd ? 1 : 0)
+      + this.data.chosenAppliances.length
+      + (this.data.onlyAvailable ? 1 : 0)
+      + (this.data.chosenFlatIdx >= 0 ? 1 : 0)
+      + (this.data.chosenQueueIdx >= 0 ? 1 : 0)
     this.setData({
       selectedDistrictIds,
       selectedBizcircleIds,
@@ -223,8 +314,47 @@ Page({
 
   tapPriceInterval(e) {
     const idx = Number(e.currentTarget.dataset.idx)
-    // 再次点击已选中的 -> 取消
-    this.setData({ chosenPriceIndex: this.data.chosenPriceIndex === idx ? -1 : idx })
+    // 再次点击已选中的 -> 取消；选预设区间时关闭自定义模式
+    this.setData({ chosenPriceIndex: this.data.chosenPriceIndex === idx ? -1 : idx, customPriceMode: false })
+  },
+  toggleCustomPrice() {
+    // 自定义价格模式与预设区间互斥（点击行切换）
+    const on = !this.data.customPriceMode
+    this.setData({
+      customPriceMode: on,
+      chosenPriceIndex: on ? -1 : this.data.chosenPriceIndex
+    })
+  },
+  onCustomPriceMin(e) { this.setData({ customPriceMin: e.detail.value }) },
+  onCustomPriceMax(e) { this.setData({ customPriceMax: e.detail.value }) },
+  tapFlatBucket(e) {
+    const idx = Number(e.currentTarget.dataset.idx)
+    this.setData({ chosenFlatIdx: this.data.chosenFlatIdx === idx ? -1 : idx })
+  },
+  tapQueueBucket(e) {
+    const idx = Number(e.currentTarget.dataset.idx)
+    this.setData({ chosenQueueIdx: this.data.chosenQueueIdx === idx ? -1 : idx })
+  },
+
+  tapRingRd(e) {
+    const rd = e.currentTarget.dataset.rd
+    this.setData({ chosenRingRd: this.data.chosenRingRd === rd ? '' : rd })
+  },
+
+  tapAppliance(e) {
+    const a = e.currentTarget.dataset.a
+    const cur = this.data.chosenAppliances
+    const idx = cur.indexOf(a)
+    this.setData({ chosenAppliances: idx === -1 ? cur.concat([a]) : cur.filter(x => x !== a) })
+  },
+
+  toggleAvailable(e) {
+    this.setData({ onlyAvailable: e.detail.value })
+  },
+
+  tapSort(e) {
+    const key = e.currentTarget.dataset.key
+    this.setData({ chosenSort: key })
   },
 
   openDetail(e) {

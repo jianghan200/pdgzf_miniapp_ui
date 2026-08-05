@@ -33,7 +33,7 @@
         <cover-view class="reset-btn" bindtap="onReset" wx:if="{{currentLevel !== 'district'}}">
           <cover-view class="reset-btn-text">全市</cover-view>
         </cover-view>
-        <cover-view class="list-btn" bindtap="toggleList">
+        <cover-view class="list-btn {{chosenRoomTypes.length > 0 || chosenPriceIndex >= 0 ? 'active' : ''}}" bindtap="toggleList">
           <cover-view class="list-btn-text">列表</cover-view>
         </cover-view>
       </cover-view>
@@ -54,12 +54,20 @@
   </map>
 </view>
 
-<!-- 半屏列表 -->
+<!-- 列表+筛选面板 -->
 <view class="list-mask {{showList ? 'show' : ''}}" bindtap="toggleList"></view>
 <view class="list-panel {{showList ? 'show' : ''}}">
   <view class="list-panel-header">
     <text class="list-panel-title">{{listTitle}}</text>
     <text class="cuIcon-close list-close" bindtap="toggleList"></text>
+  </view>
+  <view class="list-filter-bar">
+    <view class="lf-row">
+      <view class="lf-chip {{chosenRoomTypes.indexOf(item) !== -1 ? 'chip-active' : ''}}" wx:for="{{roomTypes}}" wx:key="*this" data-type="{{item}}" bindtap="tapRoomType">{{item}}</view>
+    </view>
+    <view class="lf-row">
+      <view class="lf-chip {{chosenPriceIndex === idx ? 'chip-active' : ''}}" wx:for="{{priceIntervals}}" wx:key="idx" data-idx="{{idx}}" bindtap="tapPriceInterval">{{item.label}}</view>
+    </view>
   </view>
   <scroll-view scroll-y class="list-scroll">
     <view class="list-empty" wx:if="{{listData.length === 0}}">暂无数据</view>

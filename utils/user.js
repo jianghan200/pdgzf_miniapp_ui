@@ -105,7 +105,7 @@ const upload_weixin_nickNameAndAvatar = function(nickName, avatar) {
   return new Promise((resolve, reject) => {
     wx.request({
       url: url,
-      header: { 'token' : token, 'content-type' : 'application/x-www-form-urlencoded' },
+      header: { 'token' : token, 'content-type' : 'application/json' },
       method: 'POST',
       data: { 'wxNickName' : nickName, 'wxAvatarUrl': avatar },
       success: function(res) {
