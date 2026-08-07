@@ -88,7 +88,14 @@
           <text class="house-vip" wx:if="{{item.is_vip == 1}}">VIP</text>
         </view>
         <view class="house-meta">{{item.district}} · {{item.town}}</view>
-        <view class="house-meta">{{item.house_type}} · {{item.area}}㎡ · {{item.payment_type}}</view>
+        <view class="house-meta">{{item.house_type}}
+          <template v-if="item.area && item.area > 0">
+            · {{ item.area }}㎡
+          </template>
+          <template v-if="item.payment_type">
+            · {{ item.payment_type }}
+          </template>
+        </view>
         <view class="house-bottom">
           <text class="house-rent">¥{{item.rent}}<text class="house-rent-unit">/月</text></text>
           <text class="house-time">{{item.online_time_str}}</text>
