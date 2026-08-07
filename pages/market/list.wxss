@@ -122,6 +122,7 @@
 }
 .house-info {
   flex: 1;
+  min-width: 0;
   padding: 20rpx;
   display: flex;
   flex-direction: column;
@@ -137,6 +138,7 @@
   font-weight: bold;
   color: #333;
   flex: 1;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -167,12 +169,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12rpx;
   margin-top: 8rpx;
 }
 .house-rent {
   color: #e54d42;
   font-size: 34rpx;
   font-weight: bold;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .house-rent-unit {
   font-size: 22rpx;
@@ -181,6 +189,8 @@
 .house-time {
   font-size: 22rpx;
   color: #ccc;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .cu-bar.search { padding: 16rpx 24rpx; background: #fff; }

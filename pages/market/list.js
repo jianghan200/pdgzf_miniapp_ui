@@ -1,5 +1,23 @@
 const market = require('../../utils/market')
 
+const formatRelativeTime = (timeStr) => {
+  if (!timeStr) return ''
+  const t = new Date(timeStr.replace(/-/g, '/')).getTime()
+  if (isNaN(t)) return timeStr
+  const diff = Date.now() - t
+  const min = Math.floor(diff / 60000)
+  if (min < 1) return '刚刚'
+  if (min < 60) return min + '分钟前'
+  const hour = Math.floor(min / 60)
+  if (hour < 24) return hour + '小时前'
+  const day = Math.floor(hour / 24)
+  if (day < 7) return day + '天前'
+  const d = new Date(t)
+  const mm = (d.getMonth() + 1).toString().padStart(2, '0')
+  const dd = d.getDate().toString().padStart(2, '0')
+  return `${mm}-${dd}`
+}
+
 Page({
   data: {
     StatusBar: 0,
@@ -68,7 +86,10 @@ Page({
 
     market.getMarketList(params).then((res) => {
       if (res && res.status === 0) {
-        const newList = res.data.list || []
+        const newList = (res.data.list || []).map(item => ({
+          ...item,
+          time_display: formatRelativeTime(item.online_time_str || item.created_at || item.publish_time)
+        }))
         this.setData({
           list: reset ? newList : this.data.list.concat(newList),
           hasMore: newList.length >= this.data.size,

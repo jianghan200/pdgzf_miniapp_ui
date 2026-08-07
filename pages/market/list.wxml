@@ -98,7 +98,7 @@
         </view>
         <view class="house-bottom">
           <text class="house-rent">¥{{item.rent}}<text class="house-rent-unit">/月</text></text>
-          <text class="house-time">{{item.online_time_str}}</text>
+          <text class="house-time">{{item.time_display}}</text>
         </view>
       </view>
     </view>
