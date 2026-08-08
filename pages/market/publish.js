@@ -132,6 +132,7 @@ Page({
     facilityOptions: ['空调', '洗衣机', '冰箱', '热水器', '宽带', '天然气', '电视', '暖气', '智能家居', '电梯', '车位', '储物间'],
     nearbyOptions: ['地铁站', '公交站', '超市', '菜场', '医院', '学校', '公园', '商场', '餐厅', '银行'],
     mediaUrls: [],
+    coverIndex: 0,
     submitting: false
   },
 
@@ -231,7 +232,8 @@ Page({
             roommate_info: d.roommate_info || ''
           },
           districtIndex: di >= 0 ? di : 0,
-          mediaUrls: (d.medias || []).map(m => m.url),
+          mediaUrls: (d.medias || []).map(m => ({ url: m.url, type: m.type === 'video' ? 'video' : 'photo' })),
+          coverIndex: this._firstPhotoIndex((d.medias || []).map(m => ({ url: m.url, type: m.type === 'video' ? 'video' : 'photo' }))),
           extraTags: extraTags,
           customBedroom: !this.data.bedroomOptions.some(i => i.value === d.bedrooms),
           customLiving: !this.data.livingRoomOptions.some(i => i.value === d.living_rooms),
@@ -402,27 +404,64 @@ Page({
   },
 
   chooseImage() {
+    // 每个房源最多 1 个视频；图片 + 视频合计不超过 9 项
     const remaining = 9 - this.data.mediaUrls.length
     if (remaining <= 0) {
-      wx.showToast({ title: '最多9张', icon: 'none' })
+      wx.showToast({ title: '最多9个媒体', icon: 'none' })
       return
     }
+    const hasVideo = this.data.mediaUrls.some(m => m.type === 'video')
     wx.chooseMedia({
       count: remaining,
-      mediaType: ['image'],
+      mediaType: ['image', 'video'],
       sizeType: ['compressed'],
       success: (res) => {
-        const newUrls = res.tempFiles.map(f => f.tempFilePath)
-        this.setData({ mediaUrls: this.data.mediaUrls.concat(newUrls) })
+        const items = res.tempFiles.map(f => {
+          const type = f.fileType === 'video' ? 'video' : 'photo'
+          return { url: f.tempFilePath, type }
+        })
+        // 若已有视频，再选的视频被忽略
+        let newItems = items
+        if (hasVideo) {
+          newItems = items.filter(m => m.type !== 'video')
+          if (newItems.length !== items.length) {
+            wx.showToast({ title: '每个房源最多1个视频', icon: 'none' })
+          }
+        }
+        // 视频最多选1个
+        const videos = newItems.filter(m => m.type === 'video')
+        if (videos.length > 1) {
+          newItems = newItems.slice(0, newItems.length - (videos.length - 1))
+          wx.showToast({ title: '每个房源最多1个视频', icon: 'none' })
+        }
+        const merged = this.data.mediaUrls.concat(newItems).slice(0, 9)
+        this.setData({ mediaUrls: merged, coverIndex: this._firstPhotoIndex(merged) })
       }
     })
+  },
+
+  _firstPhotoIndex(list) {
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].type !== 'video') return i
+    }
+    return 0
   },
 
   removeImage(e) {
     const idx = e.currentTarget.dataset.idx
     let arr = this.data.mediaUrls.slice()
     arr.splice(idx, 1)
-    this.setData({ mediaUrls: arr })
+    this.setData({ mediaUrls: arr, coverIndex: this._firstPhotoIndex(arr) })
+  },
+
+  previewVideo(e) {
+    const url = e.currentTarget.dataset.url
+    if (!url) return
+    wx.previewMedia({
+      sources: [{ url, type: 'video' }],
+      current: 0,
+      fail: () => wx.showToast({ title: '视频暂无法预览', icon: 'none' })
+    })
   },
 
   showDepositDialog(msg, onPaid) {
@@ -560,8 +599,9 @@ Page({
     }
 
     if (this.data.editId) {
-      this.uploadImages(this.data.editId, (uploadedUrls) => {
-        payload.media_urls = uploadedUrls
+      this.uploadImages(this.data.editId, (uploaded) => {
+        payload.media_urls = uploaded.map(m => m.url)
+        payload.media_types = uploaded.map(m => m.type === 'video' ? 'video' : 'photo')
         market.updateMarketHouse(this.data.editId, payload).then((res) => {
           wx.hideLoading()
           this.setData({ submitting: false })
@@ -576,9 +616,12 @@ Page({
       market.publishMarketHouse(payload).then((res) => {
         if (res && res.status === 0) {
           const houseId = res.data.house_id
-          this.uploadImages(houseId, (uploadedUrls) => {
-            if (uploadedUrls.length > 0) {
-              market.updateMarketHouse(houseId, { media_urls: uploadedUrls }).then((upRes) => {
+          this.uploadImages(houseId, (uploaded) => {
+            if (uploaded.length > 0) {
+              market.updateMarketHouse(houseId, {
+                media_urls: uploaded.map(m => m.url),
+                media_types: uploaded.map(m => m.type === 'video' ? 'video' : 'photo')
+              }).then((upRes) => {
                 wx.hideLoading()
                 this.setData({ submitting: false })
                 if (upRes && upRes.status === 0) {
@@ -621,17 +664,17 @@ Page({
 
   uploadImages(idx, callback) {
     const urls = this.data.mediaUrls
-    const toUpload = urls.filter(u => u.startsWith('wxfile://') || u.startsWith('/tmp') || u.startsWith('http://tmp'))
+    const toUpload = urls.filter(m => m.url.startsWith('wxfile://') || m.url.startsWith('/tmp') || m.url.startsWith('http://tmp'))
     if (toUpload.length === 0) {
       callback(urls)
       return
     }
-    let uploaded = urls.filter(u => !u.startsWith('wxfile://') && !u.startsWith('/tmp') && !u.startsWith('http://tmp'))
+    let uploaded = urls.filter(m => !m.url.startsWith('wxfile://') && !m.url.startsWith('/tmp') && !m.url.startsWith('http://tmp'))
     let pending = toUpload.length
-    toUpload.forEach((path) => {
-      market.uploadMarketMedia(path, idx || this.data.editId || 0).then((res) => {
+    toUpload.forEach((m) => {
+      market.uploadMarketMedia(m.url, idx || this.data.editId || 0).then((res) => {
         if (res && res.status === 0 && res.data && res.data.url) {
-          uploaded.push(res.data.url)
+          uploaded.push({ url: res.data.url, type: m.type })
         }
         pending--
         if (pending === 0) callback(uploaded)

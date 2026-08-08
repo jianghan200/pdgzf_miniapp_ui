@@ -137,12 +137,13 @@
       </view>
     </view>
 
-    <comment-section wx:if="{{id}}" id="comment-section" target-type="shbzf_project" target-id="{{id}}"/>
+    <comment-section wx:if="{{id}}" id="comment-section" hide-trigger="{{true}}" target-type="shbzf_project" target-id="{{id}}"/>
   </block>
 
   <!-- 底部操作栏 -->
   <view class="bottom-bar" wx:if="{{detail}}">
     <button class="cu-btn {{favorited ? 'bg-orange' : 'bg-gray'}}" bindtap="toggleFavorite" style="flex: 1;">{{favorited ? '已收藏' : '收藏'}}</button>
+    <button class="cu-btn bg-gray" open-type="share" style="flex: 1;">分享</button>
     <button class="cu-btn bg-gray" bindtap="onTapComment" style="flex: 1;">评论</button>
   </view>
 </view>

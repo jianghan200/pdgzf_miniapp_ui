@@ -30,7 +30,12 @@ Page({
   loadContactConfig() {
     market.getContactConfig().then((res) => {
       if (res && res.status === 0 && res.data) {
-        this.setData({ contactMethod: res.data.method || 'pay' })
+        const method = res.data.method || 'pay'
+        this.setData({ contactMethod: method })
+        // 广告模式下，若本机 24h 内已解锁过该房源，直接显示联系方式
+        if (method === 'ad' && this._isContactUnlockedRecently()) {
+          this.setData({ adUnlocked: true })
+        }
       }
     })
   },
@@ -45,7 +50,7 @@ Page({
         try { d.nearby_arr = JSON.parse(d.nearby_facilities || '[]') } catch(e) { d.nearby_arr = [] }
         this.setData({
           detail: d,
-          mediaList: (d.medias || []).map(m => m.url),
+          mediaList: (d.medias || []).map(m => ({ url: m.url, type: m.type === 'video' ? 'video' : 'photo' })),
           isOwner: d.is_owner || false
         })
         this.loadFavoriteStatus()
@@ -97,18 +102,54 @@ Page({
 
   previewMedia(e) {
     const idx = e.currentTarget.dataset.idx
+    const imgs = this.data.mediaList.filter(m => m.type !== 'video').map(m => m.url)
+    const current = this.data.mediaList[idx] && this.data.mediaList[idx].url
     wx.previewImage({
-      current: this.data.mediaList[idx],
-      urls: this.data.mediaList
+      current: current,
+      urls: imgs
+    })
+  },
+
+  previewVideo(e) {
+    const idx = e.currentTarget.dataset.idx
+    const item = this.data.mediaList[idx]
+    if (!item || item.type !== 'video') return
+    const imgs = this.data.mediaList.filter(m => m.type !== 'video').map(m => m.url)
+    const sources = imgs.map(url => ({ url, type: 'image' }))
+    sources.push({ url: item.url, type: 'video' })
+    wx.previewMedia({
+      sources,
+      current: sources.length - 1,
+      fail: () => wx.showToast({ title: '视频暂无法预览', icon: 'none' })
     })
   },
 
   toggleContact() {
     if (this.data.contactMethod === 'ad') {
+      // 24 小时内同房源已看广告解锁过，直接显示，不再弹广告
+      if (this._isContactUnlockedRecently()) {
+        this._unlockContactByAd(true)
+        return
+      }
+      // 直接触发激励广告（提示信息已融入占位条）
+      this._showContactAd()
+    } else {
+      this._doPayContact()
+    }
+  },
+
+  // 底部"联系房东"按钮：先弹确认框再触发，避免无提示直接弹广告
+  onBottomContact() {
+    if (this.data.contactMethod === 'ad') {
+      if (this._isContactUnlockedRecently()) {
+        this._unlockContactByAd(true)
+        return
+      }
       wx.showModal({
         title: '联系房东',
         content: '观看完整广告后可获得房东联系方式（24小时内有效）',
         confirmText: '看广告',
+        cancelText: '取消',
         success: (res) => {
           if (res.confirm) this._showContactAd()
         }
@@ -116,6 +157,25 @@ Page({
     } else {
       this._doPayContact()
     }
+  },
+
+  // ---- 广告 24h 去重（本地存储） ----
+  _AD_STORAGE_KEY: 'market_contact_ad_unlock',
+  _isContactUnlockedRecently() {
+    try {
+      const map = wx.getStorageSync(this._AD_STORAGE_KEY) || {}
+      const ts = map[this.data.id]
+      return !!(ts && (Date.now() - ts) < 24 * 3600 * 1000)
+    } catch (e) {
+      return false
+    }
+  },
+  _markContactUnlocked() {
+    try {
+      const map = wx.getStorageSync(this._AD_STORAGE_KEY) || {}
+      map[this.data.id] = Date.now()
+      wx.setStorageSync(this._AD_STORAGE_KEY, map)
+    } catch (e) {}
   },
 
   _doPayContact() {
@@ -161,7 +221,13 @@ Page({
     })
   },
 
-  _unlockContactByAd() {
+  _unlockContactByAd(skipServer) {
+    // 本地 24h 内已解锁：直接显示联系方式，不再调用服务端
+    if (skipServer) {
+      this.setData({ adUnlocked: true })
+      wx.showToast({ title: '已解锁联系方式', icon: 'success' })
+      return
+    }
     wx.showLoading({ title: '解锁中...' })
     market.createContact({
       house_id: this.data.id,
@@ -172,6 +238,7 @@ Page({
       wx.hideLoading()
       if (res && res.status === 0) {
         this.setData({ adUnlocked: true })
+        this._markContactUnlocked()
         wx.showToast({ title: '已解锁联系方式', icon: 'success' })
       } else {
         wx.showToast({ title: (res && res.msg) || '解锁失败', icon: 'none' })

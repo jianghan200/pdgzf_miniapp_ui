@@ -13,8 +13,9 @@
   <block wx:if="{{detail}}">
     <!-- 图片轮播 -->
     <swiper class="media-swiper" indicator-dots="{{mediaList.length > 1}}" autoplay="{{false}}" circular="{{true}}" bindchange="onSwiperChange">
-      <swiper-item wx:for="{{mediaList}}" wx:key="*this">
-        <image src="{{item}}" mode="aspectFill" class="media-img" data-idx="{{index}}" bindtap="previewMedia"/>
+      <swiper-item wx:for="{{mediaList}}" wx:key="url">
+        <image wx:if="{{item.type !== 'video'}}" src="{{item.url}}" mode="aspectFill" class="media-img" data-idx="{{index}}" bindtap="previewMedia"/>
+        <video wx:else src="{{item.url}}" class="media-img media-video" object-fit="contain" controls="{{true}}" show-center-play-btn="{{true}}" bindtap="previewVideo" data-idx="{{index}}"/>
       </swiper-item>
     </swiper>
     <view class="media-count" wx:if="{{mediaList.length > 0}}">{{currentMedia + 1}}/{{mediaList.length}}</view>
@@ -84,26 +85,37 @@
     </view>
 
     <!-- 联系方式 -->
-    <view class="section" wx:if="{{detail.contact_visible || adUnlocked}}">
+    <view class="section">
       <view class="section-title">联系方式</view>
-      <view class="contact-row">
-        <text class="contact-name">{{detail.contact_name}}</text>
-        <text class="contact-phone">{{detail.contact_phone}}</text>
-        <button class="cu-btn bg-green sm" bindtap="callPhone">拨打</button>
-      </view>
-      <view class="contact-row" wx:if="{{detail.contact_wechat}}">
-        <text class="contact-label">微信号</text>
-        <text class="contact-val">{{detail.contact_wechat}}</text>
-        <button class="cu-btn bg-blue sm" bindtap="copyWechat">复制</button>
-      </view>
-      <view class="contact-row xhs-row" wx:if="{{detail.source_platform === '小红书' && detail.source_url}}">
-        <text class="contact-label">小红书</text>
-        <text class="contact-val xhs-url">{{detail.source_url}}</text>
-        <button class="cu-btn bg-red sm" bindtap="copySourceUrl">复制链接</button>
-      </view>
-      <view class="xhs-hint" wx:if="{{detail.source_platform === '小红书' && adUnlocked && !detail.contact_visible}}">
-        复制链接后请用浏览器打开查看
-      </view>
+      <block wx:if="{{detail.contact_visible || adUnlocked}}">
+        <!-- 已解锁：真实联系方式 -->
+        <view class="contact-row" wx:if="{{detail.contact_phone}}">
+          <text class="contact-name">{{detail.contact_name}}</text>
+          <text class="contact-phone">{{detail.contact_phone}}</text>
+          <button class="cu-btn bg-green sm" bindtap="callPhone">拨打</button>
+        </view>
+        <view class="contact-row" wx:if="{{detail.contact_wechat}}">
+          <text class="contact-label">微信号</text>
+          <text class="contact-val">{{detail.contact_wechat}}</text>
+          <button class="cu-btn bg-blue sm" bindtap="copyWechat">复制</button>
+        </view>
+        <view class="contact-row xhs-row" wx:if="{{detail.source_platform === '小红书' && detail.source_url}}">
+          <text class="contact-label">小红书</text>
+          <text class="contact-val xhs-url">{{detail.source_url}}</text>
+          <button class="cu-btn bg-red sm" bindtap="copySourceUrl">复制链接</button>
+        </view>
+        <view class="xhs-hint" wx:if="{{detail.source_platform === '小红书' && adUnlocked && !detail.contact_visible}}">
+          复制链接后请用浏览器打开查看
+        </view>
+      </block>
+      <block wx:else>
+        <!-- 未解锁：占位提示，点击直接触发广告解锁 -->
+        <view class="contact-lock" bindtap="toggleContact">
+          <text class="cuIcon-lock text-gray"></text>
+          <text class="contact-lock-text">观看完整广告后可获得联系方式（24小时内有效）</text>
+          <text class="cuIcon-play text-gray"></text>
+        </view>
+      </block>
     </view>
 
     <!-- 房东操作 -->
@@ -124,13 +136,15 @@
   <view class="bottom-bar" wx:if="{{detail && !isOwner && !adUnlocked && !detail.contact_visible}}">
     <button class="cu-btn {{favorited ? 'bg-orange' : 'bg-gray'}}" bindtap="toggleFavorite" style="flex: 1;">{{favorited ? '已收藏' : '收藏'}}</button>
     <!-- <button class="cu-btn bg-gray" bindtap="goReport" style="flex: 1;">举报</button> -->
+    <button class="cu-btn bg-gray" open-type="share" style="flex: 1;">分享</button>
     <button class="cu-btn bg-gray" bindtap="onTapComment" style="flex: 1;">评论</button>
-    <button class="cu-btn bg-red" bindtap="toggleContact" style="flex: 2;">{{contactMethod === 'ad' ? '联系房东' : '支付 ¥1 联系'}}</button>
+    <button class="cu-btn bg-red" bindtap="onBottomContact" style="flex: 2;">{{contactMethod === 'ad' ? '联系房东' : '支付 ¥1 联系'}}</button>
   </view>
 
   <!-- 已解锁后底部栏（显示已解锁状态） -->
   <view class="bottom-bar" wx:if="{{detail && !isOwner && (adUnlocked || detail.contact_visible)}}">
     <button class="cu-btn {{favorited ? 'bg-orange' : 'bg-gray'}}" bindtap="toggleFavorite" style="flex: 1;">{{favorited ? '已收藏' : '收藏'}}</button>
+    <button class="cu-btn bg-gray" open-type="share" style="flex: 1;">分享</button>
     <button class="cu-btn bg-gray" bindtap="onTapComment" style="flex: 1;">评论</button>
     <button class="cu-btn bg-green" bindtap="callPhone" style="flex: 2;">拨打电话</button>
   </view>

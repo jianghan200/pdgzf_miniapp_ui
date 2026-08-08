@@ -27,9 +27,14 @@
       <view class="upload-cover-tip">选择多张最能体现房子亮点的，各区域照片</view>
     </view>
     <view class="image-list" wx:else>
-      <view class="image-item" wx:for="{{mediaUrls}}" wx:key="*this">
-        <image src="{{item}}" mode="aspectFill" class="preview-img"/>
-        <view class="image-index" wx:if="{{index === 0}}">封面</view>
+      <view class="image-item" wx:for="{{mediaUrls}}" wx:key="url">
+        <image wx:if="{{item.type !== 'video'}}" src="{{item.url}}" mode="aspectFill" class="preview-img"/>
+        <view wx:else class="video-preview" data-url="{{item.url}}" data-idx="{{index}}" bindtap="previewVideo">
+          <video src="{{item.url}}" class="preview-video" object-fit="cover" muted="{{true}}" controls="{{false}}"/>
+          <view class="video-play-mask"><text class="cuIcon-video text-white" style="font-size: 48rpx;"></text></view>
+        </view>
+        <view class="image-index" wx:if="{{index === coverIndex}}">封面</view>
+        <view class="media-type-tag" wx:if="{{item.type === 'video'}}">视频</view>
         <view class="remove-btn" data-idx="{{index}}" catchtap="removeImage">×</view>
       </view>
       <view class="image-add-small" bindtap="chooseImage" wx:if="{{mediaUrls.length < 9}}">
