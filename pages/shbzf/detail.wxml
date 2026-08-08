@@ -4,7 +4,7 @@
     <view class="text-white text-bold"></view>
   </view>
 </cu-custom>
-<view style="background-color: #f5f5f5; min-height: 100vh;">
+<view style="background-color: #f5f5f5; min-height: 100vh; padding-bottom: 140rpx;">
   <view class="loading-box" wx:if="{{loading}}"><text class="cuIcon-loading2 cuIcon-spin text-gray" style="font-size:60rpx;"></text></view>
   <block wx:if="{{detail}}">
     <swiper class="media-swiper" wx:if="{{mediaList.length > 0}}" indicator-dots circular autoplay>
@@ -137,6 +137,12 @@
       </view>
     </view>
 
-    <comment-section wx:if="{{id}}" target-type="shbzf_project" target-id="{{id}}"/>
+    <comment-section wx:if="{{id}}" id="comment-section" target-type="shbzf_project" target-id="{{id}}"/>
   </block>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar" wx:if="{{detail}}">
+    <button class="cu-btn {{favorited ? 'bg-orange' : 'bg-gray'}}" bindtap="toggleFavorite" style="flex: 1;">{{favorited ? '已收藏' : '收藏'}}</button>
+    <button class="cu-btn bg-gray" bindtap="onTapComment" style="flex: 1;">评论</button>
+  </view>
 </view>

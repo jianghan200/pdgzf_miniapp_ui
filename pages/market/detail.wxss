@@ -152,6 +152,28 @@
   color: #666;
   flex: 1;
 }
+.contact-label {
+  font-size: 28rpx;
+  color: #999;
+  width: 120rpx;
+  flex-shrink: 0;
+}
+.contact-val {
+  font-size: 28rpx;
+  color: #333;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.xhs-row { margin-top: 16rpx; }
+.xhs-url { color: #e54d42; }
+.xhs-hint {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #999;
+  text-align: center;
+}
 
 .owner-actions {
   display: flex;

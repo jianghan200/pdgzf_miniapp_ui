@@ -1,5 +1,9 @@
 const market = require('../../utils/market')
 
+const app = getApp()
+
+const HOUSE_TYPE_SHBZF = 1
+
 // 设施英文 -> 中文映射（实际数据为 camelCase）
 const FACILITY_MAP = {
   'airConditioner': '空调',
@@ -55,7 +59,7 @@ const _translateFacility = (f) => FACILITY_MAP[f] || f
 const utils = require('../../utils/util')
 
 Page({
-  data: { StatusBar: 0, id: 0, detail: null, mediaList: [], loading: true, coordinate: { lat: null, lng: null }, marker: [], countdownText: '', expandedRules: false, tels: [], isVip: false, adUnitId: 'adunit-1261b13b058b14cb' },
+  data: { StatusBar: 0, id: 0, detail: null, mediaList: [], loading: true, coordinate: { lat: null, lng: null }, marker: [], countdownText: '', expandedRules: false, tels: [], isVip: false, adUnitId: 'adunit-1261b13b058b14cb', favorited: false },
   onLoad(options) {
     const sys = wx.getSystemInfoSync()
     this._pendingTelIdx = -1
@@ -99,6 +103,8 @@ Page({
         if (detail.project_tel) tels.push({ label: '项目', num: detail.project_tel, display: this._maskTel(detail.project_tel), unlocked: false })
         if (detail.district_tel) tels.push({ label: '区住房保障', num: detail.district_tel, display: this._maskTel(detail.district_tel), unlocked: false })
         this.setData({ detail, countdownText, tels })
+        // 收藏状态
+        this.loadFavoriteStatus()
         // 查询 VIP 状态（VIP 免广告直接看电话）
         market.getVipInfo().then((res) => {
           if (res && res.status === 0 && res.data && res.data.is_active) this.setData({ isVip: true })
@@ -129,7 +135,7 @@ Page({
   },
   _getAd() {
     if (this._ad) return this._ad
-    if (!this.data.adUnitId || this.data.adUnitId.indexOf('adunit-xxxx') === 0) return null
+    if (!this.data.adUnitId || this.data.adUnitId.indexOf('adunit-1261b13b058b14cb') === 0) return null
     this._ad = wx.createRewardedVideoAd({ adUnitId: this.data.adUnitId })
     this._ad.onError((err) => { console.log('激励视频广告错误', err) })
     this._ad.onClose((res) => {
@@ -160,6 +166,43 @@ Page({
   },
   callNumber(tel) {
     if (tel) wx.makePhoneCall({ phoneNumber: tel, fail: () => {} })
+  },
+  _isLogin() {
+    const u = app.globalData.userinfo
+    return !!(u && u.tokenStr)
+  },
+  _requireLogin() {
+    if (this._isLogin()) return true
+    wx.showModal({
+      title: '请先登录',
+      content: '登录后才能收藏房源',
+      confirmText: '去登录',
+      success: (r) => { if (r.confirm) wx.navigateTo({ url: '/pages/login/login' }) }
+    })
+    return false
+  },
+  loadFavoriteStatus() {
+    if (!this._isLogin()) return
+    market.getFavoriteStatus(HOUSE_TYPE_SHBZF, this.data.id).then((res) => {
+      if (res && res.status === 0) this.setData({ favorited: !!res.data.favorited })
+    })
+  },
+  toggleFavorite() {
+    if (!this._requireLogin()) return
+    const fav = this.data.favorited
+    const req = fav ? market.removeFavorite(HOUSE_TYPE_SHBZF, this.data.id) : market.addFavorite(HOUSE_TYPE_SHBZF, this.data.id)
+    req.then((res) => {
+      if (res && res.status === 0) {
+        this.setData({ favorited: !fav })
+        wx.showToast({ title: fav ? '已取消收藏' : '已收藏', icon: 'none' })
+      } else if (res && res.msg) {
+        wx.showToast({ title: res.msg, icon: 'none' })
+      }
+    })
+  },
+  onTapComment() {
+    const cs = this.selectComponent('#comment-section')
+    if (cs) cs.openInput()
   },
   openMapNavigator() {
     const coordinate = this.data.coordinate

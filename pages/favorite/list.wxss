@@ -1,0 +1,83 @@
+.fav-list { padding: 24rpx; }
+.fav-card {
+  background: #fff;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  display: flex;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
+}
+.fav-cover-wrap {
+  position: relative;
+  width: 220rpx;
+  height: 220rpx;
+  flex-shrink: 0;
+}
+.fav-cover { width: 220rpx; height: 220rpx; }
+.fav-type {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 0 0 8rpx 0;
+}
+.fav-info {
+  flex: 1;
+  min-width: 0;
+  padding: 20rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.fav-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fav-meta {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 6rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fav-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+  margin-top: 8rpx;
+}
+.fav-price {
+  color: #e54d42;
+  font-size: 32rpx;
+  font-weight: bold;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fav-remove {
+  flex-shrink: 0;
+  font-size: 22rpx;
+  color: #999;
+  border: 1rpx solid #ddd;
+  border-radius: 24rpx;
+  padding: 6rpx 20rpx;
+}
+.loading-tip, .empty-tip {
+  text-align: center;
+  padding: 40rpx;
+  color: #999;
+  font-size: 26rpx;
+}
+.empty-tip { padding-top: 200rpx; }
+.empty-text { margin-top: 20rpx; padding: 0 60rpx; }

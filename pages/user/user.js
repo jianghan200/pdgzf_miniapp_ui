@@ -263,7 +263,12 @@ Page({
     wx.navigateTo({ url: '/pages/market/myhouses' })
   },
 
- 
+  // 我的收藏
+  goFavorite() {
+    wx.navigateTo({ url: '/pages/favorite/list' })
+  },
+
+
   // 我的联系
   goContactList() {
     wx.navigateTo({ url: '/pages/contact/list' })

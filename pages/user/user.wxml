@@ -100,8 +100,14 @@
         <text class="text-bold">我的发布</text>
       </view>
     </view>
+    <view class="cu-item arrow" bindtap="goFavorite">
+      <view class="content">
+        <text class="cuIcon-likefill text-bold text-pink"></text>
+        <text class="text-bold">我的收藏</text>
+      </view>
+    </view>
 
-    <view class="cu-item arrow" bindtap="goContactList">
+    <!-- <view class="cu-item arrow" bindtap="goContactList">
       <view class="content">
         <text class="cuIcon-message text-bold text-blue"></text>
         <text class="text-bold">我的联系记录</text>
@@ -112,8 +118,8 @@
         <text class="cuIcon-moneybag text-bold text-yellow"></text>
         <text class="text-bold">保证金记录</text>
       </view>
-    </view>
-    <view class="cu-item arrow" bindtap="goRealName">
+    </view> -->
+    <!-- <view class="cu-item arrow" bindtap="goRealName">
       <view class="content">
         <text class="cuIcon-people text-bold text-blue"></text>
         <text class="text-bold">实名认证</text>
@@ -130,7 +136,7 @@
         <text class="cuIcon-vip text-bold text-orange"></text>
         <text class="text-bold">VIP 中心</text>
       </view>
-    </view>
+    </view> -->
 
     <!-- 管理员入口 -->
     <view class="cu-item arrow" bindtap="goAdmin" wx:if="{{isAdmin}}">

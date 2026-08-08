@@ -1,0 +1,32 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold">我的收藏</view>
+  </view>
+</cu-custom>
+<view style="background-color: #f5f5f5; min-height: 100vh;">
+  <!-- 收藏列表 -->
+  <view class="fav-list">
+    <view class="fav-card" wx:for="{{list}}" wx:key="id" data-idx="{{index}}" bindtap="onTapItem">
+      <view class="fav-cover-wrap">
+        <image class="fav-cover" src="{{item.cover || '/assets/today.png'}}" mode="aspectFill"/>
+        <text class="fav-type">{{item.typeLabel}}</text>
+      </view>
+      <view class="fav-info">
+        <view class="fav-title">{{item.title}}</view>
+        <view class="fav-meta">{{item.meta}}</view>
+        <view class="fav-bottom">
+          <text class="fav-price">{{item.price}}</text>
+          <view class="fav-remove" catchtap="onRemove" data-idx="{{index}}">取消收藏</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-tip" wx:if="{{loading}}">加载中...</view>
+  <view class="empty-tip" wx:if="{{!loading && list.length == 0}}">
+    <text class="cuIcon-like text-gray" style="font-size: 80rpx;"></text>
+    <view class="empty-text">还没有收藏，去详情页收藏心仪的房源吧</view>
+  </view>
+</view>

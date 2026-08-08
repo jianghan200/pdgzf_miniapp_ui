@@ -145,6 +145,9 @@ const saveShbzfPolygons = (data) => _post('/shbzf/map/polygons', data)
 // === 地图聚合 ===
 const getMapAggregate = (params) => _get('/map/aggregate?' + _buildQuery(params))
 
+// === 联系配置 ===
+const getContactConfig = () => _get('/contact/config')
+
 // === 付费联系 ===
 const createContact = (data) => _post('/contact/create', data)
 const getContactList = () => _get('/contact/list')
@@ -165,6 +168,12 @@ const applyDepositRefund = (id) => _post(`/deposit/${id}/refund/apply`)
 const createReport = (data) => _post('/report/create', data)
 const getReportList = () => _get('/report/list')
 const getReportDetail = (id) => _get(`/report/${id}`)
+
+// === 收藏 ===
+const addFavorite = (houseType, houseId) => _post('/favorite/add', { house_type: houseType, house_id: houseId })
+const removeFavorite = (houseType, houseId) => _post('/favorite/remove', { house_type: houseType, house_id: houseId })
+const getFavoriteList = () => _get('/favorite/list')
+const getFavoriteStatus = (houseType, houseId) => _get(`/favorite/status?house_type=${houseType}&house_id=${houseId}`)
 
 // === 用户认证 ===
 const submitRealName = (data) => _post('/auth/real_name', data)
@@ -230,6 +239,8 @@ module.exports = {
   getContactList,
   getContactDetail,
   replyContact,
+  // 联系配置
+  getContactConfig,
   // VIP
   getVipInfo,
   createVipOrder,
@@ -242,6 +253,11 @@ module.exports = {
   createReport,
   getReportList,
   getReportDetail,
+  // 收藏
+  addFavorite,
+  removeFavorite,
+  getFavoriteList,
+  getFavoriteStatus,
   // 认证
   submitRealName,
   submitLandlordAuth,

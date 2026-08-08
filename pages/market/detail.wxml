@@ -84,12 +84,25 @@
     </view>
 
     <!-- 联系方式 -->
-    <view class="section" wx:if="{{detail.contact_visible}}">
+    <view class="section" wx:if="{{detail.contact_visible || adUnlocked}}">
       <view class="section-title">联系方式</view>
       <view class="contact-row">
         <text class="contact-name">{{detail.contact_name}}</text>
         <text class="contact-phone">{{detail.contact_phone}}</text>
         <button class="cu-btn bg-green sm" bindtap="callPhone">拨打</button>
+      </view>
+      <view class="contact-row" wx:if="{{detail.contact_wechat}}">
+        <text class="contact-label">微信号</text>
+        <text class="contact-val">{{detail.contact_wechat}}</text>
+        <button class="cu-btn bg-blue sm" bindtap="copyWechat">复制</button>
+      </view>
+      <view class="contact-row xhs-row" wx:if="{{detail.source_platform === '小红书' && detail.source_url}}">
+        <text class="contact-label">小红书</text>
+        <text class="contact-val xhs-url">{{detail.source_url}}</text>
+        <button class="cu-btn bg-red sm" bindtap="copySourceUrl">复制链接</button>
+      </view>
+      <view class="xhs-hint" wx:if="{{detail.source_platform === '小红书' && adUnlocked && !detail.contact_visible}}">
+        复制链接后请用浏览器打开查看
       </view>
     </view>
 
@@ -108,23 +121,17 @@
     target-type="market_house" target-id="{{id}}"/>
 
   <!-- 底部操作栏 -->
-  <view class="bottom-bar" wx:if="{{detail && !isOwner}}">
-    <button class="cu-btn bg-gray" bindtap="goReport" style="flex: 1;">举报</button>
+  <view class="bottom-bar" wx:if="{{detail && !isOwner && !adUnlocked && !detail.contact_visible}}">
+    <button class="cu-btn {{favorited ? 'bg-orange' : 'bg-gray'}}" bindtap="toggleFavorite" style="flex: 1;">{{favorited ? '已收藏' : '收藏'}}</button>
+    <!-- <button class="cu-btn bg-gray" bindtap="goReport" style="flex: 1;">举报</button> -->
     <button class="cu-btn bg-gray" bindtap="onTapComment" style="flex: 1;">评论</button>
-    <button class="cu-btn bg-red" bindtap="toggleContact" style="flex: 2;">联系房东</button>
+    <button class="cu-btn bg-red" bindtap="toggleContact" style="flex: 2;">{{contactMethod === 'ad' ? '联系房东' : '支付 ¥1 联系'}}</button>
   </view>
 
-  <!-- 联系弹窗 -->
-  <view class="contact-modal" wx:if="{{showContact}}">
-    <view class="contact-mask" bindtap="toggleContact"></view>
-    <view class="contact-modal-content">
-      <view class="modal-title">联系房东</view>
-      <view class="modal-desc">支付 ¥1.00 获取房东联系方式并发送留言</view>
-      <textarea class="modal-textarea" placeholder="给房东留言（简单介绍自己和需求）" value="{{contactMessage}}" bindinput="onContactInput" maxlength="200"/>
-      <view class="modal-actions">
-        <button class="cu-btn bg-gray" bindtap="toggleContact">取消</button>
-        <button class="cu-btn bg-red" bindtap="doContact">支付 ¥1.00 联系</button>
-      </view>
-    </view>
+  <!-- 已解锁后底部栏（显示已解锁状态） -->
+  <view class="bottom-bar" wx:if="{{detail && !isOwner && (adUnlocked || detail.contact_visible)}}">
+    <button class="cu-btn {{favorited ? 'bg-orange' : 'bg-gray'}}" bindtap="toggleFavorite" style="flex: 1;">{{favorited ? '已收藏' : '收藏'}}</button>
+    <button class="cu-btn bg-gray" bindtap="onTapComment" style="flex: 1;">评论</button>
+    <button class="cu-btn bg-green" bindtap="callPhone" style="flex: 2;">拨打电话</button>
   </view>
 </view>
