@@ -1,22 +1,58 @@
 <cu-custom bgColor="bg-black" isBack="{{false}}">
   <view slot="content">
-    <view class="text-white text-bold">PD租房 - 市场租房</view>
+    <view class="text-white text-bold">PD租房 - 真实房源</view>
   </view>
 </cu-custom>
 <view style="background-color: #f5f5f5; min-height: 100vh;">
-  <!-- 顶部标题栏 -->
+  <!-- 顶部栏 -->
   <view class="header-bar">
-    <view class="header-row">
-      <text class="header-title">市场房源（转租/出租）</text>
-      <view class="header-actions">
-        <button class="cu-btn icon bg-white shadow margin-right-xs" bindtap="toggleFilter">
-          <text class="cuIcon-filter text-blue"></text>
-        </button>
-        <button class="cu-btn bg-red shadow" bindtap="goPublish">
-          <text class="cuIcon-add margin-right-xs"></text>发布
-        </button>
+
+    <!-- 维度入口 -->
+    <!-- <view class="dimension-entry">
+      <view class="dim-item" bindtap="goSubwaySearch">
+        <text class="cuIcon-subway text-blue"></text>
+        <text class="dim-text">地铁找房</text>
+      </view>
+      <view class="dim-item" bindtap="goCommuteSearch">
+        <text class="cuIcon-locationfill text-green"></text>
+        <text class="dim-text">公司通勤</text>
+      </view>
+      <view class="dim-item" bindtap="goMapSearch">
+        <text class="cuIcon-location text-orange"></text>
+        <text class="dim-text">地图找房</text>
+      </view>
+      <view class="dim-item" bindtap="goCompare">
+        <text class="cuIcon-compare text-purple"></text>
+        <text class="dim-text">房屋对比</text>
+      </view>
+    </view> --> 
+
+    <!-- <view class="slogan-row">
+      <text class="slogan-text">已过滤中介 · AI 补充信息 · 先看再聊</text>
+    </view> -->
+
+    <!-- 搜索框 -->
+    <view class="cu-bar bg-white search">
+      <view class="search-form round">
+        <text class="cuIcon-search"></text>
+        <input type="text" placeholder="搜索小区 / 地铁 / 公司 / 商圈" confirm-type="search" bindinput="onSearchInput" bindconfirm="onSearchConfirm" />
       </view>
     </view>
+
+    <!-- 快捷筛选标签 -->
+    <view class="quick-filter-bar">
+      <view
+        class="quick-tag {{filters[item.key] == item.value ? 'active' : ''}}"
+        wx:for="{{quickTags}}"
+        wx:key="label"
+        data-key="{{item.key}}"
+        data-value="{{item.value}}"
+        bindtap="onQuickTagTap"
+      >{{item.label}}</view>
+      <view class="quick-tag more" bindtap="toggleFilter">更多 ▾</view>
+    </view>
+
+
     <!-- 排序条 -->
     <view class="sort-bar">
       <picker mode="selector" range="{{sortOptions}}" value="{{sortIndex}}" bindchange="onSortChange">
@@ -26,45 +62,111 @@
         <view class="sort-item">{{districts[districtIndex]}} ▾</view>
       </picker>
     </view>
-    <view class="cu-bar bg-white search">
-      <view class="search-form round">
-        <text class="cuIcon-search"></text>
-        <input type="text" placeholder="搜索小区 / 地址" confirm-type="search" bindinput="onSearchInput" />
-      </view>
-    </view>
   </view>
 
   <!-- 筛选抽屉 -->
   <view class="filter-drawer" wx:if="{{showFilter}}">
-    <view class="filter-mask" bindtap="toggleFilter"></view>
+    <view class="filter-mask" bindtap="closeFilter"></view>
     <view class="filter-content">
       <view class="filter-title">筛选条件</view>
 
+      <!-- 出租属性 -->
       <view class="filter-group">
-        <text class="filter-label">区域</text>
-        <picker mode="selector" range="{{districts}}" value="{{districtIndex}}" bindchange="onDistrictChange">
-          <view class="filter-picker">{{districts[districtIndex]}}</view>
-        </picker>
-      </view>
-
-      <view class="filter-group">
-        <text class="filter-label">价格区间（元/月）</text>
-        <view class="filter-row">
-          <input class="filter-input" type="number" placeholder="最低" value="{{filters.rent_min}}" bindinput="onRentMinInput"/>
-          <text class="filter-sep">-</text>
-          <input class="filter-input" type="number" placeholder="最高" value="{{filters.rent_max}}" bindinput="onRentMaxInput"/>
+        <text class="filter-label">出租属性</text>
+        <view class="tag-row">
+          <view class="tag {{draftFilters.rent_source === 'owner' ? 'active' : ''}}" data-field="rent_source" data-value="owner" bindtap="setDraftSingle">房东直租</view>
+          <view class="tag {{draftFilters.rent_source === 'roommate' ? 'active' : ''}}" data-field="rent_source" data-value="roommate" bindtap="setDraftSingle">合租找室友</view>
+          <view class="tag {{draftFilters.rent_source === 'sublet' ? 'active' : ''}}" data-field="rent_source" data-value="sublet" bindtap="setDraftSingle">转租</view>
+          <view class="tag {{draftFilters.rent_source === 'apt' ? 'active' : ''}}" data-field="rent_source" data-value="apt" bindtap="setDraftSingle">公寓直租</view>
         </view>
       </view>
 
+      <!-- 出租形式 -->
       <view class="filter-group">
-        <text class="filter-label">卧室数</text>
-        <input class="filter-input" type="number" placeholder="如 2" value="{{filters.bedrooms}}" bindinput="onBedroomsChange"/>
+        <text class="filter-label">出租形式</text>
+        <view class="tag-row">
+          <view class="tag {{draftFilters.rent_type === 'whole' ? 'active' : ''}}" data-field="rent_type" data-value="whole" bindtap="setDraftSingle">整租</view>
+          <view class="tag {{draftFilters.rent_type === 'share' ? 'active' : ''}}" data-field="rent_type" data-value="share" bindtap="setDraftSingle">合租</view>
+        </view>
       </view>
 
+      <!-- 户型 -->
       <view class="filter-group">
-        <view class="filter-row" bindtap="toggleCertified">
-          <text class="filter-label">仅看认证房东</text>
-          <switch checked="{{filters.only_certified == 1}}" color="#e54d42"/>
+        <text class="filter-label">户型</text>
+        <view class="tag-row">
+          <view class="tag {{draftFilters.room_shape === 'loft' ? 'active' : ''}}" data-field="room_shape" data-value="loft" bindtap="setDraftMutex">Loft</view>
+          <view class="tag {{draftFilters.room_shape === 'studio' ? 'active' : ''}}" data-field="room_shape" data-value="studio" bindtap="setDraftMutex">一室户</view>
+          <view class="tag {{draftFilters.bedrooms === '1' ? 'active' : ''}}" data-field="bedrooms" data-value="1" bindtap="setDraftMutex">一室</view>
+          <view class="tag {{draftFilters.bedrooms === '2' ? 'active' : ''}}" data-field="bedrooms" data-value="2" bindtap="setDraftMutex">二室</view>
+          <view class="tag {{draftFilters.bedrooms === '3' ? 'active' : ''}}" data-field="bedrooms" data-value="3" bindtap="setDraftMutex">三室</view>
+          <view class="tag {{draftFilters.bedrooms === '4' ? 'active' : ''}}" data-field="bedrooms" data-value="4" bindtap="setDraftMutex">四室+</view>
+        </view>
+      </view>
+
+      <!-- 价格 -->
+      <view class="filter-group">
+        <text class="filter-label">价格区间（元/月）</text>
+        <view class="filter-row">
+          <input class="filter-input" type="number" placeholder="最低" value="{{draftFilters.rent_min}}" bindinput="onDraftRentMinInput"/>
+          <text class="filter-sep">-</text>
+          <input class="filter-input" type="number" placeholder="最高" value="{{draftFilters.rent_max}}" bindinput="onDraftRentMaxInput"/>
+        </view>
+        <view class="filter-hint">模糊报价（如"可谈"）也会按估算值参与区间匹配</view>
+      </view>
+
+      <!-- 入住日期 -->
+      <view class="filter-group">
+        <text class="filter-label">入住日期</text>
+        <view class="tag-row">
+          <view class="tag {{draftFilters.move_in === 'now' ? 'active' : ''}}" data-field="move_in" data-value="now" bindtap="setDraftSingle">立即入住</view>
+          <view class="tag {{draftFilters.move_in === '7d' ? 'active' : ''}}" data-field="move_in" data-value="7d" bindtap="setDraftSingle">7天内</view>
+          <view class="tag {{draftFilters.move_in === '30d' ? 'active' : ''}}" data-field="move_in" data-value="30d" bindtap="setDraftSingle">30天内</view>
+        </view>
+      </view>
+
+      <!-- 房屋属性 -->
+      <view class="filter-group">
+        <text class="filter-label">房屋属性</text>
+        <view class="tag-row">
+          <view class="tag {{draftFilters.property_type === 'commercial' ? 'active' : ''}}" data-field="property_type" data-value="commercial" bindtap="setDraftSingle">商品房</view>
+          <view class="tag {{draftFilters.property_type === 'relocation' ? 'active' : ''}}" data-field="property_type" data-value="relocation" bindtap="setDraftSingle">安置房</view>
+          <view class="tag {{draftFilters.property_type === 'affordable' ? 'active' : ''}}" data-field="property_type" data-value="affordable" bindtap="setDraftSingle">经济适用房</view>
+          <view class="tag {{draftFilters.property_type === 'civilian' ? 'active' : ''}}" data-field="property_type" data-value="civilian" bindtap="setDraftSingle">民房</view>
+          <view class="tag {{draftFilters.property_type === 'apartment' ? 'active' : ''}}" data-field="property_type" data-value="apartment" bindtap="setDraftSingle">公寓</view>
+          <view class="tag {{draftFilters.property_type === 'talent_apt' ? 'active' : ''}}" data-field="property_type" data-value="talent_apt" bindtap="setDraftSingle">人才公寓</view>
+          <view class="tag {{draftFilters.property_type === 'bao_rent' ? 'active' : ''}}" data-field="property_type" data-value="bao_rent" bindtap="setDraftSingle">保租房</view>
+          <view class="tag {{draftFilters.property_type === 'public_rent' ? 'active' : ''}}" data-field="property_type" data-value="public_rent" bindtap="setDraftSingle">公租房</view>
+        </view>
+      </view>
+
+      <!-- 建筑类型 -->
+      <view class="filter-group">
+        <text class="filter-label">建筑类型</text>
+        <view class="tag-row">
+          <view class="tag {{draftFilters.building_type === 'low_rise' ? 'active' : ''}}" data-field="building_type" data-value="low_rise" bindtap="setDraftSingle">小高层</view>
+          <view class="tag {{draftFilters.building_type === 'high_rise' ? 'active' : ''}}" data-field="building_type" data-value="high_rise" bindtap="setDraftSingle">高层</view>
+          <view class="tag {{draftFilters.building_type === 'villa' ? 'active' : ''}}" data-field="building_type" data-value="villa" bindtap="setDraftSingle">别墅</view>
+          <view class="tag {{draftFilters.building_type === 'stacked' ? 'active' : ''}}" data-field="building_type" data-value="stacked" bindtap="setDraftSingle">叠墅</view>
+          <view class="tag {{draftFilters.building_type === 'super_high' ? 'active' : ''}}" data-field="building_type" data-value="super_high" bindtap="setDraftSingle">超高层</view>
+          <view class="tag {{draftFilters.building_type === 'bungalow' ? 'active' : ''}}" data-field="building_type" data-value="bungalow" bindtap="setDraftSingle">平房</view>
+        </view>
+      </view>
+
+      <!-- 更多标签 -->
+      <view class="filter-group">
+        <text class="filter-label">更多</text>
+        <view class="tag-row">
+          <view class="tag {{draftFilters.has_private_bathroom ? 'active' : ''}}" data-field="has_private_bathroom" bindtap="toggleDraftFlag">独立卫生间</view>
+          <view class="tag {{draftFilters.private_kitchen ? 'active' : ''}}" data-field="private_kitchen" bindtap="toggleDraftFlag">独立厨房</view>
+          <view class="tag {{draftFilters.elevator ? 'active' : ''}}" data-field="elevator" bindtap="toggleDraftFlag">电梯</view>
+          <view class="tag {{draftFilters.south ? 'active' : ''}}" data-field="south" bindtap="toggleDraftFlag">朝南</view>
+          <view class="tag {{draftFilters.gas ? 'active' : ''}}" data-field="gas" bindtap="toggleDraftFlag">天然气</view>
+          <view class="tag {{draftFilters.civil_meters ? 'active' : ''}}" data-field="civil_meters" bindtap="toggleDraftFlag">民水民电</view>
+          <view class="tag {{draftFilters.pet_friendly ? 'active' : ''}}" data-field="pet_friendly" bindtap="toggleDraftFlag">可养宠物</view>
+          <view class="tag {{draftFilters.not_first_floor ? 'active' : ''}}" data-field="not_first_floor" bindtap="toggleDraftFlag">非一楼</view>
+          <view class="tag {{draftFilters.not_top_floor ? 'active' : ''}}" data-field="not_top_floor" bindtap="toggleDraftFlag">非顶层</view>
+          <view class="tag {{draftFilters.not_basement ? 'active' : ''}}" data-field="not_basement" bindtap="toggleDraftFlag">非地下室</view>
+          <view class="tag {{draftFilters.not_attic ? 'active' : ''}}" data-field="not_attic" bindtap="toggleDraftFlag">非阁楼</view>
         </view>
       </view>
 
@@ -80,24 +182,40 @@
     <view class="house-card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="openDetail">
       <view class="house-cover-wrap">
         <image class="house-cover" src="{{item.cover_url || '/assets/today.png'}}" mode="aspectFill"/>
-        <text class="house-cert" wx:if="{{item.is_certified == 1}}">认证</text>
+        <text class="house-source-tag {{item.source_type}}">{{item.source_type_label}}</text>
       </view>
       <view class="house-info">
         <view class="house-title-row">
-          <text class="house-title">{{item.title}}</text>
-          <text class="house-vip" wx:if="{{item.is_vip == 1}}">VIP</text>
+          <text class="house-title">{{item.title || item.address_name}}</text>
+          <text class="house-cert" wx:if="{{item.is_certified == 1}}">认证</text>
         </view>
-        <view class="house-meta">{{item.district}} · {{item.town}}</view>
-        <view class="house-meta">{{item.house_type}}
-          <template v-if="item.area && item.area > 0">
-            · {{ item.area }}㎡
-          </template>
-          <template v-if="item.payment_type">
-            · {{ item.payment_type }}
-          </template>
+        <view class="house-location">
+          <text class="cuIcon-locationfill text-red"></text>
+          <text class="location-text">{{item.district || ''}} {{item.town || ''}} {{item.address_name || ''}}</text>
+          <text class="subway-dist" wx:if="{{item.distance}}">· 距地铁{{item.distance}}m</text>
         </view>
+        <view class="house-meta">
+          <text>{{item.rent_type_label}}</text>
+          <text wx:if="{{item.house_type}}">· {{item.house_type}}</text>
+          <text wx:if="{{item.area}}">· {{item.area}}㎡</text>
+          <text wx:if="{{item.floor_desc}}">· {{item.floor_desc}}</text>
+        </view>
+        <!-- <view class="house-tags">
+          <text class="tag rent-form">{{item.rent_type_label}}</text>
+          <text class="tag" wx:if="{{item.bathroom_type === 'private'}}">独卫</text>
+          <text class="tag" wx:if="{{item.elevator == 1}}">电梯</text>
+          <text class="tag" wx:if="{{item.pet_friendly == 1}}">可养宠</text>
+          <text class="tag" wx:if="{{item.civil_meters == 1}}">民水民电</text>
+          <text class="tag" wx:if="{{item.gas == 1}}">天然气</text>
+          <text class="tag" wx:if="{{item.south == 1}}">朝南</text>
+          <text class="tag" wx:if="{{item.private_kitchen == 1}}">独立厨房</text>
+        </view> -->
         <view class="house-bottom">
-          <text class="house-rent">¥{{item.rent}}<text class="house-rent-unit">/月</text></text>
+          <view class="price-wrap">
+            <text class="house-rent">{{item.rent_display}}</text>
+            <text class="house-rent-unit">/月</text>
+          </view>
+          <text class="move-in">{{item.available_date_display}}</text>
           <text class="house-time">{{item.time_display}}</text>
         </view>
       </view>
@@ -110,5 +228,11 @@
   <view class="empty-tip" wx:if="{{!loading && list.length == 0}}">
     <text class="cuIcon-text text-gray" style="font-size: 80rpx;"></text>
     <view class="empty-text">暂无房源</view>
+  </view>
+
+  <!-- 悬浮发布按钮 -->
+  <view class="fab-publish" bindtap="goPublish">
+    <text class="cuIcon-add"></text>
+    <text>发布</text>
   </view>
 </view>

@@ -1,0 +1,71 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold">地铁找房</view>
+  </view>
+</cu-custom>
+<view class="page-container">
+  <!-- 顶部线路选择 -->
+  <view class="line-bar">
+    <scroll-view scroll-x class="line-scroll">
+      <view
+        class="line-tag {{activeLine === item.name ? 'active' : ''}}"
+        wx:for="{{lines}}"
+        wx:key="name"
+        style="{{activeLine === item.name ? 'background:' + item.color + ';' : ''}}"
+        data-line="{{item.name}}"
+        bindtap="switchLine"
+      >{{item.name}}</view>
+    </scroll-view>
+  </view>
+
+  <!-- 站点选择 -->
+  <view class="station-section">
+    <view class="section-header">
+      <text class="section-title">选择站点（可多选）</text>
+      <picker mode="selector" range="{{distanceOptions}}" value="{{distanceIndex}}" bindchange="onDistanceChange">
+        <view class="distance-picker">距站点 {{distance}}m 内 ▾</view>
+      </picker>
+    </view>
+    <scroll-view scroll-x class="station-scroll">
+      <view class="station-list">
+        <view
+          class="station-tag {{tools.indexOf(selectedStations, item) >= 0 ? 'active' : ''}}"
+          wx:for="{{activeStations}}"
+          wx:key="*this"
+          data-station="{{item}}"
+          bindtap="toggleStation"
+        >{{item}}</view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 房源列表 -->
+  <view class="house-list">
+    <view class="house-card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="openDetail">
+      <view class="house-cover-wrap">
+        <image class="house-cover" src="{{item.cover_url || '/assets/today.png'}}" mode="aspectFill"/>
+      </view>
+      <view class="house-info">
+        <view class="house-title">{{item.title || item.address_name}}</view>
+        <view class="house-meta">{{item.district}} {{item.town}} · {{item.house_type || item.rent_type}}</view>
+        <view class="house-subway" wx:if="{{item.subway_info}}">
+          <text class="cuIcon-subway text-blue"></text>
+          <text>{{item.subway_info}}</text>
+        </view>
+        <view class="house-bottom">
+          <text class="house-rent">{{item.rent_display || '¥' + item.rent}}/月</text>
+          <text class="house-time">{{item.available_date_display || item.available_date}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="loading-tip" wx:if="{{loading}}">加载中...</view>
+  <view class="loading-tip" wx:if="{{!hasMore && list.length > 0}}">没有更多了</view>
+  <view class="empty-tip" wx:if="{{!loading && list.length == 0}}">
+    <text class="cuIcon-text text-gray" style="font-size: 80rpx;"></text>
+    <view class="empty-text">该范围内暂无房源</view>
+  </view>
+</view>
+<wxs src="../../../utils/tool.wxs" module="tools" />

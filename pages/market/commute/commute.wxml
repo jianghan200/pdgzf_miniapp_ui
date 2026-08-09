@@ -1,0 +1,76 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold">公司通勤找房</view>
+  </view>
+</cu-custom>
+<view class="page-container">
+  <!-- 搜索公司 -->
+  <view class="section">
+    <view class="section-title">公司 / 学校 / 地点</view>
+    <view class="search-row">
+      <input class="search-input" placeholder="如：张江高科、陆家嘴、交通大学" value="{{company}}" bindinput="onInputCompany" confirm-type="search" bindconfirm="searchCompany"/>
+      <button class="search-btn" bindtap="searchCompany">搜索</button>
+    </view>
+    <view class="address-hint" wx:if="{{address}}">{{address}}</view>
+  </view>
+
+  <!-- 通勤方式 -->
+  <view class="section">
+    <view class="section-title">通勤方式</view>
+    <view class="transport-row">
+      <view
+        class="transport-item {{transport === item.value ? 'active' : ''}}"
+        wx:for="{{transportOptions}}"
+        wx:key="value"
+        data-value="{{item.value}}"
+        bindtap="onTransportTap"
+      >
+        <text class="cuIcon-{{item.icon}}"></text>
+        <text>{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 最大通勤时间 -->
+  <view class="section">
+    <view class="section-title">最大通勤时间</view>
+    <picker mode="selector" range="{{timeOptions}}" range-key="label" value="1" bindchange="onTimeChange">
+      <view class="time-picker">{{maxMinutes}}分钟 ▾</view>
+    </picker>
+  </view>
+
+  <!-- 结果列表 -->
+  <view class="result-section" wx:if="{{searched}}">
+    <view class="result-header">
+      <text class="result-title">推荐房源</text>
+      <text class="result-sub">按{{maxMinutes}}分钟内{{transport === 'subway' ? '地铁' : transport === 'bus' ? '公交' : transport === 'bike' ? '骑行' : transport === 'walk' ? '步行' : '驾车'}}通勤排序</text>
+    </view>
+    <view class="house-list">
+      <view class="house-card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="openDetail">
+        <view class="house-cover-wrap">
+          <image class="house-cover" src="{{item.cover_url || '/assets/today.png'}}" mode="aspectFill"/>
+        </view>
+        <view class="house-info">
+          <view class="house-title">{{item.title || item.address_name}}</view>
+          <view class="house-meta">{{item.district}} {{item.town}}</view>
+          <view class="commute-info" wx:if="{{item.commute_minutes}}">
+            <text class="cuIcon-time text-green"></text>
+            <text>约 {{item.commute_minutes}} 分钟</text>
+          </view>
+          <view class="house-bottom">
+            <text class="house-rent">{{item.rent_display || '¥' + item.rent}}/月</text>
+            <text class="house-layout">{{item.house_type}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="loading-tip" wx:if="{{loading}}">加载中...</view>
+    <view class="loading-tip" wx:if="{{!hasMore && list.length > 0}}">没有更多了</view>
+    <view class="empty-tip" wx:if="{{!loading && list.length == 0}}">
+      <text class="cuIcon-text text-gray" style="font-size: 80rpx;"></text>
+      <view class="empty-text">该通勤条件下暂无房源</view>
+    </view>
+  </view>
+</view>

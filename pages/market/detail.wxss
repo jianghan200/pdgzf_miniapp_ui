@@ -2,6 +2,73 @@
   text-align: center;
   padding: 200rpx;
 }
+
+/* 出租属性标签 */
+.source-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 12rpx;
+}
+.source-badge {
+  font-size: 22rpx;
+  color: #fff;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+}
+.source-badge.owner { background: #e54d42; }
+.source-badge.roommate { background: #39b54a; }
+.source-badge.sublet { background: #fbbd08; }
+.source-badge.apt { background: #0081ff; }
+.rent-form-badge {
+  background: #fff5f5;
+  color: #e54d42;
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  border: 1rpx solid #ffd0d0;
+}
+
+/* 核心信息网格 */
+.core-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+.core-item {
+  width: 33.33%;
+  display: flex;
+  flex-direction: column;
+  padding: 16rpx 0;
+  text-align: center;
+}
+.core-label {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 8rpx;
+}
+.core-val {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.location-detail {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 28rpx;
+  color: #666;
+}
+.subway-info {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-top: 12rpx;
+  font-size: 26rpx;
+  color: #0081ff;
+}
+
 .media-swiper {
   width: 100%;
   height: 500rpx;

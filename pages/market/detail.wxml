@@ -20,45 +20,99 @@
     </swiper>
     <view class="media-count" wx:if="{{mediaList.length > 0}}">{{currentMedia + 1}}/{{mediaList.length}}</view>
 
-    <!-- 基本信息 -->
+    <!-- 核心信息：出租属性 + 价格 + 标题 + 地点 -->
     <view class="section">
-      <view class="price-row">
-        <text class="price">¥{{detail.rent}}</text>
-        <text class="price-unit">/月</text>
-        <text class="badge-vip" wx:if="{{detail.is_vip == 1}}">VIP</text>
+      <view class="source-row">
+        <text class="source-badge {{detail.source_type}}">{{detail.source_type_label}}</text>
+        <text class="rent-form-badge">{{detail.rent_type_label}}</text>
         <text class="badge-cert" wx:if="{{detail.is_certified == 1}}">认证房东</text>
       </view>
-      <view class="house-title">{{detail.title}}</view>
+      <view class="price-row">
+        <text class="price">{{detail.rent_display}}</text>
+        <text class="price-unit">/月</text>
+      </view>
+      <view class="house-title">{{detail.title || detail.address_name}}</view>
+      <view class="location-row">
+        <text class="cuIcon-locationfill text-red"></text>
+        <text class="location-text">{{detail.district}} {{detail.town}} {{detail.address_name}}</text>
+      </view>
       <view class="house-tags">
-        <text class="tag">{{detail.house_type}}</text>
-        <text class="tag">{{detail.area}}㎡</text>
-        <text class="tag">{{detail.payment_type}}</text>
-        <text class="tag" wx:if="{{detail.support_short_term == 1}}">支持短租</text>
-        <text class="tag" wx:if="{{detail.only_long_term == 1}}">仅长租</text>
+        <text class="tag rent-form">{{detail.rent_type_label}}</text>
+        <text class="tag" wx:if="{{detail.bathroom_type === 'private'}}">独卫</text>
+        <text class="tag" wx:if="{{detail.elevator == 1}}">电梯</text>
+        <text class="tag" wx:if="{{detail.pet_friendly == 1}}">可养宠</text>
+        <text class="tag" wx:if="{{detail.civil_meters == 1}}">民水民电</text>
+        <text class="tag" wx:if="{{detail.gas == 1}}">天然气</text>
+        <text class="tag" wx:if="{{detail.south == 1}}">朝南</text>
+        <text class="tag" wx:if="{{detail.private_kitchen == 1}}">独立厨房</text>
+      </view>
+    </view>
+
+    <!-- 核心四信息 -->
+    <view class="section">
+      <view class="section-title">房源信息</view>
+      <view class="core-grid">
+        <view class="core-item">
+          <text class="core-label">户型</text>
+          <text class="core-val">{{detail.house_type || '—'}}</text>
+        </view>
+        <view class="core-item">
+          <text class="core-label">面积</text>
+          <text class="core-val">{{detail.area ? detail.area + '㎡' : '—'}}</text>
+        </view>
+        <view class="core-item">
+          <text class="core-label">楼层</text>
+          <text class="core-val">{{detail.floor_desc || '—'}}</text>
+        </view>
+        <view class="core-item">
+          <text class="core-label">朝向</text>
+          <text class="core-val">{{detail.orientation_label || '—'}}</text>
+        </view>
+        <view class="core-item">
+          <text class="core-label">入住</text>
+          <text class="core-val">{{detail.available_date_display || '待定'}}</text>
+        </view>
+        <view class="core-item">
+          <text class="core-label">租期</text>
+          <text class="core-val">{{detail.lease_desc || '—'}}</text>
+        </view>
       </view>
     </view>
 
     <!-- 位置信息 -->
     <view class="section">
       <view class="section-title">位置</view>
-      <view class="location-row">
+      <view class="location-detail">
         <text class="cuIcon-locationfill text-red"></text>
-        <text class="location-text">{{detail.district}} {{detail.town}} {{detail.address}}</text>
+        <text>{{detail.district}} {{detail.town}} {{detail.address}}</text>
+      </view>
+      <view class="subway-info" wx:if="{{detail.subway_info}}">
+        <text class="cuIcon-subway text-blue"></text>
+        <text>{{detail.subway_info}}</text>
       </view>
     </view>
 
-    <!-- 详细信息 -->
+    <!-- 房屋属性 -->
     <view class="section">
-      <view class="section-title">房源详情</view>
+      <view class="section-title">房屋属性</view>
       <view class="detail-grid">
-        <view class="detail-item"><text class="detail-label">户型</text><text class="detail-val">{{detail.house_type}}</text></view>
-        <view class="detail-item"><text class="detail-label">面积</text><text class="detail-val">{{detail.area}}㎡</text></view>
-        <view class="detail-item"><text class="detail-label">最短租期</text><text class="detail-val">{{detail.min_lease}}月</text></view>
-        <view class="detail-item"><text class="detail-label">最长租期</text><text class="detail-val">{{detail.max_lease > 0 ? detail.max_lease + '月' : '不限'}}</text></view>
-        <view class="detail-item"><text class="detail-label">起租日期</text><text class="detail-val">{{detail.available_date}}</text></view>
-        <view class="detail-item"><text class="detail-label">看房时间</text><text class="detail-val">{{detail.earliest_view_time}}</text></view>
-        <view class="detail-item"><text class="detail-label">停车费</text><text class="detail-val">{{detail.parking_fee}}</text></view>
-        <view class="detail-item"><text class="detail-label">物业费</text><text class="detail-val">{{detail.property_fee}}</text></view>
+        <view class="detail-item"><text class="detail-label">产权性质</text><text class="detail-val">{{detail.property_type_label || '—'}}</text></view>
+        <view class="detail-item"><text class="detail-label">建筑类型</text><text class="detail-val">{{detail.building_type_label || '—'}}</text></view>
+        <view class="detail-item"><text class="detail-label">电梯</text><text class="detail-val">{{detail.elevator == 1 ? '有' : '无'}}</text></view>
+        <view class="detail-item"><text class="detail-label">水电</text><text class="detail-val">{{detail.civil_meters == 1 ? '民水民电' : (detail.civil_meters == 0 ? '商用电/待定' : '—')}}</text></view>
+        <view class="detail-item" wx:if="{{detail.gas == 1}}"><text class="detail-label">天然气</text><text class="detail-val">有</text></view>
+        <view class="detail-item" wx:if="{{detail.floor_tag}}"><text class="detail-label">楼层标签</text><text class="detail-val">{{detail.floor_tag === 'first' ? '一楼' : detail.floor_tag === 'last' ? '顶层' : detail.floor_tag === 'attic' ? '阁楼' : detail.floor_tag === 'basement' ? '地下室' : '—'}}</text></view>
+      </view>
+    </view>
+
+    <!-- 费用信息 -->
+    <view class="section">
+      <view class="section-title">费用</view>
+      <view class="detail-grid">
+        <view class="detail-item"><text class="detail-label">月租金</text><text class="detail-val">{{detail.rent_display}}</text></view>
+        <view class="detail-item"><text class="detail-label">押金</text><text class="detail-val">{{detail.payment_type || '—'}}</text></view>
+        <view class="detail-item" wx:if="{{detail.parking_fee}}"><text class="detail-label">停车费</text><text class="detail-val">{{detail.parking_fee}}</text></view>
+        <view class="detail-item" wx:if="{{detail.property_fee}}"><text class="detail-label">物业费</text><text class="detail-val">{{detail.property_fee}}</text></view>
       </view>
     </view>
 
@@ -84,11 +138,16 @@
       <view class="desc-text">{{detail.description}}</view>
     </view>
 
+    <!-- 室友情况 -->
+    <view class="section" wx:if="{{detail.roommate_info}}">
+      <view class="section-title">室友情况</view>
+      <view class="desc-text">{{detail.roommate_info}}</view>
+    </view>
+
     <!-- 联系方式 -->
     <view class="section">
       <view class="section-title">联系方式</view>
       <block wx:if="{{detail.contact_visible || adUnlocked}}">
-        <!-- 已解锁：真实联系方式 -->
         <view class="contact-row" wx:if="{{detail.contact_phone}}">
           <text class="contact-name">{{detail.contact_name}}</text>
           <text class="contact-phone">{{detail.contact_phone}}</text>
@@ -109,7 +168,6 @@
         </view>
       </block>
       <block wx:else>
-        <!-- 未解锁：占位提示，点击直接触发广告解锁 -->
         <view class="contact-lock" bindtap="toggleContact">
           <text class="cuIcon-lock text-gray"></text>
           <text class="contact-lock-text">观看完整广告后可获得联系方式（24小时内有效）</text>
@@ -135,15 +193,16 @@
   <!-- 底部操作栏 -->
   <view class="bottom-bar" wx:if="{{detail && !isOwner && !adUnlocked && !detail.contact_visible}}">
     <button class="cu-btn {{favorited ? 'bg-orange' : 'bg-gray'}}" bindtap="toggleFavorite" style="flex: 1;">{{favorited ? '已收藏' : '收藏'}}</button>
-    <!-- <button class="cu-btn bg-gray" bindtap="goReport" style="flex: 1;">举报</button> -->
+    <button class="cu-btn {{inCompare ? 'bg-orange' : 'bg-gray'}}" bindtap="{{inCompare ? 'goCompare' : 'addToCompare'}}" style="flex: 1;">{{inCompare ? '查看对比' : '对比'}}</button>
     <button class="cu-btn bg-gray" open-type="share" style="flex: 1;">分享</button>
     <button class="cu-btn bg-gray" bindtap="onTapComment" style="flex: 1;">评论</button>
     <button class="cu-btn bg-red" bindtap="onBottomContact" style="flex: 2;">{{contactMethod === 'ad' ? '联系房东' : '支付 ¥1 联系'}}</button>
   </view>
 
-  <!-- 已解锁后底部栏（显示已解锁状态） -->
+  <!-- 已解锁后底部栏 -->
   <view class="bottom-bar" wx:if="{{detail && !isOwner && (adUnlocked || detail.contact_visible)}}">
     <button class="cu-btn {{favorited ? 'bg-orange' : 'bg-gray'}}" bindtap="toggleFavorite" style="flex: 1;">{{favorited ? '已收藏' : '收藏'}}</button>
+    <button class="cu-btn {{inCompare ? 'bg-orange' : 'bg-gray'}}" bindtap="{{inCompare ? 'goCompare' : 'addToCompare'}}" style="flex: 1;">{{inCompare ? '查看对比' : '对比'}}</button>
     <button class="cu-btn bg-gray" open-type="share" style="flex: 1;">分享</button>
     <button class="cu-btn bg-gray" bindtap="onTapComment" style="flex: 1;">评论</button>
     <button class="cu-btn bg-green" bindtap="callPhone" style="flex: 2;">拨打电话</button>

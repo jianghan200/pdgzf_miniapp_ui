@@ -4,7 +4,8 @@ const pay = require('../../utils/pay')
 const app = getApp()
 
 const HOUSE_TYPE_MARKET = 3
-const CONTACT_AD_UNIT_ID = 'adunit-1b2c81cb8c5f8b73'  // 广告位 ID，上线前替换为真实值
+const CONTACT_AD_UNIT_ID = 'adunit-1b2c81cb8c5f8b73'
+const COMPARE_STORAGE_KEY = 'compare_house_ids'
 
 Page({
   data: {
@@ -16,8 +17,9 @@ Page({
     loading: true,
     isOwner: false,
     favorited: false,
-    contactMethod: 'pay',  // 'pay' | 'ad'
+    contactMethod: 'pay',
     adUnlocked: false,
+    inCompare: false
   },
 
   onLoad(options) {
@@ -25,6 +27,7 @@ Page({
     this.setData({ StatusBar: sys.statusBarHeight, id: options.id })
     this.loadContactConfig()
     this.loadDetail()
+    this.checkCompareStatus()
   },
 
   loadContactConfig() {
@@ -32,7 +35,6 @@ Page({
       if (res && res.status === 0 && res.data) {
         const method = res.data.method || 'pay'
         this.setData({ contactMethod: method })
-        // 广告模式下，若本机 24h 内已解锁过该房源，直接显示联系方式
         if (method === 'ad' && this._isContactUnlockedRecently()) {
           this.setData({ adUnlocked: true })
         }
@@ -45,9 +47,18 @@ Page({
     market.getMarketDetail(this.data.id).then((res) => {
       if (res.status === 0) {
         const d = res.data
-        // 解析 facilities JSON
         try { d.facilities_arr = JSON.parse(d.facilities || '[]') } catch(e) { d.facilities_arr = [] }
         try { d.nearby_arr = JSON.parse(d.nearby_facilities || '[]') } catch(e) { d.nearby_arr = [] }
+        try { d.ai_info = JSON.parse(d.ai_info_json || '[]') } catch(e) { d.ai_info = [] }
+        d.source_type_label = this._sourceTypeLabel(d.source_type)
+        d.rent_type_label = this._rentTypeLabel(d.rent_type)
+        d.property_type_label = this._propertyTypeLabel(d.property_type)
+        d.building_type_label = this._buildingTypeLabel(d.building_type)
+        d.rent_display = d.rent_display || (d.rent ? '¥' + d.rent : d.is_negotiable ? '面议' : '价格待定')
+        d.available_date_display = d.available_date_display || d.available_date_fuzzy || d.available_date || '入住时间待定'
+        d.floor_desc = this._buildFloorDesc(d)
+        d.orientation_label = this._orientationLabel(d.orientation)
+        d.lease_desc = this._buildLeaseDesc(d)
         this.setData({
           detail: d,
           mediaList: (d.medias || []).map(m => ({ url: m.url, type: m.type === 'video' ? 'video' : 'photo' })),
@@ -57,6 +68,50 @@ Page({
       }
       this.setData({ loading: false })
     })
+  },
+
+  _sourceTypeLabel(v) {
+    const map = { owner: '房东直租', roommate: '合租找室友', sublet: '转租', apt: '公寓直租' }
+    return map[v] || '房东直租'
+  },
+  _rentTypeLabel(v) {
+    const map = { whole: '整租', share: '合租', bed: '床位' }
+    return map[v] || '整租'
+  },
+  _propertyTypeLabel(v) {
+    const map = {
+      commercial: '商品房', relocation: '安置房', affordable: '经济适用房',
+      civilian: '民房', apartment: '公寓', talent_apt: '人才公寓',
+      bao_rent: '保租房', public_rent: '公租房', other: '其他'
+    }
+    return map[v] || ''
+  },
+  _buildingTypeLabel(v) {
+    const map = {
+      low_rise: '小高层', high_rise: '高层', villa: '别墅',
+      stacked: '叠墅', super_high: '超高层', bungalow: '平房'
+    }
+    return map[v] || ''
+  },
+  _orientationLabel(v) {
+    const map = { east: '东', south: '南', west: '西', north: '北' }
+    return map[v] || (v === 'unknown' ? '' : v)
+  },
+  _buildFloorDesc(d) {
+    const parts = []
+    if (d.floor) parts.push('第' + d.floor + '层')
+    if (d.total_floor) parts.push('共' + d.total_floor + '层')
+    if (d.floor_tag === 'first') parts.push('一楼')
+    if (d.floor_tag === 'last') parts.push('顶层')
+    if (d.floor_tag === 'attic') parts.push('阁楼')
+    if (d.floor_tag === 'basement') parts.push('地下室')
+    return parts.join(' · ')
+  },
+  _buildLeaseDesc(d) {
+    if (!d.min_lease && !d.max_lease) return ''
+    if (d.min_lease && d.max_lease) return `${d.min_lease}-${d.max_lease}月`
+    if (d.min_lease) return `≥${d.min_lease}月`
+    return `≤${d.max_lease}月`
   },
 
   _isLogin() {
@@ -104,10 +159,7 @@ Page({
     const idx = e.currentTarget.dataset.idx
     const imgs = this.data.mediaList.filter(m => m.type !== 'video').map(m => m.url)
     const current = this.data.mediaList[idx] && this.data.mediaList[idx].url
-    wx.previewImage({
-      current: current,
-      urls: imgs
-    })
+    wx.previewImage({ current: current, urls: imgs })
   },
 
   previewVideo(e) {
@@ -117,58 +169,40 @@ Page({
     const imgs = this.data.mediaList.filter(m => m.type !== 'video').map(m => m.url)
     const sources = imgs.map(url => ({ url, type: 'image' }))
     sources.push({ url: item.url, type: 'video' })
-    wx.previewMedia({
-      sources,
-      current: sources.length - 1,
-      fail: () => wx.showToast({ title: '视频暂无法预览', icon: 'none' })
-    })
+    wx.previewMedia({ sources, current: sources.length - 1, fail: () => wx.showToast({ title: '视频暂无法预览', icon: 'none' }) })
   },
 
   toggleContact() {
     if (this.data.contactMethod === 'ad') {
-      // 24 小时内同房源已看广告解锁过，直接显示，不再弹广告
-      if (this._isContactUnlockedRecently()) {
-        this._unlockContactByAd(true)
-        return
-      }
-      // 直接触发激励广告（提示信息已融入占位条）
+      if (this._isContactUnlockedRecently()) { this._unlockContactByAd(true); return }
       this._showContactAd()
     } else {
       this._doPayContact()
     }
   },
 
-  // 底部"联系房东"按钮：先弹确认框再触发，避免无提示直接弹广告
   onBottomContact() {
     if (this.data.contactMethod === 'ad') {
-      if (this._isContactUnlockedRecently()) {
-        this._unlockContactByAd(true)
-        return
-      }
+      if (this._isContactUnlockedRecently()) { this._unlockContactByAd(true); return }
       wx.showModal({
         title: '联系房东',
         content: '观看完整广告后可获得房东联系方式（24小时内有效）',
         confirmText: '看广告',
         cancelText: '取消',
-        success: (res) => {
-          if (res.confirm) this._showContactAd()
-        }
+        success: (res) => { if (res.confirm) this._showContactAd() }
       })
     } else {
       this._doPayContact()
     }
   },
 
-  // ---- 广告 24h 去重（本地存储） ----
   _AD_STORAGE_KEY: 'market_contact_ad_unlock',
   _isContactUnlockedRecently() {
     try {
       const map = wx.getStorageSync(this._AD_STORAGE_KEY) || {}
       const ts = map[this.data.id]
       return !!(ts && (Date.now() - ts) < 24 * 3600 * 1000)
-    } catch (e) {
-      return false
-    }
+    } catch (e) { return false }
   },
   _markContactUnlocked() {
     try {
@@ -201,28 +235,21 @@ Page({
     this._contactAd = wx.createRewardedVideoAd({ adUnitId: CONTACT_AD_UNIT_ID })
     this._contactAd.onError((err) => { console.log('联系房东激励视频广告错误', err) })
     this._contactAd.onClose((res) => {
-      if (res && res.isEnded) {
-        this._unlockContactByAd()
-      } else {
-        wx.showToast({ title: '看完视频才能解锁', icon: 'none' })
-      }
+      if (res && res.isEnded) this._unlockContactByAd()
+      else wx.showToast({ title: '看完视频才能解锁', icon: 'none' })
     })
     return this._contactAd
   },
 
   _showContactAd() {
     const ad = this._getContactAd()
-    if (!ad) {
-      wx.showToast({ title: '广告暂不可用', icon: 'none' })
-      return
-    }
+    if (!ad) { wx.showToast({ title: '广告暂不可用', icon: 'none' }); return }
     ad.show().catch(() => {
       ad.load().then(() => ad.show()).catch(() => wx.showToast({ title: '广告加载失败', icon: 'none' }))
     })
   },
 
   _unlockContactByAd(skipServer) {
-    // 本地 24h 内已解锁：直接显示联系方式，不再调用服务端
     if (skipServer) {
       this.setData({ adUnlocked: true })
       wx.showToast({ title: '已解锁联系方式', icon: 'success' })
@@ -260,10 +287,7 @@ Page({
   copyWechat() {
     const wechat = this.data.detail && this.data.detail.contact_wechat
     if (!wechat) return
-    wx.setClipboardData({
-      data: wechat,
-      success: () => wx.showToast({ title: '微信号已复制', icon: 'success' })
-    })
+    wx.setClipboardData({ data: wechat, success: () => wx.showToast({ title: '微信号已复制', icon: 'success' }) })
   },
 
   copySourceUrl() {
@@ -271,13 +295,42 @@ Page({
     if (!url) return
     wx.setClipboardData({
       data: url,
-      success: () => wx.showModal({
-        title: '链接已复制',
-        content: '请用浏览器粘贴打开查看',
-        showCancel: false,
-        confirmText: '好的'
-      })
+      success: () => wx.showModal({ title: '链接已复制', content: '请用浏览器粘贴打开查看', showCancel: false, confirmText: '好的' })
     })
+  },
+
+  // 加入对比
+  checkCompareStatus() {
+    const ids = wx.getStorageSync(COMPARE_STORAGE_KEY) || []
+    this.setData({ inCompare: ids.includes(parseInt(this.data.id)) })
+  },
+  addToCompare() {
+    let ids = wx.getStorageSync(COMPARE_STORAGE_KEY) || []
+    ids = ids.map(id => parseInt(id))
+    const id = parseInt(this.data.id)
+    if (ids.includes(id)) {
+      wx.showToast({ title: '已在对比列表', icon: 'none' })
+      return
+    }
+    if (ids.length >= 4) {
+      wx.showToast({ title: '最多对比4套', icon: 'none' })
+      return
+    }
+    ids.push(id)
+    wx.setStorageSync(COMPARE_STORAGE_KEY, ids)
+    this.setData({ inCompare: true })
+    wx.showToast({ title: '已加入对比', icon: 'success' })
+  },
+  removeFromCompare() {
+    let ids = wx.getStorageSync(COMPARE_STORAGE_KEY) || []
+    const id = parseInt(this.data.id)
+    ids = ids.filter(i => parseInt(i) !== id)
+    wx.setStorageSync(COMPARE_STORAGE_KEY, ids)
+    this.setData({ inCompare: false })
+    wx.showToast({ title: '已移出对比', icon: 'none' })
+  },
+  goCompare() {
+    wx.navigateTo({ url: '/pages/market/compare/compare' })
   },
 
   goReport() {

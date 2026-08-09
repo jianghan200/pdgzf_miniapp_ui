@@ -26,3 +26,70 @@
   color: green;
   font-weight: 500;
 }
+
+/* 市场房源/保租房半屏列表 */
+.market-list-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 50vh;
+  background: #fff;
+  border-radius: 24rpx 24rpx 0 0;
+  box-shadow: 0 -4rpx 20rpx rgba(0,0,0,0.1);
+  transform: translateY(calc(100% - 120rpx));
+  transition: transform 0.3s;
+}
+.market-list-panel.show {
+  transform: translateY(0);
+}
+.panel-handle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx 0;
+}
+.handle-bar {
+  width: 80rpx;
+  height: 8rpx;
+  background: #ddd;
+  border-radius: 4rpx;
+}
+.panel-title {
+  margin-top: 12rpx;
+  font-size: 28rpx;
+  color: #333;
+  font-weight: bold;
+}
+.panel-scroll {
+  height: calc(50vh - 120rpx);
+  padding: 0 20rpx;
+}
+.panel-item {
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+.panel-name {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: bold;
+}
+.panel-desc {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 6rpx;
+}
+.panel-bottom {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10rpx;
+}
+.panel-rent {
+  color: #e54d42;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+.panel-type {
+  font-size: 24rpx;
+  color: #666;
+}

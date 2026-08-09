@@ -1,0 +1,129 @@
+.page-container {
+  background: #f5f5f5;
+  min-height: 100vh;
+  padding-bottom: 40rpx;
+}
+.tip-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 24rpx;
+  background: #fff;
+  font-size: 26rpx;
+  color: #666;
+}
+.clear-btn {
+  color: #e54d42;
+}
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 200rpx;
+}
+.empty-title {
+  font-size: 32rpx;
+  color: #333;
+  margin-top: 24rpx;
+  font-weight: bold;
+}
+.empty-desc {
+  font-size: 26rpx;
+  color: #999;
+  margin-top: 12rpx;
+}
+.go-btn {
+  margin-top: 40rpx;
+  width: 240rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  background: #e54d42;
+  color: #fff;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+}
+
+.compare-scroll {
+  margin-top: 16rpx;
+}
+.compare-table {
+  display: flex;
+  padding: 0 20rpx;
+}
+.col {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.title-col {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: #f5f5f5;
+}
+.house-col {
+  width: 260rpx;
+  background: #fff;
+  border-right: 1rpx solid #f0f0f0;
+}
+.house-col:first-child {
+  border-left: 1rpx solid #f0f0f0;
+}
+.cell {
+  height: 80rpx;
+  padding: 16rpx 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 24rpx;
+  color: #666;
+  border-bottom: 1rpx solid #f0f0f0;
+  box-sizing: border-box;
+}
+.title-col .cell {
+  justify-content: flex-start;
+  padding-left: 20rpx;
+  color: #999;
+  background: #f5f5f5;
+}
+.header-cell {
+  height: 160rpx;
+  padding: 12rpx;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8rpx;
+  overflow: hidden;
+}
+.title-col .header-cell {
+  background: #f5f5f5;
+  color: #333;
+  font-weight: bold;
+}
+.highlight {
+  color: #e54d42;
+  font-weight: bold;
+}
+.compare-cover {
+  width: 135rpx;
+  height: 90rpx;
+  border-radius: 8rpx;
+}
+.compare-title {
+  font-size: 24rpx;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 220rpx;
+}
+.remove-text {
+  color: #e54d42;
+  font-size: 24rpx;
+}
+.loading-tip {
+  text-align: center;
+  padding: 40rpx;
+  color: #999;
+  font-size: 26rpx;
+}

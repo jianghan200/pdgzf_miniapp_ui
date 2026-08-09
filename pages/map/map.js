@@ -134,7 +134,7 @@ Page({
   // 加载市场房源 markers
   loadMarketMarkers() {
     const self = this
-    market.getMarketList({ page: 1, size: 100 }).then((res) => {
+    market.getMarketList({ page: 1, size: 200 }).then((res) => {
       if (res && res.status === 0) {
         const list = (res.data && res.data.list) || []
         const markers = list.map((item, idx) => {
@@ -146,12 +146,12 @@ Page({
             width: 22,
             height: 22,
             customCallout: { anchorY: 10, anchorX: 0, display: 'BYCLICK' },
-            pname: item.title,
-            countDesc: `¥${item.rent}/月 · ${item.layout || ''} · ${item.area}㎡`,
+            pname: item.title || item.address_name,
+            countDesc: `${item.rent_display || (item.rent != null ? '¥' + item.rent : '价格待定')}/月 · ${item.house_type || ''} · ${item.area || ''}㎡`,
             sourceType: 'market',
             sourceId: item.id
           }
-        })
+        }).filter(m => !isNaN(m.latitude) && !isNaN(m.longitude) && m.latitude && m.longitude)
         self.setData({ marketMarkers: markers, markers, listData: list, showList: true })
       }
     }).catch(() => {})
@@ -373,6 +373,16 @@ Page({
       pname: project.raw.name,
       countDesc: `拥有${project.rentableCount}套公租房`,
       houseInfo: housesInfo
+    }
+  },
+
+  // 点击半屏列表项
+  onListItemTap(e) {
+    const id = e.currentTarget.dataset.id
+    if (this.data.mode === 'market') {
+      wx.navigateTo({ url: '/pages/market/detail?id=' + id })
+    } else if (this.data.mode === 'shbzf') {
+      wx.navigateTo({ url: '/pages/shbzf/detail?id=' + id })
     }
   },
 

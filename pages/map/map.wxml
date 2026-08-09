@@ -45,16 +45,31 @@
           <cover-view>{{item.countDesc}}</cover-view>
           <cover-view>{{item.appearCounts}}</cover-view>
           <cover-view>{{item.houseCounts}}</cover-view>
-          <!-- 关于全部房源每个小区的房型和价格信息 -->
           <block wx:for="{{item.houseInfo}}" wx:for-item="info" wx:key="*this">
             <cover-view class="notice">{{info.houseType}}: {{info.size}}平 {{info.rent}}元</cover-view>
           </block>
-          <!-- 关于今日每个房源的排队形势描述 -->
           <block wx:for="{{item.queueNotice}}" wx:for-item="notice" wx:key="*this">
             <cover-view class="notice">{{notice}}</cover-view>
           </block>
         </cover-view>
       </block>
+    </cover-view>
+    <!-- 市场房源/保租房半屏列表 -->
+    <cover-view class="market-list-panel {{showList ? 'show' : ''}}" wx:if="{{mode == 'market' || mode == 'shbzf'}}">
+      <cover-view class="panel-handle" bindtap="toggleList">
+        <cover-view class="handle-bar"></cover-view>
+        <cover-view class="panel-title">{{mode == 'market' ? '市场房源' : '保租房'}} {{listData.length}} 套</cover-view>
+      </cover-view>
+      <scroll-view scroll-y class="panel-scroll" wx:if="{{showList}}">
+        <cover-view class="panel-item" wx:for="{{listData}}" wx:key="id" data-id="{{item.id}}" bindtap="onListItemTap">
+          <cover-view class="panel-name">{{item.title || item.project_name || item.address_name}}</cover-view>
+          <cover-view class="panel-desc">{{item.district || ''}} {{item.town || ''}} {{item.district_name || ''}}</cover-view>
+          <cover-view class="panel-bottom">
+            <cover-view class="panel-rent">{{item.rent_display || (item.rent != null ? '¥' + item.rent : '价格待定')}}/月</cover-view>
+            <cover-view class="panel-type">{{item.house_type || ''}}</cover-view>
+          </cover-view>
+        </cover-view>
+      </scroll-view>
     </cover-view>
   </map>
 </view>
