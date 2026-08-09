@@ -49,7 +49,7 @@
         <text class="cuIcon-phonefill text-green"></text>
         <text class="tel-label">{{item.label}}</text>
         <text class="tel-num">{{item.display}}</text>
-        <text class="tel-lock" wx:if="{{!item.unlocked && !isVip}}">看广告解锁，VIP免广告</text>
+        <text class="tel-lock" wx:if="{{!item.unlocked && !isVip}}">看广告解锁，VIP免广</text>
         <text class="cuIcon-right text-gray"></text>
       </view>
     </view>

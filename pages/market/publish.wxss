@@ -393,3 +393,22 @@
   background: #f5a3a0;
   color: #fff;
 }
+
+/* switch 行 */
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+.switch-row:last-child {
+  border-bottom: none;
+}
+.switch-label {
+  font-size: 28rpx;
+  color: #333;
+}
+.fuzzy-date-row {
+  margin-top: 16rpx;
+}

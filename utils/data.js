@@ -212,10 +212,23 @@ const loadAllData = function(options) {
 
         log.info("redirect to new url: " + newDirect)
 
-        wx.switchTab({ url: newDirect, success: function(e) {
-          const param = util.getReqParam(newDirect)
-          getCurrentPages().pop().onLoad(param)
-        } })
+        // tabBar 页面：switchTab 跳转（不支持 query）；非 tabBar 页面：navigateTo 跳转（支持 query）
+        const basePath = '/' + (newDirect.split('?')[0]).replace(/^\/+/, '')
+        const isTabPage = TAB_PATHS && Object.values(TAB_PATHS).indexOf(basePath) >= 0
+        if (isTabPage) {
+          wx.switchTab({
+            url: basePath,
+            success: function(e) {
+              // tab 页虽无法带 query，但保留原 hack：手动把参数传给目标页 onLoad
+              const param = util.getReqParam(newDirect)
+              const pages = getCurrentPages()
+              const target = pages[pages.length - 1]
+              if (target && param) target.onLoad(param)
+            }
+          })
+        } else {
+          wx.navigateTo({ url: newDirect })
+        }
       } else {
         // 根据用户设置的 defaultTab 跳转到对应 tab
         const targetPath = _getDefaultTabPath()

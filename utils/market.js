@@ -84,6 +84,7 @@ const _upload = (path, filePath, formData) => {
 // === 市场房源 ===
 const getMarketList = (params) => _get('/market/house/list?' + _buildQuery(params))
 const getMarketDetail = (id) => _get(`/market/house/${id}`)
+const getMarketCompare = (ids) => _get('/market/houses/compare?ids=' + encodeURIComponent(ids.join(',')))
 const publishMarketHouse = (data) => _post('/market/house', data)
 const updateMarketHouse = (id, data) => _post(`/market/house/${id}/update`, data)
 const offlineMarketHouse = (id) => _post(`/market/house/${id}/offline`)
@@ -221,6 +222,7 @@ module.exports = {
   // 市场房源
   getMarketList,
   getMarketDetail,
+  getMarketCompare,
   publishMarketHouse,
   updateMarketHouse,
   offlineMarketHouse,

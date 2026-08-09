@@ -21,6 +21,15 @@ const DEFAULT_FORM = {
   area: '',
   floor: '',
   total_floor: '',
+  floor_tag: '',
+  elevator: false,
+  property_type: '',
+  building_type: '',
+  civil_meters: false,
+  gas: false,
+  pet_friendly: false,
+  private_kitchen: false,
+  south: false,
   rent: '',
   deposit_months: 1,
   payment_months: 1,
@@ -30,7 +39,9 @@ const DEFAULT_FORM = {
   max_lease: 24,
   support_short_term: 0,
   only_long_term: 0,
+  date_type: 'exact',
   available_date: '',
+  available_date_fuzzy: '',
   earliest_view_time: '随时可看',
   contact_name: '',
   contact_phone: '',
@@ -58,9 +69,40 @@ Page({
     extraTags: [],
 
     identityOptions: [
-      { value: 'owner', title: '我是业主，出租自己的房子' },
-      { value: 'roommate', title: '我是室友，找人和我一起合租' },
-      { value: 'sublet', title: '我要搬走，转租现在的房子' }
+      { value: 'owner', title: '我是业主，出租自己的房子', desc: '房东直租' },
+      { value: 'roommate', title: '我是室友，找人和我一起合租', desc: '合租找室友' },
+      { value: 'sublet', title: '我要搬走，转租现在的房子', desc: '转租' },
+      { value: 'apt', title: '公寓/品牌方直租', desc: '公寓直租' }
+    ],
+    propertyTypeOptions: [
+      { value: 'commercial', label: '商品房' },
+      { value: 'relocation', label: '安置房' },
+      { value: 'affordable', label: '经济适用房' },
+      { value: 'civilian', label: '民房' },
+      { value: 'apartment', label: '公寓' },
+      { value: 'talent_apt', label: '人才公寓' },
+      { value: 'bao_rent', label: '保租房' },
+      { value: 'public_rent', label: '公租房' },
+      { value: 'other', label: '其他' }
+    ],
+    buildingTypeOptions: [
+      { value: 'low_rise', label: '小高层' },
+      { value: 'high_rise', label: '高层' },
+      { value: 'villa', label: '别墅' },
+      { value: 'stacked', label: '叠墅' },
+      { value: 'super_high', label: '超高层' },
+      { value: 'bungalow', label: '平房' }
+    ],
+    floorTagOptions: [
+      { value: '', label: '普通楼层' },
+      { value: 'first', label: '一楼' },
+      { value: 'last', label: '顶层' },
+      { value: 'attic', label: '阁楼' },
+      { value: 'basement', label: '地下室' }
+    ],
+    dateTypeOptions: [
+      { value: 'exact', label: '精确日期' },
+      { value: 'fuzzy', label: '模糊时间' }
     ],
     rentTypeOptions: [
       { value: 'whole', label: '整租' },
@@ -208,6 +250,15 @@ Page({
             area: d.area ? String(d.area) : '',
             floor: d.floor ? String(d.floor) : '',
             total_floor: d.total_floor ? String(d.total_floor) : '',
+            floor_tag: d.floor_tag || '',
+            elevator: !!d.elevator,
+            property_type: d.property_type || '',
+            building_type: d.building_type || '',
+            civil_meters: !!d.civil_meters,
+            gas: !!d.gas,
+            pet_friendly: !!d.pet_friendly,
+            private_kitchen: !!d.private_kitchen,
+            south: !!d.south,
             rent: String(d.rent),
             deposit_months: depositMonths,
             payment_months: paymentMonths,
@@ -217,7 +268,9 @@ Page({
             max_lease: d.max_lease || 24,
             support_short_term: d.support_short_term || 0,
             only_long_term: d.only_long_term || 0,
+            date_type: d.available_date_type || (d.available_date_fuzzy ? 'fuzzy' : 'exact'),
             available_date: d.available_date || '',
+            available_date_fuzzy: d.available_date_fuzzy || '',
             earliest_view_time: d.earliest_view_time || '随时可看',
             contact_name: d.contact_name || '',
             contact_phone: d.contact_phone || '',
@@ -326,6 +379,20 @@ Page({
     const idx = e.detail.value
     this.setData({ districtIndex: idx, 'form.district': this.data.districts[idx] })
   },
+
+  // 房屋属性
+  onPropertyTypeChange(e) { this.setData({ 'form.property_type': e.currentTarget.dataset.value }) },
+  onBuildingTypeChange(e) { this.setData({ 'form.building_type': e.currentTarget.dataset.value }) },
+  onFloorTagChange(e) { this.setData({ 'form.floor_tag': e.currentTarget.dataset.value }) },
+  toggleElevator() { this.setData({ 'form.elevator': !this.data.form.elevator }) },
+  toggleCivilMeters() { this.setData({ 'form.civil_meters': !this.data.form.civil_meters }) },
+  toggleGas() { this.setData({ 'form.gas': !this.data.form.gas }) },
+  togglePetFriendly() { this.setData({ 'form.pet_friendly': !this.data.form.pet_friendly }) },
+  togglePrivateKitchen() { this.setData({ 'form.private_kitchen': !this.data.form.private_kitchen }) },
+  toggleSouth() { this.setData({ 'form.south': !this.data.form.south }) },
+
+  // 入住日期
+  onDateTypeChange(e) { this.setData({ 'form.date_type': e.currentTarget.dataset.value }) },
 
   // 押金
   onDepositChange(e) {
@@ -526,7 +593,8 @@ Page({
     if (f.rent_type === 'share' && !f.bedroom_area) return '请填写待租卧室面积'
     if (!f.rent) return '请填写月租金'
     if (!f.is_negotiable && !f.deposit_months && !f.payment_months) return '请选择押金和付款方式'
-    if (!f.available_date) return '请选择可入住时间'
+    if (f.date_type === 'exact' && !f.available_date) return '请选择可入住时间'
+    if (f.date_type === 'fuzzy' && !f.available_date_fuzzy.trim()) return '请填写模糊入住时间'
     if (!f.contact_phone.trim()) return '请填写联系电话'
     return ''
   },
@@ -581,8 +649,19 @@ Page({
       max_lease: f.max_lease,
       support_short_term: extraTags.includes('short_term') ? 1 : 0,
       only_long_term: extraTags.includes('only_long_term') ? 1 : 0,
-      available_date: f.available_date,
+      available_date: f.date_type === 'exact' ? f.available_date : '',
+      available_date_fuzzy: f.date_type === 'fuzzy' ? f.available_date_fuzzy : '',
+      available_date_type: f.date_type,
       earliest_view_time: extraTags.includes('anytime_view') ? '随时可看' : (f.earliest_view_time || ''),
+      floor_tag: f.floor_tag || '',
+      elevator: f.elevator ? 1 : 0,
+      property_type: f.property_type,
+      building_type: f.building_type,
+      civil_meters: f.civil_meters ? 1 : 0,
+      gas: f.gas ? 1 : 0,
+      pet_friendly: f.pet_friendly ? 1 : 0,
+      private_kitchen: f.private_kitchen ? 1 : 0,
+      south: f.south ? 1 : 0,
       contact_name: f.contact_name,
       contact_phone: f.contact_phone,
       contact_wechat: f.contact_wechat,

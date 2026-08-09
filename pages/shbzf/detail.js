@@ -103,6 +103,13 @@ Page({
         if (detail.project_tel) tels.push({ label: '项目', num: detail.project_tel, display: this._maskTel(detail.project_tel), unlocked: false })
         if (detail.district_tel) tels.push({ label: '区住房保障', num: detail.district_tel, display: this._maskTel(detail.district_tel), unlocked: false })
         this.setData({ detail, countdownText, tels })
+        // 24小时内已解锁过 → 显示完整电话
+        if (this._isTelUnlockedRecently()) {
+          const tels = this.data.tels.map(t =>
+            Object.assign({}, t, { unlocked: true, display: t.num })
+          )
+          this.setData({ tels })
+        }
         // 收藏状态
         this.loadFavoriteStatus()
         // 查询 VIP 状态（VIP 免广告直接看电话）
@@ -126,26 +133,42 @@ Page({
   toggleRules() {
     this.setData({ expandedRules: !this.data.expandedRules })
   },
+  _SHBZF_AD_KEY: 'shbzf_contact_ad_unlock',
+  _isTelUnlockedRecently() {
+    try {
+      const ts = wx.getStorageSync(this._SHBZF_AD_KEY + '_' + this.data.id)
+      return !!(ts && (Date.now() - ts) < 24 * 3600 * 1000)
+    } catch (e) { return false }
+  },
+  _markTelUnlocked() {
+    try {
+      wx.setStorageSync(this._SHBZF_AD_KEY + '_' + this.data.id, Date.now())
+    } catch (e) {}
+  },
   tapTel(e) {
     const idx = e.currentTarget.dataset.index
     const tel = this.data.tels[idx]
     if (!tel) return
     if (tel.unlocked || this.data.isVip) { this.callNumber(tel.num); return }
-    this._showAd(idx)
+    if (this._isTelUnlockedRecently()) { this._unlockAllTel(); return }
+    wx.showModal({
+      title: '联系电话',
+      content: '观看完整广告后可获得联系电话（24小时内有效）',
+      confirmText: '看广告',
+      success: (res) => { if (res.confirm) this._showAd(idx) }
+    })
   },
   _getAd() {
     if (this._ad) return this._ad
-    if (!this.data.adUnitId || this.data.adUnitId.indexOf('adunit-1261b13b058b14cb') === 0) return null
+    if (!this.data.adUnitId || this.data.adUnitId.indexOf('xxxx') >= 0) return null
     this._ad = wx.createRewardedVideoAd({ adUnitId: this.data.adUnitId })
     this._ad.onError((err) => { console.log('激励视频广告错误', err) })
     this._ad.onClose((res) => {
-      const idx = this._pendingTelIdx
-      if (res && res.isEnded && idx >= 0) {
-        this._unlockTel(idx)
-      } else if (!res || !res.isEnded) {
+      if (res && res.isEnded) {
+        this._unlockAllTel()
+      } else {
         wx.showToast({ title: '看完视频才能解锁', icon: 'none' })
       }
-      this._pendingTelIdx = -1
     })
     return this._ad
   },
@@ -157,12 +180,16 @@ Page({
       ad.load().then(() => ad.show()).catch(() => wx.showToast({ title: '广告加载失败', icon: 'none' }))
     })
   },
-  _unlockTel(idx) {
-    const tels = this.data.tels.slice()
-    const t = Object.assign({}, tels[idx], { unlocked: true, display: tels[idx].num })
-    tels[idx] = t
+  _unlockAllTel() {
+    this._markTelUnlocked()
+    const tels = this.data.tels.map(t =>
+      Object.assign({}, t, { unlocked: true, display: t.num })
+    )
     this.setData({ tels })
-    this.callNumber(tels[idx].num)
+    if (this._pendingTelIdx >= 0) {
+      this.callNumber(tels[this._pendingTelIdx].num)
+    }
+    this._pendingTelIdx = -1
   },
   callNumber(tel) {
     if (tel) wx.makePhoneCall({ phoneNumber: tel, fail: () => {} })

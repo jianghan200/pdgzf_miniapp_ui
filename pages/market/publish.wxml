@@ -108,7 +108,41 @@
     </view>
   </view>
 
-  <!-- 7. 朝向 -->
+  <!-- 6. 房屋属性 -->
+  <view class="section">
+    <view class="section-title">房屋属性</view>
+    <view class="tag-row">
+      <view class="tag {{form.property_type === item.value ? 'active' : ''}}" wx:for="{{propertyTypeOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="onPropertyTypeChange">{{item.label}}</view>
+    </view>
+  </view>
+
+  <!-- 7. 建筑类型 -->
+  <view class="section">
+    <view class="section-title">建筑类型</view>
+    <view class="tag-row">
+      <view class="tag {{form.building_type === item.value ? 'active' : ''}}" wx:for="{{buildingTypeOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="onBuildingTypeChange">{{item.label}}</view>
+    </view>
+  </view>
+
+  <!-- 8. 楼层 + 电梯 + 楼层标签 -->
+  <view class="section">
+    <view class="section-title">楼层</view>
+    <view class="floor-row">
+      <input class="floor-input" type="number" placeholder="第几层" value="{{form.floor}}" data-field="floor" bindinput="onInput"/>
+      <text class="floor-split">/</text>
+      <input class="floor-input" type="number" placeholder="总楼层" value="{{form.total_floor}}" data-field="total_floor" bindinput="onInput"/>
+    </view>
+    <view class="section-subtitle" style="margin-top: 16rpx;">楼层标签</view>
+    <view class="tag-row">
+      <view class="tag {{form.floor_tag === item.value ? 'active' : ''}}" wx:for="{{floorTagOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="onFloorTagChange">{{item.label}}</view>
+    </view>
+    <view class="switch-row">
+      <text class="switch-label">是否有电梯</text>
+      <switch checked="{{form.elevator}}" bindchange="toggleElevator" color="#e54d42"/>
+    </view>
+  </view>
+
+  <!-- 9. 朝向 -->
   <view class="section">
     <view class="section-title">朝向</view>
     <view class="tag-row">
@@ -116,7 +150,7 @@
     </view>
   </view>
 
-  <!-- 8. 设施 -->
+  <!-- 10. 设施 -->
   <view class="section">
     <view class="section-title">设施</view>
     <view class="tag-row">
@@ -126,9 +160,17 @@
     <view class="tag-row" style="margin-top: 8rpx;">
       <view class="tag {{tools.indexOf(form.facilities, item) >= 0 ? 'active' : ''}}" wx:for="{{facilityOptions}}" wx:key="*this" data-idx="{{index}}" bindtap="toggleFacility">{{item}}</view>
     </view>
+    <view class="switch-row">
+      <text class="switch-label">民水民电</text>
+      <switch checked="{{form.civil_meters}}" bindchange="toggleCivilMeters" color="#e54d42"/>
+    </view>
+    <view class="switch-row">
+      <text class="switch-label">天然气</text>
+      <switch checked="{{form.gas}}" bindchange="toggleGas" color="#e54d42"/>
+    </view>
   </view>
 
-  <!-- 9. 性别限制（合租/床位显示） -->
+  <!-- 11. 性别限制（合租/床位显示） -->
   <view class="section" wx:if="{{form.rent_type === 'share' || form.rent_type === 'bed'}}">
     <view class="section-title">性别</view>
     <view class="tag-row">
@@ -136,7 +178,7 @@
     </view>
   </view>
 
-  <!-- 10. 面积 -->
+  <!-- 12. 面积 -->
   <view class="section">
     <view class="section-title">整套房子的总面积</view>
     <view class="input-with-unit">
@@ -152,22 +194,18 @@
     </view>
   </view>
 
-  <!-- 11. 楼层 -->
-  <view class="section">
-    <view class="section-title">楼层</view>
-    <view class="floor-row">
-      <input class="floor-input" type="number" placeholder="第几层" value="{{form.floor}}" data-field="floor" bindinput="onInput"/>
-      <text class="floor-split">/</text>
-      <input class="floor-input" type="number" placeholder="总楼层" value="{{form.total_floor}}" data-field="total_floor" bindinput="onInput"/>
-    </view>
-  </view>
-
-  <!-- 12. 入住时间 -->
+  <!-- 13. 入住时间 -->
   <view class="section">
     <view class="section-title">可入住时间</view>
-    <picker mode="date" value="{{form.available_date}}" bindchange="onDateChange">
+    <view class="tag-row">
+      <view class="tag {{form.date_type === item.value ? 'active' : ''}}" wx:for="{{dateTypeOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="onDateTypeChange">{{item.label}}</view>
+    </view>
+    <picker wx:if="{{form.date_type === 'exact'}}" mode="date" value="{{form.available_date}}" bindchange="onDateChange">
       <view class="date-picker">{{form.available_date || '选择日期'}}</view>
     </picker>
+    <view wx:if="{{form.date_type === 'fuzzy'}}" class="fuzzy-date-row">
+      <input class="block-input" placeholder="如：8月中旬、9月1日之后" value="{{form.available_date_fuzzy}}" data-field="available_date_fuzzy" bindinput="onInput"/>
+    </view>
   </view>
 
   <!-- 13. 详情介绍 -->
@@ -184,11 +222,23 @@
     <textarea class="block-textarea" placeholder="请补充室友情况" value="{{form.roommate_info}}" data-field="roommate_info" bindinput="onInput" maxlength="300"/>
   </view>
 
-  <!-- 15. 其他标签 -->
+  <!-- 16. 其他标签 -->
   <view class="section">
     <view class="section-title">其他</view>
     <view class="tag-row">
       <view class="tag {{tools.indexOf(extraTags, item.value) >= 0 ? 'active' : ''}}" wx:for="{{extraTagOptions}}" wx:key="value" data-value="{{item.value}}" bindtap="toggleExtraTag">{{item.label}}</view>
+    </view>
+    <view class="switch-row">
+      <text class="switch-label">朝南</text>
+      <switch checked="{{form.south}}" bindchange="toggleSouth" color="#e54d42"/>
+    </view>
+    <view class="switch-row">
+      <text class="switch-label">可养宠物</text>
+      <switch checked="{{form.pet_friendly}}" bindchange="togglePetFriendly" color="#e54d42"/>
+    </view>
+    <view class="switch-row" wx:if="{{form.rent_type === 'share' || form.rent_type === 'bed'}}">
+      <text class="switch-label">独立厨房</text>
+      <switch checked="{{form.private_kitchen}}" bindchange="togglePrivateKitchen" color="#e54d42"/>
     </view>
   </view>
 
