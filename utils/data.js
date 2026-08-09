@@ -227,7 +227,8 @@ const loadAllData = function(options) {
             }
           })
         } else {
-          wx.navigateTo({ url: newDirect })
+          // 用 redirectTo 替换当前 login 页，避免返回时停在 login 页
+          wx.redirectTo({ url: newDirect })
         }
       } else {
         // 根据用户设置的 defaultTab 跳转到对应 tab

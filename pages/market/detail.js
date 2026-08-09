@@ -19,12 +19,16 @@ Page({
     favorited: false,
     contactMethod: 'pay',
     adUnlocked: false,
-    inCompare: false
+    inCompare: false,
+    isRoot: false
   },
 
   onLoad(options) {
     const sys = wx.getSystemInfoSync()
-    this.setData({ StatusBar: sys.statusBarHeight, id: options.id })
+    // 冷启动/分享直接进入详情页时，页面栈只有本页（栈底），无上一页可返回
+    const pages = getCurrentPages()
+    const isRoot = pages.length <= 1
+    this.setData({ StatusBar: sys.statusBarHeight, id: options.id, isRoot })
     this.loadContactConfig()
     this.loadDetail()
     this.checkCompareStatus()
@@ -121,11 +125,12 @@ Page({
 
   _requireLogin() {
     if (this._isLogin()) return true
+    const redirect = '/pages/market/detail?id=' + this.data.id
     wx.showModal({
       title: '请先登录',
       content: '登录后才能收藏房源',
       confirmText: '去登录',
-      success: (r) => { if (r.confirm) wx.navigateTo({ url: '/pages/login/login' }) }
+      success: (r) => { if (r.confirm) wx.navigateTo({ url: '/pages/login/login?redirect=' + encodeURIComponent(redirect) }) }
     })
     return false
   },
@@ -160,6 +165,11 @@ Page({
     const imgs = this.data.mediaList.filter(m => m.type !== 'video').map(m => m.url)
     const current = this.data.mediaList[idx] && this.data.mediaList[idx].url
     wx.previewImage({ current: current, urls: imgs })
+  },
+
+  // 冷启动/分享进入时，浮动图标返回市场房源 tab
+  goMarketList() {
+    wx.switchTab({ url: '/pages/market/list' })
   },
 
   previewVideo(e) {

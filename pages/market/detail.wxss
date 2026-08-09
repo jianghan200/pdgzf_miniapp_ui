@@ -3,6 +3,22 @@
   padding: 200rpx;
 }
 
+/* 冷启动/分享进入时的浮动返回市场图标 */
+.market-float-back {
+  position: fixed;
+  right: 24rpx;
+  bottom: 200rpx;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  background: rgba(229, 77, 66, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.2);
+  z-index: 99;
+}
+
 /* 出租属性标签 */
 .source-row {
   display: flex;
