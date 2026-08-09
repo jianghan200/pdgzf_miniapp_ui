@@ -4,10 +4,14 @@
     <view class="text-white text-bold"></view>
   </view>
 </cu-custom>
+<!-- 冷启动/分享进入（栈底）时：导航栏左侧市场图标，替代不可用的返回键 -->
+<view class="nav-market-icon" wx:if="{{isRoot}}" bindtap="goMarketList" style="top:{{StatusBar}}px; height:{{CustomBar - StatusBar}}px;">
+  <image src="/assets/home.png" class="nav-market-img"/>
+</view>
 <view style="background-color: #f5f5f5; min-height: 100vh; padding-bottom: 140rpx;">
-  <!-- 冷启动/分享进入时：浮动返回市场房源 tab 图标 -->
+  <!-- 冷启动/分享进入时：右下角浮动返回市场房源 tab 图标 -->
   <view class="market-float-back" wx:if="{{isRoot}}" bindtap="goMarketList">
-    <text class="cuIcon-shop text-white" style="font-size: 34rpx;"></text>
+    <image src="/assets/home-red.png" class="float-market-img"/>
   </view>
 
   <!-- 加载中 -->

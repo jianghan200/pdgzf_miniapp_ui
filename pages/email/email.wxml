@@ -95,7 +95,7 @@
     给会员大人请{{dayTime}}安啦～
   </view>
 
-  <image class="worker-avatar" src="/assets/avatar.jpg" mode="aspectFill"></image>
+  <image class="worker-avatar" src="https://cdn.vencloud.cn/yzzz/default/cat.jpeg-detail_img" mode="aspectFill"></image>
   <view class="text-bold text-xl" style="padding-top: 0.5rem;">
     小的这就给您写研报去～
   </view>

@@ -86,7 +86,7 @@
 
   <!-- 今日房源真的是一套都没有 -->
   <view wx:else style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-    <image class="worker-avatar" src="/assets/cat.jpeg" mode="aspectFill"></image>
+    <image class="worker-avatar" src="https://cdn.vencloud.cn/yzzz/default/cat.jpeg-detail_img" mode="aspectFill"></image>
     <view class="text-bold text-large padding">没了，真的一套都没了(ｰ ｰ;)，过几小时再看看吧～</view>
   </view>
 </view>

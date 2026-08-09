@@ -10,6 +10,7 @@ const COMPARE_STORAGE_KEY = 'compare_house_ids'
 Page({
   data: {
     StatusBar: 0,
+    CustomBar: 0,
     id: 0,
     detail: null,
     mediaList: [],
@@ -28,7 +29,12 @@ Page({
     // 冷启动/分享直接进入详情页时，页面栈只有本页（栈底），无上一页可返回
     const pages = getCurrentPages()
     const isRoot = pages.length <= 1
-    this.setData({ StatusBar: sys.statusBarHeight, id: options.id, isRoot })
+    this.setData({
+      StatusBar: sys.statusBarHeight,
+      CustomBar: app.globalData.CustomBar,
+      id: options.id,
+      isRoot
+    })
     this.loadContactConfig()
     this.loadDetail()
     this.checkCompareStatus()

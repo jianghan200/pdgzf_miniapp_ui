@@ -11,12 +11,32 @@
   width: 88rpx;
   height: 88rpx;
   border-radius: 50%;
-  background: rgba(229, 77, 66, 0.9);
+  background: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.2);
   z-index: 99;
+}
+.float-market-img {
+  width: 52rpx;
+  height: 52rpx;
+}
+
+/* 冷启动/分享进入（栈底）时：导航栏左侧市场图标 */
+.nav-market-icon {
+  position: fixed;
+  left: 8rpx;
+  width: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 需高于黑色导航栏 cu-custom .cu-bar 的 z-index:9999，否则会被挡住 */
+  z-index: 10000;
+}
+.nav-market-img {
+  width: 40rpx;
+  height: 40rpx;
 }
 
 /* 出租属性标签 */
