@@ -32,7 +32,9 @@ Page({
     // 是否支持虚拟支付
     supportVp: false,
     // 是否为管理员（基于 role 字段判断）
-    isAdmin: false
+    isAdmin: false,
+    // 私信未读数
+    chatUnread: 0
   },
   
   onLoad: function (options) {
@@ -102,6 +104,7 @@ Page({
       avatarUrl: app.globalData.userinfo.wxAvatarUrl,
       isAdmin: userType === 99
     });
+    this.loadChatUnread()
   },
 
   // res = { 'wxNickName': '...', 'wxAvatarUrl': 'http://...' }
@@ -256,6 +259,26 @@ Page({
   // 发布市场房源
   goPublishMarket() {
     wx.navigateTo({ url: '/pages/market/publish' })
+  },
+
+  // 我的消息（聊天）
+  goChatList() {
+    wx.navigateTo({ url: '/pages/chat/list' })
+  },
+
+  // 外部（聊天列表页）刷新未读角标
+  onChatUnread(total) {
+    this.setData({ chatUnread: total || 0 })
+  },
+
+  loadChatUnread() {
+    const market = require('../../utils/market')
+    market.getChatUnread().then((res) => {
+      if (res && res.status === 0) {
+        this.setData({ chatUnread: res.data.total || 0 })
+        wx.setStorageSync('chat_unread', res.data.total || 0)
+      }
+    }).catch(() => {})
   },
 
   // 我的发布

@@ -306,9 +306,13 @@
       <text class="cuIcon-share text-gray"></text>
       <text class="bar-action-text">分享</text>
     </button>
+    <button class="bar-cta bg-blue" bindtap="startChat">
+      <text class="cuIcon-messagefill"></text>
+      <text style="margin-left: 8rpx;">私信</text>
+    </button>
     <button class="bar-cta bg-green" bindtap="callPhone">
       <text class="cuIcon-mobilefill"></text>
-      <text style="margin-left: 8rpx;">拨打电话</text>
+      <text style="margin-left: 8rpx;">电话</text>
     </button>
   </view>
 </view>

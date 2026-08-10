@@ -52,6 +52,8 @@
     "pages/auth/landlord",
     "pages/report/create",
     "pages/favorite/list",
+    "pages/chat/list",
+    "pages/chat/detail",
     "pages/admin/login",
     "pages/admin/houseReview",
     "pages/admin/houseDetail",

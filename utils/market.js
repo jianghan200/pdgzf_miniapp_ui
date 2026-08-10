@@ -207,6 +207,60 @@ const adminGetPendingComments = (page) => _get(`/admin/comment/pending?page=${pa
 const adminApproveComment = (id) => _post(`/admin/comment/${id}/approve`)
 const adminRejectComment = (id, reason) => _post(`/admin/comment/${id}/reject`, { reason })
 
+// === 私信聊天 ===
+const createChatConversation = (houseId) => _post('/chat/conversation', { house_id: houseId })
+const getChatConversations = () => _get('/chat/conversation/list')
+const deleteChatConversation = (convId) => {
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: constants.server + `/chat/conversation/${convId}`,
+      method: 'DELETE',
+      header: { 'token': _token() },
+      success: (res) => resolve(res.statusCode === 200 ? res.data : null),
+      fail: () => resolve(null)
+    })
+  })
+}
+const getChatMessages = (convId, page, size) => _get(`/chat/message/list?conv_id=${convId}&page=${page || 1}&size=${size || 50}`)
+const sendChatMessage = (convId, msgType, content) => _post('/chat/message/send', {
+  conversation_id: convId, msg_type: msgType, content: content
+})
+const getChatUnread = () => _get('/chat/unread')
+
+// 私信图片上传：先取七牛上传 token，再直传，返回 CDN URL
+const uploadChatImage = (filePath) => {
+  return new Promise((resolve, reject) => {
+    const ext = (filePath.split('.').pop().split('?')[0] || 'jpg').toLowerCase()
+    wx.request({
+      url: constants.server + '/market/media/upload_token?house_id=0&ext=' + ext + '&media_type=photo',
+      method: 'GET',
+      header: { 'token': _token() },
+      success: (tokenRes) => {
+        if (tokenRes.statusCode !== 200 || !tokenRes.data || tokenRes.data.status !== 0) {
+          resolve(null)
+          return
+        }
+        const { token, key, cdn_domain } = tokenRes.data.data
+        wx.uploadFile({
+          url: 'https://upload.qiniup.com/',
+          filePath: filePath,
+          name: 'file',
+          formData: { token, key },
+          success: (upRes) => {
+            if (upRes.statusCode === 200) {
+              resolve(`https://${cdn_domain}/${key}`)
+            } else {
+              resolve(null)
+            }
+          },
+          fail: () => resolve(null)
+        })
+      },
+      fail: () => resolve(null)
+    })
+  })
+}
+
 const _buildQuery = (params) => {
   if (!params) return ''
   const arr = []
@@ -282,5 +336,13 @@ module.exports = {
   // 评论审核
   adminGetPendingComments,
   adminApproveComment,
-  adminRejectComment
+  adminRejectComment,
+  // 私信聊天
+  createChatConversation,
+  getChatConversations,
+  deleteChatConversation,
+  getChatMessages,
+  sendChatMessage,
+  getChatUnread,
+  uploadChatImage
 }

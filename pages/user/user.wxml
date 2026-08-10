@@ -88,6 +88,13 @@
 
   <!-- MVP 新增功能入口 -->
   <view class="cu-list menu sm-border card-menu margin-top">
+    <view class="cu-item arrow" bindtap="goChatList">
+      <view class="content">
+        <text class="cuIcon-message text-bold text-blue"></text>
+        <text class="text-bold">我的消息</text>
+      </view>
+      <view class="cu-tag bg-red round" wx:if="{{chatUnread}}">{{chatUnread > 99 ? '99+' : chatUnread}}</view>
+    </view>
     <view class="cu-item arrow" bindtap="goPublishMarket">
       <view class="content">
         <text class="cuIcon-edit text-bold text-orange"></text>

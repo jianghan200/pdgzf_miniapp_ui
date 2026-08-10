@@ -1,0 +1,26 @@
+.header { background: #fff; padding: 20rpx 24rpx; display: flex; align-items: baseline; }
+.title { font-size: 36rpx; font-weight: bold; }
+.sub { font-size: 24rpx; color: #999; margin-left: 16rpx; }
+
+.list { padding: 20rpx; }
+.conv-card {
+  background: #fff; border-radius: 16rpx; padding: 24rpx; margin-bottom: 20rpx;
+  display: flex; align-items: center;
+}
+.avatar { width: 88rpx; height: 88rpx; border-radius: 50%; background: #eee; flex-shrink: 0; }
+.conv-main { flex: 1; margin-left: 20rpx; min-width: 0; }
+.conv-top { display: flex; justify-content: space-between; align-items: center; }
+.conv-name { font-size: 30rpx; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.conv-time { font-size: 22rpx; color: #bbb; flex-shrink: 0; margin-left: 12rpx; }
+.conv-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 12rpx; }
+.conv-last { font-size: 26rpx; color: #999; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.unread-text { color: #333; }
+.conv-right { display: flex; align-items: center; flex-shrink: 0; }
+.badge {
+  background: #f44d56; color: #fff; font-size: 22rpx; min-width: 34rpx; height: 34rpx;
+  line-height: 34rpx; text-align: center; border-radius: 17rpx; padding: 0 8rpx; margin-right: 16rpx;
+}
+.del { font-size: 22rpx; color: #f44d56; }
+
+.empty { text-align: center; padding: 160rpx 40rpx; color: #999; }
+.empty-btn { margin-top: 24rpx; display: inline-block; padding: 16rpx 40rpx; background: #f44d56; color: #fff; border-radius: 40rpx; font-size: 28rpx; }

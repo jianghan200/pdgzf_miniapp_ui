@@ -392,6 +392,20 @@ Page({
     wx.makePhoneCall({ phoneNumber: this.data.detail.contact_phone })
   },
 
+  // 发起私信会话
+  startChat() {
+    if (!this._requireLogin()) return
+    wx.showLoading({ title: '开启会话...' })
+    market.createChatConversation(this.data.id).then((res) => {
+      wx.hideLoading()
+      if (res && res.status === 0) {
+        wx.navigateTo({ url: `/pages/chat/detail?id=${res.data.id}` })
+      } else {
+        wx.showToast({ title: (res && res.msg) || '暂无法私信', icon: 'none' })
+      }
+    })
+  },
+
   copyWechat() {
     const wechat = this.data.detail && this.data.detail.contact_wechat
     if (!wechat) return

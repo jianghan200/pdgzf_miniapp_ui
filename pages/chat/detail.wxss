@@ -1,0 +1,19 @@
+.house-bar {
+  background: #fff; margin: 16rpx 20rpx; padding: 20rpx 24rpx; border-radius: 16rpx;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.house-title { display: flex; align-items: center; min-width: 0; flex: 1; }
+.house-label { font-size: 22rpx; color: #f44d56; border: 1rpx solid #f44d56; border-radius: 6rpx; padding: 2rpx 10rpx; margin-right: 16rpx; flex-shrink: 0; }
+.house-name { font-size: 28rpx; color: #333; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.house-go { font-size: 26rpx; color: #999; flex-shrink: 0; margin-left: 12rpx; }
+
+/* 聊天主体（复用 ColorUI 的 .cu-chat 原生样式） */
+.cu-chat { padding: 20rpx 24rpx; }
+.chat-img { width: 300rpx; max-width: 60%; border-radius: 8rpx; display: block; }
+
+.load-more { text-align: center; padding: 20rpx; color: #999; font-size: 24rpx; }
+.empty { text-align: center; padding: 120rpx 40rpx; color: #999; }
+
+/* 底部输入栏 */
+.cu-bar.foot { position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; }
+.chat-input { flex: 1; margin: 0 16rpx; height: 68rpx; padding: 0 20rpx; border-radius: 34rpx; background: #f5f5f5; font-size: 28rpx; }
