@@ -1,14 +1,14 @@
 <cu-custom bgColor="bg-black" isBack="{{!isRoot}}">
   <view slot="backText">返回</view>
   <view slot="content">
-    <view class="text-white text-bold"></view>
+    <view class="text-white text-bold">房源详情</view>
   </view>
 </cu-custom>
 <!-- 冷启动/分享进入（栈底）时：导航栏左侧市场图标，替代不可用的返回键 -->
 <view class="nav-market-icon" wx:if="{{isRoot}}" bindtap="goMarketList" style="top:{{StatusBar}}px; height:{{CustomBar - StatusBar}}px;">
   <image src="/assets/home.png" class="nav-market-img"/>
 </view>
-<view style="background-color: #f5f5f5; min-height: 100vh; padding-bottom: 140rpx;">
+<view style="background-color: #f6f7f9; min-height: 100vh; padding-bottom: 180rpx;">
   <!-- 冷启动/分享进入时：右下角浮动返回市场房源 tab 图标 -->
   <view class="market-float-back" wx:if="{{isRoot}}" bindtap="goMarketList">
     <image src="/assets/home-red.png" class="float-market-img"/>
@@ -16,112 +16,152 @@
 
   <!-- 加载中 -->
   <view class="loading-box" wx:if="{{loading}}">
-    <text class="cuIcon-loading2 cuIcon-spin text-gray" style="font-size: 60rpx;"></text>
+    <text class="cuIcon-loading cuIcon-spin text-gray" style="font-size: 60rpx;"></text>
   </view>
 
   <block wx:if="{{detail}}">
     <!-- 图片轮播 -->
-    <swiper class="media-swiper" indicator-dots="{{mediaList.length > 1}}" autoplay="{{false}}" circular="{{true}}" bindchange="onSwiperChange">
-      <swiper-item wx:for="{{mediaList}}" wx:key="url">
-        <image wx:if="{{item.type !== 'video'}}" src="{{item.url}}" mode="aspectFill" class="media-img" data-idx="{{index}}" bindtap="previewMedia"/>
-        <video wx:else src="{{item.url}}" class="media-img media-video" object-fit="contain" controls="{{true}}" show-center-play-btn="{{true}}" bindtap="previewVideo" data-idx="{{index}}"/>
-      </swiper-item>
-    </swiper>
-    <view class="media-count" wx:if="{{mediaList.length > 0}}">{{currentMedia + 1}}/{{mediaList.length}}</view>
+    <view class="media-wrap">
+      <swiper class="media-swiper" indicator-dots="{{mediaList.length > 1}}" indicator-color="rgba(255,255,255,0.5)" indicator-active-color="#fff" autoplay="{{false}}" circular="{{true}}" bindchange="onSwiperChange">
+        <swiper-item wx:for="{{mediaList}}" wx:key="url">
+          <image wx:if="{{item.type !== 'video'}}" src="{{item.url}}" mode="aspectFill" class="media-img" data-idx="{{index}}" bindtap="previewMedia"/>
+          <video wx:else src="{{item.url}}" class="media-img media-video" object-fit="contain" controls="{{true}}" show-center-play-btn="{{true}}" bindtap="previewVideo" data-idx="{{index}}"/>
+        </swiper-item>
+      </swiper>
+      <view class="media-count" wx:if="{{mediaList.length > 0}}">{{currentMedia + 1}}/{{mediaList.length}}</view>
+    </view>
 
-    <!-- 核心信息：出租属性 + 价格 + 标题 + 地点 -->
-    <view class="section">
-      <view class="source-row">
-        <text class="source-badge {{detail.source_type}}">{{detail.source_type_label}}</text>
-        <text class="rent-form-badge">{{detail.rent_type_label}}</text>
-        <text class="badge-cert" wx:if="{{detail.is_certified == 1}}">认证房东</text>
+    <!-- 核心信息卡 -->
+    <view class="hero-card">
+      <view class="hero-tags">
+        <view class="hero-tag verified" wx:if="{{detail.is_certified == 1}}">
+          <text class="cuIcon-roundcheckfill"></text>
+          <text>认证房东</text>
+        </view>
+        <view class="hero-tag today" wx:if="{{detail.is_new == 1}}">
+          <text class="cuIcon-newfill"></text>
+          <text>今日精选</text>
+        </view>
+        <view class="hero-tag source {{detail.source_type}}">{{detail.source_type_label}}</view>
       </view>
-      <view class="price-row">
-        <text class="price">{{detail.rent_display}}</text>
-        <text class="price-unit">/月</text>
-      </view>
-      <view class="house-title">{{detail.title || detail.address_name}}</view>
-      <view class="location-row">
-        <text class="cuIcon-locationfill text-red"></text>
-        <text class="location-text">{{detail.district}} {{detail.town}} {{detail.address_name}}</text>
-      </view>
-      <view class="house-tags">
-        <text class="tag rent-form">{{detail.rent_type_label}}</text>
-        <text class="tag" wx:if="{{detail.bathroom_type === 'private'}}">独卫</text>
-        <text class="tag" wx:if="{{detail.elevator == 1}}">电梯</text>
-        <text class="tag" wx:if="{{detail.pet_friendly == 1}}">可养宠</text>
-        <text class="tag" wx:if="{{detail.civil_meters == 1}}">民水民电</text>
-        <text class="tag" wx:if="{{detail.gas == 1}}">天然气</text>
-        <text class="tag" wx:if="{{detail.south == 1}}">朝南</text>
-        <text class="tag" wx:if="{{detail.private_kitchen == 1}}">独立厨房</text>
+      <view class="hero-title">{{detail.title || detail.address_name}}</view>
+      <view class="hero-price-row">
+        <text class="hero-price">{{detail.rent_display}}</text>
+        <text class="hero-price-unit">/月</text>
       </view>
     </view>
 
-    <!-- 核心四信息 -->
-    <view class="section">
-      <view class="section-title">房源信息</view>
-      <view class="core-grid">
-        <view class="core-item">
-          <text class="core-label">户型</text>
-          <text class="core-val">{{detail.house_type || '—'}}</text>
+    <!-- 三栏核心信息 + 标签云 -->
+    <view class="hero-ext">
+      <view class="quick-info">
+        <view class="quick-item">
+          <view class="quick-icon rent-type-icon">
+            <text class="cuIcon-homefill"></text>
+          </view>
+          <view class="quick-text">
+            <text class="quick-main">{{detail.rent_type_label}}</text>
+            <text class="quick-sub">{{detail.house_type || '—'}}</text>
+          </view>
         </view>
-        <view class="core-item">
-          <text class="core-label">面积</text>
-          <text class="core-val">{{detail.area ? detail.area + '㎡' : '—'}}</text>
+        <view class="quick-divider"></view>
+        <view class="quick-item" bindtap="scrollToMap">
+          <view class="quick-icon location-icon">
+            <text class="cuIcon-locationfill"></text>
+          </view>
+          <view class="quick-text">
+            <text class="quick-main quick-address">{{detail.address_name || detail.town}}</text>
+            <text class="quick-sub">{{detail.district}} · {{detail.town}}</text>
+          </view>
         </view>
-        <view class="core-item">
-          <text class="core-label">楼层</text>
-          <text class="core-val">{{detail.floor_desc || '—'}}</text>
+        <view class="quick-divider"></view>
+        <view class="quick-item">
+          <view class="quick-icon area-icon">
+            <text class="cuIcon-appreciatefill"></text>
+          </view>
+          <view class="quick-text">
+            <text class="quick-main">{{detail.area ? detail.area + '㎡' : '—'}}</text>
+            <text class="quick-sub">{{detail.orientation_label || '朝向不限'}}</text>
+          </view>
         </view>
-        <view class="core-item">
-          <text class="core-label">朝向</text>
-          <text class="core-val">{{detail.orientation_label || '—'}}</text>
-        </view>
-        <view class="core-item">
-          <text class="core-label">入住</text>
-          <text class="core-val">{{detail.available_date_display || '待定'}}</text>
-        </view>
-        <view class="core-item">
-          <text class="core-label">租期</text>
-          <text class="core-val">{{detail.lease_desc || '—'}}</text>
-        </view>
+      </view>
+
+      <!-- 标签云 -->
+      <view class="tag-cloud">
+      <text class="cloud-tag" wx:if="{{detail.source_type === 'owner'}}">房东直租</text>
+      <text class="cloud-tag" wx:if="{{detail.source_type === 'apt'}}">公寓直租</text>
+      <text class="cloud-tag" wx:if="{{detail.source_type === 'sublet'}}">转租</text>
+      <text class="cloud-tag" wx:if="{{detail.source_type === 'roommate'}}">合租找室友</text>
+      <text class="cloud-tag" wx:if="{{detail.building_type_label}}">{{detail.building_type_label}}</text>
+      <text class="cloud-tag" wx:if="{{detail.property_type_label}}">{{detail.property_type_label}}</text>
+      <text class="cloud-tag" wx:if="{{detail.bathroom_type === 'private'}}">独卫</text>
+      <text class="cloud-tag" wx:if="{{detail.private_kitchen == 1}}">独立厨房</text>
+      <text class="cloud-tag" wx:if="{{detail.elevator == 1}}">电梯房</text>
+      <text class="cloud-tag" wx:if="{{detail.pet_friendly == 1}}">可养宠</text>
+      <text class="cloud-tag" wx:if="{{detail.civil_meters == 1}}">民水民电</text>
+      <text class="cloud-tag" wx:if="{{detail.gas == 1}}">天然气</text>
+      <text class="cloud-tag" wx:if="{{detail.south == 1 || detail.orientation === 'south'}}">朝南</text>
+      <text class="cloud-tag" wx:if="{{detail.is_negotiable == 1}}">面议</text>
+      <text class="cloud-tag" wx:if="{{detail.payment_type}}">{{detail.payment_type}}</text>
+      <text class="cloud-tag" wx:if="{{detail.floor_desc}}">{{detail.floor_desc}}</text>
+      <text class="cloud-tag" wx:if="{{detail.lease_desc}}">{{detail.lease_desc}}</text>
+      <text class="cloud-tag" wx:if="{{detail.available_date_display}}">{{detail.available_date_display}}</text>
+      <text class="cloud-tag" wx:if="{{detail.can_register == 1}}">可办居住证</text>
+      <text class="cloud-tag" wx:if="{{detail.is_furnished == 1}}">拎包入住</text>
+      <text class="cloud-tag" wx:if="{{detail.is_new_decoration == 1}}">全新装修</text>
+    </view>
+    </view>
+
+    <!-- 房源亮点列表 -->
+    <view class="highlight-section" wx:if="{{highlightList.length > 0}}">
+      <view class="highlight-title">房源亮点</view>
+      <view class="highlight-item" wx:for="{{highlightList}}" wx:key="idx">
+        <text class="highlight-emoji">{{item.emoji}}</text>
+        <text class="highlight-text">{{item.text}}</text>
       </view>
     </view>
 
-    <!-- 位置信息 -->
-    <view class="section">
-      <view class="section-title">位置</view>
-      <view class="location-detail">
-        <text class="cuIcon-locationfill text-red"></text>
-        <text>{{detail.district}} {{detail.town}} {{detail.address}}</text>
+    <!-- AI 解析亮点 -->
+    <view class="highlight-section" wx:if="{{detail.ai_info && detail.ai_info.length > 0}}">
+      <view class="highlight-title">
+        <text class="ai-badge">AI</text>
+        <text>智能解析</text>
       </view>
-      <view class="subway-info" wx:if="{{detail.subway_info}}">
-        <text class="cuIcon-subway text-blue"></text>
-        <text>{{detail.subway_info}}</text>
+      <view class="highlight-item" wx:for="{{detail.ai_info}}" wx:key="idx" wx:for-item="ai">
+        <text class="highlight-emoji">{{ai.icon || '💡'}}</text>
+        <text class="highlight-text">{{ai.text || ai.desc || ai.content}}</text>
       </view>
+    </view>
+
+    <!-- 描述 -->
+    <view class="section" wx:if="{{detail.description}}">
+      <view class="section-title">房源描述</view>
+      <view class="desc-text">{{detail.description}}</view>
+    </view>
+
+    <!-- 室友情况 -->
+    <view class="section" wx:if="{{detail.roommate_info}}">
+      <view class="section-title">室友情况</view>
+      <view class="desc-text">{{detail.roommate_info}}</view>
     </view>
 
     <!-- 房屋属性 -->
     <view class="section">
       <view class="section-title">房屋属性</view>
       <view class="detail-grid">
+        <view class="detail-item"><text class="detail-label">户型</text><text class="detail-val">{{detail.house_type || '—'}}</text></view>
+        <view class="detail-item"><text class="detail-label">面积</text><text class="detail-val">{{detail.area ? detail.area + '㎡' : '—'}}</text></view>
+        <view class="detail-item"><text class="detail-label">楼层</text><text class="detail-val">{{detail.floor_desc || '—'}}</text></view>
+        <view class="detail-item"><text class="detail-label">朝向</text><text class="detail-val">{{detail.orientation_label || '—'}}</text></view>
+        <view class="detail-item"><text class="detail-label">入住</text><text class="detail-val">{{detail.available_date_display || '待定'}}</text></view>
+        <view class="detail-item"><text class="detail-label">租期</text><text class="detail-val">{{detail.lease_desc || '—'}}</text></view>
         <view class="detail-item"><text class="detail-label">产权性质</text><text class="detail-val">{{detail.property_type_label || '—'}}</text></view>
         <view class="detail-item"><text class="detail-label">建筑类型</text><text class="detail-val">{{detail.building_type_label || '—'}}</text></view>
         <view class="detail-item"><text class="detail-label">电梯</text><text class="detail-val">{{detail.elevator == 1 ? '有' : '无'}}</text></view>
         <view class="detail-item"><text class="detail-label">水电</text><text class="detail-val">{{detail.civil_meters == 1 ? '民水民电' : (detail.civil_meters == 0 ? '商用电/待定' : '—')}}</text></view>
         <view class="detail-item" wx:if="{{detail.gas == 1}}"><text class="detail-label">天然气</text><text class="detail-val">有</text></view>
-        <view class="detail-item" wx:if="{{detail.floor_tag}}"><text class="detail-label">楼层标签</text><text class="detail-val">{{detail.floor_tag === 'first' ? '一楼' : detail.floor_tag === 'last' ? '顶层' : detail.floor_tag === 'attic' ? '阁楼' : detail.floor_tag === 'basement' ? '地下室' : '—'}}</text></view>
-      </view>
-    </view>
-
-    <!-- 费用信息 -->
-    <view class="section">
-      <view class="section-title">费用</view>
-      <view class="detail-grid">
-        <view class="detail-item"><text class="detail-label">月租金</text><text class="detail-val">{{detail.rent_display}}</text></view>
-        <view class="detail-item"><text class="detail-label">押金</text><text class="detail-val">{{detail.payment_type || '—'}}</text></view>
         <view class="detail-item" wx:if="{{detail.parking_fee}}"><text class="detail-label">停车费</text><text class="detail-val">{{detail.parking_fee}}</text></view>
         <view class="detail-item" wx:if="{{detail.property_fee}}"><text class="detail-label">物业费</text><text class="detail-val">{{detail.property_fee}}</text></view>
+        <view class="detail-item"><text class="detail-label">押金</text><text class="detail-val">{{detail.payment_type || '—'}}</text></view>
       </view>
     </view>
 
@@ -141,16 +181,22 @@
       </view>
     </view>
 
-    <!-- 描述 -->
-    <view class="section" wx:if="{{detail.description}}">
-      <view class="section-title">房源描述</view>
-      <view class="desc-text">{{detail.description}}</view>
-    </view>
-
-    <!-- 室友情况 -->
-    <view class="section" wx:if="{{detail.roommate_info}}">
-      <view class="section-title">室友情况</view>
-      <view class="desc-text">{{detail.roommate_info}}</view>
+    <!-- 位置 & 地图 -->
+    <view class="section" id="location-section">
+      <view class="section-title">位置及周边</view>
+      <view class="location-detail">
+        <text class="cuIcon-locationfill text-red"></text>
+        <text>{{detail.district}} {{detail.town}} {{detail.address || detail.address_name}}</text>
+      </view>
+      <view class="subway-info" wx:if="{{detail.subway_info}}">
+        <text class="subway-icon">🚇</text>
+        <text>{{detail.subway_info}}</text>
+      </view>
+      <view class="map-placeholder" wx:if="{{!mapReady}}" bindtap="openMap">
+        <text class="cuIcon-locationfill text-red map-placeholder-icon"></text>
+        <text class="map-placeholder-text">点击查看地图位置</text>
+        <text class="map-placeholder-tip">实地看房前记得再次确认地址</text>
+      </view>
     </view>
 
     <!-- 联系方式 -->
@@ -158,19 +204,34 @@
       <view class="section-title">联系方式</view>
       <block wx:if="{{detail.contact_visible || adUnlocked}}">
         <view class="contact-row" wx:if="{{detail.contact_phone}}">
-          <text class="contact-name">{{detail.contact_name}}</text>
-          <text class="contact-phone">{{detail.contact_phone}}</text>
-          <button class="cu-btn bg-green sm" bindtap="callPhone">拨打</button>
+          <view class="contact-avatar">
+            <text class="cuIcon-mobilefill"></text>
+          </view>
+          <view class="contact-info">
+            <text class="contact-name">{{detail.contact_name || '房东'}}</text>
+            <text class="contact-phone">{{detail.contact_phone}}</text>
+          </view>
+          <button class="cu-btn bg-green sm round" bindtap="callPhone">拨打</button>
         </view>
         <view class="contact-row" wx:if="{{detail.contact_wechat}}">
-          <text class="contact-label">微信号</text>
-          <text class="contact-val">{{detail.contact_wechat}}</text>
-          <button class="cu-btn bg-blue sm" bindtap="copyWechat">复制</button>
+          <view class="contact-avatar wechat">
+            <text class="cuIcon-weixin"></text>
+          </view>
+          <view class="contact-info">
+            <text class="contact-label-sm">微信号</text>
+            <text class="contact-val">{{detail.contact_wechat}}</text>
+          </view>
+          <button class="cu-btn bg-blue sm round" bindtap="copyWechat">复制</button>
         </view>
         <view class="contact-row xhs-row" wx:if="{{detail.source_platform === '小红书' && detail.source_url}}">
-          <text class="contact-label">小红书</text>
-          <text class="contact-val xhs-url">{{detail.source_url}}</text>
-          <button class="cu-btn bg-red sm" bindtap="copySourceUrl">复制链接</button>
+          <view class="contact-avatar xhs">
+            <text class="cuIcon-link"></text>
+          </view>
+          <view class="contact-info">
+            <text class="contact-label-sm">小红书链接</text>
+            <text class="contact-val xhs-url">{{detail.source_url}}</text>
+          </view>
+          <button class="cu-btn bg-red sm round" bindtap="copySourceUrl">复制</button>
         </view>
         <view class="xhs-hint" wx:if="{{detail.source_platform === '小红书' && adUnlocked && !detail.contact_visible}}">
           复制链接后请用浏览器打开查看
@@ -178,9 +239,14 @@
       </block>
       <block wx:else>
         <view class="contact-lock" bindtap="toggleContact">
-          <text class="cuIcon-lock text-gray"></text>
-          <text class="contact-lock-text">观看完整广告后可获得联系方式（24小时内有效）</text>
-          <text class="cuIcon-play text-gray"></text>
+          <view class="lock-icon-box">
+            <text class="cuIcon-lock text-white"></text>
+          </view>
+          <view class="lock-text-box">
+            <text class="lock-title">联系方式已隐藏</text>
+            <text class="lock-desc">{{contactMethod === 'ad' ? '观看完整广告后可获得联系方式（24小时内有效）' : '支付 ¥1 即可获取房东联系方式'}}</text>
+          </view>
+          <text class="cuIcon-right text-gray"></text>
         </view>
       </block>
     </view>
@@ -189,31 +255,60 @@
     <view class="section" wx:if="{{isOwner}}">
       <view class="section-title">房东操作</view>
       <view class="owner-actions">
-        <button class="cu-btn bg-blue" bindtap="editHouse">编辑</button>
-        <button class="cu-btn bg-gray" bindtap="offlineHouse">下架</button>
+        <button class="cu-btn bg-blue" bindtap="editHouse">编辑房源</button>
+        <button class="cu-btn bg-gray" bindtap="offlineHouse">下架房源</button>
       </view>
     </view>
-  </block>
 
-  <!-- 评论区 -->
-  <comment-section wx:if="{{detail}}" id="comment-section" hide-trigger="{{true}}"
-    target-type="market_house" target-id="{{id}}"/>
+    <!-- 评论区 -->
+    <comment-section wx:if="{{detail}}" id="comment-section" hide-trigger="{{true}}"
+      target-type="market_house" target-id="{{id}}"/>
+  </block>
 
   <!-- 底部操作栏 -->
   <view class="bottom-bar" wx:if="{{detail && !isOwner && !adUnlocked && !detail.contact_visible}}">
-    <button class="cu-btn {{favorited ? 'bg-orange' : 'bg-gray'}}" bindtap="toggleFavorite" style="flex: 1;">{{favorited ? '已收藏' : '收藏'}}</button>
-    <button class="cu-btn {{inCompare ? 'bg-orange' : 'bg-gray'}}" bindtap="{{inCompare ? 'goCompare' : 'addToCompare'}}" style="flex: 1;">{{inCompare ? '查看对比' : '对比'}}</button>
-    <button class="cu-btn bg-gray" open-type="share" style="flex: 1;">分享</button>
-    <button class="cu-btn bg-gray" bindtap="onTapComment" style="flex: 1;">评论</button>
-    <button class="cu-btn bg-red" bindtap="onBottomContact" style="flex: 2;">{{contactMethod === 'ad' ? '联系房东' : '支付 ¥1 联系'}}</button>
+    <view class="bar-action" bindtap="toggleFavorite">
+      <text class="cuIcon {{favorited ? 'favorfill text-orange' : 'favor text-gray'}}"></text>
+      <text class="bar-action-text {{favorited ? 'text-orange' : ''}}">{{favorited ? '已收藏' : '收藏'}}</text>
+    </view>
+    <view class="bar-action" bindtap="{{inCompare ? 'goCompare' : 'addToCompare'}}">
+      <text class="cuIcon {{inCompare ? 'appreciatefill text-orange' : 'appreciate text-gray'}}"></text>
+      <text class="bar-action-text {{inCompare ? 'text-orange' : ''}}">{{inCompare ? '对比' : '对比'}}</text>
+    </view>
+    <view class="bar-action" bindtap="onTapComment">
+      <text class="cuIcon-comment text-gray"></text>
+      <text class="bar-action-text">评论</text>
+    </view>
+    <button class="bar-action share-btn" open-type="share">
+      <text class="cuIcon-share text-gray"></text>
+      <text class="bar-action-text">分享</text>
+    </button>
+    <button class="bar-cta" bindtap="onBottomContact">
+      <text>{{contactMethod === 'ad' ? '联系房东' : '支付 ¥1 联系'}}</text>
+    </button>
   </view>
 
   <!-- 已解锁后底部栏 -->
   <view class="bottom-bar" wx:if="{{detail && !isOwner && (adUnlocked || detail.contact_visible)}}">
-    <button class="cu-btn {{favorited ? 'bg-orange' : 'bg-gray'}}" bindtap="toggleFavorite" style="flex: 1;">{{favorited ? '已收藏' : '收藏'}}</button>
-    <button class="cu-btn {{inCompare ? 'bg-orange' : 'bg-gray'}}" bindtap="{{inCompare ? 'goCompare' : 'addToCompare'}}" style="flex: 1;">{{inCompare ? '查看对比' : '对比'}}</button>
-    <button class="cu-btn bg-gray" open-type="share" style="flex: 1;">分享</button>
-    <button class="cu-btn bg-gray" bindtap="onTapComment" style="flex: 1;">评论</button>
-    <button class="cu-btn bg-green" bindtap="callPhone" style="flex: 2;">拨打电话</button>
+    <view class="bar-action" bindtap="toggleFavorite">
+      <text class="cuIcon {{favorited ? 'favorfill text-orange' : 'favor text-gray'}}"></text>
+      <text class="bar-action-text {{favorited ? 'text-orange' : ''}}">{{favorited ? '已收藏' : '收藏'}}</text>
+    </view>
+    <view class="bar-action" bindtap="{{inCompare ? 'goCompare' : 'addToCompare'}}">
+      <text class="cuIcon {{inCompare ? 'appreciatefill text-orange' : 'appreciate text-gray'}}"></text>
+      <text class="bar-action-text {{inCompare ? 'text-orange' : ''}}">{{inCompare ? '对比' : '对比'}}</text>
+    </view>
+    <view class="bar-action" bindtap="onTapComment">
+      <text class="cuIcon-comment text-gray"></text>
+      <text class="bar-action-text">评论</text>
+    </view>
+    <button class="bar-action share-btn" open-type="share">
+      <text class="cuIcon-share text-gray"></text>
+      <text class="bar-action-text">分享</text>
+    </button>
+    <button class="bar-cta bg-green" bindtap="callPhone">
+      <text class="cuIcon-mobilefill"></text>
+      <text style="margin-left: 8rpx;">拨打电话</text>
+    </button>
   </view>
 </view>

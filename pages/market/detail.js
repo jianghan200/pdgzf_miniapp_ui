@@ -21,7 +21,9 @@ Page({
     contactMethod: 'pay',
     adUnlocked: false,
     inCompare: false,
-    isRoot: false
+    isRoot: false,
+    highlightList: [],
+    mapReady: false
   },
 
   onLoad(options) {
@@ -69,10 +71,12 @@ Page({
         d.floor_desc = this._buildFloorDesc(d)
         d.orientation_label = this._orientationLabel(d.orientation)
         d.lease_desc = this._buildLeaseDesc(d)
+        const highlightList = this._buildHighlightList(d)
         this.setData({
           detail: d,
           mediaList: (d.medias || []).map(m => ({ url: m.url, type: m.type === 'video' ? 'video' : 'photo' })),
-          isOwner: d.is_owner || false
+          isOwner: d.is_owner || false,
+          highlightList
         })
         this.loadFavoriteStatus()
       }
@@ -122,6 +126,94 @@ Page({
     if (d.min_lease && d.max_lease) return `${d.min_lease}-${d.max_lease}月`
     if (d.min_lease) return `≥${d.min_lease}月`
     return `≤${d.max_lease}月`
+  },
+
+  // 构建亮点列表（参考截图的 emoji + 文本风格）
+  _buildHighlightList(d) {
+    const list = []
+    if (d.source_type === 'owner') {
+      list.push({ emoji: '😊', text: '业主本人直租，无中介费' })
+    }
+    if (d.source_type === 'apt') {
+      list.push({ emoji: '🏢', text: '品牌公寓直租，管家服务' })
+    }
+    if (d.is_certified == 1) {
+      list.push({ emoji: '✅', text: '房东身份已认证，房源信息真实' })
+    }
+    if (d.is_new_decoration == 1) {
+      list.push({ emoji: '❗', text: '全新装修，拎包入住' })
+    }
+    if (d.is_furnished == 1) {
+      list.push({ emoji: '🛋️', text: '家具家电齐全，拎包入住' })
+    }
+    if (d.private_kitchen == 1 && d.bathroom_type === 'private') {
+      list.push({ emoji: '💡', text: '独厨独卫，生活私密性好' })
+    } else if (d.bathroom_type === 'private') {
+      list.push({ emoji: '🚿', text: '独立卫生间，使用方便' })
+    } else if (d.private_kitchen == 1) {
+      list.push({ emoji: '🍳', text: '独立厨房，可自己做饭' })
+    }
+    if (d.civil_meters == 1) {
+      list.push({ emoji: '💰', text: '民水民电，生活成本低' })
+    }
+    if (d.gas == 1) {
+      list.push({ emoji: '🔥', text: '通天然气，做饭方便又省钱' })
+    }
+    if (d.south == 1 || d.orientation === 'south') {
+      list.push({ emoji: '☀️', text: '朝南户型，采光充足' })
+    }
+    if (d.elevator == 1) {
+      list.push({ emoji: '🛗', text: '电梯房，上下楼方便' })
+    }
+    if (d.pet_friendly == 1) {
+      list.push({ emoji: '🐱', text: '可养宠物，毛孩子也有家' })
+    }
+    if (d.can_register == 1) {
+      list.push({ emoji: '📋', text: '可办居住证，满足落户需求' })
+    }
+    if (d.is_negotiable == 1) {
+      list.push({ emoji: '🤝', text: '价格面议，有协商空间' })
+    }
+    if (d.subway_info) {
+      list.push({ emoji: '🚇', text: d.subway_info })
+    }
+    if (d.parking_fee) {
+      list.push({ emoji: '🚗', text: '有停车位：' + d.parking_fee })
+    }
+    if (d.view_time_desc) {
+      list.push({ emoji: '⏰', text: '看房时间：' + d.view_time_desc })
+    } else {
+      list.push({ emoji: '👁️', text: '看房时间随意，请提前联系' })
+    }
+    return list.slice(0, 10)
+  },
+
+  scrollToMap() {
+    wx.createSelectorQuery()
+      .select('#location-section')
+      .boundingClientRect((rect) => {
+        if (rect) {
+          wx.pageScrollTo({ scrollTop: rect.top - 20, duration: 300 })
+        }
+      })
+      .exec()
+  },
+
+  openMap() {
+    const d = this.data.detail
+    if (!d) return
+    const address = (d.district || '') + (d.town || '') + (d.address || d.address_name || '')
+    if (d.latitude && d.longitude) {
+      wx.openLocation({
+        latitude: parseFloat(d.latitude),
+        longitude: parseFloat(d.longitude),
+        name: d.address_name || d.title || '房源位置',
+        address: address,
+        scale: 16
+      })
+    } else if (address) {
+      wx.showToast({ title: '位置信息暂不完整', icon: 'none' })
+    }
   },
 
   _isLogin() {
