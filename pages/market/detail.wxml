@@ -89,7 +89,7 @@
       <view class="tag-cloud">
       <text class="cloud-tag" wx:if="{{detail.source_type === 'owner'}}">房东直租</text>
       <text class="cloud-tag" wx:if="{{detail.source_type === 'apt'}}">公寓直租</text>
-      <text class="cloud-tag" wx:if="{{detail.source_type === 'sublet'}}">转租</text>
+      <!-- <text class="cloud-tag" wx:if="{{detail.source_type === 'sublet'}}">转租</text> -->
       <text class="cloud-tag" wx:if="{{detail.source_type === 'roommate'}}">合租找室友</text>
       <text class="cloud-tag" wx:if="{{detail.building_type_label}}">{{detail.building_type_label}}</text>
       <text class="cloud-tag" wx:if="{{detail.property_type_label}}">{{detail.property_type_label}}</text>
@@ -98,13 +98,13 @@
       <text class="cloud-tag" wx:if="{{detail.elevator == 1}}">电梯房</text>
       <text class="cloud-tag" wx:if="{{detail.pet_friendly == 1}}">可养宠</text>
       <text class="cloud-tag" wx:if="{{detail.civil_meters == 1}}">民水民电</text>
-      <text class="cloud-tag" wx:if="{{detail.gas == 1}}">天然气</text>
+      <text class="cloud-tag" wx:if="{{detail.gas == 1}}">有天然气</text>
       <text class="cloud-tag" wx:if="{{detail.south == 1 || detail.orientation === 'south'}}">朝南</text>
       <text class="cloud-tag" wx:if="{{detail.is_negotiable == 1}}">面议</text>
       <text class="cloud-tag" wx:if="{{detail.payment_type}}">{{detail.payment_type}}</text>
       <text class="cloud-tag" wx:if="{{detail.floor_desc}}">{{detail.floor_desc}}</text>
       <text class="cloud-tag" wx:if="{{detail.lease_desc}}">{{detail.lease_desc}}</text>
-      <text class="cloud-tag" wx:if="{{detail.available_date_display}}">{{detail.available_date_display}}</text>
+      <text class="cloud-tag" wx:if="{{detail.available_date_display}}">入住：{{detail.available_date_display}}</text>
       <text class="cloud-tag" wx:if="{{detail.can_register == 1}}">可办居住证</text>
       <text class="cloud-tag" wx:if="{{detail.is_furnished == 1}}">拎包入住</text>
       <text class="cloud-tag" wx:if="{{detail.is_new_decoration == 1}}">全新装修</text>
@@ -112,13 +112,13 @@
     </view>
 
     <!-- 房源亮点列表 -->
-    <view class="highlight-section" wx:if="{{highlightList.length > 0}}">
+    <!-- <view class="highlight-section" wx:if="{{highlightList.length > 0}}">
       <view class="highlight-title">房源亮点</view>
       <view class="highlight-item" wx:for="{{highlightList}}" wx:key="idx">
         <text class="highlight-emoji">{{item.emoji}}</text>
         <text class="highlight-text">{{item.text}}</text>
       </view>
-    </view>
+    </view> -->
 
     <!-- AI 解析亮点 -->
     <view class="highlight-section" wx:if="{{detail.ai_info && detail.ai_info.length > 0}}">
@@ -134,7 +134,7 @@
 
     <!-- 描述 -->
     <view class="section" wx:if="{{detail.description}}">
-      <view class="section-title">房源描述</view>
+      <!-- <view class="section-title">房源描述</view> -->
       <view class="desc-text">{{detail.description}}</view>
     </view>
 
@@ -251,9 +251,9 @@
       </block>
     </view>
 
-    <!-- 房东操作 -->
-    <view class="section" wx:if="{{isOwner}}">
-      <view class="section-title">房东操作</view>
+    <!-- 作者/管理员操作 -->
+    <view class="section" wx:if="{{isOwner || isAdmin}}">
+      <view class="section-title">{{isOwner ? '房东操作' : '管理操作'}}</view>
       <view class="owner-actions">
         <button class="cu-btn bg-blue" bindtap="editHouse">编辑房源</button>
         <button class="cu-btn bg-gray" bindtap="offlineHouse">下架房源</button>
@@ -266,9 +266,9 @@
   </block>
 
   <!-- 底部操作栏 -->
-  <view class="bottom-bar" wx:if="{{detail && !isOwner && !adUnlocked && !detail.contact_visible}}">
+  <view class="bottom-bar" wx:if="{{detail && !adUnlocked && !detail.contact_visible}}">
     <view class="bar-action" bindtap="toggleFavorite">
-      <text class="cuIcon {{favorited ? 'favorfill text-orange' : 'favor text-gray'}}"></text>
+      <text class="{{favorited ? 'cuIcon-favorfill text-orange' : 'cuIcon-favor text-gray'}}"></text>
       <text class="bar-action-text {{favorited ? 'text-orange' : ''}}">{{favorited ? '已收藏' : '收藏'}}</text>
     </view>
     <view class="bar-action" bindtap="{{inCompare ? 'goCompare' : 'addToCompare'}}">
@@ -283,13 +283,17 @@
       <text class="cuIcon-share text-gray"></text>
       <text class="bar-action-text">分享</text>
     </button>
+    <button class="bar-cta bg-blue" bindtap="startChat">
+      <text class="cuIcon-messagefill"></text>
+      <text style="margin-left: 8rpx;">私信</text>
+    </button>
     <button class="bar-cta" bindtap="onBottomContact">
       <text>{{contactMethod === 'ad' ? '联系房东' : '支付 ¥1 联系'}}</text>
     </button>
   </view>
 
   <!-- 已解锁后底部栏 -->
-  <view class="bottom-bar" wx:if="{{detail && !isOwner && (adUnlocked || detail.contact_visible)}}">
+  <view class="bottom-bar" wx:if="{{detail && (adUnlocked || detail.contact_visible)}}">
     <view class="bar-action" bindtap="toggleFavorite">
       <text class="cuIcon {{favorited ? 'favorfill text-orange' : 'favor text-gray'}}"></text>
       <text class="bar-action-text {{favorited ? 'text-orange' : ''}}">{{favorited ? '已收藏' : '收藏'}}</text>

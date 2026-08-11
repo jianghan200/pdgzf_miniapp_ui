@@ -60,6 +60,8 @@ Page({
   data: {
     StatusBar: 0,
     editId: 0,
+    isAdmin: false,
+    isAi: false,
     form: { ...DEFAULT_FORM },
     customBedroom: false,
     customLiving: false,
@@ -195,10 +197,22 @@ Page({
     market.getMarketDetail(id).then((res) => {
       if (res && res.status === 0) {
         const d = res.data
+        // 仅作者本人或管理员可编辑
+        if (!d.is_owner && !d.is_admin) {
+          wx.showModal({
+            title: '无权编辑',
+            content: '只有发布者或管理员可以编辑此房源',
+            showCancel: false,
+            confirmText: '知道了',
+            success: () => wx.navigateBack()
+          })
+          return
+        }
         try { d.facilities = JSON.parse(d.facilities || '[]') } catch(e) { d.facilities = [] }
         try { d.nearby_facilities = JSON.parse(d.nearby_facilities || '[]') } catch(e) { d.nearby_facilities = [] }
         try { d.extra_tags = JSON.parse(d.extra_tags || '[]') } catch(e) { d.extra_tags = [] }
         const di = this.data.districts.indexOf(d.district)
+        this.setData({ isAdmin: !!d.is_admin, isAi: !!d.is_ai })
 
         // 解析出租类型
         let rentType = d.rent_type || 'whole'
@@ -589,13 +603,14 @@ Page({
     if ((f.rent_type === 'share' || f.rent_type === 'bed') && !f.bathroom_type) return '请选择卫生间类型'
     if ((f.rent_type === 'share' || f.rent_type === 'bed') && !f.room_type) return '请选择房间类型'
     if ((f.rent_type === 'share' || f.rent_type === 'bed') && !f.gender_limit) return '请选择性别限制'
-    if (!f.total_area) return '请填写总面积'
-    if (f.rent_type === 'share' && !f.bedroom_area) return '请填写待租卧室面积'
+    if (f.rent_type === 'whole' && !f.total_area) return '请填写总面积'
+    // if (f.rent_type === 'share' && !f.bedroom_area) return '请填写待租卧室面积'
     if (!f.rent) return '请填写月租金'
     if (!f.is_negotiable && !f.deposit_months && !f.payment_months) return '请选择押金和付款方式'
     if (f.date_type === 'exact' && !f.available_date) return '请选择可入住时间'
     if (f.date_type === 'fuzzy' && !f.available_date_fuzzy.trim()) return '请填写模糊入住时间'
-    if (!f.contact_phone.trim()) return '请填写联系电话'
+    // 管理员编辑 AI 发布的房源时，不需要填写联系电话
+    if (!(this.data.isAdmin && this.data.isAi) && !f.contact_phone.trim()) return '请填写联系电话'
     return ''
   },
 
@@ -685,7 +700,16 @@ Page({
           wx.hideLoading()
           this.setData({ submitting: false })
           if (res && res.status === 0) {
-            wx.redirectTo({ url: '/pages/market/publishSuccess' })
+            wx.showToast({ title: '保存成功', icon: 'success' })
+            // 编辑成功返回详情页并刷新
+            setTimeout(() => {
+              const pages = getCurrentPages()
+              if (pages.length > 1) {
+                wx.navigateBack({ delta: 1 })
+              } else {
+                wx.redirectTo({ url: '/pages/market/detail?id=' + this.data.editId })
+              }
+            }, 800)
           } else {
             wx.showToast({ title: res && res.msg || '提交失败', icon: 'none' })
           }

@@ -17,6 +17,7 @@ Page({
     currentMedia: 0,
     loading: true,
     isOwner: false,
+    isAdmin: false,
     favorited: false,
     contactMethod: 'pay',
     adUnlocked: false,
@@ -38,8 +39,12 @@ Page({
       isRoot
     })
     this.loadContactConfig()
-    this.loadDetail()
     this.checkCompareStatus()
+  },
+
+  onShow() {
+    // 每次进入/返回页面时刷新详情（编辑保存返回后展示最新数据）
+    if (this.data.id) this.loadDetail()
   },
 
   loadContactConfig() {
@@ -76,6 +81,7 @@ Page({
           detail: d,
           mediaList: (d.medias || []).map(m => ({ url: m.url, type: m.type === 'video' ? 'video' : 'photo' })),
           isOwner: d.is_owner || false,
+          isAdmin: d.is_admin || false,
           highlightList
         })
         this.loadFavoriteStatus()
