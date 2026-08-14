@@ -27,9 +27,9 @@
       </view>
     </view> --> 
 
-    <!-- <view class="slogan-row">
-      <text class="slogan-text">已过滤中介 · AI 补充信息 · 先看再聊</text>
-    </view> -->
+    <view class="slogan-row">
+      <text class="slogan-text">已过滤中介 · 最新房源实时更新 · 先看再聊</text>
+    </view>
 
     <!-- 搜索框 -->
     <view class="cu-bar bg-white search">
