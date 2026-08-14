@@ -4,12 +4,13 @@ Page({
   data: {
     StatusBar: 0,
     list: [],
-    loading: false
+    loading: false,
+    houseId: 0
   },
 
-  onLoad() {
+  onLoad(options) {
     const s = wx.getSystemInfoSync()
-    this.setData({ StatusBar: s.statusBarHeight })
+    this.setData({ StatusBar: s.statusBarHeight, houseId: (options && options.house_id) ? parseInt(options.house_id) : 0 })
   },
 
   onShow() {
@@ -35,7 +36,11 @@ Page({
   },
 
   loadList() {
-    market.getChatConversations().then((res) => {
+    // 带 house_id 时按房源查询（房东视角），否则查我的全部会话
+    const req = this.data.houseId
+      ? market.getChatConversationsByHouse(this.data.houseId)
+      : market.getChatConversations()
+    req.then((res) => {
       if (res && res.status === 0) {
         this.setData({ list: res.data || [] })
         this.refreshBadge()

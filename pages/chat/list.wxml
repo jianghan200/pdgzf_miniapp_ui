@@ -1,19 +1,19 @@
 <cu-custom bgColor="bg-black" isBack="{{true}}">
   <view slot="backText">返回</view>
   <view slot="content">
-    <view class="text-white text-bold">我的消息</view>
+    <view class="text-white text-bold">{{houseId ? '房源咨询' : '我的消息'}}</view>
   </view>
 </cu-custom>
 
 <view style="background-color: #f5f5f5; min-height: 100vh; padding-bottom: 140rpx;">
   <view class="header">
-    <text class="title">我的消息</text>
+    <text class="title">{{houseId ? '房源咨询' : '我的消息'}}</text>
     <text class="sub" wx:if="{{list.length}}">共 {{list.length}} 个会话</text>
   </view>
 
   <view class="list">
     <view class="conv-card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="openChat">
-      <image class="avatar" src="{{item.peer_avatar || '/assets/user.png'}}" mode="aspectFill"/>
+      <image class="avatar" src="{{item.peer_avatar || '/assets/user-filling.png'}}" mode="aspectFill"/>
       <view class="conv-main">
         <view class="conv-top">
           <text class="conv-name">{{item.peer_nickname}}</text>
@@ -31,7 +31,7 @@
   </view>
 
   <view class="empty" wx:if="{{!loading && list.length == 0}}">
-    <text>暂无消息</text>
-    <view class="empty-btn" bindtap="goPublish">去市场看看房源</view>
+    <text>{{houseId ? '暂无租客咨询' : '暂无消息'}}</text>
+    <view class="empty-btn" bindtap="goPublish" wx:if="{{!houseId}}">去市场看看房源</view>
   </view>
 </view>

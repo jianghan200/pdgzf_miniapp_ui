@@ -285,7 +285,7 @@
     </button>
     <button class="bar-cta bg-blue" bindtap="startChat">
       <text class="cuIcon-messagefill"></text>
-      <text style="margin-left: 8rpx;">私信</text>
+      <text style="margin-left: 8rpx;">{{isOwner ? (ownerHasChat ? '查看私信' : '私信') : '私信'}}</text>
     </button>
     <button class="bar-cta" bindtap="onBottomContact">
       <text>{{contactMethod === 'ad' ? '联系房东' : '支付 ¥1 联系'}}</text>
@@ -312,7 +312,7 @@
     </button>
     <button class="bar-cta bg-blue" bindtap="startChat">
       <text class="cuIcon-messagefill"></text>
-      <text style="margin-left: 8rpx;">私信</text>
+      <text style="margin-left: 8rpx;">{{isOwner ? (ownerHasChat ? '查看私信' : '私信') : '私信'}}</text>
     </button>
     <button class="bar-cta bg-green" bindtap="callPhone">
       <text class="cuIcon-mobilefill"></text>

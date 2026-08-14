@@ -210,6 +210,8 @@ const adminRejectComment = (id, reason) => _post(`/admin/comment/${id}/reject`, 
 // === 私信聊天 ===
 const createChatConversation = (houseId) => _post('/chat/conversation', { house_id: houseId })
 const getChatConversations = () => _get('/chat/conversation/list')
+const getChatConversationsByHouse = (houseId) => _get(`/chat/conversation/by_house?house_id=${houseId}`)
+const hasChatConversationForHouse = (houseId) => _get(`/chat/conversation/has_house?house_id=${houseId}`)
 const deleteChatConversation = (convId) => {
   return new Promise((resolve, reject) => {
     wx.request({
@@ -340,6 +342,8 @@ module.exports = {
   // 私信聊天
   createChatConversation,
   getChatConversations,
+  getChatConversationsByHouse,
+  hasChatConversationForHouse,
   deleteChatConversation,
   getChatMessages,
   sendChatMessage,

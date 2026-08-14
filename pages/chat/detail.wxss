@@ -9,6 +9,9 @@
 
 /* 聊天主体（复用 ColorUI 的 .cu-chat 原生样式） */
 .cu-chat { padding: 20rpx 24rpx; }
+.cu-chat .cu-avatar.round {
+  width: 80rpx; height: 80rpx; border-radius: 50%; background: #eee; flex-shrink: 0;
+}
 .chat-img { width: 300rpx; max-width: 60%; border-radius: 8rpx; display: block; }
 
 .load-more { text-align: center; padding: 20rpx; color: #999; font-size: 24rpx; }
