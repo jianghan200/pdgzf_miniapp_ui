@@ -9,6 +9,22 @@
 
 /* 聊天主体（复用 ColorUI 的 .cu-chat 原生样式） */
 .cu-chat { padding: 20rpx 24rpx; }
+
+/* 自己发的消息：头像在右，气泡在左，整体靠右 */
+.cu-chat .cu-item.self>.cu-avatar {
+  order: 2;
+}
+.cu-chat .cu-item.self>.main {
+  order: 1;
+  margin: 0 40rpx;
+  justify-content: flex-end;
+}
+.cu-chat .cu-item.self .date {
+  left: auto;
+  right: 160rpx;
+  text-align: right;
+}
+
 .chat-img { width: 300rpx; max-width: 60%; border-radius: 8rpx; display: block; }
 
 .load-more { text-align: center; padding: 20rpx; color: #999; font-size: 24rpx; }

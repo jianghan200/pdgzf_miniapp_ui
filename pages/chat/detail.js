@@ -10,12 +10,18 @@ Page({
     page: 1,
     total: 0,
     hasMore: false,
-    loading: false
+    loading: false,
+    myAvatar: ''
   },
 
   onLoad(options) {
     const s = wx.getSystemInfoSync()
-    this.setData({ StatusBar: s.statusBarHeight, convId: parseInt(options.id) })
+    const app = getApp()
+    this.setData({
+      StatusBar: s.statusBarHeight,
+      convId: parseInt(options.id),
+      myAvatar: (app.globalData.userinfo && app.globalData.userinfo.wxAvatarUrl) || '/assets/user.png'
+    })
     this.loadConversation()
   },
 
