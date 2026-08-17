@@ -38,6 +38,7 @@ Page({
     unlockDialogVisible: false,
     unlockDialogTitle: '',
     unlockDialogGateType: '',
+    ownerHasChat: false
   },
 
   onLoad(options) {
@@ -109,6 +110,7 @@ Page({
           unlockExpire: g.unlock_expire || '',
         })
         this.loadFavoriteStatus()
+        this.loadOwnerChatStatus()
       }
       this.setData({ loading: false })
     })
@@ -420,9 +422,29 @@ Page({
     wx.makePhoneCall({ phoneNumber: this.data.detail.contact_phone })
   },
 
-  // 发起私信会话
+  // 房东：查询该房源是否已有租客会话（用于按钮文案切换）
+  loadOwnerChatStatus() {
+    if (!this.data.isOwner) return
+    market.hasChatConversationForHouse(this.data.id).then((res) => {
+      if (res && res.status === 0) {
+        this.setData({ ownerHasChat: !!(res.data && res.data.has) })
+      }
+    })
+  },
+
+  // 发起私信会话 / 房东查看房源咨询
   startChat() {
     if (!this._requireLogin()) return
+    if (this.data.isOwner) {
+      // 房东视角：有租客会话则进入该房源的会话列表，否则提示
+      if (this.data.ownerHasChat) {
+        wx.navigateTo({ url: `/pages/chat/list?house_id=${this.data.id}` })
+      } else {
+        wx.showToast({ title: '暂无人咨询，等待租客私信您', icon: 'none' })
+      }
+      return
+    }
+    // 租客视角：检查内容门控
     if (!this.data.chatVisible) {
       this.showUnlockDialog('chat')
       return

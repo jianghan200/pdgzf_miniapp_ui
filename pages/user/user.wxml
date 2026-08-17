@@ -64,7 +64,7 @@
         <text class="cuIcon-vip text-bold vip-banner-icon"></text>
         <view class="vip-banner-text">
           <text class="text-bold vip-banner-title">开通租客/房东 VIP</text>
-          <text class="vip-banner-desc">免广告查看价格、联系房东、快速审核</text>
+          <text class="vip-banner-desc">免广告查看价格、详细描述、快速审核</text>
         </view>
       </view>
     </view>

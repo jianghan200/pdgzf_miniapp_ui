@@ -323,21 +323,24 @@
       <text class="bar-action-text {{favorited ? 'text-orange' : ''}}">{{favorited ? '已收藏' : '收藏'}}</text>
     </view>
     <view class="bar-action" bindtap="{{inCompare ? 'goCompare' : 'addToCompare'}}">
-      <text class="cuIcon {{inCompare ? 'appreciatefill text-orange' : 'appreciate text-gray'}}"></text>
+      <text class="cuIcon {{inCompare ? 'cuIcon-evaluate text-orange' : 'cuIcon-evaluate text-gray'}}"></text>
       <text class="bar-action-text {{inCompare ? 'text-orange' : ''}}">对比</text>
     </view>
     <view class="bar-action" bindtap="onTapComment">
-      <text class="cuIcon-comment text-gray"></text>
+      <text class="cuIcon cuIcon-comment text-gray"></text>
       <text class="bar-action-text">评论</text>
     </view>
     <button class="bar-action share-btn" open-type="share">
-      <text class="cuIcon-share text-gray"></text>
+      <text class="cuIcon cuIcon-share text-gray"></text>
       <text class="bar-action-text">分享</text>
     </button>
     <button class="bar-cta {{chatVisible ? 'bg-blue' : 'bg-gray'}}" bindtap="startChat" style="width: 28%;">
-      <text class="cuIcon-messagefill"></text>
-      <text style="margin-left: 6rpx; font-size: 26rpx;">{{chatVisible ? '私信' : '私信'}}</text>
+      <text class="cuIcon cuIcon-messagefill"></text>
+      <text style="margin-left: 8rpx; font-size: 26rpx;">{{isOwner ? (ownerHasChat ? '查看私信' : '私信') : '私信'}}</text>
     </button>
+    <!-- <button class="bar-cta" bindtap="onBottomContact">
+      <text>{{contactMethod === 'ad' ? '联系房东' : '支付 ¥1 联系'}}</text>
+    </button> -->
   </view>
 
   <!-- 统一解锁 Dialog -->
