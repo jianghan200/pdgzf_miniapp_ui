@@ -24,7 +24,7 @@ Page({
     }
     const period = parseInt(e.currentTarget.dataset.period)
     wx.showLoading({ title: '创建订单...' })
-    pay.payVip(1, period).then(() => {
+    pay.payVip(11, period).then(() => {
       wx.hideLoading(); wx.showToast({ title: '开通成功', icon: 'success' }); this.loadAll()
     }).catch(() => { wx.hideLoading(); wx.showToast({ title: '支付失败', icon: 'none' }) })
   },
@@ -35,7 +35,7 @@ Page({
     }
     const period = parseInt(e.currentTarget.dataset.period)
     wx.showLoading({ title: '创建订单...' })
-    pay.payVip(2, period).then(() => {
+    pay.payVip(12, period).then(() => {
       wx.hideLoading(); wx.showToast({ title: '开通成功', icon: 'success' }); this.loadAll()
     }).catch(() => { wx.hideLoading(); wx.showToast({ title: '支付失败', icon: 'none' }) })
   }

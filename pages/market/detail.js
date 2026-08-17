@@ -526,7 +526,7 @@ Page({
     }
     this.closeUnlockDialog()
     wx.showLoading({ title: '创建订单...' })
-    pay.payVip(1, period).then(() => {
+    pay.payVip(11, period).then(() => {
       wx.hideLoading()
       wx.showToast({ title: '开通成功', icon: 'success' })
       this.loadDetail()
