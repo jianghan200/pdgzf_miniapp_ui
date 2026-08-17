@@ -17,30 +17,47 @@ function showRewardedVideo(adUnitId) {
     if (!ad) {
       ad = wx.createRewardedVideoAd({ adUnitId })
       _rewardedAds[adUnitId] = ad
+      // 预热：创建后立即加载，提高首次 show() 成功率，减少"加载广告..."等待
+      ad.load().catch(() => {})
     }
 
+    let settled = false
+    let attempts = 0
+    const MAX_ATTEMPTS = 2
+
+    // onClose 是唯一能确认"用户看完广告"的回调，必须保持有效直到 Promise 落定
     const handleClose = (res) => {
+      if (settled) return
+      settled = true
       ad.offClose(handleClose)
-      ad.offError(handleError)
-      if (res && res.isEnded) {
-        resolve(true)
-      } else {
-        resolve(false)
-      }
+      resolve(!!(res && res.isEnded))
     }
+    // onError 只记录日志，不当作最终失败：
+    // 首次 show() 失败（广告未预加载）会触发 error 事件，但随后 load+show 重试可以成功播放。
     const handleError = (err) => {
-      ad.offClose(handleClose)
-      ad.offError(handleError)
       log.error('激励视频广告错误', err)
+    }
+    const fail = (err) => {
+      if (settled) return
+      settled = true
+      ad.offClose(handleClose)
       reject(err)
     }
 
     ad.onClose(handleClose)
     ad.onError(handleError)
 
-    ad.show().catch(() => {
-      ad.load().then(() => ad.show()).catch(handleError)
-    })
+    const attempt = () => {
+      ad.show().catch(() => {
+        if (attempts >= MAX_ATTEMPTS) {
+          fail(new Error('激励视频广告加载失败'))
+          return
+        }
+        attempts++
+        ad.load().then(attempt).catch(fail)
+      })
+    }
+    attempt()
   })
 }
 
@@ -54,26 +71,44 @@ function showInterstitial(adUnitId) {
     if (!ad) {
       ad = wx.createInterstitialAd({ adUnitId })
       _interstitialAds[adUnitId] = ad
+      // 预热：创建后立即加载，提高首次 show() 成功率
+      ad.load().catch(() => {})
     }
 
+    let settled = false
+    let attempts = 0
+    const MAX_ATTEMPTS = 2
+
     const handleClose = () => {
+      if (settled) return
+      settled = true
       ad.offClose(handleClose)
-      ad.offError(handleError)
       resolve(true)
     }
     const handleError = (err) => {
-      ad.offClose(handleClose)
-      ad.offError(handleError)
       log.error('插屏广告错误', err)
+    }
+    const fail = (err) => {
+      if (settled) return
+      settled = true
+      ad.offClose(handleClose)
       reject(err)
     }
 
     ad.onClose(handleClose)
     ad.onError(handleError)
 
-    ad.show().catch(() => {
-      ad.load().then(() => ad.show()).catch(handleError)
-    })
+    const attempt = () => {
+      ad.show().catch(() => {
+        if (attempts >= MAX_ATTEMPTS) {
+          fail(new Error('插屏广告加载失败'))
+          return
+        }
+        attempts++
+        ad.load().then(attempt).catch(fail)
+      })
+    }
+    attempt()
   })
 }
 
