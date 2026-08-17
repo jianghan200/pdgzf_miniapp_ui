@@ -77,9 +77,23 @@ const payWithOrder = function(orderPromise) {
   })
 }
 
+// 市场房源体系的支付（后端返回 {status, data} 而非 {code, data}）
+const payWithMarketOrder = function(orderPromise) {
+  return orderPromise.then((res) => {
+    if (!res || res.status !== 0 || !res.data) {
+      console.log('创建市场订单失败', res)
+      return Promise.reject(res)
+    }
+    const payInfo = res.data.pay_params || res.data
+    return actualPayment(payInfo)
+  })
+}
+
 const payWithVpOrder = function(orderPromise) {
   return orderPromise.then((res) => {
-    if (!res || res.code !== 0 || !res.data) {
+    // 市场体系接口统一返回 {status, data}，兼容旧的 {code, data} 格式
+    const ok = res && res.data != null && (typeof res.status === 'number' ? res.status === 0 : (res.code === undefined || res.code === 0))
+    if (!ok) {
       console.log('创建虚拟支付订单失败', res)
       return Promise.reject(res)
     }
@@ -96,7 +110,15 @@ const payVip = function(type, period) {
 }
 
 const payDepositFee = function(houseId) {
-  return payWithOrder(market.payDeposit(houseId))
+  return payWithMarketOrder(market.payDeposit(houseId))
+}
+
+const payViewing = function(houseId, slotTimes, remark) {
+  return payWithMarketOrder(market.createViewing({
+    house_id: houseId,
+    slot_times: slotTimes,
+    remark: remark || ''
+  }))
 }
 
 const payReportFee = function(houseId, reason) {
@@ -139,6 +161,9 @@ module.exports = {
   payVip: payVip,
   payDepositFee: payDepositFee,
   payReportFee: payReportFee,
+  payViewing: payViewing,
+  payWithOrder: payWithOrder,
+  payWithMarketOrder: payWithMarketOrder,
   actualPayment: actualPayment,
   actualVirtualPayment: actualVirtualPayment,
   canUseVirtualPayment: canUseVirtualPayment,

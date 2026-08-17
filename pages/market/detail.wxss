@@ -623,3 +623,130 @@
 .bg-orange { background: #ff9500; }
 .sm { font-size: 24rpx; padding: 8rpx 20rpx; line-height: 1.6; }
 .round { border-radius: 32rpx; }
+
+/* 内容门槛样式 */
+.price-masked { letter-spacing: 2rpx; }
+.price-unlock-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6rpx;
+  margin-left: 20rpx;
+  padding: 10rpx 20rpx;
+  background: linear-gradient(135deg, #ff9500 0%, #ff6b00 100%);
+  border-radius: 28rpx;
+  box-shadow: 0 4rpx 12rpx rgba(255, 149, 0, 0.3);
+  vertical-align: middle;
+}
+.price-unlock-icon {
+  font-size: 24rpx;
+}
+.price-unlock-text {
+  font-size: 24rpx;
+  color: #fff;
+  font-weight: 600;
+}
+.desc-wrap { position: relative; overflow: hidden; }
+.desc-masked .desc-text {
+  display: -webkit-box; -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical; overflow: hidden;
+  max-height: 60rpx;
+}
+.desc-fade-mask {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 80rpx;
+  background: linear-gradient(to bottom, rgba(255,255,255,0), #ffffff 80%);
+  pointer-events: none;
+}
+.unlock-btn {
+  margin-top: 16rpx; text-align: center; padding: 20rpx;
+  background: #fff7e6; color: #ff9500;
+  border-radius: 12rpx; font-size: 28rpx;
+}
+
+/* ========== 统一解锁 Dialog ========== */
+.unlock-dialog-mask {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 9999;
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.unlock-dialog {
+  background: #fff;
+  border-radius: 24rpx 24rpx 0 0;
+  width: 100%;
+  padding: 48rpx 32rpx 64rpx;
+  box-sizing: border-box;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.dialog-title {
+  font-size: 36rpx; font-weight: 700;
+  color: #333; text-align: center;
+  margin-bottom: 16rpx;
+}
+.dialog-desc {
+  font-size: 26rpx; color: #999;
+  text-align: center; margin-bottom: 32rpx;
+  line-height: 1.5;
+}
+.dialog-ad-btn {
+  width: 100%; height: 88rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff; border-radius: 16rpx;
+  font-size: 30rpx; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  gap: 12rpx; margin-bottom: 24rpx;
+  border: none; padding: 0;
+}
+.dialog-ad-btn::after { border: none; }
+.dialog-divider {
+  display: flex; align-items: center;
+  margin-bottom: 28rpx; color: #ccc;
+  font-size: 26rpx;
+}
+.dialog-divider::before, .dialog-divider::after {
+  content: ''; flex: 1; height: 1px;
+  background: #eee;
+}
+.dialog-divider text { margin: 0 24rpx; }
+.dialog-vip-title {
+  font-size: 28rpx; font-weight: 600;
+  color: #333; margin-bottom: 20rpx;
+  text-align: center;
+}
+.dialog-vip-plans {
+  display: flex; gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+.vip-plan {
+  flex: 1; padding: 24rpx 16rpx;
+  border: 2rpx solid #eee; border-radius: 16rpx;
+  text-align: center; position: relative;
+  transition: all 0.2s;
+}
+.vip-plan:active { border-color: #ff4757; }
+.vip-plan-hot {
+  border-color: #ff4757;
+  background: #fff5f5;
+}
+.hot-tag {
+  position: absolute; top: -14rpx; left: 50%;
+  transform: translateX(-50%);
+  background: #ff4757; color: #fff;
+  font-size: 20rpx; padding: 2rpx 12rpx;
+  border-radius: 20rpx; font-weight: 600;
+}
+.plan-name { font-size: 24rpx; color: #666; display: block; margin-bottom: 8rpx; }
+.plan-price { font-size: 36rpx; font-weight: 700; color: #ff4757; }
+.dialog-vip-benefits {
+  background: #f8f9fc; border-radius: 12rpx;
+  padding: 20rpx; margin-bottom: 24rpx;
+}
+.dialog-vip-benefits text {
+  display: block; font-size: 24rpx; color: #666;
+  padding: 6rpx 0; line-height: 1.5;
+}
+.dialog-close {
+  text-align: center; font-size: 28rpx; color: #999;
+  padding: 20rpx; border-top: 1rpx solid #f0f0f0;
+}

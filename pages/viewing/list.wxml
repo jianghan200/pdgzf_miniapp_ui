@@ -1,0 +1,109 @@
+<view class="container">
+  <view class="role-tabs">
+    <view class="role-tab {{role === 'tenant' ? 'active' : ''}}" data-role="tenant" bindtap="switchRole">我是租客</view>
+    <view class="role-tab {{role === 'landlord' ? 'active' : ''}}" data-role="landlord" bindtap="switchRole">我是房东</view>
+  </view>
+
+  <view class="status-tabs">
+    <view class="status-tab {{status === '' ? 'active' : ''}}" data-status="" bindtap="switchStatus">全部</view>
+    <view class="status-tab {{status == 1 ? 'active' : ''}}" data-status="1" bindtap="switchStatus">待确认</view>
+    <view class="status-tab {{status == 2 ? 'active' : ''}}" data-status="2" bindtap="switchStatus">已确认</view>
+    <view class="status-tab {{status == 3 ? 'active' : ''}}" data-status="3" bindtap="switchStatus">已完成</view>
+  </view>
+
+  <view wx:if="{{list.length === 0 && !loading}}" class="empty-tip">暂无预约记录</view>
+
+  <view class="viewing-list">
+    <view class="viewing-card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="goDetail">
+      <view class="card-header">
+        <view class="house-info">
+          <image class="house-cover" src="{{item.house.cover_url}}" mode="aspectFill"></image>
+          <view class="house-meta">
+            <view class="house-title">{{item.house.title}}</view>
+            <view class="house-addr">{{item.house.address_name}}</view>
+          </view>
+        </view>
+        <view class="status-tag" style="color: {{statusColor[item.status]}}">{{statusText[item.status]}}</view>
+      </view>
+      <view class="card-body">
+        <!-- 待确认状态：显示全部候选时段 -->
+        <block wx:if="{{item.status == 1 && item.slots && item.slots.length > 0}}">
+          <view class="slots-block">
+            <view class="slots-label">候选时段（{{item.slots.length}}个）</view>
+            <view class="slot-tag" wx:for="{{item.slots}}" wx:for-item="slot" wx:key="id">
+              {{slot.slot_time}}
+            </view>
+          </view>
+        </block>
+        <!-- 已确认/已完成：显示确认时间 -->
+        <block wx:elif="{{item.status >= 2 && item.confirmed_time}}">
+          <view class="info-row">
+            <text class="info-label">确认时间</text>
+            <text class="info-value confirmed">{{item.confirmed_time}}</text>
+          </view>
+        </block>
+        <block wx:else>
+          <view class="info-row">
+            <text class="info-label">看房时间</text>
+            <text class="info-value">{{item.viewing_time}}</text>
+          </view>
+        </block>
+        <view class="info-row">
+          <text class="info-label">{{role === 'landlord' ? '租客' : '房东'}}</text>
+          <text class="info-value">{{item.other_user.nickname}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">押金</text>
+          <text class="info-value">¥{{item.deposit_fee / 100}}</text>
+        </view>
+      </view>
+
+      <!-- 房东待确认：选时段确认 -->
+      <view class="card-actions" wx:if="{{item.status == 1 && role === 'landlord'}}">
+        <button class="btn btn-cancel" data-id="{{item.id}}" catchtap="onCancel">取消</button>
+        <button class="btn btn-confirm" data-id="{{item.id}}" data-index="{{index}}" catchtap="openConfirmSheet">确认预约</button>
+      </view>
+      <view class="card-actions" wx:elif="{{item.status == 2 && role === 'landlord'}}">
+        <button class="btn btn-cancel" data-id="{{item.id}}" catchtap="onCancel">取消</button>
+        <button class="btn btn-complete" data-id="{{item.id}}" catchtap="onComplete">看房完成</button>
+      </view>
+      <view class="card-actions" wx:elif="{{item.status == 0}}">
+        <button class="btn btn-cancel" data-id="{{item.id}}" catchtap="onCancel">取消</button>
+      </view>
+      <view class="card-actions" wx:elif="{{(item.status == 1 || item.status == 2) && role === 'tenant'}}">
+        <button class="btn btn-cancel" data-id="{{item.id}}" catchtap="onCancel">取消预约</button>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{noMore && list.length > 0}}" class="no-more">没有更多了</view>
+</view>
+
+<!-- 选时段确认弹层 -->
+<view class="confirm-mask" wx:if="{{showConfirmSheet}}" bindtap="closeConfirmSheet"></view>
+<view class="confirm-sheet {{showConfirmSheet ? 'show' : ''}}" wx:if="{{showConfirmSheet}}">
+  <view class="sheet-header">
+    <text class="sheet-title">请确认看房时间</text>
+    <view class="sheet-close" bindtap="closeConfirmSheet">✕</view>
+  </view>
+  <view class="sheet-body">
+    <view class="sheet-hint">从租客选择的时段中选一个确认</view>
+    <view class="slot-options">
+      <view
+        class="slot-option {{selectedSlotId == item.id ? 'selected' : ''}}"
+        wx:for="{{confirmSlots}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="selectSlot"
+      >
+        <view class="slot-radio">
+          <view class="radio-inner" wx:if="{{selectedSlotId == item.id}}"></view>
+        </view>
+        <view class="slot-time">{{item.slot_time}}</view>
+      </view>
+    </view>
+  </view>
+  <view class="sheet-footer">
+    <button class="btn btn-confirm full" bindtap="doConfirm" disabled="{{!selectedSlotId}}">确认此时间</button>
+  </view>
+</view>

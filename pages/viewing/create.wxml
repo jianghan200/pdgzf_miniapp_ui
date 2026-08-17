@@ -1,0 +1,75 @@
+<cu-custom bgColor="bg-black" isBack="{{!isRoot}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold">预约看房</view>
+  </view>
+</cu-custom>
+<view class="container">
+  <view class="house-card">
+    <view class="house-title">{{houseTitle}}</view>
+    <view class="house-sub">选择1-3个意向时段，房东确认其中一个即可</view>
+  </view>
+
+  <view class="form-card">
+    <view class="form-header">
+      <text class="form-title">意向时段</text>
+      <text class="form-hint">选了 {{slots.length}}/3 个</text>
+    </view>
+
+    <view class="slot-list">
+      <view class="slot-item" wx:for="{{slots}}" wx:key="index">
+        <view class="slot-index">时段 {{index + 1}}</view>
+        <view class="slot-pickers">
+          <picker mode="date" value="{{item.date}}" start="{{minDate}}" data-index="{{index}}" bindchange="onSlotDateChange">
+            <view class="picker-box">{{item.date}} <text class="arrow">›</text></view>
+          </picker>
+          <picker mode="time" value="{{item.time}}" data-index="{{index}}" bindchange="onSlotTimeChange">
+            <view class="picker-box">{{item.time}} <text class="arrow">›</text></view>
+          </picker>
+          <view class="slot-delete" bindtap="deleteSlot" data-index="{{index}}" wx:if="{{slots.length > 1}}">
+            <text>删除</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="add-slot" bindtap="addSlot" wx:if="{{slots.length < 3}}">
+      <text class="add-icon">+</text>
+      <text>添加时段</text>
+    </view>
+
+    <view class="form-item form-item-textarea">
+      <text class="form-label">备注（选填）</text>
+      <textarea class="form-textarea" placeholder="请输入备注信息，如：几个人看房、是否需要停车位等" value="{{remark}}" bindinput="onRemarkInput" maxlength="200"></textarea>
+    </view>
+  </view>
+
+  <view class="tip-card">
+    <text class="tip-text">💡 提交后房东将从你选的时段中确认一个最终看房时间，以双方沟通确认为准。</text>
+  </view>
+
+  <view class="fee-card">
+    <view class="fee-title">费用明细</view>
+    <view class="fee-row">
+      <text class="fee-label">看房押金</text>
+      <text class="fee-value">¥{{depositFee}}</text>
+    </view>
+    <view class="fee-desc">看房完成后原路退还</view>
+    <view class="fee-row">
+      <text class="fee-label">看房服务费</text>
+      <text class="fee-value {{isVip ? 'vip-free' : ''}}">{{isVip ? 'VIP免费' : '¥' + viewingFee}}</text>
+    </view>
+    <view class="fee-desc" wx:if="{{!isVip}}">租客VIP免看房服务费</view>
+    <view class="fee-total">
+      <text class="total-label">合计</text>
+      <text class="total-value">¥{{totalFee}}</text>
+    </view>
+  </view>
+
+  <view class="bottom-space"></view>
+  <view class="submit-bar">
+    <button class="submit-btn" bindtap="submit" disabled="{{submitting}}">
+      {{submitting ? '提交中...' : '确认预约并支付'}}
+    </button>
+  </view>
+</view>

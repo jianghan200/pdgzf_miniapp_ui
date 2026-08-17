@@ -46,8 +46,12 @@
       </view>
       <view class="hero-title">{{detail.title || detail.address_name}}</view>
       <view class="hero-price-row">
-        <text class="hero-price">{{detail.rent_display}}</text>
+        <text class="hero-price {{priceMasked ? 'price-masked' : ''}}">{{detail.rent_display}}</text>
         <text class="hero-price-unit">/月</text>
+        <view class="price-unlock-btn" wx:if="{{priceMasked}}" catchtap="unlockPrice">
+          <text class="price-unlock-icon">🔒</text>
+          <text class="price-unlock-text">解锁</text>
+        </view>
       </view>
     </view>
 
@@ -79,8 +83,8 @@
             <text class="cuIcon-appreciatefill"></text>
           </view>
           <view class="quick-text">
-            <text class="quick-main">{{detail.area ? detail.area + '㎡' : '—'}}</text>
-            <text class="quick-sub">{{detail.orientation_label || '朝向不限'}}</text>
+            <text class="quick-main">{{detail.area ? detail.area + '㎡' : '面积不明'}}</text>
+            <text class="quick-sub">{{detail.orientation_label || '朝向不明'}}</text>
           </view>
         </view>
       </view>
@@ -135,7 +139,13 @@
     <!-- 描述 -->
     <view class="section" wx:if="{{detail.description}}">
       <view class="section-title">房源描述</view>
-      <view class="desc-text">{{detail.description}}</view>
+      <view class="desc-wrap {{descriptionMasked ? 'desc-masked' : ''}}">
+        <view class="desc-text">{{detail.description}}</view>
+        <view class="desc-fade-mask" wx:if="{{descriptionMasked}}"></view>
+      </view>
+      <view class="unlock-btn" wx:if="{{descriptionMasked}}" bindtap="unlockDescription">
+        <text>查看完整描述</text>
+      </view>
     </view>
 
     <!-- 室友情况 -->
@@ -292,15 +302,15 @@
     </button> -->
   </view>
 
-  <!-- 已解锁后底部栏 -->
-  <view class="bottom-bar" wx:if="{{detail && (adUnlocked || detail.contact_visible)}}">
+  <!-- 底部栏 -->
+  <view class="bottom-bar" wx:if="{{detail}}">
     <view class="bar-action" bindtap="toggleFavorite">
       <text class="cuIcon {{favorited ? 'cuIcon-favorfill text-orange' : 'cuIcon-favor text-gray'}}"></text>
       <text class="bar-action-text {{favorited ? 'text-orange' : ''}}">{{favorited ? '已收藏' : '收藏'}}</text>
     </view>
     <view class="bar-action" bindtap="{{inCompare ? 'goCompare' : 'addToCompare'}}">
       <text class="cuIcon {{inCompare ? 'appreciatefill text-orange' : 'appreciate text-gray'}}"></text>
-      <text class="bar-action-text {{inCompare ? 'text-orange' : ''}}">{{inCompare ? '对比' : '对比'}}</text>
+      <text class="bar-action-text {{inCompare ? 'text-orange' : ''}}">对比</text>
     </view>
     <view class="bar-action" bindtap="onTapComment">
       <text class="cuIcon-comment text-gray"></text>
@@ -310,13 +320,55 @@
       <text class="cuIcon-share text-gray"></text>
       <text class="bar-action-text">分享</text>
     </button>
-    <button class="bar-cta bg-blue" bindtap="startChat">
-      <text class="cuIcon-messagefill"></text>
-      <text style="margin-left: 8rpx;">私信</text>
+    <button class="bar-cta bg-orange" bindtap="createViewing" style="width: 28%; background: #ff9500;">
+      <text class="cuIcon-calendar"></text>
+      <text style="margin-left: 6rpx; font-size: 26rpx;">预约看房</text>
     </button>
-    <!-- <button class="bar-cta bg-green" bindtap="callPhone">
-      <text class="cuIcon-mobilefill"></text>
-      <text style="margin-left: 8rpx;">电话</text>
-    </button> -->
+    <button class="bar-cta {{chatVisible ? 'bg-blue' : 'bg-gray'}}" bindtap="startChat" style="width: 28%;">
+      <text class="cuIcon-messagefill"></text>
+      <text style="margin-left: 6rpx; font-size: 26rpx;">{{chatVisible ? '私信' : '私信'}}</text>
+    </button>
+  </view>
+
+  <!-- 统一解锁 Dialog -->
+  <view class="unlock-dialog-mask" wx:if="{{unlockDialogVisible}}" bindtap="closeUnlockDialog">
+    <view class="unlock-dialog" catchtap="stopPropagation">
+      <view class="dialog-title">{{unlockDialogTitle}}</view>
+      <view class="dialog-desc">观看广告即可解锁当前房源信息，或成为VIP享受全部特权</view>
+
+      <!-- 看广告解锁 -->
+      <button class="dialog-ad-btn" bindtap="doUnlockByAd">
+        <text class="cuIcon-videofill"></text>
+        看广告解锁
+      </button>
+
+      <view class="dialog-divider"><text>或</text></view>
+
+      <!-- VIP 会员选择区 -->
+      <view class="dialog-vip-title">开通租客VIP</view>
+      <view class="dialog-vip-plans">
+        <view class="vip-plan" data-period="3" bindtap="buyVipInDialog">
+          <text class="plan-name">7天体验</text>
+          <text class="plan-price">¥9.9</text>
+        </view>
+        <view class="vip-plan vip-plan-hot" data-period="1" bindtap="buyVipInDialog">
+          <text class="hot-tag">推荐</text>
+          <text class="plan-name">月卡</text>
+          <text class="plan-price">¥29.9</text>
+        </view>
+        <view class="vip-plan" data-period="2" bindtap="buyVipInDialog">
+          <text class="plan-name">年卡</text>
+          <text class="plan-price">¥99</text>
+        </view>
+      </view>
+
+      <view class="dialog-vip-benefits">
+        <text>✓ 免广告查看全部房源价格</text>
+        <text>✓ 免广告查看房源描述详情</text>
+        <text>✓ 免广告私信房东</text>
+      </view>
+
+      <view class="dialog-close" bindtap="closeUnlockDialog">暂不需要</view>
+    </view>
   </view>
 </view>

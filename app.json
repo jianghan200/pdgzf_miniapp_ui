@@ -54,6 +54,8 @@
     "pages/favorite/list",
     "pages/chat/list",
     "pages/chat/detail",
+    "pages/viewing/create",
+    "pages/viewing/list",
     "pages/admin/login",
     "pages/admin/houseReview",
     "pages/admin/houseDetail",

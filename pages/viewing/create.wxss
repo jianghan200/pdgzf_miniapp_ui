@@ -1,0 +1,243 @@
+.container {
+  padding: 20rpx;
+  padding-bottom: 140rpx;
+}
+/* 冷启动/分享进入（栈底）时：导航栏左侧市场图标 */
+.nav-market-icon {
+  position: fixed;
+  left: 8rpx;
+  width: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+.nav-market-img {
+  width: 40rpx;
+  height: 40rpx;
+}
+.house-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 20rpx;
+}
+.house-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+.house-sub {
+  font-size: 26rpx;
+  color: #999;
+}
+.form-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 0 32rpx;
+  margin-bottom: 20rpx;
+}
+.form-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+.form-item:last-child {
+  border-bottom: none;
+}
+.form-item-textarea {
+  flex-direction: column;
+  align-items: flex-start;
+}
+.form-label {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 500;
+}
+.form-value {
+  font-size: 30rpx;
+  color: #333;
+}
+.arrow {
+  color: #ccc;
+  margin-left: 8rpx;
+}
+.form-textarea {
+  width: 100%;
+  min-height: 160rpx;
+  margin-top: 20rpx;
+  font-size: 28rpx;
+  color: #333;
+  padding: 20rpx;
+  background: #f8f8f8;
+  border-radius: 12rpx;
+  box-sizing: border-box;
+}
+.fee-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+}
+.fee-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 24rpx;
+}
+.fee-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 0;
+}
+.fee-label {
+  font-size: 28rpx;
+  color: #666;
+}
+.fee-value {
+  font-size: 28rpx;
+  color: #333;
+}
+.vip-free {
+  color: #ff9500;
+  font-weight: 500;
+}
+.fee-desc {
+  font-size: 24rpx;
+  color: #999;
+  margin-left: 12rpx;
+  margin-bottom: 8rpx;
+}
+.fee-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24rpx;
+  padding-top: 24rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+.total-label {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 500;
+}
+.total-value {
+  font-size: 40rpx;
+  color: #ff5500;
+  font-weight: 700;
+}
+.bottom-space {
+  height: 40rpx;
+}
+.submit-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  padding: 20rpx 32rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 -2rpx 12rpx rgba(0,0,0,0.05);
+}
+.submit-btn {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  background: #0081ff;
+  color: #fff;
+  font-size: 32rpx;
+  border-radius: 44rpx;
+}
+.submit-btn[disabled] {
+  background: #ccc;
+  color: #fff;
+}
+
+/* 多时段 */
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+.form-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  border-left: 6rpx solid #fbbd08;
+  padding-left: 16rpx;
+}
+.form-hint {
+  font-size: 24rpx;
+  color: #999;
+}
+.slot-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.slot-item {
+  background: #f9f9f9;
+  border-radius: 12rpx;
+  padding: 20rpx;
+}
+.slot-index {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 12rpx;
+}
+.slot-pickers {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+.picker-box {
+  flex: 1;
+  background: #fff;
+  border: 1rpx solid #eee;
+  border-radius: 8rpx;
+  padding: 16rpx 20rpx;
+  font-size: 28rpx;
+  color: #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.picker-box .arrow { color: #ccc; }
+.slot-delete {
+  color: #e54d42;
+  font-size: 24rpx;
+  padding: 8rpx 12rpx;
+  white-space: nowrap;
+}
+.add-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 24rpx;
+  margin-top: 16rpx;
+  border: 2rpx dashed #ddd;
+  border-radius: 12rpx;
+  color: #999;
+  font-size: 28rpx;
+}
+.add-slot .add-icon {
+  font-size: 36rpx;
+  line-height: 1;
+  color: #fbbd08;
+}
+.tip-card {
+  background: #fffbe6;
+  border: 1rpx solid #ffe58f;
+  border-radius: 12rpx;
+  padding: 20rpx 24rpx;
+  margin: 0 24rpx 24rpx;
+}
+.tip-text {
+  font-size: 24rpx;
+  color: #d48806;
+  line-height: 1.6;
+}

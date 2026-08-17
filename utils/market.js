@@ -3,14 +3,21 @@
 
 const app = getApp()
 const constants = require('./constants')
+const { getClientId } = require('./clientid')
 
 const _token = () => (app.globalData.userinfo && app.globalData.userinfo.tokenStr) || ''
+
+const _headers = (extra) => {
+  const h = { 'token': _token(), 'X-Client-Id': getClientId() }
+  if (extra) Object.assign(h, extra)
+  return h
+}
 
 const _get = (path) => {
   return new Promise((resolve, reject) => {
     wx.request({
       url: constants.server + path,
-      header: { 'token': _token() },
+      header: _headers(),
       success: (res) => {
         if (res.statusCode === 200) {
           resolve(res.data)
@@ -32,10 +39,9 @@ const _post = (path, data, isForm) => {
     wx.request({
       url: constants.server + path,
       method: 'POST',
-      header: {
-        'token': _token(),
+      header: _headers({
         'content-type': isForm ? 'application/x-www-form-urlencoded' : 'application/json'
-      },
+      }),
       data: data,
       success: (res) => {
         if (res.statusCode === 200) {
@@ -59,7 +65,7 @@ const _upload = (path, filePath, formData) => {
       url: constants.server + path,
       filePath: filePath,
       name: 'file',
-      header: { 'token': _token() },
+      header: _headers(),
       formData: formData || {},
       success: (res) => {
         if (res.statusCode === 200) {
@@ -227,6 +233,21 @@ const sendChatMessage = (convId, msgType, content) => _post('/chat/message/send'
 })
 const getChatUnread = () => _get('/chat/unread')
 
+// === 内容门槛（gate） ===
+const getGateConfig = () => _get('/gate/config')
+const getGateStatus = (houseId) => _get(`/gate/status?house_id=${houseId}`)
+const unlockGate = (data) => _post('/gate/unlock', data)
+const reportAbEvent = (data) => _post('/ab/event', data)
+
+// === 看房预约 ===
+const createViewing = (data) => _post('/viewing/create', data)
+const getViewingList = (role, status, page, size) =>
+  _get(`/viewing/list?role=${role || 'tenant'}&status=${status !== undefined ? status : ''}&page=${page || 1}&size=${size || 20}`)
+const getViewingDetail = (id) => _get(`/viewing/${id}`)
+const confirmViewing = (id, slotId) => _post(`/viewing/${id}/confirm`, { slot_id: slotId || 0 })
+const cancelViewing = (id, reason) => _post(`/viewing/${id}/cancel`, { reason: reason || '' })
+const completeViewing = (id) => _post(`/viewing/${id}/complete`)
+
 // 私信图片上传：先取七牛上传 token，再直传，返回 CDN URL
 const uploadChatImage = (filePath) => {
   return new Promise((resolve, reject) => {
@@ -321,6 +342,18 @@ module.exports = {
   uploadAuthImage,
   // 额度
   getUserQuota,
+  // 内容门槛
+  getGateConfig,
+  getGateStatus,
+  unlockGate,
+  reportAbEvent,
+  // 看房预约
+  createViewing,
+  getViewingList,
+  getViewingDetail,
+  confirmViewing,
+  cancelViewing,
+  completeViewing,
   // 管理员
   adminGetPendingHouses,
   adminApproveHouse,

@@ -13,23 +13,35 @@
     </view>
   </view>
 
-  <view class="section">
+  <view class="section tenant-section">
     <view class="section-title">租客 VIP</view>
-    <view class="plan-row">
+    <view class="plan-row plan-row-3">
       <view class="plan-card">
-        <text class="plan-name">月付</text>
-        <text class="plan-price">¥9.9/月</text>
+        <text class="plan-name">7天体验</text>
+        <text class="plan-price">¥9.9</text>
+        <text class="plan-sub">约1.4元/天</text>
+        <button class="cu-btn bg-red sm" data-period="3" bindtap="buyTenant">开通</button>
+      </view>
+      <view class="plan-card plan-card-hot">
+        <view class="hot-tag">推荐</view>
+        <text class="plan-name">月卡</text>
+        <text class="plan-price">¥29.9</text>
+        <text class="plan-sub">约1元/天</text>
         <button class="cu-btn bg-red sm" data-period="1" bindtap="buyTenant">开通</button>
       </view>
       <view class="plan-card">
-        <text class="plan-name">年付</text>
-        <text class="plan-price">¥99/年</text>
+        <text class="plan-name">年卡</text>
+        <text class="plan-price">¥99</text>
+        <text class="plan-sub">省¥258.8</text>
         <button class="cu-btn bg-red sm" data-period="2" bindtap="buyTenant">开通</button>
       </view>
     </view>
     <view class="benefits">
+      <text class="benefit">✓ 免广告查看全部房源价格</text>
+      <text class="benefit">✓ 免广告查看房源描述详情</text>
+      <text class="benefit">✓ 免广告私信房东</text>
+      <text class="benefit">✓ 免看房服务费（每次省2元）</text>
       <text class="benefit">✓ 无限次联系房东</text>
-      <text class="benefit">✓ 优先查看新房源</text>
       <text class="benefit">✓ 专属客服</text>
     </view>
   </view>
@@ -58,7 +70,10 @@
   <view class="section" wx:if="{{orders.length > 0}}">
     <view class="section-title">订单记录</view>
     <view class="order-item" wx:for="{{orders}}" wx:key="id">
-      <view class="order-top"><text>{{item.type == 1 ? '租客VIP' : '房东VIP'}} - {{item.period == 1 ? '月付' : '年付'}}</text><text class="order-price">¥{{item.amount}}</text></view>
+      <view class="order-top">
+        <text>{{item.type == 1 ? '租客VIP' : '房东VIP'}} - {{item.period == 1 ? '月付' : item.period == 2 ? '年付' : item.period == 3 ? '7天' : '其他'}}</text>
+        <text class="order-price">¥{{item.amount}}</text>
+      </view>
       <view class="order-time">{{item.create_time}} · {{['待支付','生效中','已过期','已取消'][item.status]}}</view>
     </view>
   </view>

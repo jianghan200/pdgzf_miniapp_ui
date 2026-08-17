@@ -4,11 +4,16 @@
 .vip-badge { background: #fbbd08; color: #fff; font-size: 24rpx; padding: 6rpx 16rpx; border-radius: 20rpx; }
 .vip-expire { color: #fff; font-size: 24rpx; }
 .section { background: #fff; margin: 20rpx; border-radius: 16rpx; padding: 24rpx; }
+.tenant-section { margin-top: -30rpx; position: relative; z-index: 2; }
 .section-title { font-size: 30rpx; font-weight: bold; margin-bottom: 20rpx; border-left: 6rpx solid #fbbd08; padding-left: 16rpx; }
 .plan-row { display: flex; gap: 20rpx; }
-.plan-card { flex: 1; background: #fafafa; border-radius: 12rpx; padding: 24rpx; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12rpx; }
-.plan-name { font-size: 28rpx; color: #666; }
+.plan-row-3 { gap: 12rpx; }
+.plan-card { flex: 1; background: #fafafa; border-radius: 12rpx; padding: 24rpx 12rpx; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8rpx; position: relative; border: 2rpx solid transparent; }
+.plan-card-hot { border-color: #e54d42; background: linear-gradient(180deg, #fff5f5, #fafafa); }
+.hot-tag { position: absolute; top: -2rpx; right: -2rpx; background: #e54d42; color: #fff; font-size: 20rpx; padding: 4rpx 12rpx; border-radius: 0 10rpx 0 10rpx; }
+.plan-name { font-size: 26rpx; color: #666; }
 .plan-price { font-size: 36rpx; font-weight: bold; color: #e54d42; }
+.plan-sub { font-size: 22rpx; color: #999; }
 .benefits { margin-top: 24rpx; display: flex; flex-direction: column; gap: 8rpx; }
 .benefit { font-size: 26rpx; color: #52c41a; }
 .order-item { padding: 16rpx 0; border-bottom: 1rpx solid #f0f0f0; }

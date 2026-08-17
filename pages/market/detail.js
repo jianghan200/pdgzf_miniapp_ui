@@ -1,5 +1,6 @@
 const market = require('../../utils/market')
 const pay = require('../../utils/pay')
+const gate = require('../../utils/gate')
 
 const app = getApp()
 
@@ -24,7 +25,18 @@ Page({
     inCompare: false,
     isRoot: false,
     highlightList: [],
-    mapReady: false
+    mapReady: false,
+    // content gate 状态
+    priceVisible: true,
+    descriptionVisible: true,
+    chatVisible: true,
+    priceMasked: false,
+    descriptionMasked: false,
+    unlockExpire: '',
+    // 统一解锁 Dialog
+    unlockDialogVisible: false,
+    unlockDialogTitle: '',
+    unlockDialogGateType: '',
   },
 
   onLoad(options) {
@@ -77,12 +89,23 @@ Page({
         d.orientation_label = this._orientationLabel(d.orientation)
         d.lease_desc = this._buildLeaseDesc(d)
         const highlightList = this._buildHighlightList(d)
+        // content gate 状态（后端返回的 gate 字段）
+        const g = d.gate || {}
+        const priceVisible = !(g.price && g.price.visible === false)
+        const descVisible = !(g.description && g.description.visible === false)
+        const chatVisible = !(g.chat && g.chat.visible === false)
         this.setData({
           detail: d,
           mediaList: (d.medias || []).map(m => ({ url: m.url, type: m.type === 'video' ? 'video' : 'photo' })),
           isOwner: d.is_owner || false,
           isAdmin: d.is_admin || false,
-          highlightList
+          highlightList,
+          priceVisible,
+          descriptionVisible: descVisible,
+          chatVisible,
+          priceMasked: !priceVisible,
+          descriptionMasked: !descVisible,
+          unlockExpire: g.unlock_expire || '',
         })
         this.loadFavoriteStatus()
       }
@@ -401,6 +424,10 @@ Page({
   // 发起私信会话
   startChat() {
     if (!this._requireLogin()) return
+    if (!this.data.chatVisible) {
+      this.showUnlockDialog('chat')
+      return
+    }
     wx.showLoading({ title: '开启会话...' })
     market.createChatConversation(this.data.id).then((res) => {
       wx.hideLoading()
@@ -409,6 +436,94 @@ Page({
       } else {
         wx.showToast({ title: (res && res.msg) || '暂无法私信', icon: 'none' })
       }
+    })
+  },
+
+  // ---- 内容门槛解锁 ----
+
+  unlockPrice() {
+    if (this.data.priceVisible) return
+    this.showUnlockDialog('price')
+  },
+
+  unlockDescription() {
+    if (this.data.descriptionVisible) return
+    this.showUnlockDialog('description')
+  },
+
+  unlockChat() {
+    if (this.data.chatVisible) return
+    this.showUnlockDialog('chat')
+  },
+
+  // ---- 统一解锁 Dialog ----
+
+  showUnlockDialog(gateType) {
+    const titles = { price: '解锁价格', description: '解锁描述', chat: '解锁私信' }
+    this.setData({
+      unlockDialogVisible: true,
+      unlockDialogTitle: titles[gateType] || '解锁内容',
+      unlockDialogGateType: gateType,
+    })
+  },
+
+  closeUnlockDialog() {
+    this.setData({ unlockDialogVisible: false })
+  },
+
+  stopPropagation() {},
+
+  doUnlockByAd() {
+    const gateType = this.data.unlockDialogGateType
+    if (!gateType) return
+    this.closeUnlockDialog()
+    wx.showLoading({ title: '加载广告...' })
+    gate.watchAdAndUnlock(this.data.id, gateType).then((ok) => {
+      wx.hideLoading()
+      if (ok) {
+        this.loadDetail()
+        wx.showModal({
+          title: '解锁成功',
+          content: '内容已解锁，现在可以查看完整信息啦。',
+          showCancel: false,
+          confirmText: '好的'
+        })
+      } else {
+        wx.showToast({ title: '解锁失败，请重试', icon: 'none' })
+      }
+    }).catch(() => {
+      wx.hideLoading()
+      wx.showToast({ title: '广告加载失败', icon: 'none' })
+    })
+  },
+
+  buyVipInDialog(e) {
+    const period = parseInt(e.currentTarget.dataset.period)
+    if (!wx.canIUse('requestVirtualPayment')) {
+      wx.showModal({ title: '版本过低', content: '请将微信升级至最新版本后重试' })
+      return
+    }
+    this.closeUnlockDialog()
+    wx.showLoading({ title: '创建订单...' })
+    pay.payVip(1, period).then(() => {
+      wx.hideLoading()
+      wx.showToast({ title: '开通成功', icon: 'success' })
+      this.loadDetail()
+    }).catch(() => {
+      wx.hideLoading()
+      wx.showToast({ title: '支付失败', icon: 'none' })
+    })
+  },
+
+  // 预约看房
+  createViewing() {
+    if (!this._requireLogin()) return
+    if (this.data.isOwner) {
+      wx.showToast({ title: '房东不能预约自己的房源', icon: 'none' })
+      return
+    }
+    wx.navigateTo({
+      url: `/pages/viewing/create?house_id=${this.data.id}&title=${encodeURIComponent(this.data.detail && this.data.detail.title || '')}`
     })
   },
 
