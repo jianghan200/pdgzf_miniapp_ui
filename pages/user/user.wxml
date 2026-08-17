@@ -1,110 +1,81 @@
+<!--pages/user/user.wxml-->
 
 <cu-custom bgColor="bg-black" isBack="{{false}}">
   <view slot="content" style="width: auto; padding-left: 30rpx; right:auto">
-    <view style="color: white; width: auto; float: left;"> 
-    <text class="text-bold"></text> PD租房 - 我的</view>
+    <view style="color: white; width: auto; float: left;">
+      <text class="text-bold"></text> PD租房 - 我的
+    </view>
   </view>
 </cu-custom>
 
-
-<!-- 微信用户信息 -->
+<!-- 用户信息卡片 -->
 <view class="userinfo">
   <image class="{{vipInfo.type == 2 ? 'vip-' : ''}}avatar" src="{{avatarUrl}}" mode="aspectFill" bind:tap="goToEditUserInfo"></image>
   <view class="user-details">
     <view class="{{vipInfo.type == 2 ? 'vip-' : ''}}nickname" bind:tap="goToEditUserInfo">{{ nickname }}</view>
-    <view class="start-date-info" bindtap="openMaunalStartDateDialog">
-      <text class="start-date-label"> 资格日: </text>
-      <text class="start-date-value"> {{ startDate  }}  </text>
-      <text class="start-date-hint" wx:if="{{hasStartDateCode === -1}}">(模拟)</text>
-      <text class="start-date-hint" wx:elif="{{hasStartDateCode === 1}}"> (点击重置)</text>
-    </view>
-    <!-- VIP 到期信息 -->
-    <view class="start-date-info" wx:if="{{vipInfo.type == 2 && vipEndDate}}">
-      <text class="start-date-label" style="color: goldenrod;"> VIP到期: </text>
-      <text class="start-date-value" style="{{vipExpired ? 'color: red;' : 'color: goldenrod;'}}"> {{ vipEndDate }} </text>
-      <text class="start-date-hint" wx:if="{{vipExpired}}" style="color: red;">(已过期)</text>
-    </view>
+    <!-- 浦东公租房：显示资格日 -->
+    <block wx:if="{{currentTab === 'pudong'}}">
+      <view class="start-date-info" bindtap="openMaunalStartDateDialog">
+        <text class="start-date-label"> 资格日: </text>
+        <text class="start-date-value"> {{ startDate }} </text>
+        <text class="start-date-hint" wx:if="{{hasStartDateCode === -1}}">(模拟)</text>
+        <text class="start-date-hint" wx:elif="{{hasStartDateCode === 1}}"> (点击重置)</text>
+      </view>
+      <!-- VIP 到期信息 -->
+      <view class="start-date-info" wx:if="{{vipInfo.type == 2 && vipEndDate}}">
+        <text class="start-date-label" style="color: goldenrod;"> VIP到期: </text>
+        <text class="start-date-value" style="{{vipExpired ? 'color: red;' : 'color: goldenrod;'}}"> {{ vipEndDate }} </text>
+        <text class="start-date-hint" wx:if="{{vipExpired}}" style="color: red;">(已过期)</text>
+      </view>
+    </block>
+    <!-- 市场租房：显示市场 VIP 状态 -->
+    <block wx:if="{{currentTab === 'market'}}">
+      <view class="start-date-info">
+        <text class="start-date-label"> 租客VIP: </text>
+        <text class="start-date-value" style="{{marketVipInfo && marketVipInfo.is_market_vip ? 'color: goldenrod;' : ''}}">{{ marketVipInfo && marketVipInfo.is_market_vip ? (marketVipInfo.type == 12 ? '房东VIP' : '租客VIP') : '未开通' }}</text>
+      </view>
+      <view class="start-date-info" wx:if="{{marketVipInfo && marketVipInfo.is_market_vip && marketVipEndDate}}">
+        <text class="start-date-label" style="color: goldenrod;"> 到期: </text>
+        <text class="start-date-value" style="{{marketVipExpired ? 'color: red;' : 'color: goldenrod;'}}"> {{ marketVipEndDate }} </text>
+        <text class="start-date-hint" wx:if="{{marketVipExpired}}" style="color: red;">(已过期)</text>
+      </view>
+    </block>
   </view>
 </view>
 
+<!-- 业务 Tab 切换 -->
+<view class="business-tabs">
+  <view class="tab-item {{currentTab === 'market' ? 'active' : ''}}" data-tab="market" bindtap="switchBusinessTab">
+    <text class="cuIcon-shopfill tab-icon"></text>
+    <text>市场租房</text>
+  </view>
+  <view class="tab-item {{currentTab === 'pudong' ? 'active' : ''}}" data-tab="pudong" bindtap="switchBusinessTab">
+    <text class="cuIcon-homefill tab-icon"></text>
+    <text>浦东公租房</text>
+  </view>
+</view>
 
-<!-- <movable-area class="movable-area" > -->
-  <!-- 内容 -->
-  <view class="cu-list menu sm-border card-menu margin-top">
-    <!-- 查看会员权益 -->
-    <view class="cu-item arrow" bindtap="goToRights" style="background-color: currentColor;">
-      <view class="content">
-        <text class="cuIcon-vip text-bold" style="color: goldenrod;"></text>
-        <text class="text-bold" style="color: goldenrod;" wx:if="{{!closeIOSPay || supportVp}}">成为会员(查看权益)</text>
-        <text class="text-bold" style="color: goldenrod;" wx:else>更多信息请联系 meo365</text>
-      </view>
-    </view>
-
-    <!-- 我的选房状态 -->
-    <view class="cu-item arrow" bindtap="goToSelectDetail">
-      <view class="content">
-        <text class="cuIcon-home text-bold text-pink"></text>
-        <text class="text-bold">我的选房状态</text>
-      </view>
-    </view>
-
-    <!-- 关注房源 -->
-    <view class="cu-item arrow" bindtap="goToSubscriptions">
-      <view class="content">
-        <text class="cuIcon-likefill text-bold text-pink"></text>
-        <text class="text-bold">关注房源列表</text>
-      </view>
-    </view>
-
-    <!-- 房源提醒 -->
-    <view class="cu-item arrow" bindtap="gotoEmailPage">
-      <view class="content">
-        <text class="cuIcon-noticefill text-bold text-yellow"></text>
-        <text class="text-bold">房源提醒 (关注公众号“三只熊猫工作室”)</text>
-      </view>
-    </view>
-
-    <!-- 版本内容 -->
-    <view class="cu-item arrow" bindtap="gotoVersions">
-      <view class="content">
-        <text class="cuIcon-evaluate text-bold"></text>
-        <text class="text-bold">PD公租房日记</text>
-      </view>
-    </view>
-
-    <!-- 默认首页 -->
-    <view class="cu-item arrow" bindtap="chooseDefaultTab">
-      <view class="content">
-        <text class="cuIcon-apps text-bold"></text>
-        <text class="text-bold">默认首页</text>
-      </view>
-      <view class="action">
-        <text class="text-gray text-sm">{{userinfo.defaultTab === 1 ? '保租房' : userinfo.defaultTab === 2 ? '市场租房' : userinfo.defaultTab === 3 ? '社区' : '浦东公租房'}}</text>
-      </view>
-    </view>
-
-    <!-- About页 -->
-    <view class="cu-item arrow" bindtap="gotoAbout">
-      <view class="content">
-        <text class="cuIcon-info text-bold"></text>
-        <text class="text-bold">关于PD公租房</text>
+<!-- ===== 市场租房业务面板 ===== -->
+<block wx:if="{{currentTab === 'market'}}">
+  <!-- 会员权益 -->
+  <view class="cu-list menu sm-border card-menu margin-top" bindtap="goToMarketVipCenter">
+    <view class="cu-item arrow vip-banner">
+      <view class="content vip-banner-content">
+        <text class="cuIcon-vip text-bold vip-banner-icon"></text>
+        <view class="vip-banner-text">
+          <text class="text-bold vip-banner-title">开通租客/房东 VIP</text>
+          <text class="vip-banner-desc">免广告查看价格、联系房东、快速审核</text>
+        </view>
       </view>
     </view>
   </view>
 
-  <!-- MVP 新增功能入口 -->
-  <view class="cu-list menu sm-border card-menu margin-top">
-    <view class="cu-item arrow" bindtap="goChatList">
-      <view class="content">
-        <text class="cuIcon-message text-bold text-blue"></text>
-        <text class="text-bold">我的消息</text>
-      </view>
-      <view class="cu-tag bg-red round" wx:if="{{chatUnread}}">{{chatUnread > 99 ? '99+' : chatUnread}}</view>
-    </view>
+  <!-- 核心功能入口 -->
+  <view class="cu-list menu sm-border card-menu margin-top compact-menu">
     <view class="cu-item arrow" bindtap="goPublishMarket">
       <view class="content">
         <text class="cuIcon-edit text-bold text-orange"></text>
-        <text class="text-bold">发布市场房源</text>
+        <text class="text-bold">发布房源</text>
       </view>
     </view>
     <view class="cu-item arrow" bindtap="goMyMarketHouses">
@@ -119,82 +90,128 @@
         <text class="text-bold">我的收藏</text>
       </view>
     </view>
-
-    <!-- <view class="cu-item arrow" bindtap="goContactList">
+    <view class="cu-item arrow" bindtap="goChatList">
       <view class="content">
         <text class="cuIcon-message text-bold text-blue"></text>
-        <text class="text-bold">我的联系记录</text>
+        <text class="text-bold">我的消息</text>
       </view>
+      <view class="cu-tag bg-red round" wx:if="{{chatUnread}}">{{chatUnread > 99 ? '99+' : chatUnread}}</view>
     </view>
-    <view class="cu-item arrow" bindtap="goDepositList">
-      <view class="content">
-        <text class="cuIcon-moneybag text-bold text-yellow"></text>
-        <text class="text-bold">保证金记录</text>
-      </view>
-    </view> -->
-    <!-- <view class="cu-item arrow" bindtap="goRealName">
-      <view class="content">
-        <text class="cuIcon-people text-bold text-blue"></text>
-        <text class="text-bold">实名认证</text>
-      </view>
-    </view>
-    <view class="cu-item arrow" bindtap="goLandlordAuth">
-      <view class="content">
-        <text class="cuIcon-homefill text-bold text-blue"></text>
-        <text class="text-bold">房东认证</text>
-      </view>
-    </view>
-    <view class="cu-item arrow" bindtap="goVipCenter">
-      <view class="content">
-        <text class="cuIcon-vip text-bold text-orange"></text>
-        <text class="text-bold">VIP 中心</text>
-      </view>
-    </view> -->
+  </view>
 
-    <!-- 管理员入口 -->
-    <view class="cu-item arrow" bindtap="goAdmin" wx:if="{{isAdmin}}">
-      <view class="content">
-        <text class="cuIcon-settings text-bold text-red"></text>
-        <text class="text-bold">审核后台</text>
+  <!-- 底部辅助入口 -->
+  <view class="footer-links">
+    <view class="footer-link" bindtap="chooseDefaultTab">
+      <text class="cuIcon-apps"></text>
+      <text>默认首页</text>
+    </view>
+    <view class="footer-link" bindtap="gotoAbout">
+      <text class="cuIcon-info"></text>
+      <text>关于</text>
+    </view>
+    <view class="footer-link" bindtap="goAdmin" wx:if="{{isAdmin}}">
+      <text class="cuIcon-settings"></text>
+      <text>审核后台</text>
+    </view>
+  </view>
+</block>
+
+<!-- ===== 浦东公租房业务面板 ===== -->
+<block wx:if="{{currentTab === 'pudong'}}">
+  <!-- 会员权益 -->
+  <view class="cu-list menu sm-border card-menu margin-top" bindtap="goToRights">
+    <view class="cu-item arrow vip-banner">
+      <view class="content vip-banner-content">
+        <text class="cuIcon-vip text-bold vip-banner-icon"></text>
+        <view class="vip-banner-text">
+          <text class="text-bold vip-banner-title">成为公租房 VIP</text>
+          <text class="vip-banner-desc">查看视频/户型图、统计指标、真人咨询</text>
+        </view>
       </view>
     </view>
   </view>
 
-<!-- </movable-area> -->
-
-<view class="grid-container">
-  <view class="cu-list grid col-3 no-border">
-        <view class="cu-item" bindtap="goToNewbeePage" data-page="timeline">
-          <view class="cuIcon-time"></view>
-          <text>流程时间线</text>
-        </view>
-        <view class="cu-item" bindtap="goToNewbeePage" data-page="policy">
-          <view class="cuIcon-read"></view>
-          <text>信息&心得</text>
-        </view>
-        <view class="cu-item" bindtap="goToNewbeePage" data-page="qualification">
-          <view class="cuIcon-ticket"></view>
-          <text>申请资格</text>
-        </view>
-        <view class="cu-item" bindtap="goToNewbeePage" data-page="materials">
-          <view class="cuIcon-form"></view>
-          <text>申请材料</text>
-        </view>
-        <view class="cu-item" bindtap="goToNewbeePage" data-page="stats">
-          <view class="cuIcon-rank"></view>
-          <text>公租房统计数据</text>
-        </view>
-        <view class="cu-item" bindtap="goToNewbeePage" data-page="links">
-          <view class="cuIcon-choiceness"></view>
-          <text>公租房干货</text>
-        </view>
-        <view class="cu-item" bindtap="goToNewbeePage" data-page="stream" data-curComponentId="1">
-          <view class="cuIcon-choiceness"></view>
-          <text>VIP文章</text>
-        </view>
+  <!-- 核心功能入口 -->
+  <view class="cu-list menu sm-border card-menu margin-top compact-menu">
+    <view class="cu-item arrow" bindtap="goToSelectDetail">
+      <view class="content">
+        <text class="cuIcon-home text-bold text-pink"></text>
+        <text class="text-bold">我的选房状态</text>
       </view>
-</view>
+    </view>
+    <view class="cu-item arrow" bindtap="goToSubscriptions">
+      <view class="content">
+        <text class="cuIcon-likefill text-bold text-pink"></text>
+        <text class="text-bold">关注房源列表</text>
+      </view>
+    </view>
+    <view class="cu-item arrow" bindtap="gotoEmailPage">
+      <view class="content">
+        <text class="cuIcon-noticefill text-bold text-yellow"></text>
+        <text class="text-bold">房源提醒</text>
+      </view>
+      <view class="action">
+        <text class="text-gray text-sm">关注公众号“三只熊猫工作室”</text>
+      </view>
+    </view>
+    <view class="cu-item arrow" bindtap="gotoVersions">
+      <view class="content">
+        <text class="cuIcon-evaluate text-bold"></text>
+        <text class="text-bold">PD公租房日记</text>
+      </view>
+    </view>
+  </view>
 
+  <!-- 工具服务 -->
+  <view class="cu-list menu sm-border card-menu margin-top">
+    <view class="tool-grid compact-grid">
+      <view class="tool-item" bindtap="goToNewbeePage" data-page="timeline">
+        <view class="cuIcon-time tool-icon text-blue"></view>
+        <text class="tool-text">流程时间线</text>
+      </view>
+      <view class="tool-item" bindtap="goToNewbeePage" data-page="policy">
+        <view class="cuIcon-read tool-icon text-green"></view>
+        <text class="tool-text">信息&心得</text>
+      </view>
+      <view class="tool-item" bindtap="goToNewbeePage" data-page="qualification">
+        <view class="cuIcon-ticket tool-icon text-orange"></view>
+        <text class="tool-text">申请资格</text>
+      </view>
+      <view class="tool-item" bindtap="goToNewbeePage" data-page="materials">
+        <view class="cuIcon-form tool-icon text-purple"></view>
+        <text class="tool-text">申请材料</text>
+      </view>
+      <view class="tool-item" bindtap="goToNewbeePage" data-page="stats">
+        <view class="cuIcon-rank tool-icon text-red"></view>
+        <text class="tool-text">统计数据</text>
+      </view>
+      <view class="tool-item" bindtap="goToNewbeePage" data-page="links">
+        <view class="cuIcon-choiceness tool-icon text-cyan"></view>
+        <text class="tool-text">公租房干货</text>
+      </view>
+      <view class="tool-item" bindtap="goToNewbeePage" data-page="stream" data-curComponentId="1">
+        <view class="cuIcon-choiceness tool-icon text-gold"></view>
+        <text class="tool-text">VIP文章</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部辅助入口 -->
+  <view class="footer-links">
+    <view class="footer-link" bindtap="chooseDefaultTab">
+      <text class="cuIcon-apps"></text>
+      <text>默认首页</text>
+    </view>
+    <view class="footer-link" bindtap="gotoAbout">
+      <text class="cuIcon-info"></text>
+      <text>关于</text>
+    </view>
+    <view class="footer-link" bindtap="goAdmin" wx:if="{{isAdmin}}">
+      <text class="cuIcon-settings"></text>
+      <text>审核后台</text>
+    </view>
+  </view>
+</block>
 
 <!-- 普通用户自定义自己资格日的Modal -->
 <view class="cu-modal {{openManualStartDateDialog ? 'show' : ''}}">

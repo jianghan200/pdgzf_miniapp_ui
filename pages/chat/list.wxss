@@ -12,6 +12,9 @@
 .conv-top { display: flex; justify-content: space-between; align-items: center; }
 .conv-name { font-size: 30rpx; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .conv-time { font-size: 22rpx; color: #bbb; flex-shrink: 0; margin-left: 12rpx; }
+.conv-house { display: flex; align-items: center; margin-top: 8rpx; }
+.house-icon { font-size: 22rpx; margin-right: 6rpx; flex-shrink: 0; }
+.house-text { font-size: 24rpx; color: #000000; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .conv-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 12rpx; }
 .conv-last { font-size: 26rpx; color: #999; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
 .unread-text { color: #333; }

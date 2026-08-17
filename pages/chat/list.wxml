@@ -13,11 +13,15 @@
 
   <view class="list">
     <view class="conv-card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="openChat">
-      <image class="avatar" src="{{item.peer_avatar || '/assets/user.png'}}" mode="aspectFill"/>
+      <image class="avatar" src="{{item.house_cover || item.peer_avatar || '/assets/user.png'}}" mode="aspectFill"/>
       <view class="conv-main">
         <view class="conv-top">
           <text class="conv-name">{{item.peer_nickname}}</text>
           <text class="conv-time">{{item.last_msg_time || ''}}</text>
+        </view>
+        <view class="conv-house" wx:if="{{item.house_title}}">
+          <text class="house-icon">🏠</text>
+          <text class="house-text">{{item.house_title}}</text>
         </view>
         <view class="conv-bottom">
           <text class="conv-last {{item.unread ? 'unread-text' : ''}}">{{item.last_message}}</text>

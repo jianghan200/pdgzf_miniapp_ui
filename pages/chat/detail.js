@@ -4,6 +4,7 @@ Page({
   data: {
     StatusBar: 0,
     convId: 0,
+    fromHouse: false,
     conv: null,
     messages: [],
     inputText: '',
@@ -11,7 +12,8 @@ Page({
     total: 0,
     hasMore: false,
     loading: false,
-    myAvatar: ''
+    myAvatar: '',
+    scrollToId: ''
   },
 
   onLoad(options) {
@@ -20,6 +22,7 @@ Page({
     this.setData({
       StatusBar: s.statusBarHeight,
       convId: parseInt(options.id),
+      fromHouse: options.from_house === '1',
       myAvatar: (app.globalData.userinfo && app.globalData.userinfo.wxAvatarUrl) || '/assets/user.png'
     })
     this.loadConversation()
@@ -105,10 +108,6 @@ Page({
     })
   },
 
-  onReachBottom() {
-    this.loadMore()
-  },
-
   onInput(e) {
     this.setData({ inputText: e.detail.value })
   },
@@ -158,16 +157,42 @@ Page({
 
   scrollToBottom() {
     wx.nextTick(() => {
-      const query = wx.createSelectorQuery().in(this)
-      query.select('#chat-body').boundingClientRect((rect) => {
-        wx.pageScrollTo({ scrollTop: 99999, duration: 0 })
-      }).exec()
+      // 用最后一条消息的 id 作为 scroll-into-view 目标
+      const msgs = this.data.messages
+      if (msgs.length > 0) {
+        const lastMsg = msgs[msgs.length - 1]
+        this.setData({ scrollToId: '' })
+        wx.nextTick(() => {
+          this.setData({ scrollToId: `msg-${lastMsg.id}` })
+        })
+      }
     })
   },
 
   goHouse() {
     if (this.data.conv && this.data.conv.house_id) {
-      wx.navigateTo({ url: `/pages/market/detail?id=${this.data.conv.house_id}` })
+      if (this.data.fromHouse) {
+        // 从房源详情进入，直接返回不额外建栈
+        wx.navigateBack({ delta: 1 })
+      } else {
+        wx.navigateTo({ url: `/pages/market/detail?id=${this.data.conv.house_id}` })
+      }
     }
+  },
+
+  // 预约看房
+  createViewing() {
+    const app = getApp()
+    if (!app.globalData.userinfo || !app.globalData.userinfo.id) {
+      wx.showToast({ title: '请先登录', icon: 'none' })
+      return
+    }
+    if (!this.data.conv || !this.data.conv.house_id) {
+      wx.showToast({ title: '暂无关联房源', icon: 'none' })
+      return
+    }
+    wx.navigateTo({
+      url: `/pages/viewing/create?house_id=${this.data.conv.house_id}&conv_id=${this.data.convId}&title=${encodeURIComponent(this.data.conv.house_title || '')}`
+    })
   }
 })

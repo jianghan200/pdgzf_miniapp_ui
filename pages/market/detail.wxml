@@ -191,6 +191,20 @@
       </view>
     </view>
 
+    <!-- 预约看房 -->
+    <view class="section">
+      <view class="viewing-cta" bindtap="createViewing">
+        <view class="viewing-cta-left">
+          <text class="cuIcon-calendar text-orange" style="font-size: 40rpx;"></text>
+          <view class="viewing-cta-text">
+            <text class="viewing-cta-title">预约看房</text>
+            <text class="viewing-cta-desc">选择意向时段，房东确认后即可实地看房</text>
+          </view>
+        </view>
+        <text class="cuIcon-right text-gray"></text>
+      </view>
+    </view>
+
     <!-- 位置 & 地图 -->
     <view class="section" id="location-section">
       <view class="section-title">位置及周边</view>
@@ -319,10 +333,6 @@
     <button class="bar-action share-btn" open-type="share">
       <text class="cuIcon-share text-gray"></text>
       <text class="bar-action-text">分享</text>
-    </button>
-    <button class="bar-cta bg-orange" bindtap="createViewing" style="width: 28%; background: #ff9500;">
-      <text class="cuIcon-calendar"></text>
-      <text style="margin-left: 6rpx; font-size: 26rpx;">预约看房</text>
     </button>
     <button class="bar-cta {{chatVisible ? 'bg-blue' : 'bg-gray'}}" bindtap="startChat" style="width: 28%;">
       <text class="cuIcon-messagefill"></text>

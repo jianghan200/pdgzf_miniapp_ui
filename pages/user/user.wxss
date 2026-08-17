@@ -6,7 +6,7 @@
   padding: 20rpx 30rpx;
   align-items: center;
   gap: 20rpx;
-  margin: 40rpx 30rpx;
+  margin: 30rpx 30rpx 16rpx;
   background: white;
   border-radius: 20rpx;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
@@ -19,25 +19,25 @@
 }
 
 .avatar {
-  overflow: hidden; 
-  width: 120rpx; 
-  height: 120rpx; 
-  border-radius: 50%; 
+  overflow: hidden;
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
   flex-shrink: 0;
 }
 
 .nickname {
-  font-size:large; 
+  font-size: large;
   font-family: serif;
   padding: .5rem;
 }
 
 .vip-avatar {
-  overflow: hidden; 
-  width: 120rpx; 
-  height: 120rpx; 
-  border-radius: 50%; 
+  overflow: hidden;
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
   box-shadow: 3px 3px 10px rgba(218, 165, 32, 0.959);
   border: 5px solid goldenrod;
   flex-shrink: 0;
@@ -46,30 +46,22 @@
 .vip-nickname {
   color: goldenrod;
   font-weight: 500;
-  font-size: x-large; 
+  font-size: x-large;
   font-family: serif;
   padding: .5rem;
-}
-
-/* 网格容器样式 */
-.grid-container {
-  margin: 30rpx;
-  background: white;
-  border-radius: 20rpx;
-  box-shadow: 0 2rpx 20rpx rgba(0, 0, 0, 0.1); 
-  padding: 20rpx;
 }
 
 /* 资格日期信息样式 */
 .start-date-info {
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
-  margin-top: 10rpx;
-  /* padding: 10rpx; */
-  padding: .5rem;
+  margin-top: 6rpx;
+  padding: .4rem .5rem;
   background: #ffffff;
   font-size: 26rpx;
   line-height: 1.4;
+  overflow: hidden;
 }
 
 .start-date-label {
@@ -88,7 +80,164 @@
   margin-left: 8rpx;
 }
 
+/* 业务 Tab 切换 */
+.business-tabs {
+  display: flex;
+  flex-direction: row;
+  margin: 0 30rpx 20rpx;
+  background: white;
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
 
-.cu-list.grid.no-border {
-  padding: 0;
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx 0;
+  font-size: 28rpx;
+  color: #666;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.tab-item.active {
+  color: #333;
+  font-weight: bold;
+  background: #f8f9fa;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60rpx;
+  height: 4rpx;
+  background: #1cbbb4;
+  border-radius: 2rpx;
+}
+
+.tab-icon {
+  margin-right: 10rpx;
+  font-size: 32rpx;
+}
+
+/* VIP 横幅 */
+.vip-banner {
+  background: linear-gradient(90deg, #fff9e6, #fffdf5) !important;
+}
+
+.vip-banner-content {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+}
+
+.vip-banner-icon {
+  color: goldenrod;
+  font-size: 44rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.vip-banner-text {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.vip-banner-title {
+  color: #8b6914;
+  font-size: 30rpx;
+}
+
+.vip-banner-desc {
+  color: #b8a05a;
+  font-size: 24rpx;
+  margin-top: 4rpx;
+}
+
+/* 紧凑菜单 */
+.compact-menu .cu-item {
+  min-height: 96rpx;
+}
+
+.compact-menu .cu-item .content {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* 工具网格 */
+.tool-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 10rpx;
+}
+
+.compact-grid .tool-item {
+  width: 25%;
+  padding: 20rpx 0;
+}
+
+.tool-item {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx 0;
+  box-sizing: border-box;
+}
+
+.tool-icon {
+  font-size: 40rpx;
+  margin-bottom: 10rpx;
+}
+
+.tool-text {
+  font-size: 24rpx;
+  color: #555;
+  text-align: center;
+}
+
+/* 底部辅助入口 */
+.footer-links {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 30rpx 60rpx 40rpx;
+  gap: 24rpx;
+}
+
+.footer-link {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.footer-link text:first-child {
+  margin-right: 6rpx;
+}
+
+/* 适配 ColorUI 卡片间距 */
+.card-menu {
+  margin-left: 30rpx;
+  margin-right: 30rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+/* 减少卡片上下间距 */
+.margin-top {
+  margin-top: 20rpx !important;
 }

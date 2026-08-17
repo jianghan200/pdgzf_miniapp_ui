@@ -1,6 +1,7 @@
 const market = require('../../utils/market')
 const pay = require('../../utils/pay')
 const gate = require('../../utils/gate')
+const ad = require('../../utils/ad')
 
 const app = getApp()
 
@@ -311,7 +312,11 @@ Page({
 
   toggleContact() {
     if (this.data.contactMethod === 'ad') {
-      if (this._isContactUnlockedRecently()) { this._unlockContactByAd(true); return }
+      if (this._isContactUnlockedRecently()) {
+        // 本地已解锁，直接显示联系方式（由 adUnlocked 状态控制）
+        this.setData({ adUnlocked: true })
+        return
+      }
       this._showContactAd()
     } else {
       this._doPayContact()
@@ -320,7 +325,11 @@ Page({
 
   onBottomContact() {
     if (this.data.contactMethod === 'ad') {
-      if (this._isContactUnlockedRecently()) { this._unlockContactByAd(true); return }
+      if (this._isContactUnlockedRecently()) {
+        // 本地已解锁，直接显示联系方式
+        this.setData({ adUnlocked: true })
+        return
+      }
       wx.showModal({
         title: '联系房东',
         content: '观看完整广告后可获得房东联系方式（24小时内有效）',
@@ -333,19 +342,18 @@ Page({
     }
   },
 
-  _AD_STORAGE_KEY: 'market_contact_ad_unlock',
   _isContactUnlockedRecently() {
     try {
-      const map = wx.getStorageSync(this._AD_STORAGE_KEY) || {}
-      const ts = map[this.data.id]
+      const val = wx.getStorageSync('market_contact_ad_unlock')
+      const ts = val && val[this.data.id]
       return !!(ts && (Date.now() - ts) < 24 * 3600 * 1000)
     } catch (e) { return false }
   },
   _markContactUnlocked() {
     try {
-      const map = wx.getStorageSync(this._AD_STORAGE_KEY) || {}
-      map[this.data.id] = Date.now()
-      wx.setStorageSync(this._AD_STORAGE_KEY, map)
+      const val = wx.getStorageSync('market_contact_ad_unlock') || {}
+      val[this.data.id] = Date.now()
+      wx.setStorageSync('market_contact_ad_unlock', val)
     } catch (e) {}
   },
 
@@ -366,32 +374,23 @@ Page({
     })
   },
 
-  _getContactAd() {
-    if (this._contactAd) return this._contactAd
-    if (!CONTACT_AD_UNIT_ID || CONTACT_AD_UNIT_ID.indexOf('xxxx') >= 0) return null
-    this._contactAd = wx.createRewardedVideoAd({ adUnitId: CONTACT_AD_UNIT_ID })
-    this._contactAd.onError((err) => { console.log('联系房东激励视频广告错误', err) })
-    this._contactAd.onClose((res) => {
-      if (res && res.isEnded) this._unlockContactByAd()
-      else wx.showToast({ title: '看完视频才能解锁', icon: 'none' })
-    })
-    return this._contactAd
-  },
-
   _showContactAd() {
-    const ad = this._getContactAd()
-    if (!ad) { wx.showToast({ title: '广告暂不可用', icon: 'none' }); return }
-    ad.show().catch(() => {
-      ad.load().then(() => ad.show()).catch(() => wx.showToast({ title: '广告加载失败', icon: 'none' }))
-    })
-  },
-
-  _unlockContactByAd(skipServer) {
-    if (skipServer) {
-      this.setData({ adUnlocked: true })
-      wx.showToast({ title: '已解锁联系方式', icon: 'success' })
+    if (!CONTACT_AD_UNIT_ID || CONTACT_AD_UNIT_ID.indexOf('xxxx') >= 0) {
+      wx.showToast({ title: '广告暂不可用', icon: 'none' })
       return
     }
+    ad.showRewardedVideo(CONTACT_AD_UNIT_ID).then((completed) => {
+      if (completed) {
+        this._unlockContactByAd()
+      } else {
+        wx.showToast({ title: '看完视频才能解锁', icon: 'none' })
+      }
+    }).catch(() => {
+      wx.showToast({ title: '广告加载失败', icon: 'none' })
+    })
+  },
+
+  _unlockContactByAd() {
     wx.showLoading({ title: '解锁中...' })
     market.createContact({
       house_id: this.data.id,
@@ -432,7 +431,7 @@ Page({
     market.createChatConversation(this.data.id).then((res) => {
       wx.hideLoading()
       if (res && res.status === 0) {
-        wx.navigateTo({ url: `/pages/chat/detail?id=${res.data.id}` })
+        wx.navigateTo({ url: `/pages/chat/detail?id=${res.data.id}&from_house=1` })
       } else {
         wx.showToast({ title: (res && res.msg) || '暂无法私信', icon: 'none' })
       }

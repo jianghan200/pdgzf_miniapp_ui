@@ -1,6 +1,22 @@
+/* 页面整体 flex 纵向布局 */
+page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .house-bar {
-  background: #fff; margin: 16rpx 20rpx; padding: 20rpx 24rpx; border-radius: 16rpx;
+  background: #fff; margin: 0; padding: 20rpx 24rpx;
   display: flex; justify-content: space-between; align-items: center;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.06);
+  flex-shrink: 0;
+}
+
+/* 消息列表区域，flex:1 占满剩余空间，scroll-view 内部滚动 */
+.chat-scroll {
+  flex: 1;
+  background: #f5f5f5;
+  overflow: hidden;
 }
 .house-title { display: flex; align-items: center; min-width: 0; flex: 1; }
 .house-label { font-size: 22rpx; color: #f44d56; border: 1rpx solid #f44d56; border-radius: 6rpx; padding: 2rpx 10rpx; margin-right: 16rpx; flex-shrink: 0; }

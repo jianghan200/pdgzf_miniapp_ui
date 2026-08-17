@@ -36,7 +36,7 @@ Page({
     market.getVipInfo().then((res) => {
       if (res && res.status === 0 && res.data) {
         const info = res.data
-        const isVip = info.tenant_vip && info.tenant_vip.is_vip
+        const isVip = info.is_market_vip && info.type === 11
         const viewingFee = isVip ? 0 : 2
         const totalFee = 20 + viewingFee
         this.setData({ isVip, viewingFee, totalFee })

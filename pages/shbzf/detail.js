@@ -114,7 +114,7 @@ Page({
         this.loadFavoriteStatus()
         // 查询 VIP 状态（VIP 免广告直接看电话）
         market.getVipInfo().then((res) => {
-          if (res && res.status === 0 && res.data && res.data.is_active) this.setData({ isVip: true })
+          if (res && res.status === 0 && res.data && res.data.is_market_vip) this.setData({ isVip: true })
         })
 
         if (detail.latitude && detail.longitude) {

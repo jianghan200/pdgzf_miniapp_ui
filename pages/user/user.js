@@ -5,6 +5,7 @@ const utils = require('../../utils/util')
 const log = require('./../../utils/log')
 const today = utils.formatDate(new Date())
 const userInfoHelper = require('./../../utils/user')
+const market = require('../../utils/market')
 
 Page({
   /**
@@ -37,7 +38,13 @@ Page({
     // 是否为管理员（基于 role 字段判断）
     isAdmin: false,
     // 私信未读数
-    chatUnread: 0
+    chatUnread: 0,
+    // 当前业务 Tab：pudong / market，默认市场租房；仅当默认首页为浦东公租房时默认 pudong
+    currentTab: 'market',
+    // 市场租房 VIP 信息
+    marketVipInfo: null,
+    marketVipEndDate: '',
+    marketVipExpired: false
   },
   
   onLoad: function (options) {
@@ -59,9 +66,12 @@ Page({
       }
 
     this.getVipInfo()
+    this.loadMarketVipInfo()
     let userinfo = app.globalData.userinfo
     // 判断用户的资格日
     let hasStartDateCode = userInfoHelper.hasStartDate()
+    // 根据默认首页决定默认业务 Tab：0=浦东公租房，其他=市场租房
+    const defaultTab = userinfo.defaultTab != null ? userinfo.defaultTab : 0
     this.setData({
       app: app,
       userinfo: userinfo,
@@ -69,7 +79,8 @@ Page({
       hasStartDateCode: hasStartDateCode,
       buttonInfo: this.resolveButtonInfo(hasStartDateCode, app.globalData.userinfo.type === 2),
       closeIOSPay: app.globalData.IOS && !app.globalData.isNormalMode,
-      supportVp: !!wx.canIUse('requestVirtualPayment')
+      supportVp: !!wx.canIUse('requestVirtualPayment'),
+      currentTab: defaultTab === 0 ? 'pudong' : 'market'
     })
 
     if (options['tab'] != undefined && options['tab'] != '' &&  options['tab'] == 'rights') {
@@ -108,6 +119,7 @@ Page({
       isAdmin: userType === 99
     });
     this.loadChatUnread()
+    this.loadMarketVipInfo()
   },
 
   // res = { 'wxNickName': '...', 'wxAvatarUrl': 'http://...' }
@@ -166,6 +178,22 @@ Page({
         log.error(err)
         console.log(err)
       })
+  },
+
+  // 读取市场租房 VIP 信息
+  loadMarketVipInfo() {
+    const self = this
+    market.getVipInfo().then((res) => {
+      if (res && res.status === 0 && res.data) {
+        const info = res.data
+        const endTime = info.end_time || ''
+        self.setData({
+          marketVipInfo: info,
+          marketVipEndDate: endTime,
+          marketVipExpired: info.is_market_vip && endTime && new Date(endTime) < new Date()
+        })
+      }
+    }).catch(() => {})
   },
 
   // Go to VIP页
@@ -259,9 +287,21 @@ Page({
     })
   },
 
+  // 切换业务 Tab
+  switchBusinessTab(e) {
+    const tab = e.currentTarget.dataset.tab
+    if (tab === this.data.currentTab) return
+    this.setData({ currentTab: tab })
+  },
+
   // 进入审核后台（管理员可见）
   goAdmin() {
     wx.navigateTo({ url: '/pages/admin/houseReview' })
+  },
+
+  // 跳转市场租房 VIP 中心
+  goToMarketVipCenter() {
+    wx.navigateTo({ url: '/pages/vip/vipCenter' })
   },
 
   // 发布市场房源

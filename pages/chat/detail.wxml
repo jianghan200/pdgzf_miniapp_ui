@@ -5,19 +5,19 @@
   </view>
 </cu-custom>
 
-<view style="background-color: #f5f5f5; min-height: 100vh; padding-bottom: 140rpx;">
-  <!-- 房源快捷入口 -->
-  <view class="house-bar" wx:if="{{conv && conv.house_id}}" bindtap="goHouse">
-    <view class="house-title">
-      <text class="house-label">房源</text>
-      <text class="house-name">{{conv.house_title || '#' + conv.house_id}}</text>
-    </view>
-    <text class="house-go">查看 ›</text>
+<!-- 房源快捷入口（固定在 header 下方，不随消息滚动） -->
+<view class="house-bar" wx:if="{{conv && conv.house_id}}" bindtap="goHouse">
+  <view class="house-title">
+    <text class="house-label">房源</text>
+    <text class="house-name">{{conv.house_title || '#' + conv.house_id}}</text>
   </view>
+  <text class="house-go">查看 ›</text>
+</view>
 
-  <!-- 消息列表 -->
+<!-- 消息列表区域 -->
+<scroll-view class="chat-scroll" scroll-y="true" scroll-into-view="{{scrollToId}}" scroll-with-animation="true" bindscrolltolower="loadMore">
   <view class="cu-chat" id="chat-body">
-    <view class="cu-item {{item.is_self ? 'self' : ''}}" wx:for="{{messages}}" wx:key="id">
+    <view class="cu-item {{item.is_self ? 'self' : ''}}" id="msg-{{item.id}}" wx:for="{{messages}}" wx:key="id">
       <view class="cu-avatar round" style="background-image:url('{{item.is_self ? myAvatar : (conv.peer_avatar || '/assets/user.png')}}');">
       </view>
       <view class="main">
@@ -35,12 +35,12 @@
   <view class="load-more" wx:if="{{hasMore}}" bindtap="loadMore">加载更早消息</view>
   <view class="load-more" wx:if="{{!loading && !hasMore && messages.length}}">没有更多了</view>
   <view class="empty" wx:if="{{!loading && messages.length == 0}}">还没有消息，快打个招呼吧</view>
-</view>
+</scroll-view>
 
-<!-- 底部输入栏 -->
+<!-- 底部输入栏 + 预约看房 -->
 <view class="cu-bar bg-white shadow foot">
-  <view class="action" bindtap="chooseImage">
-    <text class="cuIcon-pic text-orange"></text>
+  <view class="action" bindtap="createViewing" wx:if="{{conv && conv.house_id}}">
+    <text class="cuIcon-calendar text-orange"></text>
   </view>
   <input class="solid-bottom chat-input" placeholder="说点什么..." value="{{inputText}}" bindinput="onInput"
          confirm-type="send" bindconfirm="sendText"/>

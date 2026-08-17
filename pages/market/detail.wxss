@@ -663,6 +663,25 @@
   border-radius: 12rpx; font-size: 28rpx;
 }
 
+/* ========== 预约看房 CTA ========== */
+.viewing-cta {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 28rpx 24rpx; margin: 0 24rpx;
+  background: linear-gradient(135deg, #fff7e6 0%, #fff2cc 100%);
+  border-radius: 16rpx; border: 2rpx solid #ffe0a3;
+}
+.viewing-cta:active { opacity: 0.8; }
+.viewing-cta-left {
+  display: flex; align-items: center; gap: 20rpx; flex: 1; min-width: 0;
+}
+.viewing-cta-text { display: flex; flex-direction: column; gap: 4rpx; }
+.viewing-cta-title {
+  font-size: 30rpx; font-weight: 600; color: #333;
+}
+.viewing-cta-desc {
+  font-size: 24rpx; color: #999;
+}
+
 /* ========== 统一解锁 Dialog ========== */
 .unlock-dialog-mask {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
