@@ -18,6 +18,12 @@
       <text class="start-date-hint" wx:if="{{hasStartDateCode === -1}}">(模拟)</text>
       <text class="start-date-hint" wx:elif="{{hasStartDateCode === 1}}"> (点击重置)</text>
     </view>
+    <!-- VIP 到期信息 -->
+    <view class="start-date-info" wx:if="{{vipInfo.type == 2 && vipEndDate}}">
+      <text class="start-date-label" style="color: goldenrod;"> VIP到期: </text>
+      <text class="start-date-value" style="{{vipExpired ? 'color: red;' : 'color: goldenrod;'}}"> {{ vipEndDate }} </text>
+      <text class="start-date-hint" wx:if="{{vipExpired}}" style="color: red;">(已过期)</text>
+    </view>
   </view>
 </view>
 

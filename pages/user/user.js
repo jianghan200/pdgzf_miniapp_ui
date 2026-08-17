@@ -14,6 +14,9 @@ Page({
     CustomBar: app.globalData.CustomBar *2,
     userinfo: null,
     vipInfo: null,
+    vipStartDate: '',
+    vipEndDate: '',
+    vipExpired: false,
     startDate: '',
     // 是否打开manualStartDate的Dialog
     openManualStartDateDialog : false,
@@ -151,7 +154,12 @@ Page({
         // 更新一下globalData中的vip相关的数据
         app.globalData.userinfo.emailExpireDate = info.emailExpireDate
         app.globalData.userinfo.type = info.type
-        self.setData({ vipInfo : info })
+        self.setData({
+          vipInfo: info,
+          vipStartDate: info.vipStartDate || '',
+          vipEndDate: info.vipEndDate || '',
+          vipExpired: info.type === 2 && info.vipEndDate && new Date(info.vipEndDate) < new Date()
+        })
       })
       .catch((err) => {
         log.error('未成功获得用户的vip信息')

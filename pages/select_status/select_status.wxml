@@ -11,6 +11,15 @@
     是否为小程序VIP: <span style="color: rgb(17, 70, 245);"> {{vip_status}} </span>
 </view>
 
+<view class="text-bold text-xl" style="padding-top: 0.5rem; color: rgb(0, 0, 0);" wx:if="{{vipStartDate}}">
+    VIP生效日期: <span style="color: rgb(17, 70, 245);"> {{vipStartDate}} </span>
+</view>
+
+<view class="text-bold text-xl" style="padding-top: 0.5rem; color: rgb(0, 0, 0);" wx:if="{{vipEndDate}}">
+    VIP到期日期: <span style="{{vipExpired ? 'color: red;' : 'color: rgb(17, 70, 245);'}}"> {{vipEndDate}} </span>
+    <text wx:if="{{vipExpired}}" style="color: red; font-size: 0.8rem;"> (已过期)</text>
+</view>
+
 <block wx:if="{{account}}">
   <view  class="text-bold text-xl" style="padding-top: 0.5rem; color: rgb(0, 0, 0);">
     官网账号: <span style="color: rgb(17, 70, 245);"> {{account}}  </span>

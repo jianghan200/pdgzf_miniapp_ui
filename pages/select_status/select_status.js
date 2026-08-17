@@ -46,7 +46,21 @@ Page({
       start_date:app.globalData.userinfo.startDate
     })
 
+    // 加载 VIP 详细信息（含过期时间）
     let self = this
+    requests.getVipInfo().then((info) => {
+      if (info && info.type === 2) {
+        self.setData({
+          vip_status: "是",
+          vipStartDate: info.vipStartDate || '',
+          vipEndDate: info.vipEndDate || '',
+          vipExpired: info.vipEndDate && new Date(info.vipEndDate) < new Date()
+        })
+      } else {
+        self.setData({ vip_status: "否" })
+      }
+    })
+
     if(app.globalData.userinfo.serverAccountId && app.globalData.userinfo.account){
       requests.getStatusByServerId(app.globalData.userinfo.serverAccountId)
       .then((info) => {
@@ -72,18 +86,6 @@ Page({
     }else{
       this.setData({
         auto_choose_status: "关闭",
-      })
-    }
-
-    
-
-    if(this.data.isVip){
-      this.setData({
-        vip_status: "是",
-      })
-    }else{
-      this.setData({
-        vip_status: "否",
       })
     }
 
