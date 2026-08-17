@@ -17,7 +17,7 @@ function showRewardedVideo(adUnitId) {
     if (!ad) {
       ad = wx.createRewardedVideoAd({ adUnitId })
       _rewardedAds[adUnitId] = ad
-      // 预热：创建后立即加载，提高首次 show() 成功率，减少"加载广告..."等待
+      // 预热：创建后立即加载，提高首次 show() 成功率
       ad.load().catch(() => {})
     }
 
@@ -25,12 +25,20 @@ function showRewardedVideo(adUnitId) {
     let attempts = 0
     const MAX_ATTEMPTS = 2
 
+    // 清理事件监听，防止同一实例上重复绑定 onError/onClose
+    const cleanup = () => {
+      ad.offClose(handleClose)
+      ad.offError(handleError)
+    }
+
     // onClose 是唯一能确认"用户看完广告"的回调，必须保持有效直到 Promise 落定
     const handleClose = (res) => {
       if (settled) return
       settled = true
-      ad.offClose(handleClose)
+      cleanup()
       resolve(!!(res && res.isEnded))
+      // 关闭后立即预加载下一次，减少后续"加载广告..."等待
+      ad.load().catch(() => {})
     }
     // onError 只记录日志，不当作最终失败：
     // 首次 show() 失败（广告未预加载）会触发 error 事件，但随后 load+show 重试可以成功播放。
@@ -40,22 +48,25 @@ function showRewardedVideo(adUnitId) {
     const fail = (err) => {
       if (settled) return
       settled = true
-      ad.offClose(handleClose)
+      cleanup()
       reject(err)
     }
 
     ad.onClose(handleClose)
     ad.onError(handleError)
 
+    // 先确保 load 成功再 show，避免微信在老机型上弹出"加载广告..."Toast
     const attempt = () => {
-      ad.show().catch(() => {
-        if (attempts >= MAX_ATTEMPTS) {
-          fail(new Error('激励视频广告加载失败'))
-          return
-        }
-        attempts++
-        ad.load().then(attempt).catch(fail)
-      })
+      ad.load()
+        .then(() => ad.show())
+        .catch(() => {
+          if (attempts >= MAX_ATTEMPTS) {
+            fail(new Error('激励视频广告加载失败'))
+            return
+          }
+          attempts++
+          attempt()
+        })
     }
     attempt()
   })
@@ -79,11 +90,19 @@ function showInterstitial(adUnitId) {
     let attempts = 0
     const MAX_ATTEMPTS = 2
 
+    // 清理事件监听，防止同一实例上重复绑定 onError/onClose
+    const cleanup = () => {
+      ad.offClose(handleClose)
+      ad.offError(handleError)
+    }
+
     const handleClose = () => {
       if (settled) return
       settled = true
-      ad.offClose(handleClose)
+      cleanup()
       resolve(true)
+      // 关闭后立即预加载下一次
+      ad.load().catch(() => {})
     }
     const handleError = (err) => {
       log.error('插屏广告错误', err)
@@ -91,22 +110,25 @@ function showInterstitial(adUnitId) {
     const fail = (err) => {
       if (settled) return
       settled = true
-      ad.offClose(handleClose)
+      cleanup()
       reject(err)
     }
 
     ad.onClose(handleClose)
     ad.onError(handleError)
 
+    // 先确保 load 成功再 show，避免微信弹出"加载广告..."Toast
     const attempt = () => {
-      ad.show().catch(() => {
-        if (attempts >= MAX_ATTEMPTS) {
-          fail(new Error('插屏广告加载失败'))
-          return
-        }
-        attempts++
-        ad.load().then(attempt).catch(fail)
-      })
+      ad.load()
+        .then(() => ad.show())
+        .catch(() => {
+          if (attempts >= MAX_ATTEMPTS) {
+            fail(new Error('插屏广告加载失败'))
+            return
+          }
+          attempts++
+          attempt()
+        })
     }
     attempt()
   })
