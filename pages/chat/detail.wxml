@@ -18,9 +18,9 @@
 <scroll-view class="chat-scroll" scroll-y="true" scroll-into-view="{{scrollToId}}" scroll-with-animation="true" bindscrolltolower="loadMore">
   <view class="cu-chat" id="chat-body">
     <view class="cu-item {{item.is_self ? 'self' : ''}}" id="msg-{{item.id}}" wx:for="{{messages}}" wx:key="id">
-      <view class="cu-avatar round" style="background-image:url('{{item.is_self ? myAvatar : (conv.peer_avatar || '/assets/user.png')}}');">
+      <view class="cu-avatar round" style="background-image:url('{{item.is_self ? myAvatar : (conv.peer_avatar || '/assets/user.png')}}');" wx:if="{{item.msg_type !== 'viewing_card'}}">
       </view>
-      <view class="main">
+      <view class="main" wx:if="{{item.msg_type !== 'viewing_card'}}">
         <view class="content {{item.is_self ? 'bg-green text-white' : 'text-black'}}" wx:if="{{item.msg_type === 'text'}}">
           <text>{{item.content}}</text>
         </view>
@@ -28,7 +28,81 @@
           <image class="chat-img" src="{{item.content}}" mode="widthFix" data-url="{{item.content}}" bindtap="previewImage"/>
         </view>
       </view>
-      <view class="date">{{item.create_time}}</view>
+      <!-- 看房卡片 -->
+      <view class="viewing-card-wrap" wx:if="{{item.msg_type === 'viewing_card' && item.viewing_card}}">
+        <view class="viewing-card vc-border-{{cardStatusClass(item.viewing_card.status)}}">
+          <view class="vc-header">
+            <text class="vc-house">{{item.viewing_card.house_title}}</text>
+            <text class="vc-badge vc-badge-{{cardStatusClass(item.viewing_card.status)}}">{{cardStatusText(item.viewing_card.status)}}</text>
+          </view>
+
+          <!-- 待确认：展示候选时段 -->
+          <view class="vc-body" wx:if="{{item.viewing_card.status == 1}}">
+            <view class="vc-section">
+              <text class="vc-section-title">候选时段</text>
+              <view class="vc-slots">
+                <text class="vc-slot" wx:for="{{item.viewing_card.slots}}" wx:key="id">{{item.slot_time}}</text>
+              </view>
+              <text class="vc-remark" wx:if="{{item.viewing_card.remark}}">备注：{{item.viewing_card.remark}}</text>
+            </view>
+          </view>
+
+          <!-- 等待租客确认：房东已选时间 -->
+          <view class="vc-body" wx:elif="{{item.viewing_card.status == 2}}">
+            <view class="vc-section">
+              <text class="vc-section-title">房东已选时间，等待租客确认</text>
+              <text class="vc-confirmed-time">{{item.viewing_card.confirmed_time}}</text>
+              <text class="vc-weekday" wx:if="{{item.viewing_card.weekday}}">{{item.viewing_card.weekday}}</text>
+            </view>
+          </view>
+
+          <!-- 双方已确认：展示时间+星期+联系方式 -->
+          <view class="vc-body" wx:elif="{{item.viewing_card.status == 8}}">
+            <view class="vc-section">
+              <text class="vc-section-title">看房时间</text>
+              <text class="vc-confirmed-time">{{item.viewing_card.confirmed_time}}</text>
+              <text class="vc-weekday">{{item.viewing_card.weekday}}</text>
+            </view>
+            <view class="vc-contact">
+              <text class="vc-contact-label">联系方式</text>
+              <text class="vc-contact-val">{{item.viewing_card.contract_phone || '暂无'}}</text>
+              <text class="vc-contact-val" wx:if="{{item.viewing_card.contract_wechat}}">微信：{{item.viewing_card.contract_wechat}}</text>
+            </view>
+            <view class="vc-fee-info">押金 ¥{{(item.viewing_card.deposit_fee || 0) / 100}}</view>
+          </view>
+
+          <!-- 已完成 -->
+          <view class="vc-body" wx:elif="{{item.viewing_card.status == 3}}">
+            <view class="vc-section"><text>看房已完成，押金已退还</text></view>
+          </view>
+
+          <!-- 已取消 -->
+          <view class="vc-body" wx:elif="{{item.viewing_card.status == 4}}">
+            <view class="vc-section"><text>预约已取消</text></view>
+          </view>
+
+          <!-- 爽约 -->
+          <view class="vc-body" wx:elif="{{item.viewing_card.status == 9}}">
+            <view class="vc-section"><text>租客未到场，押金已扣除</text></view>
+          </view>
+
+          <!-- 操作按钮 -->
+          <view class="vc-actions" wx:if="{{showCardActions(item)}}">
+            <button wx:if="{{item.viewing_card.status == 1 && isLandlord}}" class="vc-btn vc-btn-primary" bindtap="onViewingAction" data-action="confirm" data-viewing-id="{{item.viewing_card.viewing_id}}">确认时段</button>
+            <button wx:if="{{item.viewing_card.status == 1 && isLandlord}}" class="vc-btn vc-btn-outline" bindtap="onViewingAction" data-action="counter_propose" data-viewing-id="{{item.viewing_card.viewing_id}}">反提议新时间</button>
+            <button wx:if="{{(item.viewing_card.status == 2 || item.viewing_card.status == 8) && !isLandlord}}" class="vc-btn vc-btn-primary" bindtap="onViewingAction" data-action="tenant_confirm" data-viewing-id="{{item.viewing_card.viewing_id}}">确认时间</button>
+            <button wx:if="{{item.viewing_card.status == 8 && isLandlord}}" class="vc-btn vc-btn-success" bindtap="onViewingAction" data-action="complete" data-viewing-id="{{item.viewing_card.viewing_id}}">看房完成</button>
+            <button wx:if="{{item.viewing_card.status == 8 && isLandlord}}" class="vc-btn vc-btn-danger" bindtap="onViewingAction" data-action="no_show" data-viewing-id="{{item.viewing_card.viewing_id}}">租客未到</button>
+            <button wx:if="{{item.viewing_card.status == 1 || item.viewing_card.status == 2 || item.viewing_card.status == 8}}" class="vc-btn vc-btn-cancel" bindtap="onViewingAction" data-action="cancel" data-viewing-id="{{item.viewing_card.viewing_id}}">取消预约</button>
+          </view>
+
+          <!-- 投诉入口 -->
+          <view class="vc-complaint" wx:if="{{item.viewing_card.status >= 8}}" bindtap="onViewingAction" data-action="report" data-viewing-id="{{item.viewing_card.viewing_id}}">
+            <text>投诉</text>
+          </view>
+        </view>
+      </view>
+      <view class="date" wx:if="{{item.msg_type !== 'viewing_card'}}">{{item.create_time}}</view>
     </view>
   </view>
 

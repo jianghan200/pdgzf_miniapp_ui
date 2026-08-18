@@ -37,7 +37,7 @@ Page({
     supportVp: false,
     // 是否为管理员（基于 role 字段判断）
     isAdmin: false,
-    // 私信未读数
+    // 留言未读数
     chatUnread: 0,
     // 当前业务 Tab：pudong / market，默认市场租房；仅当默认首页为浦东公租房时默认 pudong
     currentTab: 'market',

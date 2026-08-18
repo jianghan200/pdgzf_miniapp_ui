@@ -142,6 +142,10 @@
   background: #39b54a;
   color: #fff;
 }
+.btn-danger {
+  background: #e54d42;
+  color: #fff;
+}
 .empty-tip {
   text-align: center;
   padding: 200rpx 0;

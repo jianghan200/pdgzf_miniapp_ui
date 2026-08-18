@@ -213,7 +213,7 @@ const adminGetPendingComments = (page) => _get(`/admin/comment/pending?page=${pa
 const adminApproveComment = (id) => _post(`/admin/comment/${id}/approve`)
 const adminRejectComment = (id, reason) => _post(`/admin/comment/${id}/reject`, { reason })
 
-// === 私信聊天 ===
+// === 留言 ===
 const createChatConversation = (houseId) => _post('/chat/conversation', { house_id: houseId })
 const getChatConversations = () => _get('/chat/conversation/list')
 const getChatConversationsByHouse = (houseId) => _get(`/chat/conversation/by_house?house_id=${houseId}`)
@@ -247,10 +247,14 @@ const getViewingList = (role, status, page, size) =>
   _get(`/viewing/list?role=${role || 'tenant'}&status=${status !== undefined ? status : ''}&page=${page || 1}&size=${size || 20}`)
 const getViewingDetail = (id) => _get(`/viewing/${id}`)
 const confirmViewing = (id, slotId) => _post(`/viewing/${id}/confirm`, { slot_id: slotId || 0 })
+const counterProposeViewing = (id, newTime) => _post(`/viewing/${id}/counter_propose`, { new_time: newTime })
+const tenantConfirmViewing = (id) => _post(`/viewing/${id}/tenant_confirm`)
+const markNoShow = (id) => _post(`/viewing/${id}/no_show`)
+const reportViewing = (id, reason) => _post(`/viewing/${id}/report`, { reason: reason || '' })
 const cancelViewing = (id, reason) => _post(`/viewing/${id}/cancel`, { reason: reason || '' })
 const completeViewing = (id) => _post(`/viewing/${id}/complete`)
 
-// 私信图片上传：先取七牛上传 token，再直传，返回 CDN URL
+// 留言图片上传：先取七牛上传 token，再直传，返回 CDN URL
 const uploadChatImage = (filePath) => {
   return new Promise((resolve, reject) => {
     const ext = (filePath.split('.').pop().split('?')[0] || 'jpg').toLowerCase()
@@ -354,6 +358,10 @@ module.exports = {
   getViewingList,
   getViewingDetail,
   confirmViewing,
+  counterProposeViewing,
+  tenantConfirmViewing,
+  markNoShow,
+  reportViewing,
   cancelViewing,
   completeViewing,
   // 管理员
@@ -372,7 +380,7 @@ module.exports = {
   adminGetPendingComments,
   adminApproveComment,
   adminRejectComment,
-  // 私信聊天
+  // 留言
   createChatConversation,
   getChatConversations,
   getChatConversationsByHouse,

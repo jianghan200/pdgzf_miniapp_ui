@@ -430,7 +430,7 @@ Page({
     })
   },
 
-  // 发起私信会话 / 房东查看房源咨询
+  // 发起留言 / 房东查看房源咨询
   startChat() {
     if (!this._requireLogin()) return
     if (this.data.isOwner) {
@@ -438,7 +438,7 @@ Page({
       if (this.data.ownerHasChat) {
         wx.navigateTo({ url: `/pages/chat/list?house_id=${this.data.id}` })
       } else {
-        wx.showToast({ title: '暂无人咨询，等待租客私信您', icon: 'none' })
+        wx.showToast({ title: '暂无人咨询，等待租给您留言', icon: 'none' })
       }
       return
     }
@@ -453,7 +453,7 @@ Page({
       if (res && res.status === 0) {
         wx.navigateTo({ url: `/pages/chat/detail?id=${res.data.id}&from_house=1` })
       } else {
-        wx.showToast({ title: (res && res.msg) || '暂无法私信', icon: 'none' })
+        wx.showToast({ title: (res && res.msg) || '暂无法留言', icon: 'none' })
       }
     })
   },
@@ -478,7 +478,7 @@ Page({
   // ---- 统一解锁 Dialog ----
 
   showUnlockDialog(gateType) {
-    const titles = { price: '解锁价格', description: '解锁描述', chat: '解锁私信' }
+    const titles = { price: '解锁价格', description: '解锁描述', chat: '解锁留言' }
     this.setData({
       unlockDialogVisible: true,
       unlockDialogTitle: titles[gateType] || '解锁内容',

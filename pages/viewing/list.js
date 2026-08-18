@@ -3,23 +3,27 @@ const market = require('../../utils/market')
 const STATUS_TEXT = {
   0: '待支付',
   1: '待确认',
-  2: '已确认',
+  2: '等待租客确认',
   3: '已完成',
   4: '已取消',
   5: '退款中',
   6: '已退款',
   7: '退款异常',
+  8: '双方已确认',
+  9: '租客爽约',
 }
 
 const STATUS_COLOR = {
   0: '#ff9500',
   1: '#0081ff',
-  2: '#39b54a',
+  2: '#0081ff',
   3: '#39b54a',
   4: '#999',
   5: '#ff9500',
   6: '#999',
   7: '#e54d42',
+  8: '#39b54a',
+  9: '#e54d42',
 }
 
 Page({
@@ -180,6 +184,45 @@ Page({
         market.completeViewing(id).then((r) => {
           if (r && r.status === 0) {
             wx.showToast({ title: '已完成', icon: 'success' })
+            this.loadList(true)
+          } else {
+            wx.showToast({ title: (r && r.msg) || '操作失败', icon: 'none' })
+          }
+        })
+      }
+    })
+  },
+
+  onTenantConfirm(e) {
+    const id = e.currentTarget.dataset.id
+    wx.showModal({
+      title: '确认看房时间',
+      content: '确定接受这个看房时间吗？确认后将展示双方联系方式。',
+      success: (res) => {
+        if (!res.confirm) return
+        market.tenantConfirmViewing(id).then((r) => {
+          if (r && r.status === 0) {
+            wx.showToast({ title: '已确认', icon: 'success' })
+            this.loadList(true)
+          } else {
+            wx.showToast({ title: (r && r.msg) || '操作失败', icon: 'none' })
+          }
+        })
+      }
+    })
+  },
+
+  onNoShow(e) {
+    const id = e.currentTarget.dataset.id
+    wx.showModal({
+      title: '标记租客爽约',
+      content: '确认租客未到场？押金将不退还。',
+      confirmColor: '#e54d42',
+      success: (res) => {
+        if (!res.confirm) return
+        market.markNoShow(id).then((r) => {
+          if (r && r.status === 0) {
+            wx.showToast({ title: '已标记', icon: 'success' })
             this.loadList(true)
           } else {
             wx.showToast({ title: (r && r.msg) || '操作失败', icon: 'none' })

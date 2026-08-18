@@ -31,14 +31,14 @@
       </view>
       <view class="plan-card">
         <text class="plan-name">年卡</text>
-        <text class="plan-price">¥99</text>
-        <text class="plan-sub">省¥258.8</text>
+        <text class="plan-price">¥299</text>
+        <text class="plan-sub">省¥59.8</text>
         <button class="cu-btn bg-red sm" data-period="2" bindtap="buyTenant">开通</button>
       </view>
     </view>
     <view class="benefits">
       <text class="benefit">✓ 会员专属房源</text>
-      <text class="benefit">✓ 免广告查看全部房源价格，描述详情，私信</text>
+      <text class="benefit">✓ 免广告查看全部房源价格，描述详情，留言</text>
       <text class="benefit">✓ 免看房服务费（每次省2元）</text>
       <text class="benefit">✓ 专属客服</text>
     </view>

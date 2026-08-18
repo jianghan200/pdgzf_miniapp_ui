@@ -7,8 +7,11 @@
   <view class="status-tabs">
     <view class="status-tab {{status === '' ? 'active' : ''}}" data-status="" bindtap="switchStatus">全部</view>
     <view class="status-tab {{status == 1 ? 'active' : ''}}" data-status="1" bindtap="switchStatus">待确认</view>
-    <view class="status-tab {{status == 2 ? 'active' : ''}}" data-status="2" bindtap="switchStatus">已确认</view>
+    <view class="status-tab {{status == 2 ? 'active' : ''}}" data-status="2" bindtap="switchStatus">等待确认</view>
+    <view class="status-tab {{status == 8 ? 'active' : ''}}" data-status="8" bindtap="switchStatus">已确认</view>
     <view class="status-tab {{status == 3 ? 'active' : ''}}" data-status="3" bindtap="switchStatus">已完成</view>
+    <view class="status-tab {{status == 9 ? 'active' : ''}}" data-status="9" bindtap="switchStatus">爽约</view>
+    <view class="status-tab {{status == 4 ? 'active' : ''}}" data-status="4" bindtap="switchStatus">已取消</view>
   </view>
 
   <view wx:if="{{list.length === 0 && !loading}}" class="empty-tip">暂无预约记录</view>
@@ -63,14 +66,29 @@
         <button class="btn btn-cancel" data-id="{{item.id}}" catchtap="onCancel">取消</button>
         <button class="btn btn-confirm" data-id="{{item.id}}" data-index="{{index}}" catchtap="openConfirmSheet">确认预约</button>
       </view>
+      <!-- 等待租客确认：房东只能取消 -->
       <view class="card-actions" wx:elif="{{item.status == 2 && role === 'landlord'}}">
-        <button class="btn btn-cancel" data-id="{{item.id}}" catchtap="onCancel">取消</button>
+        <button class="btn btn-cancel" data-id="{{item.id}}" catchtap="onCancel">取消预约</button>
+      </view>
+      <!-- 等待租客确认：租客可以确认或取消 -->
+      <view class="card-actions" wx:elif="{{item.status == 2 && role === 'tenant'}}">
+        <button class="btn btn-cancel" data-id="{{item.id}}" catchtap="onCancel">取消预约</button>
+        <button class="btn btn-confirm" data-id="{{item.id}}" catchtap="onTenantConfirm">确认时间</button>
+      </view>
+      <!-- 双方已确认：房东可以完成/爽约/取消 -->
+      <view class="card-actions" wx:elif="{{item.status == 8 && role === 'landlord'}}">
+        <button class="btn btn-cancel" data-id="{{item.id}}" catchtap="onCancel">取消预约</button>
+        <button class="btn btn-danger" data-id="{{item.id}}" catchtap="onNoShow">租客未到</button>
         <button class="btn btn-complete" data-id="{{item.id}}" catchtap="onComplete">看房完成</button>
+      </view>
+      <!-- 双方已确认：租客可以取消 -->
+      <view class="card-actions" wx:elif="{{item.status == 8 && role === 'tenant'}}">
+        <button class="btn btn-cancel" data-id="{{item.id}}" catchtap="onCancel">取消预约</button>
       </view>
       <view class="card-actions" wx:elif="{{item.status == 0}}">
         <button class="btn btn-cancel" data-id="{{item.id}}" catchtap="onCancel">取消</button>
       </view>
-      <view class="card-actions" wx:elif="{{(item.status == 1 || item.status == 2) && role === 'tenant'}}">
+      <view class="card-actions" wx:elif="{{item.status == 1 && role === 'tenant'}}">
         <button class="btn btn-cancel" data-id="{{item.id}}" catchtap="onCancel">取消预约</button>
       </view>
     </view>
