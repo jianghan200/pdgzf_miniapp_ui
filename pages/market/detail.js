@@ -384,8 +384,6 @@ Page({
     ad.showRewardedVideo(CONTACT_AD_UNIT_ID).then((completed) => {
       if (completed) {
         this._unlockContactByAd()
-      } else {
-        wx.showToast({ title: '看完视频才能解锁', icon: 'none' })
       }
     }).catch(() => {
       wx.showToast({ title: '广告加载失败', icon: 'none' })
@@ -498,22 +496,13 @@ Page({
     const gateType = this.data.unlockDialogGateType
     if (!gateType) return
     this.closeUnlockDialog()
-    wx.showLoading({ title: '加载广告...' })
     gate.watchAdAndUnlock(this.data.id, gateType).then((ok) => {
-      wx.hideLoading()
       if (ok) {
         this.loadDetail()
-        wx.showModal({
-          title: '解锁成功',
-          content: '内容已解锁，现在可以查看完整信息啦。',
-          showCancel: false,
-          confirmText: '好的'
-        })
       } else {
         wx.showToast({ title: '解锁失败，请重试', icon: 'none' })
       }
     }).catch(() => {
-      wx.hideLoading()
       wx.showToast({ title: '广告加载失败', icon: 'none' })
     })
   },

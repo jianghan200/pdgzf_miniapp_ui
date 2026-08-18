@@ -57,6 +57,7 @@ const FACILITY_MAP = {
 const _translateFacility = (f) => FACILITY_MAP[f] || f
 
 const utils = require('../../utils/util')
+const ad = require('../../utils/ad')
 
 Page({
   data: { StatusBar: 0, id: 0, detail: null, mediaList: [], loading: true, coordinate: { lat: null, lng: null }, marker: [], countdownText: '', expandedRules: false, tels: [], isVip: false, adUnitId: 'adunit-1261b13b058b14cb', favorited: false },
@@ -158,26 +159,18 @@ Page({
       success: (res) => { if (res.confirm) this._showAd(idx) }
     })
   },
-  _getAd() {
-    if (this._ad) return this._ad
-    if (!this.data.adUnitId || this.data.adUnitId.indexOf('xxxx') >= 0) return null
-    this._ad = wx.createRewardedVideoAd({ adUnitId: this.data.adUnitId })
-    this._ad.onError((err) => { console.log('激励视频广告错误', err) })
-    this._ad.onClose((res) => {
-      if (res && res.isEnded) {
-        this._unlockAllTel()
-      } else {
-        wx.showToast({ title: '看完视频才能解锁', icon: 'none' })
-      }
-    })
-    return this._ad
-  },
   _showAd(idx) {
     this._pendingTelIdx = idx
-    const ad = this._getAd()
-    if (!ad) { wx.showToast({ title: '广告暂不可用', icon: 'none' }); return }
-    ad.show().catch(() => {
-      ad.load().then(() => ad.show()).catch(() => wx.showToast({ title: '广告加载失败', icon: 'none' }))
+    if (!this.data.adUnitId || this.data.adUnitId.indexOf('xxxx') >= 0) {
+      wx.showToast({ title: '广告暂不可用', icon: 'none' })
+      return
+    }
+    ad.showRewardedVideo(this.data.adUnitId).then((completed) => {
+      if (completed) {
+        this._unlockAllTel()
+      }
+    }).catch(() => {
+      wx.showToast({ title: '广告加载失败', icon: 'none' })
     })
   },
   _unlockAllTel() {
