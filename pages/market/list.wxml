@@ -64,115 +64,166 @@
     </view>
   </view>
 
-  <!-- 筛选抽屉 -->
-  <view class="filter-drawer" wx:if="{{showFilter}}">
+  <!-- 筛选抽屉 - 底部弹窗 -->
+  <view class="filter-drawer {{showFilter ? 'show' : ''}}" catchtouchmove="true">
     <view class="filter-mask" bindtap="closeFilter"></view>
-    <view class="filter-content">
-      <view class="filter-title">筛选条件</view>
-
-      <!-- 出租属性 -->
-      <view class="filter-group">
-        <text class="filter-label">出租属性</text>
-        <view class="tag-row">
-          <view class="tag {{draftFilters.rent_source === 'owner' ? 'active' : ''}}" data-field="rent_source" data-value="owner" bindtap="setDraftSingle">房东直租</view>
-          <view class="tag {{draftFilters.rent_source === 'roommate' ? 'active' : ''}}" data-field="rent_source" data-value="roommate" bindtap="setDraftSingle">合租找室友</view>
-          <view class="tag {{draftFilters.rent_source === 'sublet' ? 'active' : ''}}" data-field="rent_source" data-value="sublet" bindtap="setDraftSingle">转租</view>
-          <view class="tag {{draftFilters.rent_source === 'apt' ? 'active' : ''}}" data-field="rent_source" data-value="apt" bindtap="setDraftSingle">公寓直租</view>
+    <view class="filter-sheet {{showFilter ? 'sheet-show' : ''}}">
+      <view class="sheet-handle"><view class="handle-bar"></view></view>
+      <view class="sheet-header">
+        <text class="sheet-title">筛选</text>
+        <view class="sheet-close" bindtap="closeFilter">
+          <text class="cuIcon-close"></text>
         </view>
       </view>
 
-      <!-- 出租形式 -->
-      <view class="filter-group">
-        <text class="filter-label">出租形式</text>
-        <view class="tag-row">
-          <view class="tag {{draftFilters.rent_type === 'whole' ? 'active' : ''}}" data-field="rent_type" data-value="whole" bindtap="setDraftSingle">整租</view>
-          <view class="tag {{draftFilters.rent_type === 'share' ? 'active' : ''}}" data-field="rent_type" data-value="share" bindtap="setDraftSingle">合租</view>
-        </view>
-      </view>
+      <scroll-view class="sheet-body" scroll-y enhanced show-scrollbar="{{false}}">
 
-      <!-- 户型 -->
-      <view class="filter-group">
-        <text class="filter-label">户型</text>
-        <view class="tag-row">
-          <view class="tag {{draftFilters.room_shape === 'loft' ? 'active' : ''}}" data-field="room_shape" data-value="loft" bindtap="setDraftMutex">Loft</view>
-          <view class="tag {{draftFilters.room_shape === 'studio' ? 'active' : ''}}" data-field="room_shape" data-value="studio" bindtap="setDraftMutex">一室户</view>
-          <view class="tag {{draftFilters.bedrooms === '1' ? 'active' : ''}}" data-field="bedrooms" data-value="1" bindtap="setDraftMutex">一室</view>
-          <view class="tag {{draftFilters.bedrooms === '2' ? 'active' : ''}}" data-field="bedrooms" data-value="2" bindtap="setDraftMutex">二室</view>
-          <view class="tag {{draftFilters.bedrooms === '3' ? 'active' : ''}}" data-field="bedrooms" data-value="3" bindtap="setDraftMutex">三室</view>
-          <view class="tag {{draftFilters.bedrooms === '4' ? 'active' : ''}}" data-field="bedrooms" data-value="4" bindtap="setDraftMutex">四室+</view>
+        <!-- 出租形式 -->
+        <view class="filter-section">
+          <view class="sub-section">
+            <view class="tag-grid">
+              <view class="ftag ftag-sm {{draftFilters.rent_type === 'whole' ? 'ftag-active' : ''}}" data-field="rent_type" data-value="whole" bindtap="setDraftSingle">整租</view>
+              <view class="ftag ftag-sm {{draftFilters.rent_type === 'share' ? 'ftag-active' : ''}}" data-field="rent_type" data-value="share" bindtap="setDraftSingle">合租</view>
+            </view>
+          </view>
         </view>
-      </view>
 
-      <!-- 价格 -->
-      <view class="filter-group">
-        <text class="filter-label">价格区间（元/月）</text>
-        <view class="filter-row">
-          <input class="filter-input" type="number" placeholder="最低" value="{{draftFilters.rent_min}}" bindinput="onDraftRentMinInput"/>
-          <text class="filter-sep">-</text>
-          <input class="filter-input" type="number" placeholder="最高" value="{{draftFilters.rent_max}}" bindinput="onDraftRentMaxInput"/>
+        <!-- 户型 + 入住日期 -->
+        <view class="filter-section">
+          <view class="sub-section">
+            <text class="sub-label">户型</text>
+            <view class="tag-grid">
+              <view class="ftag ftag-sm {{draftFilters.room_shape === 'loft' ? 'ftag-active' : ''}}" data-field="room_shape" data-value="loft" bindtap="setDraftMutex">Loft</view>
+              <view class="ftag ftag-sm {{draftFilters.room_shape === 'studio' ? 'ftag-active' : ''}}" data-field="room_shape" data-value="studio" bindtap="setDraftMutex">一室户</view>
+              <view class="ftag ftag-sm {{draftFilters.bedrooms === '1' ? 'ftag-active' : ''}}" data-field="bedrooms" data-value="1" bindtap="setDraftMutex">一室</view>
+              <view class="ftag ftag-sm {{draftFilters.bedrooms === '2' ? 'ftag-active' : ''}}" data-field="bedrooms" data-value="2" bindtap="setDraftMutex">二室</view>
+              <view class="ftag ftag-sm {{draftFilters.bedrooms === '3' ? 'ftag-active' : ''}}" data-field="bedrooms" data-value="3" bindtap="setDraftMutex">三室</view>
+              <view class="ftag ftag-sm {{draftFilters.bedrooms === '4' ? 'ftag-active' : ''}}" data-field="bedrooms" data-value="4" bindtap="setDraftMutex">四室+</view>
+            </view>
+          </view>
+          <!-- <view class="sub-section">
+            <text class="sub-label">入住日期</text>
+            <view class="tag-grid">
+              <view class="ftag ftag-sm {{draftFilters.move_in === 'now' ? 'ftag-active' : ''}}" data-field="move_in" data-value="now" bindtap="setDraftSingle">立即入住</view>
+              <view class="ftag ftag-sm {{draftFilters.move_in === '7d' ? 'ftag-active' : ''}}" data-field="move_in" data-value="7d" bindtap="setDraftSingle">7天内</view>
+              <view class="ftag ftag-sm {{draftFilters.move_in === '30d' ? 'ftag-active' : ''}}" data-field="move_in" data-value="30d" bindtap="setDraftSingle">30天内</view>
+            </view>
+          </view> -->
         </view>
-        <view class="filter-hint">模糊报价（如"可谈"）也会按估算值参与区间匹配</view>
-      </view>
 
-      <!-- 入住日期 -->
-      <view class="filter-group">
-        <text class="filter-label">入住日期</text>
-        <view class="tag-row">
-          <view class="tag {{draftFilters.move_in === 'now' ? 'active' : ''}}" data-field="move_in" data-value="now" bindtap="setDraftSingle">立即入住</view>
-          <view class="tag {{draftFilters.move_in === '7d' ? 'active' : ''}}" data-field="move_in" data-value="7d" bindtap="setDraftSingle">7天内</view>
-          <view class="tag {{draftFilters.move_in === '30d' ? 'active' : ''}}" data-field="move_in" data-value="30d" bindtap="setDraftSingle">30天内</view>
+        <!-- 价格区间 -->
+        <view class="filter-section">
+          <view class="section-title">价格区间</view>
+          <view class="price-input-row">
+            <view class="price-input-wrap">
+              <text class="price-prefix">¥</text>
+              <input class="price-input" type="number" placeholder="最低" value="{{draftFilters.rent_min}}" bindinput="onDraftRentMinInput"/>
+            </view>
+            <text class="price-dash">—</text>
+            <view class="price-input-wrap">
+              <text class="price-prefix">¥</text>
+              <input class="price-input" type="number" placeholder="最高" value="{{draftFilters.rent_max}}" bindinput="onDraftRentMaxInput"/>
+            </view>
+          </view>
         </view>
-      </view>
 
-      <!-- 房屋属性 -->
-      <view class="filter-group">
-        <text class="filter-label">房屋属性</text>
-        <view class="tag-row">
-          <view class="tag {{draftFilters.property_type === 'commercial' ? 'active' : ''}}" data-field="property_type" data-value="commercial" bindtap="setDraftSingle">商品房</view>
-          <view class="tag {{draftFilters.property_type === 'relocation' ? 'active' : ''}}" data-field="property_type" data-value="relocation" bindtap="setDraftSingle">安置房</view>
-          <view class="tag {{draftFilters.property_type === 'affordable' ? 'active' : ''}}" data-field="property_type" data-value="affordable" bindtap="setDraftSingle">经济适用房</view>
-          <view class="tag {{draftFilters.property_type === 'civilian' ? 'active' : ''}}" data-field="property_type" data-value="civilian" bindtap="setDraftSingle">民房</view>
-          <view class="tag {{draftFilters.property_type === 'apartment' ? 'active' : ''}}" data-field="property_type" data-value="apartment" bindtap="setDraftSingle">公寓</view>
-          <view class="tag {{draftFilters.property_type === 'talent_apt' ? 'active' : ''}}" data-field="property_type" data-value="talent_apt" bindtap="setDraftSingle">人才公寓</view>
-          <view class="tag {{draftFilters.property_type === 'bao_rent' ? 'active' : ''}}" data-field="property_type" data-value="bao_rent" bindtap="setDraftSingle">保租房</view>
-          <view class="tag {{draftFilters.property_type === 'public_rent' ? 'active' : ''}}" data-field="property_type" data-value="public_rent" bindtap="setDraftSingle">公租房</view>
+
+        <!-- 更多条件 -->
+        <view class="filter-section">
+          <view class="section-title">更多条件</view>
+          <view class="tag-grid tag-cloud">
+            <view class="ftag ftag-sm {{draftFilters.has_private_bathroom ? 'ftag-active' : ''}}" data-field="has_private_bathroom" bindtap="toggleDraftFlag">
+              <text class="ftag-icon">🚿</text><text>独卫</text>
+            </view>
+            <view class="ftag ftag-sm {{draftFilters.private_kitchen ? 'ftag-active' : ''}}" data-field="private_kitchen" bindtap="toggleDraftFlag">
+              <text class="ftag-icon">🍳</text><text>独立厨房</text>
+            </view>
+            <view class="ftag ftag-sm {{draftFilters.elevator ? 'ftag-active' : ''}}" data-field="elevator" bindtap="toggleDraftFlag">
+              <text class="ftag-icon">🛗</text><text>电梯</text>
+            </view>
+            <view class="ftag ftag-sm {{draftFilters.south ? 'ftag-active' : ''}}" data-field="south" bindtap="toggleDraftFlag">
+              <text class="ftag-icon">☀️</text><text>朝南</text>
+            </view>
+            <view class="ftag ftag-sm {{draftFilters.gas ? 'ftag-active' : ''}}" data-field="gas" bindtap="toggleDraftFlag">
+              <text class="ftag-icon">🔥</text><text>天然气</text>
+            </view>
+            <view class="ftag ftag-sm {{draftFilters.civil_meters ? 'ftag-active' : ''}}" data-field="civil_meters" bindtap="toggleDraftFlag">
+              <text class="ftag-icon">💡</text><text>民水民电</text>
+            </view>
+            <view class="ftag ftag-sm {{draftFilters.pet_friendly ? 'ftag-active' : ''}}" data-field="pet_friendly" bindtap="toggleDraftFlag">
+              <text class="ftag-icon">🐾</text><text>可养宠物</text>
+            </view>
+            <view class="ftag ftag-sm {{draftFilters.not_first_floor ? 'ftag-active' : ''}}" data-field="not_first_floor" bindtap="toggleDraftFlag">
+              <text class="ftag-icon">🚫</text><text>非一楼</text>
+            </view>
+            <view class="ftag ftag-sm {{draftFilters.not_top_floor ? 'ftag-active' : ''}}" data-field="not_top_floor" bindtap="toggleDraftFlag">
+              <text class="ftag-icon">🚫</text><text>非顶层</text>
+            </view>
+            <view class="ftag ftag-sm {{draftFilters.not_basement ? 'ftag-active' : ''}}" data-field="not_basement" bindtap="toggleDraftFlag">
+              <text class="ftag-icon">🚫</text><text>非地下室</text>
+            </view>
+            <view class="ftag ftag-sm {{draftFilters.not_attic ? 'ftag-active' : ''}}" data-field="not_attic" bindtap="toggleDraftFlag">
+              <text class="ftag-icon">🚫</text><text>非阁楼</text>
+            </view>
+          </view>
         </view>
-      </view>
 
-      <!-- 建筑类型 -->
-      <view class="filter-group">
-        <text class="filter-label">建筑类型</text>
-        <view class="tag-row">
-          <view class="tag {{draftFilters.building_type === 'low_rise' ? 'active' : ''}}" data-field="building_type" data-value="low_rise" bindtap="setDraftSingle">小高层</view>
-          <view class="tag {{draftFilters.building_type === 'high_rise' ? 'active' : ''}}" data-field="building_type" data-value="high_rise" bindtap="setDraftSingle">高层</view>
-          <view class="tag {{draftFilters.building_type === 'villa' ? 'active' : ''}}" data-field="building_type" data-value="villa" bindtap="setDraftSingle">别墅</view>
-          <view class="tag {{draftFilters.building_type === 'stacked' ? 'active' : ''}}" data-field="building_type" data-value="stacked" bindtap="setDraftSingle">叠墅</view>
-          <view class="tag {{draftFilters.building_type === 'super_high' ? 'active' : ''}}" data-field="building_type" data-value="super_high" bindtap="setDraftSingle">超高层</view>
-          <view class="tag {{draftFilters.building_type === 'bungalow' ? 'active' : ''}}" data-field="building_type" data-value="bungalow" bindtap="setDraftSingle">平房</view>
+                <!-- 房屋属性 + 建筑类型 -->
+        <view class="filter-section">
+          <view class="sub-section">
+            <text class="sub-label">房屋属性</text>
+            <view class="tag-grid">
+              <view class="ftag ftag-sm {{draftFilters.property_type === 'commercial' ? 'ftag-active' : ''}}" data-field="property_type" data-value="commercial" bindtap="setDraftSingle">商品房</view>
+              <view class="ftag ftag-sm {{draftFilters.property_type === 'relocation' ? 'ftag-active' : ''}}" data-field="property_type" data-value="relocation" bindtap="setDraftSingle">动迁房</view>
+              <!-- <view class="ftag ftag-sm {{draftFilters.property_type === 'affordable' ? 'ftag-active' : ''}}" data-field="property_type" data-value="affordable" bindtap="setDraftSingle">经适房</view> -->
+              <!-- <view class="ftag ftag-sm {{draftFilters.property_type === 'civilian' ? 'ftag-active' : ''}}" data-field="property_type" data-value="civilian" bindtap="setDraftSingle">民房</view> -->
+              <view class="ftag ftag-sm {{draftFilters.property_type === 'apartment' ? 'ftag-active' : ''}}" data-field="property_type" data-value="apartment" bindtap="setDraftSingle">公寓</view>
+              <!-- <view class="ftag ftag-sm {{draftFilters.property_type === 'talent_apt' ? 'ftag-active' : ''}}" data-field="property_type" data-value="talent_apt" bindtap="setDraftSingle">人才公寓</view> -->
+              <view class="ftag ftag-sm {{draftFilters.property_type === 'bao_rent' ? 'ftag-active' : ''}}" data-field="property_type" data-value="bao_rent" bindtap="setDraftSingle">保租房</view>
+              <!-- <view class="ftag ftag-sm {{draftFilters.property_type === 'public_rent' ? 'ftag-active' : ''}}" data-field="property_type" data-value="public_rent" bindtap="setDraftSingle">公租房</view> -->
+            </view>
+          </view>
+          <view class="sub-section">
+            <text class="sub-label">建筑类型</text>
+            <view class="tag-grid">
+              <view class="ftag ftag-sm {{draftFilters.building_type === 'low_rise' ? 'ftag-active' : ''}}" data-field="building_type" data-value="low_rise" bindtap="setDraftSingle">小高层</view>
+              <view class="ftag ftag-sm {{draftFilters.building_type === 'high_rise' ? 'ftag-active' : ''}}" data-field="building_type" data-value="high_rise" bindtap="setDraftSingle">高层</view>
+              <view class="ftag ftag-sm {{draftFilters.building_type === 'villa' ? 'ftag-active' : ''}}" data-field="building_type" data-value="villa" bindtap="setDraftSingle">别墅</view>
+              <view class="ftag ftag-sm {{draftFilters.building_type === 'stacked' ? 'ftag-active' : ''}}" data-field="building_type" data-value="stacked" bindtap="setDraftSingle">叠墅</view>
+              <view class="ftag ftag-sm {{draftFilters.building_type === 'super_high' ? 'ftag-active' : ''}}" data-field="building_type" data-value="super_high" bindtap="setDraftSingle">超高层</view>
+              <view class="ftag ftag-sm {{draftFilters.building_type === 'bungalow' ? 'ftag-active' : ''}}" data-field="building_type" data-value="bungalow" bindtap="setDraftSingle">平房</view>
+            </view>
+          </view>
         </view>
-      </view>
 
-      <!-- 更多标签 -->
-      <view class="filter-group">
-        <text class="filter-label">更多</text>
-        <view class="tag-row">
-          <view class="tag {{draftFilters.has_private_bathroom ? 'active' : ''}}" data-field="has_private_bathroom" bindtap="toggleDraftFlag">独立卫生间</view>
-          <view class="tag {{draftFilters.private_kitchen ? 'active' : ''}}" data-field="private_kitchen" bindtap="toggleDraftFlag">独立厨房</view>
-          <view class="tag {{draftFilters.elevator ? 'active' : ''}}" data-field="elevator" bindtap="toggleDraftFlag">电梯</view>
-          <view class="tag {{draftFilters.south ? 'active' : ''}}" data-field="south" bindtap="toggleDraftFlag">朝南</view>
-          <view class="tag {{draftFilters.gas ? 'active' : ''}}" data-field="gas" bindtap="toggleDraftFlag">天然气</view>
-          <view class="tag {{draftFilters.civil_meters ? 'active' : ''}}" data-field="civil_meters" bindtap="toggleDraftFlag">民水民电</view>
-          <view class="tag {{draftFilters.pet_friendly ? 'active' : ''}}" data-field="pet_friendly" bindtap="toggleDraftFlag">可养宠物</view>
-          <view class="tag {{draftFilters.not_first_floor ? 'active' : ''}}" data-field="not_first_floor" bindtap="toggleDraftFlag">非一楼</view>
-          <view class="tag {{draftFilters.not_top_floor ? 'active' : ''}}" data-field="not_top_floor" bindtap="toggleDraftFlag">非顶层</view>
-          <view class="tag {{draftFilters.not_basement ? 'active' : ''}}" data-field="not_basement" bindtap="toggleDraftFlag">非地下室</view>
-          <view class="tag {{draftFilters.not_attic ? 'active' : ''}}" data-field="not_attic" bindtap="toggleDraftFlag">非阁楼</view>
+         <!-- 房源来源 + 出租形式 -->
+         <view class="filter-section">
+          <view class="sub-section">
+            <text class="sub-label">房源来源</text>
+            <view class="tag-grid">
+              <view class="ftag ftag-sm {{draftFilters.rent_source === 'owner' ? 'ftag-active' : ''}}" data-field="rent_source" data-value="owner" bindtap="setDraftSingle">
+                <text class="ftag-icon">🏠</text><text>房东直租</text>
+              </view>
+              <view class="ftag ftag-sm {{draftFilters.rent_source === 'roommate' ? 'ftag-active' : ''}}" data-field="rent_source" data-value="roommate" bindtap="setDraftSingle">
+                <text class="ftag-icon">🤝</text><text>合租找室友</text>
+              </view>
+              <view class="ftag ftag-sm {{draftFilters.rent_source === 'sublet' ? 'ftag-active' : ''}}" data-field="rent_source" data-value="sublet" bindtap="setDraftSingle">
+                <text class="ftag-icon">🔄</text><text>转租</text>
+              </view>
+              <view class="ftag ftag-sm {{draftFilters.rent_source === 'apt' ? 'ftag-active' : ''}}" data-field="rent_source" data-value="apt" bindtap="setDraftSingle">
+                <text class="ftag-icon">🏢</text><text>公寓直租</text>
+              </view>
+            </view>
+          </view>
         </view>
-      </view>
 
-      <view class="filter-actions">
-        <button class="cu-btn bg-gray" bindtap="resetFilter">重置</button>
-        <button class="cu-btn bg-red" bindtap="applyFilter">确定</button>
+
+        <view style="height: 16rpx;"></view>
+      </scroll-view>
+
+      <view class="sheet-footer">
+        <button class="btn-reset" bindtap="resetFilter">重置</button>
+        <button class="btn-apply" bindtap="applyFilter">确定</button>
       </view>
     </view>
   </view>
