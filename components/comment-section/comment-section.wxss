@@ -1,89 +1,144 @@
-/* 评论区块 - 小红书风格，主色 #f44d56 与 app.json tabBar 保持一致 */
+/* ================================================================
+   评论区块 - 现代简约设计
+   设计语言：卡片化 · 大留白 · 微交互 · iOS 风格底部弹出
+   ================================================================ */
 
+/* ---------- 根容器 ---------- */
 .cs-section {
-  background: #fff;
-  padding: 20rpx 30rpx 140rpx;
+  background: #f6f7f9;
+  padding: 0 0 180rpx;
 }
 
+/* ---------- 标题栏 ---------- */
 .cs-header {
-  padding: 20rpx 0;
-  border-bottom: 1rpx solid #f0f0f0;
-}
-.cs-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #333;
-}
-
-/* 一级评论 */
-.cs-list { padding: 0; }
-.cs-item {
-  display: flex;
-  padding: 30rpx 0;
-  border-bottom: 1rpx solid #f5f5f5;
-}
-.cs-avatar {
-  width: 72rpx;
-  height: 72rpx;
-  border-radius: 50%;
-  margin-right: 20rpx;
-  flex-shrink: 0;
-  background: #f0f0f0;
-}
-.cs-body { flex: 1; min-width: 0; }
-.cs-name-line {
+  padding: 32rpx 32rpx 20rpx;
   display: flex;
   align-items: center;
 }
+.cs-header-left {
+  display: flex;
+  align-items: baseline;
+  gap: 12rpx;
+}
+.cs-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1a1a2e;
+  letter-spacing: 1rpx;
+}
+.cs-count {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #8e8e93;
+}
+
+/* ================================================================
+   一级评论
+   ================================================================ */
+.cs-list {
+  padding: 0 24rpx;
+}
+.cs-item {
+  display: flex;
+  padding: 28rpx 28rpx 24rpx;
+  margin-bottom: 16rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.04);
+}
+
+/* ---------- 头像 ---------- */
+.cs-avatar-wrap {
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+.cs-avatar {
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 50%;
+  background: #f0f0f5;
+}
+
+/* ---------- VIP 徽章（用户名旁） ---------- */
+.cs-vip-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32rpx;
+  height: 32rpx;
+  background: linear-gradient(135deg, #f7971e, #ffd200);
+  border-radius: 8rpx;
+  flex-shrink: 0;
+}
+.cs-vip-icon {
+  font-size: 18rpx;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+}
+
+/* ---------- 内容区 ---------- */
+.cs-body {
+  flex: 1;
+  min-width: 0;
+}
+.cs-name-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
 .cs-name {
   font-size: 26rpx;
-  color: #576b95;
-  font-weight: 500;
+  font-weight: 600;
+  color: #3478f6;
 }
-.cs-vip-tag {
-  background: linear-gradient(90deg, #f0a050, #f44d56);
-  color: #fff;
+.cs-private-tag {
+  background: #fff0e6;
+  color: #e8611a;
   font-size: 18rpx;
-  padding: 2rpx 12rpx;
+  font-weight: 500;
+  padding: 3rpx 14rpx;
   border-radius: 20rpx;
-  margin-left: 10rpx;
 }
 .cs-pending-tag {
-  background: #f0f0f0;
-  color: #999;
+  background: #f2f2f7;
+  color: #8e8e93;
   font-size: 20rpx;
-  padding: 2rpx 12rpx;
+  padding: 2rpx 14rpx;
   border-radius: 20rpx;
-  margin-left: 10rpx;
 }
 .cs-pending-tag-sm {
-  font-size: 18rpx;
-  padding: 0 10rpx;
-  margin-left: 8rpx;
+  font-size: 17rpx;
+  padding: 1rpx 10rpx;
 }
 .cs-content {
   font-size: 30rpx;
-  color: #333;
-  line-height: 1.5;
-  margin-top: 8rpx;
+  color: #1c1c1e;
+  line-height: 1.65;
+  margin-top: 10rpx;
   word-break: break-all;
 }
 
-/* 图片九宫格 */
+/* ---------- 图片网格 ---------- */
 .cs-images {
   display: flex;
   flex-wrap: wrap;
-  margin-top: 16rpx;
+  margin-top: 18rpx;
+  gap: 10rpx;
 }
 .cs-image {
-  width: 200rpx;
-  height: 200rpx;
-  border-radius: 8rpx;
-  margin-right: 8rpx;
-  margin-bottom: 8rpx;
+  width: 190rpx;
+  height: 190rpx;
+  border-radius: 14rpx;
+  background: #f5f5f5;
+}
+.cs-image-single {
+  width: 360rpx;
+  height: 260rpx;
 }
 
-/* 元信息行 */
+/* ---------- 元信息行 ---------- */
 .cs-meta {
   display: flex;
   justify-content: space-between;
@@ -92,172 +147,450 @@
 }
 .cs-time {
   font-size: 22rpx;
-  color: #999;
+  color: #aeaeb2;
 }
 .cs-actions {
   display: flex;
   align-items: center;
+  gap: 4rpx;
 }
 .cs-action {
-  font-size: 24rpx;
-  color: #576b95;
-  margin-left: 30rpx;
   display: flex;
   align-items: center;
+  gap: 4rpx;
+  padding: 6rpx 14rpx;
+  border-radius: 20rpx;
+  transition: background 0.2s;
 }
-.cs-action:first-child { margin-left: 0; }
-.cs-action-text { margin-left: 4rpx; }
-.cs-action-danger { color: #999; }
-.cs-icon { font-size: 26rpx; }
-.cs-liked { color: #f44d56; }
+.cs-action:active {
+  background: #f2f2f7;
+}
+.cs-action-icon {
+  font-size: 26rpx;
+  color: #8e8e93;
+}
+.cs-action-text {
+  font-size: 22rpx;
+  color: #8e8e93;
+  font-weight: 500;
+}
+.cs-action-count {
+  font-size: 22rpx;
+  color: #8e8e93;
+  font-weight: 500;
+}
+.cs-action-liked .cs-action-icon {
+  color: #ff3b30;
+}
+.cs-action-liked .cs-action-count {
+  color: #ff3b30;
+}
+.cs-action-danger .cs-action-icon {
+  font-size: 22rpx;
+}
 
-/* 二级回复 */
-.cs-replies {
+/* ================================================================
+   二级回复
+   ================================================================ */
+.cs-replies-wrap {
   margin-top: 16rpx;
-  padding: 16rpx 20rpx;
-  background: #f7f7f7;
-  border-radius: 8rpx;
+  background: #f9fafb;
+  border-radius: 14rpx;
+  padding: 4rpx 0;
+  overflow: hidden;
 }
 .cs-reply {
-  padding: 8rpx 0;
+  padding: 14rpx 20rpx;
   font-size: 26rpx;
-  color: #333;
-  line-height: 1.5;
+  line-height: 1.6;
+  color: #1c1c1e;
 }
-.cs-reply-name { color: #576b95; }
-.cs-reply-to { color: #999; }
-.cs-reply-content { color: #333; }
+.cs-reply-name {
+  color: #3478f6;
+  font-weight: 500;
+}
+.cs-reply-arrow {
+  color: #c7c7cc;
+  margin: 0 2rpx;
+}
+.cs-reply-content {
+  color: #3a3a3c;
+}
 .cs-reply-meta {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 4rpx;
+  margin-top: 6rpx;
+  padding-left: 0;
 }
+
+/* 展开/收起回复 */
 .cs-toggle-replies {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 16rpx 20rpx;
+}
+.cs-toggle-line {
+  flex: 1;
+  height: 1rpx;
+  background: #e5e5ea;
+}
+.cs-toggle-text {
   font-size: 24rpx;
-  color: #576b95;
-  padding: 12rpx 0 4rpx;
+  color: #3478f6;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
-/* 空状态 / 加载更多 */
+/* ================================================================
+   空状态
+   ================================================================ */
 .cs-empty {
-  padding: 80rpx 0;
-  text-align: center;
-  color: #999;
-  font-size: 26rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100rpx 0 80rpx;
+  gap: 12rpx;
 }
-.cs-loadmore {
-  padding: 24rpx 0;
-  text-align: center;
-  color: #576b95;
+.cs-empty-icon {
+  font-size: 72rpx;
+  margin-bottom: 8rpx;
+  opacity: 0.6;
+}
+.cs-empty-text {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #3a3a3c;
+}
+.cs-empty-sub {
   font-size: 26rpx;
+  color: #aeaeb2;
 }
 
-/* 底部触发条 */
+/* ================================================================
+   加载更多
+   ================================================================ */
+.cs-loadmore {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28rpx 0 16rpx;
+  gap: 12rpx;
+}
+.cs-loadmore-bar {
+  width: 32rpx;
+  height: 32rpx;
+}
+.cs-loadmore-spinner {
+  width: 32rpx;
+  height: 32rpx;
+  border: 4rpx solid #e5e5ea;
+  border-top-color: #3478f6;
+  border-radius: 50%;
+  animation: cs-spin 0.8s linear infinite;
+}
+@keyframes cs-spin {
+  to { transform: rotate(360deg); }
+}
+.cs-loadmore-text {
+  font-size: 26rpx;
+  color: #3478f6;
+  font-weight: 500;
+}
+
+/* ================================================================
+   骨架屏
+   ================================================================ */
+.cs-skeleton {
+  padding: 0 24rpx;
+}
+.cs-skeleton-item {
+  display: flex;
+  padding: 28rpx;
+  margin-bottom: 16rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  gap: 20rpx;
+}
+.cs-skeleton-avatar {
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 50%;
+  background: #e5e5ea;
+  flex-shrink: 0;
+  animation: cs-pulse 1.5s ease-in-out infinite;
+}
+.cs-skeleton-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  padding-top: 8rpx;
+}
+.cs-skeleton-line {
+  height: 24rpx;
+  background: #e5e5ea;
+  border-radius: 12rpx;
+  animation: cs-pulse 1.5s ease-in-out infinite;
+}
+.cs-skeleton-line-short {
+  width: 40%;
+}
+.cs-skeleton-line-mid {
+  width: 70%;
+}
+@keyframes cs-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ================================================================
+   底部触发条
+   ================================================================ */
 .cs-trigger {
   position: fixed;
-  left: 0; right: 0; bottom: 0;
-  padding: 20rpx 30rpx;
-  background: #fff;
-  border-top: 1rpx solid #eee;
-  z-index: 10;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 16rpx 32rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1rpx solid rgba(0, 0, 0, 0.06);
+  z-index: 90;
+}
+.cs-trigger-inner {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 18rpx 28rpx;
+  background: #f2f2f7;
+  border-radius: 40rpx;
+}
+.cs-trigger-avatar {
+  font-size: 30rpx;
+  flex-shrink: 0;
 }
 .cs-trigger-text {
-  display: block;
-  padding: 16rpx 24rpx;
-  background: #f5f5f5;
-  border-radius: 32rpx;
-  color: #999;
-  font-size: 26rpx;
-  text-align: center;
+  font-size: 28rpx;
+  color: #8e8e93;
 }
 
-/* 输入面板 */
+/* ================================================================
+   输入面板（iOS 风格底部弹出 Sheet）
+   ================================================================ */
 .cs-mask {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.4);
-  z-index: 99;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0);
+  z-index: 998;
+  transition: background 0.3s ease;
+  pointer-events: none;
 }
+.cs-mask-show {
+  background: rgba(0, 0, 0, 0.45);
+  pointer-events: auto;
+}
+
 .cs-input-panel {
   position: fixed;
-  left: 0; right: 0; bottom: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: #fff;
-  padding: 20rpx 30rpx calc(40rpx + env(safe-area-inset-bottom));
-  z-index: 100;
-  border-top-left-radius: 16rpx;
-  border-top-right-radius: 16rpx;
+  border-radius: 28rpx 28rpx 0 0;
+  padding: 0 32rpx;
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+  z-index: 999;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  box-shadow: 0 -8rpx 40rpx rgba(0, 0, 0, 0.12);
 }
+.cs-input-panel-show {
+  transform: translateY(0);
+}
+
+/* 拖拽条 */
+.cs-drag-bar {
+  display: flex;
+  justify-content: center;
+  padding: 16rpx 0 8rpx;
+}
+.cs-drag-handle {
+  width: 64rpx;
+  height: 8rpx;
+  background: #d1d1d6;
+  border-radius: 4rpx;
+}
+
+/* 头部 */
 .cs-input-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10rpx 0;
+  padding: 16rpx 0 20rpx;
 }
-.cs-input-cancel { font-size: 28rpx; color: #666; }
-.cs-input-title { font-size: 28rpx; color: #333; font-weight: 500; }
-.cs-input-submit { font-size: 28rpx; color: #999; }
-.cs-input-submit-active { color: #f44d56; font-weight: bold; }
+.cs-input-cancel {
+  font-size: 30rpx;
+  color: #8e8e93;
+  padding: 8rpx 0;
+}
+.cs-input-title {
+  font-size: 31rpx;
+  font-weight: 600;
+  color: #1c1c1e;
+}
+.cs-input-submit {
+  font-size: 30rpx;
+  color: #c7c7cc;
+  padding: 8rpx 0;
+  font-weight: 500;
+}
+.cs-input-submit-active {
+  color: #3478f6;
+  font-weight: 600;
+}
 
+/* 仅房东可见 - Toggle 开关 */
+.cs-private-row {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 20rpx;
+  margin-bottom: 16rpx;
+  background: #f9fafb;
+  border-radius: 14rpx;
+}
+.cs-private-toggle {
+  width: 50rpx;
+  height: 30rpx;
+  background: #e5e5ea;
+  border-radius: 15rpx;
+  position: relative;
+  transition: background 0.3s;
+  flex-shrink: 0;
+  margin-right: 14rpx;
+}
+.cs-private-toggle-on {
+  background: #34c759;
+}
+.cs-private-knob {
+  position: absolute;
+  top: 3rpx;
+  left: 3rpx;
+  width: 24rpx;
+  height: 24rpx;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.cs-private-toggle-on .cs-private-knob {
+  transform: translateX(20rpx);
+}
+.cs-private-label {
+  font-size: 27rpx;
+  color: #3a3a3c;
+  font-weight: 500;
+}
+.cs-private-hint {
+  font-size: 22rpx;
+  color: #aeaeb2;
+  margin-left: 8rpx;
+}
+
+/* 文本输入框 */
+.cs-textarea-wrap {
+  position: relative;
+  margin-bottom: 16rpx;
+}
 .cs-textarea {
   width: 100%;
-  min-height: 150rpx;
-  padding: 20rpx;
-  background: #f7f7f7;
-  border-radius: 12rpx;
-  font-size: 28rpx;
-  margin: 16rpx 0;
+  min-height: 180rpx;
+  max-height: 400rpx;
+  padding: 22rpx 24rpx;
+  background: #f9fafb;
+  border: 2rpx solid transparent;
+  border-radius: 16rpx;
+  font-size: 30rpx;
+  line-height: 1.6;
+  color: #1c1c1e;
   box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+.cs-textarea:focus {
+  border-color: #3478f6;
+  background: #fff;
+}
+.cs-textarea-placeholder {
+  color: #c7c7cc;
+  font-size: 28rpx;
+}
+.cs-textarea-count {
+  position: absolute;
+  bottom: 16rpx;
+  right: 20rpx;
+  font-size: 22rpx;
+  color: #aeaeb2;
 }
 
+/* 图片上传区 */
 .cs-input-images {
   display: flex;
   flex-wrap: wrap;
+  gap: 14rpx;
 }
 .cs-input-image {
   position: relative;
   width: 160rpx;
   height: 160rpx;
-  margin-right: 12rpx;
-  margin-bottom: 12rpx;
 }
 .cs-input-image image {
   width: 100%;
   height: 100%;
-  border-radius: 8rpx;
+  border-radius: 14rpx;
+  background: #f5f5f5;
 }
 .cs-remove-image {
   position: absolute;
-  top: -10rpx; right: -10rpx;
-  width: 36rpx; height: 36rpx;
-  background: rgba(0,0,0,0.6);
+  top: -10rpx;
+  right: -10rpx;
+  width: 38rpx;
+  height: 38rpx;
+  background: rgba(0, 0, 0, 0.55);
   color: #fff;
   border-radius: 50%;
   text-align: center;
-  line-height: 36rpx;
+  line-height: 38rpx;
   font-size: 28rpx;
+  backdrop-filter: blur(4px);
 }
 .cs-add-image {
   width: 160rpx;
   height: 160rpx;
-  background: #f7f7f7;
-  border: 2rpx dashed #ccc;
-  border-radius: 8rpx;
+  background: #f9fafb;
+  border: 2rpx dashed #d1d1d6;
+  border-radius: 14rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
 }
-.cs-add-plus {
-  font-size: 60rpx;
-  color: #999;
+.cs-add-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
 }
-.cs-upload-loading {
-  position: absolute;
-  top: 4rpx; right: 4rpx;
-  font-size: 20rpx;
-  background: #f44d56;
-  color: #fff;
-  padding: 2rpx 8rpx;
-  border-radius: 20rpx;
+.cs-add-icon {
+  font-size: 48rpx;
+  opacity: 0.5;
+}
+.cs-add-count {
+  font-size: 18rpx;
+  color: #3478f6;
+  font-weight: 500;
 }

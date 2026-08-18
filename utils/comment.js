@@ -73,6 +73,10 @@ const deleteComment = (commentId) => _delete(`/comment/${commentId}`)
 const myComments = (page = 1, size = 20) =>
   _get(`/comment/my?page=${page}&size=${size}`)
 
+// 房东私密留言列表（私信收件箱）
+const listLandlordMessages = (page = 1, size = 20) =>
+  _get(`/comment/landlord-messages?page=${page}&size=${size}`)
+
 // 上传评论图片（复用 /market/media/upload_token，house_id=0 隔离命名空间）
 const uploadImage = (filePath) => {
   return new Promise((resolve) => {
@@ -115,5 +119,6 @@ module.exports = {
   toggleLike,
   deleteComment,
   myComments,
+  listLandlordMessages,
   uploadImage
 }

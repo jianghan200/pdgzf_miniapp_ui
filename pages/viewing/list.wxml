@@ -1,3 +1,9 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold">我的预约看房</view>
+  </view>
+</cu-custom>
 <view class="container">
   <view class="role-tabs">
     <view class="role-tab {{role === 'tenant' ? 'active' : ''}}" data-role="tenant" bindtap="switchRole">我是租客</view>

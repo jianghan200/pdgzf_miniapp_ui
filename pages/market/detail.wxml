@@ -192,7 +192,7 @@
     </view>
 
     <!-- 预约看房 -->
-    <view class="section">
+    <view class="section" wx:if="{{viewingEnabled}}">
       <view class="viewing-cta" bindtap="createViewing">
         <view class="viewing-cta-left">
           <text class="cuIcon-calendar text-orange" style="font-size: 40rpx;"></text>
@@ -286,55 +286,29 @@
 
     <!-- 评论区 -->
     <comment-section wx:if="{{detail}}" id="comment-section" hide-trigger="{{true}}"
-      target-type="market_house" target-id="{{id}}"/>
+      target-type="market_house" target-id="{{id}}" bind:inputstatechange="onInputPanelChange"/>
   </block>
 
-  <!-- 底部操作栏 -->
-  <view class="bottom-bar" wx:if="{{detail && !adUnlocked && !detail.contact_visible}}">
+  <!-- 底部操作栏（统一：评论面板打开时隐藏） -->
+  <view class="bottom-bar" wx:if="{{detail && !inputPanelVisible}}">
+    <view class="bar-action" bindtap="onTapComment">
+      <text class="cuIcon cuIcon-comment text-gray"></text>
+      <text class="bar-action-text">评论</text>
+    </view>
     <view class="bar-action" bindtap="toggleFavorite">
       <text class="cuIcon {{favorited ? 'cuIcon-favorfill text-orange' : 'cuIcon-favor text-gray'}}"></text>
       <text class="bar-action-text {{favorited ? 'text-orange' : ''}}">{{favorited ? '已收藏' : '收藏'}}</text>
     </view>
+    <button class="bar-action share-btn" open-type="share">
+      <text class="cuIcon cuIcon-share text-gray"></text>
+      <text class="bar-action-text">分享</text>
+    </button>
     <view class="bar-action" bindtap="{{inCompare ? 'goCompare' : 'addToCompare'}}">
       <text class="cuIcon {{inCompare ? 'cuIcon-evaluate text-orange' : 'cuIcon-evaluate text-gray'}}"></text>
       <text class="bar-action-text {{inCompare ? 'text-orange' : ''}}">{{inCompare ? '对比' : '对比'}}</text>
     </view>
-    <view class="bar-action" bindtap="onTapComment">
-      <text class="cuIcon cuIcon-comment text-gray"></text>
-      <text class="bar-action-text">评论</text>
-    </view>
-    <button class="bar-action share-btn" open-type="share">
-      <text class="cuIcon cuIcon-share text-gray"></text>
-      <text class="bar-action-text">分享</text>
-    </button>
-    <button class="bar-cta bg-blue" bindtap="startChat">
-      <text class="cuIcon-messagefill"></text>
-      <text style="margin-left: 8rpx;">私密留言</text>
-    </button>
-    <!-- <button class="bar-cta" bindtap="onBottomContact">
-      <text>{{contactMethod === 'ad' ? '联系房东' : '支付 ¥1 联系'}}</text>
-    </button> -->
-  </view>
-
-  <!-- 底部栏 -->
-  <view class="bottom-bar" wx:if="{{detail}}">
-    <view class="bar-action" bindtap="toggleFavorite">
-      <text class="cuIcon {{favorited ? 'cuIcon-favorfill text-orange' : 'cuIcon-favor text-gray'}}"></text>
-      <text class="bar-action-text {{favorited ? 'text-orange' : ''}}">{{favorited ? '已收藏' : '收藏'}}</text>
-    </view>
-    <view class="bar-action" bindtap="{{inCompare ? 'goCompare' : 'addToCompare'}}">
-      <text class="cuIcon {{inCompare ? 'cuIcon-evaluate text-orange' : 'cuIcon-evaluate text-gray'}}"></text>
-      <text class="bar-action-text {{inCompare ? 'text-orange' : ''}}">对比</text>
-    </view>
-    <view class="bar-action" bindtap="onTapComment">
-      <text class="cuIcon cuIcon-comment text-gray"></text>
-      <text class="bar-action-text">评论</text>
-    </view>
-    <button class="bar-action share-btn" open-type="share">
-      <text class="cuIcon cuIcon-share text-gray"></text>
-      <text class="bar-action-text">分享</text>
-    </button>
-    <button class="bar-cta {{chatVisible ? 'bg-blue' : 'bg-gray'}}" bindtap="startChat" style="width: 28%;">
+   
+    <button class="bar-cta {{chatVisible ? 'bg-blue' : 'bg-gray'}}" bindtap="startChat" style="width: 28%;" wx:if="{{chatEnabled}}">
       <text class="cuIcon cuIcon-messagefill"></text>
       <text style="margin-left: 8rpx; font-size: 26rpx;">{{isOwner ? (ownerHasChat ? '查看留言' : '留言') : '留言'}}</text>
     </button>

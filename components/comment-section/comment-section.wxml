@@ -1,79 +1,101 @@
 <view class="cs-section">
+  <!-- 评论标题栏 -->
   <view class="cs-header">
-    <text class="cs-title">评论 {{total}}</text>
+    <view class="cs-header-left">
+      <text class="cs-title">评论</text>
+      <text class="cs-count" wx:if="{{total > 0}}">{{total}}</text>
+    </view>
   </view>
 
   <!-- 一级评论列表 -->
   <view class="cs-list" wx:if="{{comments.length > 0}}">
     <view class="cs-item" wx:for="{{comments}}" wx:key="id">
-      <image class="cs-avatar" src="{{item.user.avatar || '/assets/default_avatar.png'}}" mode="aspectFill"/>
+      <!-- 头像 -->
+      <view class="cs-avatar-wrap">
+        <image class="cs-avatar" src="{{item.user.avatar || '/assets/default_avatar.png'}}" mode="aspectFill"/>
+      </view>
+      <!-- 内容区 -->
       <view class="cs-body">
         <view class="cs-name-line">
           <text class="cs-name">{{item.user.name}}</text>
-          <text class="cs-vip-tag" wx:if="{{item.user.type == 2}}">VIP</text>
+          <view class="cs-vip-badge" wx:if="{{item.user.type == 2}}">
+            <text class="cs-vip-icon">V</text>
+          </view>
           <text class="cs-pending-tag" wx:if="{{item.status == 0}}">审核中</text>
+          <text class="cs-private-tag" wx:if="{{item.is_private == 1}}">仅房东可见</text>
         </view>
         <view class="cs-content">{{item.content}}</view>
 
+        <!-- 图片 -->
         <view class="cs-images" wx:if="{{item.images.length > 0}}">
           <image
             wx:for="{{item.images}}" wx:for-item="img" wx:key="*this"
-            class="cs-image" src="{{img}}" mode="aspectFill"
+            class="cs-image {{item.images.length === 1 ? 'cs-image-single' : ''}}" src="{{img}}" mode="aspectFill"
             bindtap="previewImage" data-urls="{{item.images}}" data-current="{{img}}"/>
         </view>
 
+        <!-- 操作行 -->
         <view class="cs-meta">
           <text class="cs-time">{{item.create_time}}</text>
           <view class="cs-actions">
             <block wx:if="{{item.status != 0}}">
-              <view class="cs-action" catchtap="onLike" data-id="{{item.id}}">
-                <text class="cs-icon {{item.liked_by_me ? 'cs-liked' : ''}}">♥</text>
-                <text class="cs-action-text">{{item.like_count}}</text>
+              <view class="cs-action {{item.liked_by_me ? 'cs-action-liked' : ''}}" catchtap="onLike" data-id="{{item.id}}">
+                <text class="cs-action-icon">♡</text>
+                <text class="cs-action-count" wx:if="{{item.like_count > 0}}">{{item.like_count}}</text>
               </view>
               <view class="cs-action" catchtap="openInput"
                 data-parent-id="{{item.id}}"
                 data-reply-to-user-id="{{item.user.id}}"
                 data-reply-to-comment-id="{{item.id}}"
                 data-reply-to-name="{{item.user.name}}">
-                回复
+                <text class="cs-action-icon">↩</text>
+                <text class="cs-action-text">回复</text>
               </view>
             </block>
             <view class="cs-action cs-action-danger" wx:if="{{item.is_mine}}"
-              catchtap="onDelete" data-id="{{item.id}}">删除</view>
+              catchtap="onDelete" data-id="{{item.id}}">
+              <text class="cs-action-icon">🗑</text>
+            </view>
           </view>
         </view>
 
         <!-- 二级回复 -->
-        <view class="cs-replies" wx:if="{{item.reply_count > 0}}">
+        <view class="cs-replies-wrap" wx:if="{{item.reply_count > 0}}">
           <block wx:if="{{item.repliesExpanded}}">
             <view class="cs-reply" wx:for="{{item.replies}}" wx:for-item="r" wx:key="id">
               <text class="cs-reply-name">{{r.user.name}}</text>
               <text class="cs-pending-tag cs-pending-tag-sm" wx:if="{{r.status == 0}}">审核中</text>
-              <text wx:if="{{r.reply_to}}" class="cs-reply-to"> 回复 </text>
+              <text wx:if="{{r.reply_to}}" class="cs-reply-arrow"> → </text>
               <text wx:if="{{r.reply_to}}" class="cs-reply-name">{{r.reply_to.name}}</text>
-              <text class="cs-reply-content">：{{r.content}}</text>
+              <text class="cs-reply-content">  {{r.content}}</text>
               <view class="cs-reply-meta">
                 <text class="cs-time">{{r.create_time}}</text>
                 <view class="cs-actions">
                   <block wx:if="{{r.status != 0}}">
-                    <view class="cs-action" catchtap="onLike" data-id="{{r.id}}">
-                      <text class="cs-icon {{r.liked_by_me ? 'cs-liked' : ''}}">♥</text>
-                      <text class="cs-action-text">{{r.like_count}}</text>
+                    <view class="cs-action {{r.liked_by_me ? 'cs-action-liked' : ''}}" catchtap="onLike" data-id="{{r.id}}">
+                      <text class="cs-action-icon">♡</text>
+                      <text class="cs-action-count" wx:if="{{r.like_count > 0}}">{{r.like_count}}</text>
                     </view>
                     <view class="cs-action" catchtap="openInput"
                       data-parent-id="{{item.id}}"
                       data-reply-to-user-id="{{r.user.id}}"
                       data-reply-to-comment-id="{{r.id}}"
-                      data-reply-to-name="{{r.user.name}}">回复</view>
+                      data-reply-to-name="{{r.user.name}}">
+                      <text class="cs-action-icon">↩</text>
+                    </view>
                   </block>
                   <view class="cs-action cs-action-danger" wx:if="{{r.is_mine}}"
-                    catchtap="onDelete" data-id="{{r.id}}">删除</view>
+                    catchtap="onDelete" data-id="{{r.id}}">
+                    <text class="cs-action-icon">🗑</text>
+                  </view>
                 </view>
               </view>
             </view>
           </block>
           <view class="cs-toggle-replies" catchtap="toggleReplies" data-id="{{item.id}}">
-            {{item.repliesExpanded ? '收起' : '查看 ' + item.reply_count + ' 条回复'}}
+            <view class="cs-toggle-line"></view>
+            <text class="cs-toggle-text">{{item.repliesExpanded ? '收起回复' : '展开 ' + item.reply_count + ' 条回复'}}</text>
+            <view class="cs-toggle-line"></view>
           </view>
         </view>
       </view>
@@ -82,43 +104,86 @@
 
   <!-- 空状态 -->
   <view class="cs-empty" wx:if="{{!loading && comments.length === 0}}">
-    <text>暂无评论，快来抢沙发～</text>
+    <text class="cs-empty-icon">💬</text>
+    <text class="cs-empty-text">还没有评论</text>
+    <text class="cs-empty-sub">快来分享你的看法吧～</text>
   </view>
 
   <!-- 加载更多 -->
   <view class="cs-loadmore" wx:if="{{hasMore}}" catchtap="loadMore">
-    {{loading ? '加载中...' : '加载更多'}}
+    <view class="cs-loadmore-bar" wx:if="{{loading}}">
+      <view class="cs-loadmore-spinner"></view>
+    </view>
+    <text class="cs-loadmore-text">{{loading ? '加载中...' : '加载更多评论'}}</text>
   </view>
 
-  <!-- 底部触发条 -->
+  <!-- 加载中骨架屏 -->
+  <view class="cs-skeleton" wx:if="{{loading && comments.length === 0}}">
+    <view class="cs-skeleton-item" wx:for="{{3}}" wx:key="*this">
+      <view class="cs-skeleton-avatar"></view>
+      <view class="cs-skeleton-body">
+        <view class="cs-skeleton-line cs-skeleton-line-short"></view>
+        <view class="cs-skeleton-line"></view>
+        <view class="cs-skeleton-line cs-skeleton-line-mid"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部触发条（内嵌样式，可被外部 hide-trigger 隐藏） -->
   <view class="cs-trigger" wx:if="{{!hideTrigger}}" catchtap="openInput">
-    <text class="cs-trigger-text">说点什么...</text>
+    <view class="cs-trigger-inner">
+      <text class="cs-trigger-avatar">💬</text>
+      <text class="cs-trigger-text">说点什么...</text>
+    </view>
   </view>
 
-  <!-- 输入面板 -->
-  <view class="cs-mask" wx:if="{{inputVisible}}" catchtap="closeInput"></view>
-  <view class="cs-input-panel" wx:if="{{inputVisible}}">
+  <!-- ==================== 输入面板（iOS 风格底部弹出） ==================== -->
+  <view class="cs-mask {{inputVisible ? 'cs-mask-show' : ''}}" wx:if="{{inputVisible}}" catchtap="closeInput"></view>
+  <view class="cs-input-panel {{inputVisible ? 'cs-input-panel-show' : ''}}" wx:if="{{inputVisible}}">
+    <!-- 拖拽条 -->
+    <view class="cs-drag-bar"><view class="cs-drag-handle"></view></view>
+    <!-- 头部 -->
     <view class="cs-input-header">
       <text class="cs-input-cancel" catchtap="closeInput">取消</text>
-      <text class="cs-input-title">{{replyingTo ? '回复 ' + replyingTo.replyToName : '发评论'}}</text>
-      <text class="cs-input-submit {{(inputText || inputImages.length) && !submitting ? 'cs-input-submit-active' : ''}}"
-        catchtap="submit">{{submitting ? '发送中' : '发送'}}</text>
+      <text class="cs-input-title">{{replyingTo ? '回复 ' + replyingTo.replyToName : '发表评论'}}</text>
+      <view class="cs-input-submit {{(inputText || inputImages.length) && !submitting ? 'cs-input-submit-active' : ''}}"
+        catchtap="submit">
+        <text>{{submitting ? '发送中' : '发送'}}</text>
+      </view>
     </view>
-    <textarea
-      class="cs-textarea"
-      placeholder="{{replyingTo ? '回复 ' + replyingTo.replyToName : '说点什么...'}}"
-      value="{{inputText}}"
-      bindinput="onInputText"
-      auto-focus
-      maxlength="500"/>
+
+    <!-- 仅房东可见 -->
+    <view class="cs-private-row" wx:if="{{!replyingTo}}" catchtap="togglePrivate">
+      <view class="cs-private-toggle {{isPrivate ? 'cs-private-toggle-on' : ''}}">
+        <view class="cs-private-knob"></view>
+      </view>
+      <text class="cs-private-label">仅房东可见</text>
+      <text class="cs-private-hint">保护隐私</text>
+    </view>
+
+    <!-- 输入框 -->
+    <view class="cs-textarea-wrap">
+      <textarea
+        class="cs-textarea"
+        placeholder="{{replyingTo ? '回复 ' + replyingTo.replyToName : (isPrivate ? '留言给房东，其他人看不到...' : '友善评论，从这里开始...')}}"
+        placeholder-class="cs-textarea-placeholder"
+        value="{{inputText}}"
+        bindinput="onInputText"
+        maxlength="500"/>
+      <view class="cs-textarea-count" wx:if="{{inputText.length > 0}}">{{inputText.length}}/500</view>
+    </view>
+
+    <!-- 图片 -->
     <view class="cs-input-images">
       <view class="cs-input-image" wx:for="{{inputImages}}" wx:key="*this" wx:for-item="img" wx:for-index="iidx">
         <image src="{{img}}" mode="aspectFill"/>
         <view class="cs-remove-image" catchtap="removeImage" data-idx="{{iidx}}">×</view>
       </view>
       <view class="cs-add-image" wx:if="{{inputImages.length < 9}}" catchtap="chooseImage">
-        <text class="cs-add-plus">+</text>
-        <text class="cs-upload-loading" wx:if="{{uploadingCount > 0}}">{{uploadingCount}}</text>
+        <view class="cs-add-inner">
+          <text class="cs-add-icon">📷</text>
+          <text class="cs-add-count" wx:if="{{uploadingCount > 0}}">{{uploadingCount}}张上传中</text>
+        </view>
       </view>
     </view>
   </view>

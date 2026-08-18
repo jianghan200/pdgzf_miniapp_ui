@@ -105,6 +105,26 @@
   color: #ff9500;
   font-weight: 500;
 }
+/* VIP 价格划线 */
+.fee-vip {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+.fee-price-old {
+  font-size: 24rpx;
+  color: #ccc;
+  text-decoration: line-through;
+}
+.fee-price-new {
+  font-size: 28rpx;
+  color: #ff9500;
+  font-weight: 600;
+}
+.fee-vip-desc {
+  color: #ff9500;
+  font-weight: 500;
+}
 .fee-desc {
   font-size: 24rpx;
   color: #999;

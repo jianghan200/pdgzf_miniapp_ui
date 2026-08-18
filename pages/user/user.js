@@ -39,6 +39,8 @@ Page({
     isAdmin: false,
     // 留言未读数
     chatUnread: 0,
+    // 全局预约看房功能开关
+    viewingEnabled: true,
     // 当前业务 Tab：pudong / market，默认市场租房；仅当默认首页为浦东公租房时默认 pudong
     currentTab: 'market',
     // 市场租房 VIP 信息
@@ -120,6 +122,7 @@ Page({
     });
     this.loadChatUnread()
     this.loadMarketVipInfo()
+    this.loadViewingConfig()
   },
 
   // res = { 'wxNickName': '...', 'wxAvatarUrl': 'http://...' }
@@ -192,6 +195,16 @@ Page({
           marketVipEndDate: endTime,
           marketVipExpired: info.is_market_vip && endTime && new Date(endTime) < new Date()
         })
+      }
+    }).catch(() => {})
+  },
+
+  // 读取预约看房全局开关
+  loadViewingConfig() {
+    market.getContactConfig().then((res) => {
+      if (res && res.status === 0 && res.data) {
+        const viewingEnabled = res.data.viewing_enabled !== false
+        this.setData({ viewingEnabled })
       }
     }).catch(() => {})
   },
@@ -337,6 +350,11 @@ Page({
   // 我的收藏
   goFavorite() {
     wx.navigateTo({ url: '/pages/favorite/list' })
+  },
+
+  // 我的预约看房
+  goViewingList() {
+    wx.navigateTo({ url: '/pages/viewing/list' })
   },
 
 

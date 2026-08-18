@@ -110,11 +110,11 @@ const payVip = function(type, period) {
 }
 
 const payDepositFee = function(houseId) {
-  return payWithMarketOrder(market.payDeposit(houseId))
+  return payWithVpOrder(market.payDeposit(houseId))
 }
 
 const payViewing = function(houseId, slotTimes, remark) {
-  return payWithMarketOrder(market.createViewing({
+  return payWithVpOrder(market.createViewing({
     house_id: houseId,
     slot_times: slotTimes,
     remark: remark || ''
@@ -122,7 +122,7 @@ const payViewing = function(houseId, slotTimes, remark) {
 }
 
 const payReportFee = function(houseId, reason) {
-  return payWithOrder(market.createReport({ house_id: houseId, reason: reason }))
+  return payWithVpOrder(market.createReport({ house_id: houseId, reason: reason }))
 }
 
 const pay = function(userType) {

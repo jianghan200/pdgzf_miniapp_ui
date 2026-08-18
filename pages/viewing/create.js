@@ -37,9 +37,10 @@ Page({
       if (res && res.status === 0 && res.data) {
         const info = res.data
         const isVip = info.is_market_vip && info.type === 11
+        const originalViewingFee = 2
         const viewingFee = isVip ? 0 : 2
         const totalFee = 20 + viewingFee
-        this.setData({ isVip, viewingFee, totalFee })
+        this.setData({ isVip, viewingFee, totalFee, originalViewingFee })
       }
     })
   },

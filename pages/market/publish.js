@@ -561,18 +561,15 @@ Page({
   payDeposit(onPaid) {
     wx.showLoading({ title: '正在支付...' })
     const market = require('../../utils/market')
+    const pay = require('../../utils/pay')
     market.payDeposit(0).then((res) => {
       wx.hideLoading()
       if (res && res.status === 0 && res.data) {
-        wx.requestPayment({
-          ...res.data,
-          success: () => {
-            wx.showToast({ title: '支付成功', icon: 'success' })
-            onPaid()
-          },
-          fail: (err) => {
-            wx.showToast({ title: '支付取消或失败', icon: 'none' })
-          }
+        pay.actualVirtualPayment(res.data).then(() => {
+          wx.showToast({ title: '支付成功', icon: 'success' })
+          onPaid()
+        }).catch(() => {
+          wx.showToast({ title: '支付取消或失败', icon: 'none' })
         })
       } else {
         wx.showToast({ title: res && res.msg || '支付请求失败', icon: 'none' })

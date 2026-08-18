@@ -97,6 +97,12 @@
       </view>
       <view class="cu-tag bg-red round" wx:if="{{chatUnread}}">{{chatUnread > 99 ? '99+' : chatUnread}}</view>
     </view>
+    <view class="cu-item arrow" bindtap="goViewingList" wx:if="{{viewingEnabled}}">
+      <view class="content">
+        <text class="cuIcon-calendar text-bold text-green"></text>
+        <text class="text-bold">我的预约看房</text>
+      </view>
+    </view>
   </view>
 
   <!-- 底部辅助入口 -->

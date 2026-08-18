@@ -57,9 +57,14 @@
     <view class="fee-desc">看房完成后原路退还</view>
     <view class="fee-row">
       <text class="fee-label">看房服务费</text>
-      <text class="fee-value {{isVip ? 'vip-free' : ''}}">{{isVip ? 'VIP免费' : '¥' + viewingFee}}</text>
+      <text wx:if="{{isVip}}" class="fee-value fee-vip">
+        <text class="fee-price-old">¥{{originalViewingFee}}</text>
+        <text class="fee-price-new">¥0</text>
+      </text>
+      <text wx:else class="fee-value">¥{{viewingFee}}</text>
     </view>
     <view class="fee-desc" wx:if="{{!isVip}}">租客VIP免看房服务费</view>
+    <view class="fee-desc fee-vip-desc" wx:else>🎉 VIP专享免费</view>
     <view class="fee-total">
       <text class="total-label">合计</text>
       <text class="total-value">¥{{totalFee}}</text>

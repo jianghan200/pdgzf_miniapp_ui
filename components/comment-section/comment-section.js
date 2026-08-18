@@ -21,6 +21,7 @@ Component({
     inputImages: [],
     uploadingCount: 0,
     replyingTo: null,  // null=发一级; {parentId, replyToUserId, replyToCommentId, replyToName}
+    isPrivate: false,  // 仅房东可见（仅一级评论可用）
     submitting: false
   },
 
@@ -117,20 +118,25 @@ Component({
             replyToUserId: ds.replyToUserId,
             replyToCommentId: ds.replyToCommentId,
             replyToName: ds.replyToName
-          }
+          },
+          // 二级回复不支持勾选"仅房东可见"（继承一级评论的隐私属性）
+          isPrivate: false
         })
       } else {
         this.setData({
           inputVisible: true,
           inputText: '',
           inputImages: [],
-          replyingTo: null
+          replyingTo: null,
+          isPrivate: false
         })
       }
+      this.triggerEvent('inputstatechange', { visible: true })
     },
 
     closeInput() {
-      this.setData({ inputVisible: false, inputText: '', inputImages: [], replyingTo: null })
+      this.setData({ inputVisible: false, inputText: '', inputImages: [], replyingTo: null, isPrivate: false })
+      this.triggerEvent('inputstatechange', { visible: false })
     },
 
     onInputText(e) {
@@ -176,6 +182,10 @@ Component({
       wx.previewImage({ urls: ds.urls, current: ds.current })
     },
 
+    togglePrivate() {
+      this.setData({ isPrivate: !this.data.isPrivate })
+    },
+
     // ---------- 提交 ----------
     submit() {
       const text = (this.data.inputText || '').trim()
@@ -201,6 +211,9 @@ Component({
         payload.parent_id = r.parentId
         payload.reply_to_user_id = r.replyToUserId
         payload.reply_to_comment_id = r.replyToCommentId
+      } else if (this.data.isPrivate) {
+        // 仅一级评论支持"仅房东可见"
+        payload.is_private = 1
       }
 
       comment.createComment(payload).then(res => {

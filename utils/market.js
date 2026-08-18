@@ -243,8 +243,11 @@ const reportAbEvent = (data) => _post('/ab/event', data)
 
 // === 看房预约 ===
 const createViewing = (data) => _post('/viewing/create', data)
-const getViewingList = (role, status, page, size) =>
-  _get(`/viewing/list?role=${role || 'tenant'}&status=${status !== undefined ? status : ''}&page=${page || 1}&size=${size || 20}`)
+const getViewingList = (role, status, page, size) => {
+  let url = `/viewing/list?role=${role || 'tenant'}&page=${page || 1}&size=${size || 20}`
+  if (status !== undefined && status !== null && status !== '') url += `&status=${status}`
+  return _get(url)
+}
 const getViewingDetail = (id) => _get(`/viewing/${id}`)
 const confirmViewing = (id, slotId) => _post(`/viewing/${id}/confirm`, { slot_id: slotId || 0 })
 const counterProposeViewing = (id, newTime) => _post(`/viewing/${id}/counter_propose`, { new_time: newTime })

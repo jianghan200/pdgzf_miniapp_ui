@@ -113,10 +113,10 @@
 
 <!-- 底部输入栏 + 预约看房 -->
 <view class="cu-bar bg-white shadow foot">
-  <view class="action" bindtap="createViewing" wx:if="{{conv && conv.house_id}}">
+  <view class="action" bindtap="createViewing" wx:if="{{conv && conv.house_id && viewingEnabled}}">
     <text class="cuIcon-calendar text-orange"></text>
   </view>
   <input class="solid-bottom chat-input" placeholder="说点什么..." value="{{inputText}}" bindinput="onInput"
          confirm-type="send" bindconfirm="sendText"/>
-  <button class="cu-btn bg-red" bindtap="sendText">发送</button>
+  <button class="cu-btn bg-red" bindtap="sendText">评论</button>
 </view>

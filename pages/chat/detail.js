@@ -15,6 +15,7 @@ Page({
     myAvatar: '',
     scrollToId: '',
     isLandlord: false,
+    viewingEnabled: true, // 全局预约看房功能开关
     viewingStatusText: {0:'待支付',1:'待确认',2:'待租客确认',3:'已完成',4:'已取消',5:'退款中',6:'已退款',7:'异常',8:'双方已确认',9:'租客爽约'},
     viewingStatusClass: {1:'orange',2:'blue',3:'gray',4:'red',8:'green',9:'red'},
   },
@@ -29,6 +30,7 @@ Page({
       myAvatar: (app.globalData.userinfo && app.globalData.userinfo.wxAvatarUrl) || '/assets/user.png'
     })
     this.loadConversation()
+    this.loadContactConfig()
   },
 
   onShow() {
@@ -41,6 +43,15 @@ Page({
 
   onUnload() {
     this.stopPolling()
+  },
+
+  loadContactConfig() {
+    market.getContactConfig().then((res) => {
+      if (res && res.status === 0 && res.data) {
+        const viewingEnabled = res.data.viewing_enabled !== false
+        this.setData({ viewingEnabled })
+      }
+    })
   },
 
   startPolling() {

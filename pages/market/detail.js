@@ -31,6 +31,8 @@ Page({
     priceVisible: true,
     descriptionVisible: true,
     chatVisible: true,
+    chatEnabled: true,  // 全局留言功能开关（来自 t_app_config）
+    viewingEnabled: true, // 全局预约看房功能开关（来自 t_app_config）
     priceMasked: false,
     descriptionMasked: false,
     unlockExpire: '',
@@ -38,7 +40,8 @@ Page({
     unlockDialogVisible: false,
     unlockDialogTitle: '',
     unlockDialogGateType: '',
-    ownerHasChat: false
+    ownerHasChat: false,
+    inputPanelVisible: false  // 评论输入面板是否打开（控制底部栏显隐）
   },
 
   onLoad(options) {
@@ -65,7 +68,9 @@ Page({
     market.getContactConfig().then((res) => {
       if (res && res.status === 0 && res.data) {
         const method = res.data.method || 'pay'
-        this.setData({ contactMethod: method })
+        const chatEnabled = res.data.chat_enabled !== false
+        const viewingEnabled = res.data.viewing_enabled !== false
+        this.setData({ contactMethod: method, chatEnabled, viewingEnabled })
         if (method === 'ad' && this._isContactUnlockedRecently()) {
           this.setData({ adUnlocked: true })
         }
@@ -597,6 +602,10 @@ Page({
   onTapComment() {
     const cs = this.selectComponent('#comment-section')
     if (cs) cs.openInput()
+  },
+
+  onInputPanelChange(e) {
+    this.setData({ inputPanelVisible: e.detail.visible })
   },
 
   offlineHouse() {
