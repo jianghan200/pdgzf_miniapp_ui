@@ -376,9 +376,9 @@
       </view>
 
       <view class="dialog-vip-benefits">
-        <text>✓ 免广告查看全部房源价格</text>
-        <text>✓ 免广告查看房源描述详情</text>
+        <text>✓ 免广告查看全部房源价格，描述详情</text>
         <text>✓ 免广告私信房东</text>
+        <text>✓ 会员专享房源 </text>
       </view>
 
       <view class="dialog-close" bindtap="closeUnlockDialog">暂不需要</view>

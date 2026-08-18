@@ -37,9 +37,8 @@
       </view>
     </view>
     <view class="benefits">
-      <text class="benefit">✓ 免广告查看全部房源价格</text>
-      <text class="benefit">✓ 免广告查看房源描述详情</text>
-      <text class="benefit">✓ 免广告私信房东</text>
+      <text class="benefit">✓ 会员专属房源</text>
+      <text class="benefit">✓ 免广告查看全部房源价格，描述详情，私信</text>
       <text class="benefit">✓ 免看房服务费（每次省2元）</text>
       <text class="benefit">✓ 专属客服</text>
     </view>
@@ -60,9 +59,10 @@
       </view>
     </view>
     <view class="benefits">
-      <text class="benefit">✓ 快速审核（4h内）</text>
+      <text class="benefit">✓ 租客优先推荐匹配</text>
+      <text class="benefit">✓ 快速审核（5分钟内）</text>
       <text class="benefit">✓ VIP 标识提升曝光</text>
-      <text class="benefit">✓ 无限发布套数</text>
+      <text class="benefit">✓ 优先曝光</text>
     </view>
   </view>
 
