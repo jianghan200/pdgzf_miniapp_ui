@@ -232,7 +232,7 @@ const subscribe = function(pid, pname) {
 
 // 关闭某个小区的订阅
 const unsubscribe = function(ruleId) {
-  const url = constants.userinfoServer + `/api/rule/${ruleId}/delete`
+  const url = constants.userinfoServer + `/rule/${ruleId}/delete`
   const header = {
     'token': app.globalData.userinfo.tokenStr 
   }

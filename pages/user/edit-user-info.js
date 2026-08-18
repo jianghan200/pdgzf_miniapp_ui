@@ -110,7 +110,7 @@ Page({
             log.info(`完成了微信昵称和头像的采集`)
     
             app.globalData.userinfo.wxNickName = self.data.nickname.trim()
-            app.globalData.userinfo.wxAvatarUrl = publicUrl.url
+            app.globalData.userinfo.wxAvatarUrl = publicUrl
     
             wx.showToast({ title: '信息修改成功', icon: 'success' })
           }).catch(err => {

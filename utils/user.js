@@ -99,7 +99,7 @@ const ask_for_weixin_nickNameAndAvatar = function() {
 const upload_weixin_nickNameAndAvatar = function(nickName, avatar) {
   log.info(`向后端上传用户的微信昵称: ${nickName}和头像的url: ${avatar}`)
 
-  const url = constants.userinfoServer + '/api/user/update'
+  const url = constants.userinfoServer + '/user/update'
   const appInstance = typeof getApp === 'function' ? getApp() : null
   const token = appInstance && appInstance.globalData && appInstance.globalData.userinfo && appInstance.globalData.userinfo.tokenStr ? appInstance.globalData.userinfo.tokenStr : ''
   return new Promise((resolve, reject) => {
