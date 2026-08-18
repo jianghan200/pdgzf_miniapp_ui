@@ -243,7 +243,7 @@ Page({
   onDistrictChange(e) {
     const idx = e.detail.value
     const val = idx === 0 ? '' : this.data.districts[idx]
-    this.setData({ districtIndex: idx, 'draftFilters.district': val })
+    this.setData({ districtIndex: idx, 'filters.district': val }, () => this.loadList(true))
   },
 
   onSortChange(e) {
