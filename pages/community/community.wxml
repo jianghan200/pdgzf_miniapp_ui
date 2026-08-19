@@ -6,7 +6,7 @@
   <view style="height: {{ CustomBar }}px; display: flex; flex-direction: row; align-items: center;">
     <view class="title" style="margin-top: 30px;" bindtap="backToParent">
       <text class="cuIcon-back text-bold"></text>
-      <text class="text-bold">{{tools.sliceOf(pName)}}</text>
+      <text class="text-bold">PD租房 - {{tools.sliceOf(pName)}}   </text>
     </view>
   </view>
 

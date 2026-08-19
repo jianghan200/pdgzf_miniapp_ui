@@ -1,7 +1,7 @@
 <cu-custom bgColor="bg-black" isBack="{{!isRoot}}">
   <view slot="backText">返回</view>
   <view slot="content">
-    <view class="text-white text-bold">房源详情</view>
+    <view class="text-white text-bold">PD租房 - 房源详情</view>
   </view>
 </cu-custom>
 <!-- 冷启动/分享进入（栈底）时：导航栏左侧市场图标，替代不可用的返回键 -->
