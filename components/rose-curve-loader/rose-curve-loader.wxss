@@ -1,0 +1,9 @@
+.rose-curve-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rose-canvas {
+  display: block;
+}

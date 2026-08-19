@@ -1,4 +1,5 @@
 {
   "usingComponents": {
+    "rose-curve-loader": "/components/rose-curve-loader/rose-curve-loader"
   }
 }

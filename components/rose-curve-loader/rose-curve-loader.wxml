@@ -1,0 +1,3 @@
+<view class="rose-curve-wrapper" style="width:{{size}}px;height:{{size}}px;">
+  <canvas type="2d" id="roseCanvas" class="rose-canvas" style="width:{{size}}px;height:{{size}}px;"></canvas>
+</view>

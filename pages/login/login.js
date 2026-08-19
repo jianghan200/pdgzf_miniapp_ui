@@ -6,6 +6,7 @@ const log = require('./../../utils/log')
 
 Page({
   data: {
+    loaderSize: 120
   },
   
   onLoad(options) {
