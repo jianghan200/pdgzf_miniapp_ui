@@ -1,29 +1,117 @@
 <cu-custom bgColor="bg-black" isBack="{{true}}">
   <view slot="backText">返回</view>
   <view slot="content">
-    <view class="text-white text-bold"></view>
+    <view class="text-white text-bold">审核后台</view>
   </view>
 </cu-custom>
 <view style="background-color: #f5f5f5; min-height: 100vh;">
-  <view class="header">
-    <text class="title">审核后台</text>
-    <view class="nav-row">
-      <view class="nav-item active">房源审核</view>
-      <view class="nav-item" bindtap="goComments">评论审核</view>
-      <view class="nav-item" bindtap="goReports">举报处理</view>
-      <view class="nav-item" bindtap="goDeposits">退款审核</view>
-      <view class="nav-item" bindtap="goAuths">认证审核</view>
-    </view>
+  <!-- 顶部导航标签 -->
+  <view class="nav-bar">
+    <scroll-view scroll-x class="nav-scroll">
+      <view class="nav-tabs">
+        <view class="nav-tab active">房源审核</view>
+        <view class="nav-tab" bindtap="goComments">评论审核</view>
+        <view class="nav-tab" bindtap="goReports">举报处理</view>
+        <view class="nav-tab" bindtap="goDeposits">退款审核</view>
+        <view class="nav-tab" bindtap="goAuths">认证审核</view>
+      </view>
+    </scroll-view>
   </view>
-  <view class="list">
-    <view class="card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="openDetail">
-      <view class="card-title">{{item.title}}</view>
-      <view class="card-meta">{{item.district}} · {{item.house_type}} · {{item.area}}㎡ · ¥{{item.rent}}/月</view>
-      <view class="card-actions">
-        <button class="cu-btn bg-green sm" data-id="{{item.id}}" catchtap="approve">通过</button>
-        <button class="cu-btn bg-gray sm" data-id="{{item.id}}" catchtap="openDetail">查看详情</button>
+
+  <!-- 统计摘要 -->
+  <view class="stats-bar" wx:if="{{!loading && total > 0}}">
+    <text class="stats-text">待审核 {{total}} 条</text>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-wrap" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 房源列表 -->
+  <view class="list" wx:if="{{!loading}}">
+    <view class="house-card" wx:for="{{list}}" wx:key="id">
+      <!-- 主内容区：左右布局 -->
+      <view class="card-body" data-id="{{item.id}}" bindtap="openDetail">
+        <!-- 左侧缩略图 -->
+        <view class="card-thumb">
+          <image
+            wx:if="{{item.cover_url}}"
+            src="{{item.cover_url}}"
+            mode="aspectFill"
+            class="thumb-img"
+          />
+          <view class="thumb-placeholder" wx:else>
+            <text class="placeholder-text">暂无图</text>
+          </view>
+          <view class="source-badge {{item.source_type === 'personal' ? 'badge-personal' : 'badge-normal'}}">
+            <text>{{item.source_type_label}}</text>
+          </view>
+        </view>
+
+        <!-- 右侧信息 -->
+        <view class="card-info">
+          <!-- 标题 + 租金 -->
+          <view class="info-header">
+            <text class="info-title">{{item.title || item.address_name || item.address}}</text>
+            <text class="info-rent">{{item.rent_display}}</text>
+          </view>
+          <!-- 位置 -->
+          <text class="info-location">{{item.district}} {{item.town}}</text>
+          <!-- 关键指标 2x3 网格 -->
+          <view class="info-grid">
+            <view class="grid-cell">
+              <text class="cell-label">户型</text>
+              <text class="cell-value">{{item.house_type || '--'}}</text>
+            </view>
+            <view class="grid-cell">
+              <text class="cell-label">面积</text>
+              <text class="cell-value">{{item.area || '--'}}㎡</text>
+            </view>
+            <view class="grid-cell">
+              <text class="cell-label">楼层</text>
+              <text class="cell-value">{{item.floor_desc || '--'}}</text>
+            </view>
+            <view class="grid-cell">
+              <text class="cell-label">朝向</text>
+              <text class="cell-value">{{item.orientation_label || '--'}}</text>
+            </view>
+            <view class="grid-cell">
+              <text class="cell-label">租期</text>
+              <text class="cell-value" wx:if="{{item.min_lease || item.max_lease}}">{{item.min_lease || 0}}-{{item.max_lease || 0}}月</text>
+              <text class="cell-value" wx:else>--</text>
+            </view>
+            <view class="grid-cell">
+              <text class="cell-label">付款</text>
+              <text class="cell-value">{{item.payment_type || '--'}}</text>
+            </view>
+          </view>
+          <!-- 标签行 -->
+          <view class="info-tags">
+            <text class="itag itag-type">{{item.rent_type_label}}</text>
+            <text class="itag itag-sec" wx:if="{{item.property_type_label}}">{{item.property_type_label}}</text>
+            <text class="itag itag-sec" wx:if="{{item.elevator === 1}}">电梯</text>
+            <text class="itag itag-sec" wx:if="{{item.pet_friendly === 1}}">可养宠</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 操作栏 -->
+      <view class="card-footer">
+        <text class="footer-time">{{item.create_time || ''}}</text>
+        <view class="footer-actions">
+          <button class="btn-approve" data-id="{{item.id}}" catchtap="approve">通过</button>
+          <button class="btn-detail" data-id="{{item.id}}" catchtap="openDetail">详情</button>
+        </view>
       </view>
     </view>
   </view>
-  <view class="empty" wx:if="{{!loading && list.length == 0}}">暂无待审房源</view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!loading && list.length == 0}}">
+    <view class="empty-icon">✓</view>
+    <text class="empty-title">全部审核完毕</text>
+    <text class="empty-desc">暂无待审房源</text>
+  </view>
 </view>

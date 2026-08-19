@@ -1,11 +1,293 @@
-.header { background: #fff; padding: 20rpx 24rpx; box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04); }
-.title { font-size: 36rpx; font-weight: bold; }
-.nav-row { display: flex; gap: 20rpx; margin-top: 16rpx; overflow-x: auto; }
-.nav-item { font-size: 26rpx; color: #666; padding: 8rpx 20rpx; border-radius: 20rpx; background: #f5f5f5; }
-.nav-item.active { background: #e54d42; color: #fff; }
-.list { padding: 20rpx; }
-.card { background: #fff; border-radius: 16rpx; padding: 24rpx; margin-bottom: 20rpx; }
-.card-title { font-size: 30rpx; font-weight: bold; }
-.card-meta { font-size: 24rpx; color: #999; margin-top: 8rpx; }
-.card-actions { display: flex; gap: 16rpx; margin-top: 16rpx; }
-.empty { text-align: center; padding: 200rpx; color: #999; }
+/* ========== 导航栏 ========== */
+.nav-bar {
+  background: #fff;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.06);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.nav-scroll {
+  white-space: nowrap;
+}
+.nav-tabs {
+  display: flex;
+  padding: 16rpx 20rpx;
+  gap: 12rpx;
+}
+.nav-tab {
+  display: inline-flex;
+  font-size: 24rpx;
+  color: #666;
+  padding: 10rpx 24rpx;
+  border-radius: 32rpx;
+  background: #f0f0f0;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.nav-tab.active {
+  background: #e54d42;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ========== 统计栏 ========== */
+.stats-bar {
+  padding: 12rpx 24rpx;
+  background: #fffbe6;
+  border-bottom: 1rpx solid #fff1b8;
+}
+.stats-text {
+  font-size: 24rpx;
+  color: #d48806;
+  font-weight: 500;
+}
+
+/* ========== 加载状态 ========== */
+.loading-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 200rpx 0;
+}
+.loading-spinner {
+  width: 48rpx;
+  height: 48rpx;
+  border: 4rpx solid #e5e5e5;
+  border-top-color: #e54d42;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.loading-text {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 16rpx;
+}
+
+/* ========== 列表容器 ========== */
+.list {
+  padding: 16rpx 20rpx;
+}
+
+/* ========== 房源卡片 ========== */
+.house-card {
+  background: #fff;
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+}
+
+/* 主内容区：左右布局 */
+.card-body {
+  display: flex;
+  padding: 20rpx;
+  gap: 20rpx;
+}
+
+/* ========== 缩略图 ========== */
+.card-thumb {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 12rpx;
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+  background: #f5f5f5;
+}
+.thumb-img {
+  width: 100%;
+  height: 100%;
+}
+.thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+}
+.placeholder-text {
+  font-size: 22rpx;
+  color: #ccc;
+}
+.source-badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx 0 12rpx 0;
+  font-size: 18rpx;
+  color: #fff;
+}
+.badge-personal {
+  background: linear-gradient(135deg, #ff9800, #f57c00);
+}
+.badge-normal {
+  background: linear-gradient(135deg, #42a5f5, #1e88e5);
+}
+
+/* ========== 信息区 ========== */
+.card-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+/* 标题行 */
+.info-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12rpx;
+}
+.info-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.3;
+}
+.info-rent {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #e54d42;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* 位置 */
+.info-location {
+  font-size: 22rpx;
+  color: #999;
+  line-height: 1.3;
+}
+
+/* 指标网格 2列 */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rpx 16rpx;
+  margin-top: 4rpx;
+}
+.grid-cell {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+.cell-label {
+  font-size: 20rpx;
+  color: #aaa;
+  flex-shrink: 0;
+}
+.cell-value {
+  font-size: 22rpx;
+  color: #444;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 标签行 */
+.info-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+  margin-top: 4rpx;
+}
+.itag {
+  font-size: 18rpx;
+  padding: 2rpx 10rpx;
+  border-radius: 6rpx;
+  line-height: 1.6;
+}
+.itag-type {
+  background: #fff0f0;
+  color: #e54d42;
+}
+.itag-sec {
+  background: #f0f5ff;
+  color: #597ef7;
+}
+
+/* ========== 操作栏 ========== */
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12rpx 20rpx;
+  border-top: 1rpx solid #f5f5f5;
+  background: #fafafa;
+}
+.footer-time {
+  font-size: 20rpx;
+  color: #bbb;
+}
+.footer-actions {
+  display: flex;
+  gap: 12rpx;
+}
+.btn-approve {
+  font-size: 24rpx;
+  color: #fff;
+  background: #52c41a;
+  border: none;
+  padding: 8rpx 28rpx;
+  border-radius: 8rpx;
+  line-height: 1.4;
+  min-height: auto;
+}
+.btn-approve::after {
+  border: none;
+}
+.btn-detail {
+  font-size: 24rpx;
+  color: #666;
+  background: #f0f0f0;
+  border: none;
+  padding: 8rpx 28rpx;
+  border-radius: 8rpx;
+  line-height: 1.4;
+  min-height: auto;
+}
+.btn-detail::after {
+  border: none;
+}
+
+/* ========== 空状态 ========== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 240rpx 0;
+}
+.empty-icon {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: #f0f9eb;
+  color: #52c41a;
+  font-size: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20rpx;
+}
+.empty-title {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+.empty-desc {
+  font-size: 24rpx;
+  color: #bbb;
+}

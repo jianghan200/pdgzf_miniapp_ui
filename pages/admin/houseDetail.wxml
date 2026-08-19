@@ -1,36 +1,266 @@
 <cu-custom bgColor="bg-black" isBack="{{true}}">
   <view slot="backText">返回</view>
   <view slot="content">
-    <view class="text-white text-bold"></view>
+    <view class="text-white text-bold">房源详情</view>
   </view>
 </cu-custom>
-<view style="background-color: #f5f5f5; min-height: 100vh; padding-bottom: 40rpx;">
-  <view class="loading" wx:if="{{loading}}">加载中...</view>
+<view style="background-color: #f5f5f5; min-height: 100vh; padding-bottom: 140rpx;">
+  <!-- 加载状态 -->
+  <view class="loading-wrap" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
   <block wx:if="{{detail}}">
-    <swiper class="media" wx:if="{{detail.media_urls.length > 0}}" indicator-dots circular>
-      <swiper-item wx:for="{{detail.media_urls}}" wx:key="*this"><image src="{{item}}" mode="aspectFill" class="media-img"/></swiper-item>
-    </swiper>
-    <view class="section">
-      <view class="title">{{detail.title}}</view>
-      <view class="meta">{{detail.district}} {{detail.town}} {{detail.address}}</view>
-      <view class="meta">{{detail.house_type}} · {{detail.area}}㎡ · ¥{{detail.rent}}/月</view>
-      <view class="meta">联系人：{{detail.contact_name}} {{detail.contact_phone}}</view>
-      <view class="meta">付款：{{detail.payment_type}} · 租期：{{detail.min_lease}}-{{detail.max_lease}}月</view>
+    <!-- ===== 照片画廊 ===== -->
+    <view class="gallery-section" wx:if="{{detail.medias.length > 0}}">
+      <swiper class="gallery-swiper" indicator-dots indicator-color="rgba(255,255,255,0.5)" indicator-active-color="#fff" circular autoplay>
+        <swiper-item wx:for="{{detail.medias}}" wx:key="id">
+          <image src="{{item.url}}" mode="aspectFill" class="gallery-img" />
+        </swiper-item>
+      </swiper>
+      <view class="gallery-count">
+        <text>1/{{detail.medias.length}}</text>
+      </view>
     </view>
+
+    <!-- ===== 标题 + 租金 ===== -->
+    <view class="section info-hero">
+      <view class="hero-top">
+        <text class="hero-title">{{detail.title || detail.address_name || detail.address}}</text>
+        <view class="status-tag" wx:if="{{detail.status === 0}}">
+          <text>待审核</text>
+        </view>
+      </view>
+      <view class="hero-rent">{{detail.rent_display}}</view>
+      <view class="hero-location">
+        <text>{{detail.district}} {{detail.town}} {{detail.address}}</text>
+      </view>
+    </view>
+
+    <!-- ===== 核心指标网格 ===== -->
+    <view class="section">
+      <view class="section-header">
+        <view class="section-dot"></view>
+        <text class="section-title">房源信息</text>
+      </view>
+      <view class="stats-grid">
+        <view class="stat-card">
+          <text class="stat-num">{{detail.area || '--'}}</text>
+          <text class="stat-unit">㎡ 面积</text>
+        </view>
+        <view class="stat-card">
+          <text class="stat-num">{{detail.house_type || '--'}}</text>
+          <text class="stat-unit">户型</text>
+        </view>
+        <view class="stat-card">
+          <text class="stat-num">{{detail.floor_desc || '--'}}</text>
+          <text class="stat-unit">楼层</text>
+        </view>
+        <view class="stat-card">
+          <text class="stat-num">{{detail.orientation_label || '--'}}</text>
+          <text class="stat-unit">朝向</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 详细属性 ===== -->
+    <view class="section">
+      <view class="section-header">
+        <view class="section-dot"></view>
+        <text class="section-title">详细属性</text>
+      </view>
+      <view class="detail-rows">
+        <view class="detail-row" wx:if="{{detail.rent_type_label}}">
+          <text class="row-label">租赁方式</text>
+          <text class="row-value">{{detail.rent_type_label}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{detail.property_type_label}}">
+          <text class="row-label">房屋类型</text>
+          <text class="row-value">{{detail.property_type_label}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{detail.building_type_label}}">
+          <text class="row-label">建筑类型</text>
+          <text class="row-value">{{detail.building_type_label}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="row-label">电梯</text>
+          <text class="row-value">{{detail.elevator === 1 ? '有' : '无'}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{detail.bedrooms}}">
+          <text class="row-label">卧室 / 客厅 / 卫</text>
+          <text class="row-value">{{detail.bedrooms}}室{{detail.living_rooms}}厅{{detail.bathrooms}}卫</text>
+        </view>
+        <view class="detail-row" wx:if="{{detail.total_area && detail.total_area != detail.area}}">
+          <text class="row-label">总面积</text>
+          <text class="row-value">{{detail.total_area}}㎡</text>
+        </view>
+        <view class="detail-row" wx:if="{{detail.bedroom_area}}">
+          <text class="row-label">卧室面积</text>
+          <text class="row-value">{{detail.bedroom_area}}㎡</text>
+        </view>
+        <view class="detail-row">
+          <text class="row-label">付款方式</text>
+          <text class="row-value">{{detail.payment_type || '面议'}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{detail.min_lease || detail.max_lease}}">
+          <text class="row-label">租期</text>
+          <text class="row-value">{{detail.lease_desc}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{detail.available_date_display}}">
+          <text class="row-label">可入住</text>
+          <text class="row-value">{{detail.available_date_display}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{detail.gas === 1 || detail.gas === 0}}">
+          <text class="row-label">燃气</text>
+          <text class="row-value">{{detail.gas === 1 ? '有' : '无'}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{detail.civil_meters}}">
+          <text class="row-label">民用水电</text>
+          <text class="row-value">{{detail.civil_meters === 1 ? '是' : '商水商电'}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{detail.gender_limit}}">
+          <text class="row-label">性别限制</text>
+          <text class="row-value">{{detail.gender_limit}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{detail.property_fee}}">
+          <text class="row-label">物业费</text>
+          <text class="row-value">{{detail.property_fee}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{detail.parking_fee}}">
+          <text class="row-label">停车费</text>
+          <text class="row-value">{{detail.parking_fee}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 特色标签 ===== -->
+    <view class="section" wx:if="{{detail.pet_friendly === 1 || detail.private_kitchen === 1 || detail.south === 1}}">
+      <view class="section-header">
+        <view class="section-dot"></view>
+        <text class="section-title">特色</text>
+      </view>
+      <view class="tag-row">
+        <text class="feat-tag feat-active" wx:if="{{detail.pet_friendly === 1}}">可养宠</text>
+        <text class="feat-tag feat-active" wx:if="{{detail.private_kitchen === 1}}">独立厨房</text>
+        <text class="feat-tag feat-active" wx:if="{{detail.south === 1}}">朝南</text>
+        <text class="feat-tag feat-active" wx:if="{{detail.elevator === 1}}">有电梯</text>
+      </view>
+    </view>
+
+    <!-- ===== 房源描述 ===== -->
     <view class="section" wx:if="{{detail.description}}">
-      <view class="section-title">描述</view><view class="desc">{{detail.description}}</view>
+      <view class="section-header">
+        <view class="section-dot"></view>
+        <text class="section-title">房源描述</text>
+      </view>
+      <text class="desc-text">{{detail.description}}</text>
     </view>
+
+    <!-- ===== 设施配套 ===== -->
     <view class="section" wx:if="{{detail.facilities_arr.length > 0}}">
-      <view class="section-title">设施</view>
-      <view class="tags"><text class="tag" wx:for="{{detail.facilities_arr}}" wx:key="*this">{{item}}</text></view>
+      <view class="section-header">
+        <view class="section-dot"></view>
+        <text class="section-title">设施配套</text>
+      </view>
+      <view class="tag-wrap">
+        <text class="facility-tag" wx:for="{{detail.facilities_arr}}" wx:key="*this">{{item}}</text>
+      </view>
     </view>
+
+    <!-- ===== 周边设施 ===== -->
+    <view class="section" wx:if="{{detail.nearby_arr.length > 0}}">
+      <view class="section-header">
+        <view class="section-dot"></view>
+        <text class="section-title">周边设施</text>
+      </view>
+      <view class="tag-wrap">
+        <text class="nearby-tag" wx:for="{{detail.nearby_arr}}" wx:key="*this">{{item}}</text>
+      </view>
+    </view>
+
+    <!-- ===== 联系方式 ===== -->
+    <view class="section" wx:if="{{detail.contact_name || detail.contact_phone}}">
+      <view class="section-header">
+        <view class="section-dot"></view>
+        <text class="section-title">联系方式</text>
+      </view>
+      <view class="contact-card">
+        <view class="contact-row" wx:if="{{detail.contact_name}}">
+          <text class="contact-label">联系人</text>
+          <text class="contact-value">{{detail.contact_name}}</text>
+        </view>
+        <view class="contact-row" wx:if="{{detail.contact_phone}}">
+          <text class="contact-label">电话</text>
+          <text class="contact-value contact-phone">{{detail.contact_phone}}</text>
+        </view>
+        <view class="contact-row" wx:if="{{detail.contact_wechat}}">
+          <text class="contact-label">微信</text>
+          <text class="contact-value">{{detail.contact_wechat}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ===== 来源信息 ===== -->
     <view class="section">
-      <view class="section-title">驳回原因</view>
-      <textarea class="textarea" placeholder="如信息不实、图片不清晰等" value="{{rejectComment}}" bindinput="onRejectInput" maxlength="500"/>
+      <view class="section-header">
+        <view class="section-dot"></view>
+        <text class="section-title">来源信息</text>
+      </view>
+      <view class="detail-rows">
+        <view class="detail-row">
+          <text class="row-label">来源类型</text>
+          <text class="row-value">{{detail.source_type_label}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{detail.source_platform}}">
+          <text class="row-label">来源平台</text>
+          <text class="row-value">{{detail.source_platform}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{detail.subway_info}}">
+          <text class="row-label">地铁信息</text>
+          <text class="row-value">{{detail.subway_info}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="row-label">浏览 / 联系</text>
+          <text class="row-value">{{detail.view_count || 0}} / {{detail.contact_count || 0}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="row-label">发布时间</text>
+          <text class="row-value">{{detail.create_time}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{detail.is_vip === 1}}">
+          <text class="row-label">VIP</text>
+          <text class="row-value vip-text">VIP 用户</text>
+        </view>
+        <view class="detail-row" wx:if="{{detail.is_ai === 1}}">
+          <text class="row-label">AI 发布</text>
+          <text class="row-value">AI 自动生成</text>
+        </view>
+      </view>
     </view>
-    <view class="actions">
-      <button class="cu-btn bg-green lg" bindtap="approve" style="flex:1;">通过</button>
-      <button class="cu-btn bg-red lg" bindtap="reject" style="flex:1;">驳回</button>
+
+    <!-- ===== 驳回原因 ===== -->
+    <view class="section">
+      <view class="section-header">
+        <view class="section-dot dot-warn"></view>
+        <text class="section-title">驳回原因</text>
+      </view>
+      <view class="reject-wrap">
+        <textarea
+          class="reject-input"
+          placeholder="如信息不实、图片不清晰等"
+          value="{{rejectComment}}"
+          bindinput="onRejectInput"
+          maxlength="500"
+        />
+        <text class="reject-count">{{rejectComment.length || 0}}/500</text>
+      </view>
     </view>
   </block>
+</view>
+
+<!-- ===== 底部固定操作栏 ===== -->
+<view class="action-bar" wx:if="{{!loading}}">
+  <button class="bar-btn bar-reject" bindtap="reject">驳回</button>
+  <button class="bar-btn bar-approve" bindtap="approve">审核通过</button>
 </view>
