@@ -198,7 +198,7 @@ const loadProjectHouseInfo = function() {
 
 // 开启某个小区的订阅
 const subscribe = function(pid, pname) {
-  const url = constants.userinfoServer + '/rule/'
+  const url = constants.userinfoServer + '/rule'
   const header = {
     'content-type' : 'application/json',
     'token': app.globalData.userinfo.tokenStr 
@@ -261,7 +261,7 @@ const unsubscribe = function(ruleId) {
 
 // 更新订阅规则
 const updateSubscription = function(pid, name, payload) {
-  const url = constants.userinfoServer + '/rule/'
+  const url = constants.userinfoServer + '/rule'
   const header = {
     'content-type' : 'application/json',
     'token': app.globalData.userinfo.tokenStr
