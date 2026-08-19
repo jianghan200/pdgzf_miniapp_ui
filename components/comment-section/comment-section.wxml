@@ -22,7 +22,7 @@
             <text class="cs-vip-icon">V</text>
           </view>
           <text class="cs-pending-tag" wx:if="{{item.status == 0}}">审核中</text>
-          <text class="cs-private-tag" wx:if="{{item.is_private == 1}}">仅房东可见</text>
+          <text class="cs-private-tag" wx:if="{{item.is_private == 1 && targetType !== 'shbzf_project'}}">仅房东可见</text>
         </view>
         <view class="cs-content">{{item.content}}</view>
 
@@ -152,8 +152,8 @@
       </view>
     </view>
 
-    <!-- 仅房东可见 -->
-    <view class="cs-private-row" wx:if="{{!replyingTo}}" catchtap="togglePrivate">
+    <!-- 仅房东可见（保租房项目无房东概念，隐藏此按钮） -->
+    <view class="cs-private-row" wx:if="{{!replyingTo && targetType !== 'shbzf_project'}}" catchtap="togglePrivate">
       <view class="cs-private-toggle {{isPrivate ? 'cs-private-toggle-on' : ''}}">
         <view class="cs-private-knob"></view>
       </view>
