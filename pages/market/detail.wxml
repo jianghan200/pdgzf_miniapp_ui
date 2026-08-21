@@ -377,7 +377,7 @@
         <view class="dlg-credit-row" wx:if="{{creditConfigEnabled}}">
           <text class="dlg-credit-label">积分余额</text>
           <text class="dlg-credit-num {{creditBalance <= 0 ? 'dlg-credit-empty' : ''}}">{{creditBalance}}</text>
-          <text class="dlg-credit-action" wx:if="{{creditBalance <= 0}}" catchtap="goShareForCredit">去赚取 ›</text>
+          <button class="dlg-credit-action" wx:if="{{creditBalance <= 0}}" open-type="share">去赚取 ›</button>
         </view>
 
         <!-- 双按钮 -->
@@ -387,7 +387,7 @@
             <text class="dlg-free-tag">免费</text>
           </button>
           <button class="dlg-free-btn dlg-free-btn-credit {{creditBalance <= 0 ? 'dlg-free-btn-off' : ''}}"
-                  bindtap="{{creditBalance > 0 ? 'doUnlockByCredit' : 'goShareForCredit'}}">
+                  bindtap="{{creditBalance > 0 ? 'doUnlockByCredit' : 'closeUnlockDialog'}}">
             <text class="dlg-free-main">{{creditBalance > 0 ? '积分解锁' : '去赚积分'}}</text>
             <text class="dlg-free-tag">{{creditBalance > 0 ? '1积分' : '+5/人'}}</text>
           </button>
@@ -399,11 +399,11 @@
           <text class="dlg-free-tag">免费</text>
         </button>
 
-        <!-- 分享赚积分（紧凑文字链） -->
-        <view class="dlg-share-link" wx:if="{{creditConfigEnabled}}" catchtap="goShareForCredit">
+        <!-- 分享赚积分（紧凑文字链） — open-type="share" 直接触发原生分享 -->
+        <button class="dlg-share-link" wx:if="{{creditConfigEnabled}}" open-type="share">
           <text class="dlg-share-text">分享任意页面给新用户，每人得 5 积分</text>
           <text class="dlg-share-arrow">›</text>
-        </view>
+        </button>
       </view>
 
       <!-- 底部关闭 -->

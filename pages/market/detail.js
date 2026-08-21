@@ -575,33 +575,7 @@ Page({
     }
   },
 
-  // 分享赚积分（点击后触发分享）
-  goShareForCredit() {
-    // 如果未登录，先引导登录
-    if (!this._isLogin()) {
-      this.closeUnlockDialog()
-      wx.showModal({
-        title: '请先登录',
-        content: '登录后即可分享赚取积分',
-        confirmText: '去登录',
-        success: (r) => {
-          if (r.confirm) {
-            const redirect = '/pages/market/detail?id=' + this.data.id
-            wx.navigateTo({ url: '/pages/login/login?redirect=' + encodeURIComponent(redirect) })
-          }
-        }
-      })
-      return
-    }
-    // 已登录：触发分享（小程序分享只能由用户主动触发，这里给个提示引导）
-    this.closeUnlockDialog()
-    wx.showModal({
-      title: '分享赚积分',
-      content: '点击右上角"..."菜单，选择"转发"给好友。好友打开后你可获得5积分！',
-      confirmText: '知道了',
-      showCancel: false,
-    })
-  },
+  // goShareForCredit 已移除：改用 <button open-type="share"> 直接触发原生分享
 
   buyVipInDialog(e) {
     const period = parseInt(e.currentTarget.dataset.period)
@@ -723,11 +697,13 @@ Page({
     const path = userId
       ? '/pages/market/detail?id=' + this.data.id + '&inviter_uid=' + userId
       : '/pages/market/detail?id=' + this.data.id
+    const page = this
     return {
       title: title,
       path: '/pages/login/login?redirect=' + encodeURIComponent(path),
       imageUrl: '',
       success(res) {
+        page.closeUnlockDialog()
         if (res.errMsg === 'shareAppMessage:ok') {
           if (userId) {
             wx.showToast({ title: '好友打开后你将获得5积分', icon: 'none', duration: 3000 })
@@ -737,6 +713,7 @@ Page({
         }
       },
       fail(err) {
+        page.closeUnlockDialog()
         if (err.errMsg === 'shareAppMessage:fail cancel') wx.showToast({ title: '转发已取消' })
         else wx.showToast({ title: '转发失败' })
       }

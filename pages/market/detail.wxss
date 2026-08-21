@@ -856,7 +856,15 @@
 .dlg-credit-action {
   color: #3b82f6; font-size: 24rpx;
   margin-left: 8rpx;
+  display: inline;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  line-height: normal;
+  min-height: auto;
 }
+.dlg-credit-action::after { border: none; }
 .dlg-credit-action:active { opacity: 0.6; }
 
 /* 免费按钮行 */
@@ -908,7 +916,14 @@
   display: flex; align-items: center; justify-content: center;
   gap: 6rpx;
   padding: 12rpx 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  line-height: normal;
+  font-size: inherit;
+  color: inherit;
 }
+.dlg-share-link::after { border: none; }
 .dlg-share-link:active { opacity: 0.6; }
 .dlg-share-text {
   font-size: 24rpx; color: #3b82f6;
