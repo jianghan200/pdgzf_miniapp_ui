@@ -13,6 +13,119 @@
   font-size: 24rpx;
   color: #999;
 }
+/* 通知轮播栏 */
+.notice-bar {
+  background: #fffbe6;
+  border: 1rpx solid #ffe58f;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  padding: 0 20rpx;
+  height: 72rpx;
+  overflow: hidden;
+  margin-bottom: 12rpx;
+}
+.notice-icon-wrap {
+  flex-shrink: 0;
+  margin-right: 12rpx;
+}
+.notice-icon {
+  font-size: 28rpx;
+}
+.notice-swiper {
+  flex: 1;
+  height: 72rpx;
+}
+.notice-item {
+  display: flex;
+  align-items: center;
+  height: 72rpx;
+  padding: 0 4rpx;
+}
+.notice-text {
+  font-size: 26rpx;
+  color: #8c6e00;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  line-height: 72rpx;
+}
+.notice-dot {
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 50%;
+  background: #faad14;
+  margin-left: 12rpx;
+  flex-shrink: 0;
+  animation: dot-pulse 2s ease-in-out infinite;
+}
+@keyframes dot-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+/* Hero Banner — 近3天新房源数 */
+.hero-banner {
+  margin: 12rpx 0 0;
+  border-radius: 16rpx;
+  overflow: hidden;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 8rpx 32rpx rgba(102, 126, 234, 0.35);
+}
+.hero-inner {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 28rpx;
+}
+.hero-left {
+  display: flex;
+  align-items: center;
+  margin-right: 20rpx;
+}
+.hero-pulse {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: #4ade80;
+  margin-right: 12rpx;
+  animation: hero-pulse 2s ease-in-out infinite;
+}
+@keyframes hero-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.5); }
+}
+.hero-text-group {
+  display: flex;
+  align-items: baseline;
+}
+.hero-count {
+  font-size: 52rpx;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: -1rpx;
+}
+.hero-label {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.85);
+  margin-left: 8rpx;
+  font-weight: 500;
+}
+.hero-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.hero-desc {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+}
+.hero-sub {
+  font-size: 20rpx;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 4rpx;
+}
 .header-row {
   display: flex;
   align-items: center;

@@ -241,6 +241,10 @@ const getGateStatus = (houseId) => _get(`/gate/status?house_id=${houseId}`)
 const unlockGate = (data) => _post('/gate/unlock', data)
 const reportAbEvent = (data) => _post('/ab/event', data)
 
+// === 公告/通知 ===
+const getActiveNotices = () => _get('/notice/active')
+const getNewHouseCount = (days) => _get('/market/house/new_count?days=' + (days || 3))
+
 // === 看房预约 ===
 const createViewing = (data) => _post('/viewing/create', data)
 const getViewingList = (role, status, page, size) => {
@@ -392,5 +396,8 @@ module.exports = {
   getChatMessages,
   sendChatMessage,
   getChatUnread,
-  uploadChatImage
+  uploadChatImage,
+  // 公告/通知
+  getActiveNotices,
+  getNewHouseCount,
 }

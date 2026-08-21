@@ -6,36 +6,50 @@
 </cu-custom>
 
 <view style="background-color: #f5f5f5; min-height: 100vh; padding-bottom: 140rpx;">
+  <!-- 消息头部 -->
   <view class="header">
     <text class="title">{{houseId ? '房源咨询' : '我的消息'}}</text>
     <text class="sub" wx:if="{{list.length}}">共 {{list.length}} 个会话</text>
   </view>
 
+  <!-- 消息列表 -->
   <view class="list">
     <view class="conv-card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="openChat">
-      <image class="avatar" src="{{item.house_cover || item.peer_avatar || '/assets/user.png'}}" mode="aspectFill"/>
+      <view class="avatar-wrap">
+        <image class="avatar" src="{{item.house_cover || item.peer_avatar || '/assets/user.png'}}" mode="aspectFill"/>
+        <view class="online-dot" wx:if="{{item.is_online}}"></view>
+      </view>
       <view class="conv-main">
         <view class="conv-top">
           <text class="conv-name">{{item.peer_nickname}}</text>
           <text class="conv-time">{{item.last_msg_time || ''}}</text>
         </view>
         <view class="conv-house" wx:if="{{item.house_title}}">
-          <text class="house-icon">🏠</text>
-          <text class="house-text">{{item.house_title}}</text>
+          <view class="house-tag">
+            <text class="house-tag-icon">🏠</text>
+            <text class="house-text">{{item.house_title}}</text>
+          </view>
         </view>
         <view class="conv-bottom">
           <text class="conv-last {{item.unread ? 'unread-text' : ''}}">{{item.last_message}}</text>
           <view class="conv-right">
             <view class="badge" wx:if="{{item.unread}}">{{item.unread > 99 ? '99+' : item.unread}}</view>
-            <view class="del" catchtap="onDelete" data-id="{{item.id}}">删除</view>
+            <view class="del" catchtap="onDelete" data-id="{{item.id}}">
+              <text class="del-icon">✕</text>
+            </view>
           </view>
         </view>
       </view>
     </view>
   </view>
 
+  <!-- 空状态 -->
   <view class="empty" wx:if="{{!loading && list.length == 0}}">
-    <text>{{houseId ? '暂无租客咨询' : '暂无消息'}}</text>
-    <view class="empty-btn" bindtap="goPublish" wx:if="{{!houseId}}">去市场看看房源</view>
+    <view class="empty-illustration">
+      <text class="empty-emoji">💬</text>
+    </view>
+    <text class="empty-title">{{houseId ? '暂无租客咨询' : '暂无消息'}}</text>
+    <text class="empty-desc">去看看最新房源，找到心仪的房子吧</text>
+    <view class="empty-btn" bindtap="goPublish" wx:if="{{!houseId}}">浏览房源</view>
   </view>
 </view>

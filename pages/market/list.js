@@ -67,6 +67,8 @@ Page({
     hasMore: true,
     loading: false,
     keyword: '',
+    notices: [],
+    newHouseCount: 0,
     filters: {
       district: '',
       rent_min: '',
@@ -122,6 +124,8 @@ Page({
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 1 })
     }
+    this.loadNotices()
+    this.loadNewHouseCount()
   },
 
   onPullDownRefresh() {
@@ -316,6 +320,34 @@ Page({
 
   goPublish() {
     wx.navigateTo({ url: '/pages/market/publish' })
+  },
+
+  loadNotices() {
+    market.getActiveNotices().then((res) => {
+      if (res && res.status === 0 && res.data && res.data.length > 0) {
+        this.setData({ notices: res.data })
+      }
+    })
+  },
+
+  loadNewHouseCount() {
+    market.getNewHouseCount(3).then((res) => {
+      if (res && res.status === 0 && res.data) {
+        this.setData({ newHouseCount: res.data.count || 0 })
+      }
+    })
+  },
+
+  onNoticeTap(e) {
+    const url = e.currentTarget.dataset.url
+    if (url) {
+      if (url.startsWith('http')) {
+        wx.setClipboardData({ data: url })
+        wx.showToast({ title: '链接已复制', icon: 'none' })
+      } else if (url.startsWith('/')) {
+        wx.navigateTo({ url })
+      }
+    }
   },
 
   onShareAppMessage() {

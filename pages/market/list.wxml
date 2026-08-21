@@ -25,10 +25,38 @@
         <text class="cuIcon-compare text-purple"></text>
         <text class="dim-text">房屋对比</text>
       </view>
-    </view> --> 
+    </view>  -->
 
-    <view class="slogan-row">
-      <text class="slogan-text">已过滤中介 · 最新房源实时更新 · 先看再聊</text>
+    <!-- 动态通知轮播 -->
+    <view class="notice-bar" wx:if="{{notices.length > 0}}">
+      <view class="notice-icon-wrap">
+        <text class="notice-icon">📢</text>
+      </view>
+      <swiper class="notice-swiper" autoplay="{{true}}" interval="{{3500}}" circular="{{true}}" vertical="{{true}}" display-multiple-items="1" duration="{{400}}">
+        <swiper-item wx:for="{{notices}}" wx:key="id" bindtap="onNoticeTap" data-url="{{item.link_url}}">
+          <view class="notice-item">
+            <text class="notice-text">{{item.title}}</text>
+          </view>
+        </swiper-item>
+      </swiper>
+      <view class="notice-dot"></view>
+    </view>
+
+    <!-- 🏠 近3天新房源 Hero Banner -->
+    <view class="hero-banner" wx:if="{{newHouseCount > 0}}" bindtap="scrollToTop">
+      <view class="hero-inner">
+        <view class="hero-left">
+          <view class="hero-pulse"></view>
+          <view class="hero-text-group">
+            <text class="hero-count">{{newHouseCount}}</text>
+            <text class="hero-label">套新房源</text>
+          </view>
+        </view>
+        <view class="hero-right">
+          <text class="hero-desc">近 3 天新上架</text>
+          <text class="hero-sub">实时房源更新中</text>
+        </view>
+      </view>
     </view>
 
     <!-- 搜索框 -->

@@ -5,7 +5,7 @@ Page({
     StatusBar: 0,
     list: [],
     loading: false,
-    houseId: 0
+    houseId: 0,
   },
 
   onLoad(options) {
@@ -48,11 +48,10 @@ Page({
     })
   },
 
-  // 刷新首页 tab 未读角标（通过页面通信或 storage）
+  // 刷新首页 tab 未读角标
   refreshBadge() {
     const total = (this.data.list || []).reduce((sum, c) => sum + (c.unread || 0), 0)
     wx.setStorageSync('chat_unread', total)
-    // 通知 tabBar 页面刷新角标（如"我的"页）
     try {
       const pages = getCurrentPages()
       pages.forEach(p => {
