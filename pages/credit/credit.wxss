@@ -1,0 +1,368 @@
+/* 积分中心页面样式 */
+
+.credit-header {
+  background: linear-gradient(135deg, #1a73e8, #0d47a1);
+  padding: 0 0 40rpx 0;
+  margin-bottom: 20rpx;
+}
+
+.credit-header-bg {
+  padding: 30rpx 30rpx 0;
+}
+
+.credit-balance-box {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 20rpx;
+  padding: 40rpx 30rpx;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.credit-label {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 16rpx;
+}
+
+.credit-balance {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  margin-bottom: 12rpx;
+}
+
+.credit-num {
+  font-size: 80rpx;
+  font-weight: bold;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.credit-unit {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-left: 8rpx;
+}
+
+.credit-total {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* 加载中 */
+.loading-box {
+  display: flex;
+  justify-content: center;
+  padding: 100rpx 0;
+}
+
+/* 通用区域 */
+.credit-section {
+  background: #ffffff;
+  margin: 0 24rpx 20rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  padding: 28rpx 28rpx 12rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-right: 12rpx;
+}
+
+.section-sub {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 赚积分渠道卡片 */
+.channel-card {
+  margin: 12rpx 24rpx;
+  border: 1rpx solid #f0f0f0;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+
+.channel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx;
+}
+
+.channel-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.channel-icon-wrap {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.04);
+  margin-right: 20rpx;
+  font-size: 36rpx;
+  flex-shrink: 0;
+}
+
+.channel-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.channel-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.channel-reward {
+  font-size: 24rpx;
+  color: #e54d42;
+  margin-top: 4rpx;
+}
+
+.channel-arrow {
+  font-size: 28rpx;
+  flex-shrink: 0;
+}
+
+.channel-body {
+  padding: 0 24rpx 24rpx;
+  border-top: 1rpx solid #f5f5f5;
+}
+
+.channel-desc {
+  display: flex;
+  flex-direction: column;
+  margin: 16rpx 0;
+}
+
+.channel-desc-text {
+  font-size: 24rpx;
+  color: #888;
+  line-height: 1.6;
+}
+
+.channel-btn {
+  margin-top: 12rpx;
+  width: 200rpx;
+}
+
+/* 广告进度条 */
+.ad-progress {
+  margin-top: 16rpx;
+  padding: 0 4rpx;
+}
+
+.ad-progress-bar {
+  height: 8rpx;
+  background: #f0f0f0;
+  border-radius: 4rpx;
+  overflow: hidden;
+}
+
+.ad-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #52c41a, #73d13d);
+  border-radius: 4rpx;
+  transition: width 0.3s ease;
+}
+
+/* 积分消耗 */
+.spend-card {
+  margin: 12rpx 24rpx;
+  border: 1rpx solid #f0f0f0;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+
+.spend-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+}
+
+.spend-icon-wrap {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.04);
+  margin-right: 20rpx;
+  font-size: 36rpx;
+  flex-shrink: 0;
+}
+
+.spend-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.spend-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.spend-desc {
+  font-size: 24rpx;
+  color: #888;
+  margin-top: 4rpx;
+}
+
+.spend-cost {
+  font-size: 26rpx;
+  color: #999;
+  flex-shrink: 0;
+}
+
+/* 兑换列表 */
+.exchange-list {
+  margin: 12rpx 24rpx;
+}
+
+.exchange-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.exchange-item:last-child {
+  border-bottom: none;
+}
+
+.exchange-icon-wrap {
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.exchange-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.exchange-name-row {
+  display: flex;
+  align-items: center;
+}
+
+.exchange-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.exchange-tag {
+  font-size: 20rpx;
+  color: #fff;
+  background: #e54d42;
+  padding: 2rpx 10rpx;
+  border-radius: 8rpx;
+  margin-left: 10rpx;
+  font-weight: normal;
+}
+
+.exchange-cost {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 4rpx;
+}
+
+.exchange-action {
+  flex-shrink: 0;
+}
+
+/* 邀请卡片 */
+.invite-card {
+  margin: 12rpx 24rpx 24rpx;
+  padding: 24rpx;
+  background: linear-gradient(135deg, #e6f7ff, #f0f5ff);
+  border-radius: 12rpx;
+}
+
+.invite-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24rpx;
+}
+
+.invite-stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.invite-stat-num {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #1a73e8;
+}
+
+.invite-stat-label {
+  font-size: 22rpx;
+  color: #888;
+  margin-top: 4rpx;
+}
+
+.invite-stat-divider {
+  width: 1rpx;
+  height: 50rpx;
+  background: #d9d9d9;
+}
+
+.invite-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20rpx;
+}
+
+/* 积分流水入口 */
+.transaction-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx;
+}
+
+.transaction-entry-left {
+  display: flex;
+  align-items: center;
+}
+
+.transaction-entry-text {
+  font-size: 28rpx;
+  color: #333;
+  margin-left: 12rpx;
+}
+
+/* bg-gold 未在 ColorUI 中，自定义 */
+.bg-gold {
+  background: goldenrod;
+  color: #fff;
+}

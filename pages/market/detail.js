@@ -41,7 +41,10 @@ Page({
     unlockDialogTitle: '',
     unlockDialogGateType: '',
     ownerHasChat: false,
-    inputPanelVisible: false  // 评论输入面板是否打开（控制底部栏显隐）
+    inputPanelVisible: false,  // 评论输入面板是否打开（控制底部栏显隐）
+    // 积分系统
+    creditBalance: 0,
+    creditConfigEnabled: false,
   },
 
   onLoad(options) {
@@ -56,6 +59,7 @@ Page({
       isRoot
     })
     this.loadContactConfig()
+    this.loadCreditConfig()
     this.checkCompareStatus()
   },
 
@@ -74,6 +78,27 @@ Page({
         if (method === 'ad' && this._isContactUnlockedRecently()) {
           this.setData({ adUnlocked: true })
         }
+      }
+    })
+  },
+
+  // 加载积分配置（是否启用积分体系）
+  loadCreditConfig() {
+    const credit = require('../../utils/credit')
+    credit.getCreditConfig().then((cfg) => {
+      if (cfg) {
+        this.setData({ creditConfigEnabled: true })
+        this.refreshCreditBalance()
+      }
+    })
+  },
+
+  // 刷新积分余额（每次打开弹窗、从其他页面返回时调用）
+  refreshCreditBalance() {
+    const credit = require('../../utils/credit')
+    credit.getAccount().then((account) => {
+      if (account) {
+        this.setData({ creditBalance: account.balance || 0 })
       }
     })
   },
@@ -489,6 +514,10 @@ Page({
       unlockDialogTitle: titles[gateType] || '解锁内容',
       unlockDialogGateType: gateType,
     })
+    // 每次打开弹窗刷新积分余额
+    if (this.data.creditConfigEnabled) {
+      this.refreshCreditBalance()
+    }
   },
 
   closeUnlockDialog() {
@@ -509,6 +538,61 @@ Page({
       }
     }).catch(() => {
       wx.showToast({ title: '广告加载失败', icon: 'none' })
+    })
+  },
+
+  // 积分解锁
+  doUnlockByCredit() {
+    const gateType = this.data.unlockDialogGateType
+    if (!gateType) return
+    this.closeUnlockDialog()
+    this.unlockWithCredit(this.data.id)
+  },
+
+  async unlockWithCredit(houseId) {
+    const credit = require('../../utils/credit')
+    const gate = require('../../utils/gate')
+    const userId = (app.globalData.userinfo && app.globalData.userinfo.id) || 0
+    const requestId = 'unlock_' + userId + '_' + houseId + '_' + Date.now()
+    wx.showLoading({ title: '解锁中...' })
+    const res = await credit.spendCredit('unlock', 1, requestId, houseId, '积分解锁房源')
+    if (res && res.status === 0) {
+      // 积分扣费成功后，创建 gate 解锁记录（否则详情接口仍返回 visible: false）
+      await gate.unlockGate(houseId, 'rewarded')
+      this.loadDetail()
+      this.refreshCreditBalance()
+      wx.showToast({ title: '解锁成功', icon: 'success' })
+    } else {
+      wx.hideLoading()
+      wx.showToast({ title: (res && res.msg) || '积分不足', icon: 'none' })
+    }
+  },
+
+  // 分享赚积分（点击后触发分享）
+  goShareForCredit() {
+    // 如果未登录，先引导登录
+    if (!this._isLogin()) {
+      this.closeUnlockDialog()
+      wx.showModal({
+        title: '请先登录',
+        content: '登录后即可分享赚取积分',
+        confirmText: '去登录',
+        success: (r) => {
+          if (r.confirm) {
+            const redirect = '/pages/market/detail?id=' + this.data.id
+            wx.navigateTo({ url: '/pages/login/login?redirect=' + encodeURIComponent(redirect) })
+          }
+        }
+      })
+      return
+    }
+    // 已登录：触发分享（小程序分享只能由用户主动触发，这里给个提示引导）
+    this.closeUnlockDialog()
+    wx.showModal({
+      title: '分享赚积分',
+      content: '点击右上角"..."菜单，选择"转发"给好友。好友打开后你可获得5积分！',
+      confirmText: '知道了',
+      showCancel: false,
     })
   },
 
@@ -626,12 +710,25 @@ Page({
   },
 
   onShareAppMessage() {
-    const path = '/pages/market/detail?id=' + this.data.id
+    const userId = app.globalData.userinfo ? app.globalData.userinfo.id : 0
+    const house = this.data.detail
+    const title = house ? (house.address_name || '浦东租房') + ' ' + (house.rent_display || '') : '浦东租房'
+    const path = userId
+      ? '/pages/market/detail?id=' + this.data.id + '&inviter_uid=' + userId
+      : '/pages/market/detail?id=' + this.data.id
     return {
-      title: this.data.detail ? this.data.detail.title : '市场租房',
+      title: title,
       path: '/pages/login/login?redirect=' + encodeURIComponent(path),
       imageUrl: '',
-      success(res) { if (res.errMsg === 'shareAppMessage:ok') wx.showToast({ title: '转发成功', icon: 'success' }) },
+      success(res) {
+        if (res.errMsg === 'shareAppMessage:ok') {
+          if (userId) {
+            wx.showToast({ title: '好友打开后你将获得5积分', icon: 'none', duration: 3000 })
+          } else {
+            wx.showToast({ title: '转发成功', icon: 'success' })
+          }
+        }
+      },
       fail(err) {
         if (err.errMsg === 'shareAppMessage:fail cancel') wx.showToast({ title: '转发已取消' })
         else wx.showToast({ title: '转发失败' })

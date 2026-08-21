@@ -710,7 +710,51 @@
   text-align: center; margin-bottom: 32rpx;
   line-height: 1.5;
 }
+
+/* 积分余额状态栏 */
+.dialog-credit-bar {
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 28rpx; padding: 16rpx 0;
+  background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%);
+  border-radius: 12rpx;
+}
+.credit-label { font-size: 26rpx; color: #856404; }
+.credit-value { font-size: 36rpx; font-weight: 700; color: #e6a817; }
+.credit-value.credit-empty { color: #dc3545; }
+.credit-hint { font-size: 24rpx; color: #dc3545; margin-left: 4rpx; }
+
+/* 双按钮并排区 */
+.dialog-action-row {
+  display: flex; gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+.dialog-action-btn {
+  flex: 1; height: 120rpx;
+  border-radius: 16rpx;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  border: none; padding: 0; margin: 0;
+  line-height: 1.3;
+}
+.dialog-action-btn::after { border: none; }
 .dialog-ad-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+.dialog-credit-btn {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: #fff;
+}
+.dialog-credit-btn.disabled {
+  background: #e9ecef;
+  color: #999;
+}
+.dialog-action-btn .btn-icon { font-size: 32rpx; }
+.dialog-action-btn .btn-text { font-size: 28rpx; font-weight: 600; }
+.dialog-action-btn .btn-sub { font-size: 22rpx; opacity: 0.8; }
+
+/* 仅广告解锁按钮（积分体系关闭时） */
+.dialog-ad-btn-full {
   width: 100%; height: 88rpx;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: #fff; border-radius: 16rpx;
@@ -719,7 +763,24 @@
   gap: 12rpx; margin-bottom: 24rpx;
   border: none; padding: 0;
 }
-.dialog-ad-btn::after { border: none; }
+.dialog-ad-btn-full::after { border: none; }
+
+/* 分享赚积分引导区 */
+.dialog-share-section { margin-bottom: 16rpx; }
+.dialog-share-card {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 24rpx 20rpx;
+  background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+  border-radius: 12rpx;
+  border: 1rpx solid #c8e6c9;
+}
+.share-left { display: flex; align-items: center; gap: 16rpx; }
+.share-emoji { font-size: 40rpx; }
+.share-info { display: flex; flex-direction: column; }
+.share-title { font-size: 28rpx; font-weight: 600; color: #2e7d32; }
+.share-desc { font-size: 22rpx; color: #66bb6a; margin-top: 4rpx; }
+.share-arrow { font-size: 36rpx; color: #999; }
+
 .dialog-divider {
   display: flex; align-items: center;
   margin-bottom: 28rpx; color: #ccc;

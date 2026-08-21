@@ -62,7 +62,9 @@
     "pages/admin/reportReview",
     "pages/admin/depositRefund",
     "pages/admin/authReview",
-    "pages/admin/commentReview"
+    "pages/admin/commentReview",
+    "pages/credit/credit",
+    "pages/invite/landing/landing"
   ],
   "window": {
     "navigationStyle": "custom"

@@ -6,6 +6,22 @@ App({
     log.info(options)
     this.globalData.scene = options.scene
     
+    // 解析分享邀请参数
+    if (options.query && options.query.inviter_uid) {
+      this.globalData.inviterUid = parseInt(options.query.inviter_uid)
+    }
+    if (options.query && options.query.inviter_id) {
+      this.globalData.inviterUid = parseInt(options.query.inviter_id)
+    }
+    // scene 参数解析（小程序码）
+    if (options.scene) {
+      const scene = decodeURIComponent(options.scene)
+      const inviterMatch = scene.match(/inviter_(\d+)/)
+      if (inviterMatch) {
+        this.globalData.inviterUid = parseInt(inviterMatch[1])
+      }
+    }
+
     log.info('用户onLaunch')
     // 最开始要prompt用户升级程序（if any）
     this.updateApp()
@@ -79,7 +95,8 @@ App({
     userinfo: {
       wxNickName: '',
       wxAvatarUrl: ''
-    }
+    },
+    inviterUid: 0
   },
   
 

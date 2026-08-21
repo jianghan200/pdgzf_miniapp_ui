@@ -1,0 +1,185 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold">我的积分</view>
+  </view>
+</cu-custom>
+
+<!-- 顶部积分余额卡 -->
+<view class="credit-header">
+  <view class="credit-header-bg">
+    <view class="credit-balance-box">
+      <view class="credit-label">当前积分</view>
+      <view class="credit-balance">
+        <text class="credit-num">{{balance}}</text>
+        <text class="credit-unit">分</text>
+      </view>
+      <view class="credit-total">累计获得 {{totalEarned}} 积分</view>
+    </view>
+  </view>
+</view>
+
+<!-- 加载中 -->
+<view class="loading-box" wx:if="{{loading}}">
+  <text class="cuIcon-loading cuIcon-spin text-white" style="font-size: 60rpx;"></text>
+</view>
+
+<block wx:if="{{!loading}}">
+  <!-- 赚积分区域 -->
+  <view class="credit-section">
+    <view class="section-header">
+      <text class="section-title">赚取积分</text>
+      <text class="section-sub">完成任务即可获得积分</text>
+    </view>
+
+    <view class="channel-card" wx:for="{{earningChannels}}" wx:key="key">
+      <view class="channel-header" data-key="{{item.key}}" bindtap="toggleChannel">
+        <view class="channel-left">
+          <view class="channel-icon-wrap {{item.color}}">
+            <text class="{{item.icon}}"></text>
+          </view>
+          <view class="channel-info">
+            <text class="channel-title">{{item.title}}</text>
+            <text class="channel-reward">{{item.reward}}</text>
+          </view>
+        </view>
+        <text class="cuIcon-{{channelExpanded[item.key] ? 'fold' : 'right'}} text-gray channel-arrow"></text>
+      </view>
+
+      <view class="channel-body" wx:if="{{channelExpanded[item.key]}}">
+        <!-- 分享 -->
+        <block wx:if="{{item.key === 'share'}}">
+          <view class="channel-desc">
+            <text class="channel-desc-text">{{item.desc}}</text>
+            <text class="channel-desc-text" wx:if="{{inviteInfo}}">已邀请 {{inviteInfo.registered_count || 0}} 人注册</text>
+          </view>
+          <button class="cu-btn bg-blue sm channel-btn" open-type="share">
+            <text class="cuIcon-share"></text>
+            <text>立即分享</text>
+          </button>
+        </block>
+
+        <!-- 看广告 -->
+        <block wx:if="{{item.key === 'ad'}}">
+          <view class="channel-desc">
+            <text class="channel-desc-text">每次观看完整视频广告 +1 积分</text>
+            <text class="channel-desc-text">今日已看 {{adDailyUsed}}/{{adDailyMax}} 次</text>
+          </view>
+          <button class="cu-btn bg-green sm channel-btn" bindtap="onWatchAd" disabled="{{adDailyUsed >= adDailyMax}}">
+            <text class="cuIcon-videofill"></text>
+            <text>{{adDailyUsed >= adDailyMax ? '今日已用完' : '去赚取'}}</text>
+          </button>
+          <!-- 进度条 -->
+          <view class="ad-progress">
+            <view class="ad-progress-bar">
+              <view class="ad-progress-fill" style="width: {{adDailyUsed / adDailyMax * 100}}%;"></view>
+            </view>
+          </view>
+        </block>
+
+        <!-- 发布房源 -->
+        <block wx:if="{{item.key === 'publish'}}">
+          <view class="channel-desc">
+            <text class="channel-desc-text">{{item.desc}}</text>
+          </view>
+          <button class="cu-btn bg-orange sm channel-btn" bindtap="onGoPublish">
+            <text class="cuIcon-edit"></text>
+            <text>去发布</text>
+          </button>
+        </block>
+      </view>
+    </view>
+  </view>
+
+  <!-- 积分消耗区域 -->
+  <view class="credit-section">
+    <view class="section-header">
+      <text class="section-title">积分兑换</text>
+      <text class="section-sub">使用积分兑换会员权益</text>
+    </view>
+
+    <!-- 解锁房源 -->
+    <view class="spend-card">
+      <view class="spend-item">
+        <view class="spend-icon-wrap text-blue">
+          <text class="cuIcon-unlock"></text>
+        </view>
+        <view class="spend-info">
+          <text class="spend-title">解锁房源查看</text>
+          <text class="spend-desc">1积分解锁一次房源价格/描述</text>
+        </view>
+        <text class="spend-cost">1分/次</text>
+      </view>
+    </view>
+
+    <!-- VIP 兑换选项 -->
+    <view class="exchange-list">
+      <view class="exchange-item" wx:for="{{exchangeOptions}}" wx:key="period" data-period="{{item.period}}" bindtap="onExchange">
+        <view class="exchange-icon-wrap">
+          <text class="{{item.icon}} text-gold" style="font-size: 48rpx;"></text>
+        </view>
+        <view class="exchange-info">
+          <view class="exchange-name-row">
+            <text class="exchange-name">{{item.name}}</text>
+            <text class="exchange-tag" wx:if="{{item.tag}}">{{item.tag}}</text>
+          </view>
+          <text class="exchange-cost">{{item.cost}} 积分</text>
+        </view>
+        <view class="exchange-action">
+          <button class="cu-btn {{balance >= item.cost ? 'bg-gold' : 'bg-gray'}} sm round" disabled="{{balance < item.cost}}">
+            {{balance >= item.cost ? '兑换' : '积分不足'}}
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 我的邀请 -->
+  <view class="credit-section" wx:if="{{inviteInfo}}">
+    <view class="section-header">
+      <text class="section-title">我的邀请</text>
+    </view>
+    <view class="invite-card">
+      <view class="invite-stats">
+        <view class="invite-stat-item">
+          <text class="invite-stat-num">{{inviteInfo.invite_count || 0}}</text>
+          <text class="invite-stat-label">邀请人数</text>
+        </view>
+        <view class="invite-stat-divider"></view>
+        <view class="invite-stat-item">
+          <text class="invite-stat-num">{{inviteInfo.registered_count || 0}}</text>
+          <text class="invite-stat-label">已注册</text>
+        </view>
+        <view class="invite-stat-divider"></view>
+        <view class="invite-stat-item">
+          <text class="invite-stat-num">{{inviteInfo.reward_count || 0}}</text>
+          <text class="invite-stat-label">已获奖励</text>
+        </view>
+      </view>
+      <view class="invite-actions">
+        <button class="cu-btn bg-blue sm round" open-type="share">
+          <text class="cuIcon-share"></text>
+          <text>邀请好友</text>
+        </button>
+        <button class="cu-btn bg-white sm round text-blue" bindtap="onGoInvitees">
+          <text>查看邀请详情</text>
+          <text class="cuIcon-right"></text>
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 积分流水入口 -->
+  <view class="credit-section">
+    <view class="transaction-entry" bindtap="onGoTransactions">
+      <view class="transaction-entry-left">
+        <text class="cuIcon-list text-gray" style="font-size: 36rpx;"></text>
+        <text class="transaction-entry-text">积分流水明细</text>
+      </view>
+      <text class="cuIcon-right text-gray"></text>
+    </view>
+  </view>
+
+  <!-- 底部安全区 -->
+  <view style="height: 60rpx;"></view>
+</block>

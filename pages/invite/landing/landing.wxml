@@ -1,0 +1,77 @@
+<cu-custom bgColor="bg-blue" isBack="{{true}}">
+  <view slot="backText">返回</view>
+  <view slot="content">
+    <view class="text-white text-bold">好友邀请</view>
+  </view>
+</cu-custom>
+
+<view class="landing-page">
+  <!-- 顶部欢迎卡片 -->
+  <view class="welcome-card">
+    <view class="welcome-icon">
+      <text class="cuIcon-home text-blue" style="font-size: 80rpx;"></text>
+    </view>
+    <view class="welcome-title">你的好友邀请你</view>
+    <view class="welcome-subtitle">查看浦东租房信息</view>
+  </view>
+
+  <!-- 积分奖励提示 -->
+  <view class="reward-card">
+    <view class="reward-icon">
+      <text class="cuIcon-appreciatefill text-gold" style="font-size: 48rpx;"></text>
+    </view>
+    <view class="reward-info">
+      <view class="reward-title">注册即送 5 积分</view>
+      <view class="reward-desc">积分可解锁房源查看，也可兑换会员</view>
+    </view>
+  </view>
+
+  <!-- 功能亮点 -->
+  <view class="feature-list">
+    <view class="feature-item">
+      <view class="feature-icon-wrap bg-blue">
+        <text class="cuIcon-search text-white" style="font-size: 32rpx;"></text>
+      </view>
+      <view class="feature-info">
+        <text class="feature-title">海量房源</text>
+        <text class="feature-desc">浦东公租房、保租房、市场租房一站式查看</text>
+      </view>
+    </view>
+    <view class="feature-item">
+      <view class="feature-icon-wrap bg-green">
+        <text class="cuIcon-message text-white" style="font-size: 32rpx;"></text>
+      </view>
+      <view class="feature-info">
+        <text class="feature-title">直接联系</text>
+        <text class="feature-desc">与房东直接沟通，无中介费</text>
+      </view>
+    </view>
+    <view class="feature-item">
+      <view class="feature-icon-wrap bg-orange">
+        <text class="cuIcon-calendar text-white" style="font-size: 32rpx;"></text>
+      </view>
+      <view class="feature-info">
+        <text class="feature-title">预约看房</text>
+        <text class="feature-desc">在线预约看房时间，房东确认即可实地看房</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部 CTA -->
+  <view class="cta-area">
+    <block wx:if="{{isLoggedIn}}">
+      <view class="cta-hint text-gray">你已经是会员了</view>
+      <button class="cu-btn bg-blue cta-btn" bindtap="onGoMarket">
+        <text>去查看房源</text>
+        <text class="cuIcon-right"></text>
+      </button>
+    </block>
+    <block wx:else>
+      <button class="cu-btn bg-blue cta-btn" bindtap="onJoin" loading="{{loading}}">
+        <text>立即加入</text>
+        <text class="cuIcon-right"></text>
+      </button>
+      <view class="cta-hint text-gray">免费注册，即送5积分</view>
+    </block>
+  </view>
+</view>

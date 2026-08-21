@@ -46,7 +46,9 @@ Page({
     // 市场租房 VIP 信息
     marketVipInfo: null,
     marketVipEndDate: '',
-    marketVipExpired: false
+    marketVipExpired: false,
+    // 积分余额
+    creditBalance: 0
   },
   
   onLoad: function (options) {
@@ -123,6 +125,7 @@ Page({
     this.loadChatUnread()
     this.loadMarketVipInfo()
     this.loadViewingConfig()
+    this.loadCreditBalance()
   },
 
   // res = { 'wxNickName': '...', 'wxAvatarUrl': 'http://...' }
@@ -207,6 +210,21 @@ Page({
         this.setData({ viewingEnabled })
       }
     }).catch(() => {})
+  },
+
+  // 读取积分余额
+  loadCreditBalance() {
+    const credit = require('../../utils/credit')
+    credit.getAccount().then((account) => {
+      if (account) {
+        this.setData({ creditBalance: account.balance || 0 })
+      }
+    }).catch(() => {})
+  },
+
+  // 积分中心
+  goCreditCenter() {
+    wx.navigateTo({ url: '/pages/credit/credit' })
   },
 
   // Go to VIP页
