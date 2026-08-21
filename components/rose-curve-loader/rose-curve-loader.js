@@ -27,9 +27,9 @@ Component({
           if (!res || !res[0] || !res[0].node) return
           const canvas = res[0].node
           const ctx = canvas.getContext('2d')
-          const dpr = wx.getWindowInfo().pixelRatio || 2
-          const w = res[0].width
-          const h = res[0].height
+          const w = this.data.size || 120
+          const h = this.data.size || 120
+          const dpr = Math.min(wx.getWindowInfo().pixelRatio || 2, 3)
 
           canvas.width = w * dpr
           canvas.height = h * dpr
@@ -39,6 +39,7 @@ Component({
           this._ctx = ctx
           this._w = w
           this._h = h
+          this._dpr = dpr
           this._startedAt = Date.now()
           this._animating = true
           this._renderLoop()
@@ -53,15 +54,14 @@ Component({
       }
     },
 
-    // 玫瑰曲线参数
     _getConfig() {
       return {
-        particleCount: 120,
+        particleCount: 1200,
         trailSpan: 0.45,
         durationMs: 10800,
         rotationDurationMs: 28000,
         pulseDurationMs: 4600,
-        strokeWidth: 8,
+        strokeWidth: 3,
         roseA: 9.2,
         roseABoost: 0.6,
         roseBreathBase: 0.72,
@@ -111,14 +111,26 @@ Component({
       return {
         x: pt.x * scale,
         y: pt.y * scale,
-        radius: 6.0 + fade * 12.0,
-        opacity: 0.05 + fade * 0.85
+        radius: 2.0 + fade * 5.0,
+        opacity: 0.15 + fade * 0.65
       }
     },
 
-    // 根据索引生成彩色（HSL）
-    _hueColor(hue, alpha) {
-      return `hsla(${hue}, 85%, 60%, ${alpha})`
+    // 三色渐变：亮粉 → 天青 → 柠檬黄
+    _triColor(t, alpha) {
+      const colors = [
+        [255, 45, 120],    // 亮粉 #FF2D78
+        [0, 212, 255],     // 天青 #00D4FF
+        [255, 230, 0]      // 柠檬黄 #FFE600
+      ]
+      const seg = t * 2
+      const i = Math.min(Math.floor(seg), 1)
+      const f = seg - i
+      const c0 = colors[i], c1 = colors[i + 1]
+      const r = Math.round(c0[0] + (c1[0] - c0[0]) * f)
+      const g = Math.round(c0[1] + (c1[1] - c0[1]) * f)
+      const b = Math.round(c0[2] + (c1[2] - c0[2]) * f)
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')'
     },
 
     _renderLoop() {
@@ -136,33 +148,37 @@ Component({
       const detailScale = this._getDetailScale(time, cfg.pulseDurationMs)
       const rotation = this._getRotation(time, cfg.rotationDurationMs, true)
 
-      ctx.clearRect(0, 0, w, h)
+      ctx.setTransform(1, 0, 0, 1, 0, 0)
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.scale(this._dpr, this._dpr)
+
       ctx.save()
       ctx.translate(w / 2, h / 2)
       ctx.rotate((rotation * Math.PI) / 180)
       ctx.translate(-w / 2, -h / 2)
 
-      // 绘制彩色半透明玫瑰曲线
+      // 绘制多巴胺三色玫瑰曲线
       const pathPoints = this._buildPath(detailScale, cfg, scale)
-      ctx.lineWidth = cfg.strokeWidth * (w / 420)
       ctx.lineCap = 'round'
       ctx.lineJoin = 'round'
+      ctx.lineWidth = cfg.strokeWidth * (w / 120)
       for (let i = 1; i < pathPoints.length; i++) {
-        const hue = (i / pathPoints.length) * 360
+        const t = i / pathPoints.length
+        const alpha = 0.25 + Math.sin(t * Math.PI) * 0.35
         ctx.beginPath()
-        ctx.strokeStyle = this._hueColor(hue, 0.18)
+        ctx.strokeStyle = this._triColor(t, alpha)
         ctx.moveTo(pathPoints[i - 1].x, pathPoints[i - 1].y)
         ctx.lineTo(pathPoints[i].x, pathPoints[i].y)
         ctx.stroke()
       }
 
-      // 绘制彩色粒子拖尾
+      // 绘制多巴胺三色粒子拖尾
       for (let i = 0; i < cfg.particleCount; i++) {
         const particle = this._getParticle(i, progress, detailScale, cfg, scale)
-        const hue = ((i / cfg.particleCount) * 360 + progress * 360) % 360
+        const t = ((i / cfg.particleCount) + progress) % 1
         ctx.beginPath()
-        ctx.fillStyle = this._hueColor(hue, particle.opacity)
-        ctx.arc(particle.x, particle.y, particle.radius * (w / 420), 0, Math.PI * 2)
+        ctx.fillStyle = this._triColor(t, particle.opacity)
+        ctx.arc(particle.x, particle.y, particle.radius * (w / 120), 0, Math.PI * 2)
         ctx.fill()
       }
 
