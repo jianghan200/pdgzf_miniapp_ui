@@ -142,9 +142,9 @@ Page({
             id: 10000 + idx,
             latitude: parseFloat(item.latitude),
             longitude: parseFloat(item.longitude),
-            iconPath: '/assets/orange.png',
-            width: 22,
-            height: 22,
+            iconPath: '/assets/marker-deep-orange.png',
+            width: 24,
+            height: 24,
             customCallout: { anchorY: 10, anchorX: 0, display: 'BYCLICK' },
             pname: item.title || item.address_name,
             countDesc: `${item.rent_display || (item.rent != null ? '¥' + item.rent : '价格待定')}/月 · ${item.house_type || ''} · ${item.area || ''}㎡`,
@@ -168,9 +168,9 @@ Page({
             id: 20000 + idx,
             latitude: parseFloat(item.latitude),
             longitude: parseFloat(item.longitude),
-            iconPath: '/assets/green.png',
-            width: 22,
-            height: 22,
+            iconPath: '/assets/marker-teal.png',
+            width: 24,
+            height: 24,
             customCallout: { anchorY: 10, anchorX: 0, display: 'BYCLICK' },
             pname: item.project_name,
             countDesc: `保租房 · ${item.district || ''}`,
@@ -199,7 +199,7 @@ Page({
     }
   },
 
-  // 场景为“今日地图时”
+  // 场景为"今日地图时"
   markersOfTodayMap(rawData) {
     let newMarkers = this.data.markers
 
@@ -221,7 +221,7 @@ Page({
     })
   },
 
-  // 场景为”今日单个坐标”时
+  // 场景为"今日单个坐标"时
   markerForTodaySingleProject(rawData) {
     let newMarkers = this.data.markers
 
@@ -264,12 +264,17 @@ Page({
       return null
     }
 
+    // 计算今日房源数量用于图标判断
+    let todayCount = project.houses ? project.houses.length : 0
+    let markerIcon = this._getMarkerIcon(todayCount)
+
     return {
       id: index, // marker 点击事件回调会返回此 id
       latitude: coordinates.lat,
       longitude: coordinates.lng,
-      width: 22,
-      height: 32,
+      width: 24,
+      height: 24,
+      iconPath: markerIcon,
       customCallout : {
         anchorY: 10,
         anchorX: 0,
@@ -284,23 +289,7 @@ Page({
     }
   },
 
-  // 用于生成热力图
-  gradient(count) {
-    // 0~50, 51~100, 101~300, 301~400, 401~inf
-    if (count <= 50) {
-      return './../../assets/black.png'
-    } else if (count >= 51 && count <= 100) {
-      return './../../assets/blue.png'
-    } else if (count >= 101 && count <= 300) {
-      return './../../assets/green.png'
-    } else if (count >= 301 && count <= 400) {
-      return './../../assets/orange.png'
-    } else {
-      return './../../assets/red.png'
-    }
-  },
-
-  // 场景为“全部房源地图”时
+  // 场景为"全部房源地图"时
   markersForAllMode(rawData) {
     let newMarkers = this.data.markers 
     // flatMap
@@ -358,13 +347,16 @@ Page({
       return null
     }
 
+    // 根据房源数量判断图标
+    let markerIcon = this._getMarkerIcon(project.rentableCount)
+
     return {
       id: index, // marker 点击事件回调会返回此 id
       latitude: coordinates.lat,
       longitude: coordinates.lng,
-      iconPath: this.gradient(project.rentableCount),
-      width: 22,
-      height: 22,
+      iconPath: markerIcon,
+      width: 24,
+      height: 24,
       customCallout : {
         anchorY: 10,
         anchorX: 0,
@@ -383,6 +375,22 @@ Page({
       wx.navigateTo({ url: '/pages/market/detail?id=' + id })
     } else if (this.data.mode === 'shbzf') {
       wx.navigateTo({ url: '/pages/shbzf/detail?id=' + id })
+    }
+  },
+
+  // 根据数量返回 marker 对应的图标路径
+  _getMarkerIcon(count) {
+    // 0~50, 51~100, 101~300, 301~400, 401~inf
+    if (count <= 50) {
+      return '/assets/marker-indigo.png'
+    } else if (count >= 51 && count <= 100) {
+      return '/assets/marker-blue.png'
+    } else if (count >= 101 && count <= 300) {
+      return '/assets/marker-green.png'
+    } else if (count >= 301 && count <= 400) {
+      return '/assets/marker-orange.png'
+    } else {
+      return '/assets/marker-red.png'
     }
   },
 

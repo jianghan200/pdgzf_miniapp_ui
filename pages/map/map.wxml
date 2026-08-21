@@ -8,22 +8,22 @@
 <!-- 0~50, 51~100, 101~300, 301~400, 401~inf -->
 <view style="height: 50px; margin: 5px;" wx:if="{{mode == 'today' || mode == 'all' || mode == 'single' || mode == 'singleToday'}}">
   <view class="text-bold">坐标颜色按房屋供给量分配</view>
-  <text class="cuIcon-locationfill text-black"></text>
+  <text class="cuIcon-locationfill" style="color: #5C6BC0;"></text>
   <text>0~50</text>
-  <text class="cuIcon-locationfill text-blue"></text>
+  <text class="cuIcon-locationfill" style="color: #29B6F6;"></text>
   <text>51~100</text>
-  <text class="cuIcon-locationfill text-green"></text>
+  <text class="cuIcon-locationfill" style="color: #66BB6A;"></text>
   <text>101~300</text>
-  <text class="cuIcon-locationfill text-orange"></text>
+  <text class="cuIcon-locationfill" style="color: #FFA726;"></text>
   <text>310~400</text>
-  <text class="cuIcon-locationfill text-red"></text>
+  <text class="cuIcon-locationfill" style="color: #EF5350;"></text>
   <text> >= 401</text>
 </view>
 <!-- 保租房/市场房源图例 -->
 <view style="padding: 8px 12px;" wx:if="{{mode == 'shbzf' || mode == 'market'}}">
-  <text class="cuIcon-locationfill text-green"></text><text class="text-sm"> 保租房</text>
-  <text class="cuIcon-locationfill text-orange margin-left"></text><text class="text-sm"> 市场房源</text>
-  <text class="cuIcon-locationfill text-blue margin-left"></text><text class="text-sm"> 公租房</text>
+  <text class="cuIcon-locationfill" style="color: #26A69A;"></text><text class="text-sm"> 保租房</text>
+  <text class="cuIcon-locationfill" style="color: #FF7043; margin-left: 10px;"></text><text class="text-sm"> 市场房源</text>
+  <text class="cuIcon-locationfill" style="color: #5C6BC0; margin-left: 10px;"></text><text class="text-sm"> 公租房</text>
 </view>
 <!-- 地图 -->
 <view style="height: 100vh">
