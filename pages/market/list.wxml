@@ -1,9 +1,9 @@
-<cu-custom bgColor="bg-black" isBack="{{false}}">
+<cu-custom bgColor="bg-white" isBack="{{false}}">
   <view slot="content">
-    <view class="text-white text-bold">PD租房 - 真实房源</view>
+    <view class="text-bold" style="color: var(--color-text-1, #1A1A1A);">PD租房 · 市场租房</view>
   </view>
 </cu-custom>
-<view style="background-color: #f5f5f5; min-height: 100vh;">
+<view style="background-color: #F7F8FA; min-height: 100vh;">
   <!-- 顶部栏 -->
   <view class="header-bar">
 
@@ -27,11 +27,9 @@
       </view>
     </view>  -->
 
-    <!-- 动态通知轮播 -->
+    <!-- 动态通知轮播（降噪：无底色、无脉冲点） -->
     <view class="notice-bar" wx:if="{{notices.length > 0}}">
-      <view class="notice-icon-wrap">
-        <text class="notice-icon">📢</text>
-      </view>
+      <text class="cuIcon-notification notice-icon"></text>
       <swiper class="notice-swiper" autoplay="{{true}}" interval="{{3500}}" circular="{{true}}" vertical="{{true}}" display-multiple-items="1" duration="{{400}}">
         <swiper-item wx:for="{{notices}}" wx:key="id" bindtap="onNoticeTap" data-url="{{item.link_url}}">
           <view class="notice-item">
@@ -39,24 +37,6 @@
           </view>
         </swiper-item>
       </swiper>
-      <view class="notice-dot"></view>
-    </view>
-
-    <!-- 🏠 近3天新房源 Hero Banner -->
-    <view class="hero-banner" wx:if="{{newHouseCount > 0}}" bindtap="scrollToTop">
-      <view class="hero-inner">
-        <view class="hero-left">
-          <view class="hero-pulse"></view>
-          <view class="hero-text-group">
-            <text class="hero-count">{{newHouseCount}}</text>
-            <text class="hero-label">套新房源</text>
-          </view>
-        </view>
-        <view class="hero-right">
-          <text class="hero-desc">近 3 天新上架</text>
-          <text class="hero-sub">实时房源更新中</text>
-        </view>
-      </view>
     </view>
 
     <!-- 搜索框 -->
@@ -77,18 +57,21 @@
         data-value="{{item.value}}"
         bindtap="onQuickTagTap"
       >{{item.label}}</view>
-      <view class="quick-tag more" bindtap="toggleFilter">更多 ▾</view>
+      <view class="quick-tag more" bindtap="toggleFilter"><text class="cuIcon-filter" style="margin-right: 4rpx;"></text>筛选</view>
     </view>
-
 
     <!-- 排序条 -->
     <view class="sort-bar">
       <picker mode="selector" range="{{sortOptions}}" value="{{sortIndex}}" bindchange="onSortChange">
-        <view class="sort-item">{{sortOptions[sortIndex]}} ▾</view>
+        <view class="sort-item">{{sortOptions[sortIndex]}} <text class="cuIcon-triangledownfill sort-arrow"></text></view>
       </picker>
       <picker mode="selector" range="{{districts}}" value="{{districtIndex}}" bindchange="onDistrictChange">
-        <view class="sort-item">{{districts[districtIndex]}} ▾</view>
+        <view class="sort-item">{{districts[districtIndex]}} <text class="cuIcon-triangledownfill sort-arrow"></text></view>
       </picker>
+      <view class="sort-right" wx:if="{{newHouseCount > 0}}" bindtap="scrollToTop">
+        <view class="new-count-dot"></view>
+        <text class="new-count-text">{{newHouseCount}} 套新上架</text>
+      </view>
     </view>
   </view>
 
@@ -161,37 +144,37 @@
           <view class="section-title">更多条件</view>
           <view class="tag-grid tag-cloud">
             <view class="ftag ftag-sm {{draftFilters.has_private_bathroom ? 'ftag-active' : ''}}" data-field="has_private_bathroom" bindtap="toggleDraftFlag">
-              <text class="ftag-icon">🚿</text><text>独卫</text>
+              <text>独卫</text>
             </view>
             <view class="ftag ftag-sm {{draftFilters.private_kitchen ? 'ftag-active' : ''}}" data-field="private_kitchen" bindtap="toggleDraftFlag">
-              <text class="ftag-icon">🍳</text><text>独立厨房</text>
+              <text>独立厨房</text>
             </view>
             <view class="ftag ftag-sm {{draftFilters.elevator ? 'ftag-active' : ''}}" data-field="elevator" bindtap="toggleDraftFlag">
-              <text class="ftag-icon">🛗</text><text>电梯</text>
+              <text>电梯</text>
             </view>
             <view class="ftag ftag-sm {{draftFilters.south ? 'ftag-active' : ''}}" data-field="south" bindtap="toggleDraftFlag">
-              <text class="ftag-icon">☀️</text><text>朝南</text>
+              <text>朝南</text>
             </view>
             <view class="ftag ftag-sm {{draftFilters.gas ? 'ftag-active' : ''}}" data-field="gas" bindtap="toggleDraftFlag">
-              <text class="ftag-icon">🔥</text><text>天然气</text>
+              <text>天然气</text>
             </view>
             <view class="ftag ftag-sm {{draftFilters.civil_meters ? 'ftag-active' : ''}}" data-field="civil_meters" bindtap="toggleDraftFlag">
-              <text class="ftag-icon">💡</text><text>民水民电</text>
+              <text>民水民电</text>
             </view>
             <view class="ftag ftag-sm {{draftFilters.pet_friendly ? 'ftag-active' : ''}}" data-field="pet_friendly" bindtap="toggleDraftFlag">
-              <text class="ftag-icon">🐾</text><text>可养宠物</text>
+              <text>可养宠物</text>
             </view>
             <view class="ftag ftag-sm {{draftFilters.not_first_floor ? 'ftag-active' : ''}}" data-field="not_first_floor" bindtap="toggleDraftFlag">
-              <text class="ftag-icon">🚫</text><text>非一楼</text>
+              <text>非一楼</text>
             </view>
             <view class="ftag ftag-sm {{draftFilters.not_top_floor ? 'ftag-active' : ''}}" data-field="not_top_floor" bindtap="toggleDraftFlag">
-              <text class="ftag-icon">🚫</text><text>非顶层</text>
+              <text>非顶层</text>
             </view>
             <view class="ftag ftag-sm {{draftFilters.not_basement ? 'ftag-active' : ''}}" data-field="not_basement" bindtap="toggleDraftFlag">
-              <text class="ftag-icon">🚫</text><text>非地下室</text>
+              <text>非地下室</text>
             </view>
             <view class="ftag ftag-sm {{draftFilters.not_attic ? 'ftag-active' : ''}}" data-field="not_attic" bindtap="toggleDraftFlag">
-              <text class="ftag-icon">🚫</text><text>非阁楼</text>
+              <text>非阁楼</text>
             </view>
           </view>
         </view>
@@ -229,18 +212,10 @@
           <view class="sub-section">
             <text class="sub-label">房源来源</text>
             <view class="tag-grid">
-              <view class="ftag ftag-sm {{draftFilters.rent_source === 'owner' ? 'ftag-active' : ''}}" data-field="rent_source" data-value="owner" bindtap="setDraftSingle">
-                <text class="ftag-icon">🏠</text><text>房东直租</text>
-              </view>
-              <view class="ftag ftag-sm {{draftFilters.rent_source === 'roommate' ? 'ftag-active' : ''}}" data-field="rent_source" data-value="roommate" bindtap="setDraftSingle">
-                <text class="ftag-icon">🤝</text><text>合租找室友</text>
-              </view>
-              <view class="ftag ftag-sm {{draftFilters.rent_source === 'sublet' ? 'ftag-active' : ''}}" data-field="rent_source" data-value="sublet" bindtap="setDraftSingle">
-                <text class="ftag-icon">🔄</text><text>转租</text>
-              </view>
-              <view class="ftag ftag-sm {{draftFilters.rent_source === 'apt' ? 'ftag-active' : ''}}" data-field="rent_source" data-value="apt" bindtap="setDraftSingle">
-                <text class="ftag-icon">🏢</text><text>公寓直租</text>
-              </view>
+              <view class="ftag ftag-sm {{draftFilters.rent_source === 'owner' ? 'ftag-active' : ''}}" data-field="rent_source" data-value="owner" bindtap="setDraftSingle">房东直租</view>
+              <view class="ftag ftag-sm {{draftFilters.rent_source === 'roommate' ? 'ftag-active' : ''}}" data-field="rent_source" data-value="roommate" bindtap="setDraftSingle">合租找室友</view>
+              <view class="ftag ftag-sm {{draftFilters.rent_source === 'sublet' ? 'ftag-active' : ''}}" data-field="rent_source" data-value="sublet" bindtap="setDraftSingle">转租</view>
+              <view class="ftag ftag-sm {{draftFilters.rent_source === 'apt' ? 'ftag-active' : ''}}" data-field="rent_source" data-value="apt" bindtap="setDraftSingle">公寓直租</view>
             </view>
           </view>
         </view>
@@ -261,15 +236,14 @@
     <view class="house-card" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="openDetail">
       <view class="house-cover-wrap">
         <image class="house-cover" src="{{item.cover_url || '/assets/today.png'}}" mode="aspectFill"/>
-        <text class="house-source-tag {{item.source_type}}">{{item.source_type_label}}</text>
       </view>
       <view class="house-info">
         <view class="house-title-row">
           <text class="house-title">{{item.title || item.address_name}}</text>
+          <text class="house-source-tag-inline {{item.source_type}}" wx:if="{{item.source_type_label}}">{{item.source_type_label}}</text>
           <text class="house-cert" wx:if="{{item.is_certified == 1}}">认证</text>
         </view>
         <view class="house-location">
-          <text class="cuIcon-locationfill text-red"></text>
           <text class="location-text">{{item.district || ''}} {{item.town || ''}} {{item.address_name || ''}}</text>
           <text class="subway-dist" wx:if="{{item.distance}}">· 距地铁{{item.distance}}m</text>
         </view>
@@ -279,23 +253,15 @@
           <text wx:if="{{item.area}}">· {{item.area}}㎡</text>
           <text wx:if="{{item.floor_desc}}">· {{item.floor_desc}}</text>
         </view>
-        <!-- <view class="house-tags">
-          <text class="tag rent-form">{{item.rent_type_label}}</text>
-          <text class="tag" wx:if="{{item.bathroom_type === 'private'}}">独卫</text>
-          <text class="tag" wx:if="{{item.elevator == 1}}">电梯</text>
-          <text class="tag" wx:if="{{item.pet_friendly == 1}}">可养宠</text>
-          <text class="tag" wx:if="{{item.civil_meters == 1}}">民水民电</text>
-          <text class="tag" wx:if="{{item.gas == 1}}">天然气</text>
-          <text class="tag" wx:if="{{item.south == 1}}">朝南</text>
-          <text class="tag" wx:if="{{item.private_kitchen == 1}}">独立厨房</text>
-        </view> -->
         <view class="house-bottom">
           <view class="price-wrap">
             <text class="house-rent">{{item.rent_display}}</text>
             <text class="house-rent-unit">/月</text>
           </view>
-          <text class="move-in">{{item.available_date_display}}</text>
-          <text class="house-time">{{item.time_display}}</text>
+          <view class="house-bottom-right">
+            <text class="move-in" wx:if="{{item.available_date_display}}">{{item.available_date_display}}</text>
+            <text class="house-time" wx:if="{{item.time_display}}">· {{item.time_display}}</text>
+          </view>
         </view>
       </view>
     </view>
