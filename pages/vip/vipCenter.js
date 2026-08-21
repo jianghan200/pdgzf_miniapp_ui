@@ -1,7 +1,14 @@
 const market = require('../../utils/market')
 const pay = require('../../utils/pay')
 Page({
-  data: { StatusBar: 0, vipInfo: null, orders: [], loading: true, supportVp: true },
+  data: {
+    StatusBar: 0,
+    vipInfo: null,
+    orders: [],
+    loading: true,
+    supportVp: true,
+    activeTab: 'tenant',
+  },
   onLoad() {
     const s = wx.getSystemInfoSync()
     this.setData({
@@ -16,6 +23,12 @@ Page({
       if (oRes && oRes.status === 0) this.setData({ orders: oRes.data || [] })
       this.setData({ loading: false })
     })
+  },
+  switchTab(e) {
+    const tab = e.currentTarget.dataset.tab
+    if (tab !== this.data.activeTab) {
+      this.setData({ activeTab: tab })
+    }
   },
   buyTenant(e) {
     if (!this.data.supportVp) {

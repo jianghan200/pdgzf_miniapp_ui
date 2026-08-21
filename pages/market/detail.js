@@ -39,6 +39,7 @@ Page({
     // 统一解锁 Dialog
     unlockDialogVisible: false,
     unlockDialogTitle: '',
+    unlockDialogSubtitle: '',
     unlockDialogGateType: '',
     ownerHasChat: false,
     inputPanelVisible: false,  // 评论输入面板是否打开（控制底部栏显隐）
@@ -509,9 +510,15 @@ Page({
 
   showUnlockDialog(gateType) {
     const titles = { price: '解锁价格', description: '解锁描述', chat: '解锁留言' }
+    const subtitles = {
+      price: '查看完整房源价格，预算相差不大再细看',
+      description: '查看详细描述，了解来自房东的房源描述',
+      chat: '给房东留言，了解个性化细节，预约看房',
+    }
     this.setData({
       unlockDialogVisible: true,
       unlockDialogTitle: titles[gateType] || '解锁内容',
+      unlockDialogSubtitle: subtitles[gateType] || '观看广告或使用积分即可解锁',
       unlockDialogGateType: gateType,
     })
     // 每次打开弹窗刷新积分余额

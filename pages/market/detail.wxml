@@ -320,85 +320,94 @@
   <!-- 统一解锁 Dialog -->
   <view class="unlock-dialog-mask" wx:if="{{unlockDialogVisible}}" bindtap="closeUnlockDialog">
     <view class="unlock-dialog" catchtap="stopPropagation">
-    
-      <view class="dialog-title">{{unlockDialogTitle}}</view>
-      <view class="dialog-vip-title">真实房源，每日更新，无50%中介费，花小钱，省大钱</view>
 
-      <!-- 积分余额状态 -->
-      <view class="dialog-credit-bar" wx:if="{{creditConfigEnabled}}">
-        <text class="credit-label">当前积分：</text>
-        <text class="credit-value {{creditBalance <= 0 ? 'credit-empty' : ''}}">{{creditBalance}}</text>
-        <text class="credit-hint" wx:if="{{creditBalance <= 0}}">（不足）</text>
+      <!-- 顶部关闭 -->
+      <view class="dlg-close-top" bindtap="closeUnlockDialog">
+        <text class="dlg-close-icon">✕</text>
       </view>
-      <view class="dialog-desc" wx:if="{{!creditConfigEnabled}}">观看广告即可解锁当前房源信息，或成为VIP享受全部特权</view>
 
-      <!-- 双按钮区：看广告 + 积分解锁（并排） -->
-      <view class="dialog-action-row" wx:if="{{creditConfigEnabled}}">
-        <!-- 看广告解锁 -->
-        <button class="dialog-action-btn dialog-ad-btn" bindtap="doUnlockByAd">
-          <text class="btn-icon">📺</text>
-          <text class="btn-text">看广告</text>
-          <text class="btn-sub">免费</text>
-        </button>
-        <!-- 积分解锁 -->
-        <button class="dialog-action-btn dialog-credit-btn {{creditBalance <= 0 ? 'disabled' : ''}}"
-                bindtap="{{creditBalance > 0 ? 'doUnlockByCredit' : 'goShareForCredit'}}">
-          <text class="btn-icon">💰</text>
-          <text class="btn-text">{{creditBalance > 0 ? '1积分' : '去赚取'}}</text>
-          <text class="btn-sub">{{creditBalance > 0 ? '解锁' : '+5/人'}}</text>
-        </button>
+      <!-- 标题区 -->
+      <view class="dlg-header">
+        <view class="dlg-title">{{unlockDialogTitle}}</view>
+        <view class="dlg-subtitle">{{unlockDialogSubtitle}}</view>
       </view>
-      <!-- 仅广告解锁（积分体系关闭时） -->
-      <button class="dialog-ad-btn-full" wx:if="{{!creditConfigEnabled}}" bindtap="doUnlockByAd">
-        <text class="cuIcon-videofill"></text>
-        看广告解锁
-      </button>
 
-      <!-- 分享赚积分引导 -->
-      <view class="dialog-share-section" wx:if="{{creditConfigEnabled}}">
-        <view class="dialog-divider"><text>或</text></view>
-        <view class="dialog-share-card" bindtap="goShareForCredit">
-          <view class="share-left">
-            <text class="share-emoji">🎯</text>
-            <view class="share-info">
-              <text class="share-title">分享给好友赚积分</text>
-              <text class="share-desc">每位好友打开后你可获得 5 积分</text>
-            </view>
+      <!-- VIP 主推区 -->
+      <view class="dlg-vip-section">
+        <view class="dlg-vip-head">
+          <text class="dlg-vip-icon">✦</text>
+          <text class="dlg-vip-label">开通租客 VIP · 解锁全部特权</text>
+        </view>
+
+        <view class="dlg-vip-plans">
+          <view class="dlg-plan" data-period="3" bindtap="buyVipInDialog">
+            <text class="dlg-plan-name">体验</text>
+            <text class="dlg-plan-price">¥9.9</text>
+            <text class="dlg-plan-sub">7天</text>
           </view>
-          <text class="share-arrow">›</text>
+          <view class="dlg-plan dlg-plan-hot" data-period="1" bindtap="buyVipInDialog">
+            <text class="dlg-plan-badge">推荐</text>
+            <text class="dlg-plan-name">月卡</text>
+            <text class="dlg-plan-price">¥29.9</text>
+            <text class="dlg-plan-sub">/月</text>
+          </view>
+          <view class="dlg-plan" data-period="2" bindtap="buyVipInDialog">
+            <text class="dlg-plan-name">年卡</text>
+            <text class="dlg-plan-price">¥99</text>
+            <text class="dlg-plan-sub">/年 · 省67%</text>
+          </view>
+        </view>
+
+        <view class="dlg-vip-perks">
+          <text class="dlg-perk">✓ 30% 会员专享房源</text>
+          <!-- <text class="dlg-perk">✓ 新房智能匹配通知</text> -->
+          <text class="dlg-perk">✓ 免广告 · 无需解锁</text>
         </view>
       </view>
 
-      <!-- VIP 会员选择区 -->
-      <view class="dialog-divider" wx:if="{{!creditConfigEnabled}}"><text>或</text></view>
-      <view class="dialog-vip-title">开通租客VIP</view>
-      
-      
-      <view class="dialog-vip-plans">
-        <view class="vip-plan" data-period="3" bindtap="buyVipInDialog">
-          <text class="plan-name">7天体验</text>
-          <text class="plan-price">¥9.9</text>
+      <!-- 免费解锁区 -->
+      <view class="dlg-free-section">
+        <view class="dlg-or-bar">
+          <text class="dlg-or-line"></text>
+          <text class="dlg-or-text">或者免费解锁</text>
+          <text class="dlg-or-line"></text>
         </view>
-        <view class="vip-plan vip-plan-hot" data-period="1" bindtap="buyVipInDialog">
-          <text class="hot-tag">推荐</text>
-          <text class="plan-name">月卡</text>
-          <text class="plan-price">¥29.9</text>
+
+        <!-- 积分余额（紧凑一行） -->
+        <view class="dlg-credit-row" wx:if="{{creditConfigEnabled}}">
+          <text class="dlg-credit-label">积分余额</text>
+          <text class="dlg-credit-num {{creditBalance <= 0 ? 'dlg-credit-empty' : ''}}">{{creditBalance}}</text>
+          <text class="dlg-credit-action" wx:if="{{creditBalance <= 0}}" catchtap="goShareForCredit">去赚取 ›</text>
         </view>
-        <view class="vip-plan" data-period="2" bindtap="buyVipInDialog">
-          <text class="plan-name">年卡</text>
-          <text class="plan-price">¥99</text>
+
+        <!-- 双按钮 -->
+        <view class="dlg-free-btns" wx:if="{{creditConfigEnabled}}">
+          <button class="dlg-free-btn dlg-free-btn-ad" bindtap="doUnlockByAd">
+            <text class="dlg-free-main">看广告解锁</text>
+            <text class="dlg-free-tag">免费</text>
+          </button>
+          <button class="dlg-free-btn dlg-free-btn-credit {{creditBalance <= 0 ? 'dlg-free-btn-off' : ''}}"
+                  bindtap="{{creditBalance > 0 ? 'doUnlockByCredit' : 'goShareForCredit'}}">
+            <text class="dlg-free-main">{{creditBalance > 0 ? '积分解锁' : '去赚积分'}}</text>
+            <text class="dlg-free-tag">{{creditBalance > 0 ? '1积分' : '+5/人'}}</text>
+          </button>
+        </view>
+
+        <!-- 仅广告解锁（积分体系关闭时） -->
+        <button class="dlg-free-btn dlg-free-btn-ad dlg-free-btn-wide" wx:if="{{!creditConfigEnabled}}" bindtap="doUnlockByAd">
+          <text class="dlg-free-main">看广告解锁</text>
+          <text class="dlg-free-tag">免费</text>
+        </button>
+
+        <!-- 分享赚积分（紧凑文字链） -->
+        <view class="dlg-share-link" wx:if="{{creditConfigEnabled}}" catchtap="goShareForCredit">
+          <text class="dlg-share-text">分享任意页面给新用户，每人得 5 积分</text>
+          <text class="dlg-share-arrow">›</text>
         </view>
       </view>
 
-
-
-      <view class="dialog-vip-benefits">
-        <text>✓ 30% 会员专享房源</text>
-        <text>✓ 新房源智能匹配并通知，快人一步</text>
-        <text>✓ 免广告查看全部房源价格，描述详情，留言</text>
-      </view>
-
-      <view class="dialog-close" bindtap="closeUnlockDialog">暂不需要</view>
+      <!-- 底部关闭 -->
+      <view class="dlg-dismiss" bindtap="closeUnlockDialog">暂不需要</view>
     </view>
   </view>
 </view>

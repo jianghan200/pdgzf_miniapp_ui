@@ -684,151 +684,244 @@
   font-size: 24rpx; color: #999;
 }
 
-/* ========== 统一解锁 Dialog ========== */
+/* ========== 统一解锁 Dialog v2 ========== */
+/* 设计原则：VIP 为主角，免费为配角，单一品牌色(琥珀金) */
+
+/* 遮罩层 */
 .unlock-dialog-mask {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.55);
   z-index: 9999;
   display: flex; align-items: flex-end; justify-content: center;
 }
+
+/* 弹窗主体 */
 .unlock-dialog {
   background: #fff;
-  border-radius: 24rpx 24rpx 0 0;
+  border-radius: 32rpx 32rpx 0 0;
   width: 100%;
-  padding: 48rpx 32rpx 64rpx;
+  padding: 20rpx 36rpx 48rpx;
   box-sizing: border-box;
-  max-height: 80vh;
+  max-height: 85vh;
   overflow-y: auto;
+  position: relative;
 }
-.dialog-title {
-  font-size: 36rpx; font-weight: 700;
-  color: #333; text-align: center;
-  margin-bottom: 16rpx;
+
+/* 顶部关闭按钮 */
+.dlg-close-top {
+  position: absolute; top: 24rpx; right: 28rpx;
+  width: 56rpx; height: 56rpx;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: #f5f5f5;
+  z-index: 2;
 }
-.dialog-desc {
-  font-size: 26rpx; color: #999;
-  text-align: center; margin-bottom: 32rpx;
+.dlg-close-top:active { background: #eee; }
+.dlg-close-icon {
+  font-size: 28rpx; color: #999; font-weight: 400;
+  line-height: 1;
+}
+
+/* 标题区 */
+.dlg-header {
+  text-align: center;
+  padding: 16rpx 0 28rpx;
+}
+.dlg-title {
+  font-size: 38rpx; font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 12rpx;
+}
+.dlg-subtitle {
+  font-size: 26rpx; color: #888;
   line-height: 1.5;
 }
 
-/* 积分余额状态栏 */
-.dialog-credit-bar {
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 28rpx; padding: 16rpx 0;
-  background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%);
-  border-radius: 12rpx;
+/* ── VIP 主推区 ── */
+.dlg-vip-section {
+  background: linear-gradient(135deg, #fffbf5 0%, #fff8ed 50%, #fef3e2 100%);
+  border: 2rpx solid #fde68a;
+  border-radius: 24rpx;
+  padding: 28rpx 24rpx 24rpx;
+  margin-bottom: 32rpx;
+  position: relative;
 }
-.credit-label { font-size: 26rpx; color: #856404; }
-.credit-value { font-size: 36rpx; font-weight: 700; color: #e6a817; }
-.credit-value.credit-empty { color: #dc3545; }
-.credit-hint { font-size: 24rpx; color: #dc3545; margin-left: 4rpx; }
-
-/* 双按钮并排区 */
-.dialog-action-row {
-  display: flex; gap: 16rpx;
+.dlg-vip-head {
+  display: flex; align-items: center; justify-content: center;
+  gap: 10rpx;
   margin-bottom: 24rpx;
 }
-.dialog-action-btn {
-  flex: 1; height: 120rpx;
+.dlg-vip-icon {
+  font-size: 28rpx; color: #d97706;
+}
+.dlg-vip-label {
+  font-size: 28rpx; font-weight: 700;
+  color: #92400e;
+}
+
+/* VIP 套餐卡片行 */
+.dlg-vip-plans {
+  display: flex; gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+.dlg-plan {
+  flex: 1;
+  background: #fff;
+  border: 2rpx solid #f0e6d2;
+  border-radius: 16rpx;
+  padding: 20rpx 12rpx 16rpx;
+  text-align: center;
+  position: relative;
+  transition: border-color 0.2s;
+}
+.dlg-plan:active { border-color: #d97706; }
+.dlg-plan-name {
+  display: block;
+  font-size: 24rpx; color: #888;
+  margin-bottom: 8rpx;
+}
+.dlg-plan-price {
+  display: block;
+  font-size: 36rpx; font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1.2;
+}
+.dlg-plan-sub {
+  display: block;
+  font-size: 22rpx; color: #aaa;
+  margin-top: 4rpx;
+}
+/* 推荐套餐 */
+.dlg-plan-hot {
+  border-color: #d97706;
+  background: #fffbeb;
+}
+.dlg-plan-hot .dlg-plan-price {
+  color: #d97706;
+}
+.dlg-plan-badge {
+  position: absolute; top: -16rpx; left: 50%;
+  transform: translateX(-50%);
+  background: #d97706; color: #fff;
+  font-size: 20rpx; font-weight: 600;
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+  white-space: nowrap;
+}
+
+/* VIP 权益横排 */
+.dlg-vip-perks {
+  display: flex; flex-wrap: wrap;
+  gap: 8rpx 20rpx;
+  justify-content: center;
+}
+.dlg-perk {
+  font-size: 22rpx; color: #a16207;
+  line-height: 1.6;
+}
+
+/* ── 免费解锁区 ── */
+.dlg-free-section {
+  margin-bottom: 12rpx;
+}
+
+/* "或者免费解锁" 分隔线 */
+.dlg-or-bar {
+  display: flex; align-items: center;
+  margin-bottom: 20rpx;
+}
+.dlg-or-line {
+  flex: 1; height: 1rpx;
+  background: #eee;
+}
+.dlg-or-text {
+  font-size: 24rpx; color: #bbb;
+  padding: 0 24rpx;
+  white-space: nowrap;
+}
+
+/* 积分余额行 */
+.dlg-credit-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8rpx;
+  margin-bottom: 20rpx;
+  font-size: 24rpx;
+}
+.dlg-credit-label { color: #999; }
+.dlg-credit-num {
+  font-weight: 700; color: #d97706;
+  font-size: 28rpx;
+}
+.dlg-credit-empty { color: #ef4444; }
+.dlg-credit-action {
+  color: #3b82f6; font-size: 24rpx;
+  margin-left: 8rpx;
+}
+.dlg-credit-action:active { opacity: 0.6; }
+
+/* 免费按钮行 */
+.dlg-free-btns {
+  display: flex; gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+.dlg-free-btn {
+  flex: 1; height: 96rpx;
   border-radius: 16rpx;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   border: none; padding: 0; margin: 0;
-  line-height: 1.3;
+  line-height: 1.2;
 }
-.dialog-action-btn::after { border: none; }
-.dialog-ad-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
-}
-.dialog-credit-btn {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: #fff;
-}
-.dialog-credit-btn.disabled {
-  background: #e9ecef;
-  color: #999;
-}
-.dialog-action-btn .btn-icon { font-size: 32rpx; }
-.dialog-action-btn .btn-text { font-size: 28rpx; font-weight: 600; }
-.dialog-action-btn .btn-sub { font-size: 22rpx; opacity: 0.8; }
-
-/* 仅广告解锁按钮（积分体系关闭时） */
-.dialog-ad-btn-full {
-  width: 100%; height: 88rpx;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff; border-radius: 16rpx;
-  font-size: 30rpx; font-weight: 600;
-  display: flex; align-items: center; justify-content: center;
-  gap: 12rpx; margin-bottom: 24rpx;
-  border: none; padding: 0;
-}
-.dialog-ad-btn-full::after { border: none; }
-
-/* 分享赚积分引导区 */
-.dialog-share-section { margin-bottom: 16rpx; }
-.dialog-share-card {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 24rpx 20rpx;
-  background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
-  border-radius: 12rpx;
-  border: 1rpx solid #c8e6c9;
-}
-.share-left { display: flex; align-items: center; gap: 16rpx; }
-.share-emoji { font-size: 40rpx; }
-.share-info { display: flex; flex-direction: column; }
-.share-title { font-size: 28rpx; font-weight: 600; color: #2e7d32; }
-.share-desc { font-size: 22rpx; color: #66bb6a; margin-top: 4rpx; }
-.share-arrow { font-size: 36rpx; color: #999; }
-
-.dialog-divider {
-  display: flex; align-items: center;
-  margin-bottom: 28rpx; color: #ccc;
-  font-size: 26rpx;
-}
-.dialog-divider::before, .dialog-divider::after {
-  content: ''; flex: 1; height: 1px;
-  background: #eee;
-}
-.dialog-divider text { margin: 0 24rpx; }
-.dialog-vip-title {
+.dlg-free-btn::after { border: none; }
+.dlg-free-btn:active { opacity: 0.85; }
+.dlg-free-main {
   font-size: 28rpx; font-weight: 600;
-  color: #333; margin-bottom: 20rpx;
+}
+.dlg-free-tag {
+  font-size: 22rpx; opacity: 0.8;
+  margin-top: 2rpx;
+}
+
+/* 广告按钮 — 沉稳蓝色 */
+.dlg-free-btn-ad {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: #fff;
+}
+/* 积分按钮 — 中性灰蓝 */
+.dlg-free-btn-credit {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  color: #475569;
+}
+/* 积分不足时 */
+.dlg-free-btn-off {
+  background: #f1f5f9;
+  color: #94a3b8;
+}
+/* 全宽按钮（积分体系关闭时） */
+.dlg-free-btn-wide {
+  width: 100%; flex: none;
+  margin-bottom: 16rpx;
+}
+
+/* 分享赚积分 — 紧凑文字链 */
+.dlg-share-link {
+  display: flex; align-items: center; justify-content: center;
+  gap: 6rpx;
+  padding: 12rpx 0;
+}
+.dlg-share-link:active { opacity: 0.6; }
+.dlg-share-text {
+  font-size: 24rpx; color: #3b82f6;
+}
+.dlg-share-arrow {
+  font-size: 28rpx; color: #93c5fd;
+  line-height: 1;
+}
+
+/* 底部关闭 */
+.dlg-dismiss {
   text-align: center;
+  font-size: 28rpx; color: #bbb;
+  padding: 20rpx 0 8rpx;
 }
-.dialog-vip-plans {
-  display: flex; gap: 16rpx;
-  margin-bottom: 24rpx;
-}
-.vip-plan {
-  flex: 1; padding: 24rpx 16rpx;
-  border: 2rpx solid #eee; border-radius: 16rpx;
-  text-align: center; position: relative;
-  transition: all 0.2s;
-}
-.vip-plan:active { border-color: #ff4757; }
-.vip-plan-hot {
-  border-color: #ff4757;
-  background: #fff5f5;
-}
-.hot-tag {
-  position: absolute; top: -14rpx; left: 50%;
-  transform: translateX(-50%);
-  background: #ff4757; color: #fff;
-  font-size: 20rpx; padding: 2rpx 12rpx;
-  border-radius: 20rpx; font-weight: 600;
-}
-.plan-name { font-size: 24rpx; color: #666; display: block; margin-bottom: 8rpx; }
-.plan-price { font-size: 36rpx; font-weight: 700; color: #ff4757; }
-.dialog-vip-benefits {
-  background: #f8f9fc; border-radius: 12rpx;
-  padding: 20rpx; margin-bottom: 24rpx;
-}
-.dialog-vip-benefits text {
-  display: block; font-size: 24rpx; color: #666;
-  padding: 6rpx 0; line-height: 1.5;
-}
-.dialog-close {
-  text-align: center; font-size: 28rpx; color: #999;
-  padding: 20rpx; border-top: 1rpx solid #f0f0f0;
-}
+.dlg-dismiss:active { color: #999; }
