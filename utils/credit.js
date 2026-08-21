@@ -152,8 +152,10 @@ function exchangeVip(period, requestId) {
  * @returns {Promise<{status, msg, data}>}
  */
 function reportShareOpen(inviterUid) {
+  const userId = (app.globalData.userinfo && app.globalData.userinfo.id) || 0
   return _post('/credit/share/open', {
-    inviter_uid: inviterUid
+    inviter_uid: inviterUid,
+    invitee_id: userId
   })
 }
 
