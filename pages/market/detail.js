@@ -692,6 +692,7 @@ Page({
 
   onShareAppMessage() {
     const userId = app.globalData.userinfo ? app.globalData.userinfo.id : 0
+    console.log("userId is",app.globalData.userinfo,userId)
     const house = this.data.detail
     const title = house ? (house.address_name || '浦东租房') + ' ' + (house.rent_display || '') : '浦东租房'
     const path = userId
@@ -700,7 +701,7 @@ Page({
     const page = this
     return {
       title: title,
-      path: '/pages/login/login?redirect=' + encodeURIComponent(path),
+      path: '/pages/login/login?redirect=' + encodeURIComponent(path) + (userId ? '&inviter_uid=' + userId : ''),
       imageUrl: '',
       success(res) {
         page.closeUnlockDialog()

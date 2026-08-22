@@ -56,7 +56,34 @@ App({
     })
   },
 
- 
+  onShow: function (options) {
+    // 解析分享邀请参数（从 onShow 也能获取，应对热启动场景）
+    if (options && options.query) {
+      if (options.query.inviter_uid) {
+        this.globalData.inviterUid = parseInt(options.query.inviter_uid)
+      }
+      if (options.query.inviter_id) {
+        this.globalData.inviterUid = parseInt(options.query.inviter_id)
+      }
+    }
+    if (options && options.scene) {
+      const scene = decodeURIComponent(options.scene)
+      const inviterMatch = scene.match(/inviter_(\d+)/)
+      if (inviterMatch) {
+        this.globalData.inviterUid = parseInt(inviterMatch[1])
+      }
+    }
+
+    // 全局上报分享打开：用户已登录且有邀请人时自动上报
+    // 仅上报一次（通过 _shareReported 标记防止重复）
+    if (!this.globalData._shareReported &&
+        this.globalData.inviterUid > 0 &&
+        this.globalData.userinfo && this.globalData.userinfo.tokenStr) {
+      this.globalData._shareReported = true
+      var credit = require('./utils/credit')
+      credit.reportShareOpen(this.globalData.inviterUid)
+    }
+  },
 
   // 检查版本，prompt用户下载新版本
   updateApp() {
@@ -96,7 +123,8 @@ App({
       wxNickName: '',
       wxAvatarUrl: ''
     },
-    inviterUid: 0
+    inviterUid: 0,
+    _shareReported: false
   },
   
 

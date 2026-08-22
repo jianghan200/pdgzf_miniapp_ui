@@ -209,7 +209,7 @@ function buildShareParams(scene, extra) {
     title = '赚积分换会员，浦东租房更轻松'
   } else if (scene === 'house') {
     const houseId = (extra && extra.houseId) || ''
-    path = houseId ? '/pages/market/detail?id=' + houseId + '&inviter_' + userId : '/pages/market/list'
+    path = houseId ? '/pages/market/detail?id=' + houseId + '&inviter_uid=' + userId : '/pages/market/list'
     title = (extra && extra.title) || '浦东租房 - 好房推荐'
   } else if (scene === 'invite') {
     path = '/pages/invite/landing/landing?inviter_uid=' + userId
